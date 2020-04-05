@@ -13,6 +13,4 @@ int main() {
 
     cout << "Cont: " << cont << endl;
     cout << "Cont2: " << cont2 << endl;
-
-
 }

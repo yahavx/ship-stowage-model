@@ -25,5 +25,4 @@ public:
     vector<PackingOperation> packing(std::vector<Container> containersToLoad);
 };
 
-
 #endif //SHIP_STOWAGE_MODEL_CONTAINERSHIP_H
