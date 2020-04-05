@@ -3,7 +3,3 @@
 //
 
 #include "ContainerShip.h"
-
-const ShipPlan &ContainerShip::getShipPlan() {
-    return nullptr;
-}
