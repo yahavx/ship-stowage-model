@@ -12,9 +12,9 @@
 #include "ShipRoute.h"
 #include "IWeightBalancer.h"
 
-using namespace std;
-
 class ContainerShip {
+    int height;  // height of the shap
+    int width;  // width of the ship
     ShipPlan shipPlan;
     ShipRoute shipRoute;
     IWeightBalancer weightBalancer;

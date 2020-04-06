@@ -6,7 +6,11 @@
 #define SHIP_STOWAGE_MODEL_SHIPROUTE_H
 
 
+#include "Port.h"
+
 class ShipRoute {
+    Port *ports;  // TODO: change to vector?
+
 
 };
 

@@ -9,28 +9,26 @@
 #include <iostream>
 #include <stdio.h>
 
-using namespace std;
-
 class Container {
     int weight;
-    string destPort;
-    string id;
+    std::string destPort;
+    std::string id;
 
 public:
-    Container(int weight, const string &destPort, const string &id);
+    Container(int weight, const std::string &destPort, const std::string &id);
 
     int getWeight() const;
 
-    const string &getDestPort() const;
+    const std::string &getDestPort() const;
 
-    const string &getId() const;
+    const std::string &getId() const;
 
     // TODO: remove setters
     void setWeight(int weight);
 
-    void setDestPort(const string &destPort);
+    void setDestPort(const std::string &destPort);
 
-    void setId(const string &id);
+    void setId(const std::string &id);
 };
 
 std::ostream &operator<<(std::ostream &strm, const Container &cont);

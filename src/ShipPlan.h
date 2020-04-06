@@ -6,8 +6,12 @@
 #define SHIP_STOWAGE_MODEL_SHIPPLAN_H
 
 
-class ShipPlan {
+#include "FloorPlan.h"
+#include <vector>
 
+
+class ShipPlan {
+    std::vector<FloorPlan> shipPlan;  // entry i is the floor plan of floor i
 };
 
 

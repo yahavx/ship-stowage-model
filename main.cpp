@@ -1,16 +1,19 @@
 #include <iostream>
 #include "src/Container.h"
+#include <fstream>
+
+
+using namespace std;
 
 int main() {
-    Container cont(2,"s","d");
+    Container cont(2, "s", "d");
     cout << cont << endl;
 
-    Container cont2 = cont;
-    cout << cont2 << endl;
+    // basic input output
 
-    cont.setWeight(5);
-    cont.setDestPort("yosi");
+    open
 
-    cout << "Cont: " << cont << endl;
-    cout << "Cont2: " << cont2 << endl;
+}
+
+
 }
