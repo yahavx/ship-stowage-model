@@ -1,7 +1,7 @@
 #include <iostream>
 #include "src/Container.h"
 #include <fstream>
-
+#include "src/InputOutput.h"
 
 using namespace std;
 
@@ -11,9 +11,7 @@ int main() {
 
     // basic input output
 
-    open
+    write("blabla\nblafsdfbla");
 
-}
-
-
+    read();
 }

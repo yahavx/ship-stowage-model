@@ -4,7 +4,7 @@
 
 #include "Container.h"
 
-Container::Container(int weight, const string &destPort, const string &id) : weight(weight), destPort(destPort),
+Container::Container(int weight, const std::string &destPort, const std::string &id) : weight(weight), destPort(destPort),
                                                                              id(id) {
 
 }
@@ -13,11 +13,11 @@ int Container::getWeight() const {
     return this->weight;
 }
 
-const string &Container::getDestPort() const {
+const std::string &Container::getDestPort() const {
     return this->destPort;
 }
 
-const string &Container::getId() const {
+const std::string &Container::getId() const {
     return this->id;
 }
 
@@ -25,11 +25,11 @@ void Container::setWeight(int weight) {
     this->weight = weight;
 }
 
-void Container::setDestPort(const string &destPort) {
+void Container::setDestPort(const std::string &destPort) {
     this->destPort = destPort;
 }
 
-void Container::setId(const string &id) {
+void Container::setId(const std::string &id) {
     this->id = id;
 }
 

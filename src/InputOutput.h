@@ -6,11 +6,13 @@
 #define SHIP_STOWAGE_MODEL_INPUTOUTPUT_H
 
 
+#include <string>
+
 class InputOutput {
 
 };
 
-void write();
+void write(std::string data);
 
 void read();
 

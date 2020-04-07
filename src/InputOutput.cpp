@@ -27,6 +27,7 @@ void read() {
     file.open("..\\example.txt");
     if (file.is_open()) {
         while (getline(file, line)) {
+            i++;
             std::cout << "line " << i << ": " << line << '\n';
         }
         file.close();
