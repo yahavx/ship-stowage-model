@@ -7,14 +7,12 @@
 
 #include <string>
 
-using namespace std;
-
 enum class Packing{
     load, unload, reject
 };
 
 class PackingOperation {
-    string containerId;
+    std::string containerId;
     int floorIndex;
     int rowIndex;
     int columnIndex;

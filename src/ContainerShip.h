@@ -22,7 +22,12 @@ class ContainerShip {
 public:
 //    const ShipPlan &getShipPlan();
 
-    vector<PackingOperation> packing(std::vector<Container> containersToLoad);
+    std::vector<PackingOperation> packing(std::vector<Container> containersToLoad);
+};
+
+class ShipFloor {
+    int height;  // the floor index in the ship
+//    FloorPlan plan;  // plan of the floor
 };
 
 #endif //SHIP_STOWAGE_MODEL_CONTAINERSHIP_H

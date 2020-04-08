@@ -3,3 +3,7 @@
 //
 
 #include "ContainerPlan.h"
+
+int ShipPlan::getMinimumHeight(ContainerShip &containerShip, int x, int y) {
+    return 0;
+}
