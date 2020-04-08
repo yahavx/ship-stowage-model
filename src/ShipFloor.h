@@ -6,13 +6,12 @@
 #define SHIP_STOWAGE_MODEL_SHIPFLOOR_H
 
 
-#include "ShipPlan.h"
+#include "ContainerPlan.h"
 
 class ShipFloor {
     int height;  // the floor index in the ship
 
     ShipPlan plan;  // plan of the floor
 };
-
 
 #endif //SHIP_STOWAGE_MODEL_SHIPFLOOR_H

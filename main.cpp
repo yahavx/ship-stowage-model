@@ -6,7 +6,7 @@
 using namespace std;
 
 int main() {
-    Container cont(2, "s", "d");
+    Container cont(2, Port(), "d");
     cout << cont << endl;
 
     // basic input output

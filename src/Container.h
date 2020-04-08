@@ -8,25 +8,26 @@
 #include <string>
 #include <iostream>
 #include <stdio.h>
+#include "Port.h"
 
 class Container {
     int weight;
-    std::string destPort;
+    Port destPort;
     std::string id;
 
 public:
-    Container(int weight, const std::string &destPort, const std::string &id);
+    Container(int weight, const Port &destPort, std::string id);
 
     int getWeight() const;
 
-    const std::string &getDestPort() const;
+    const Port &getDestPort() const;
 
     const std::string &getId() const;
 
     // TODO: remove setters
     void setWeight(int weight);
 
-    void setDestPort(const std::string &destPort);
+    void setDestPort(const Port &destPort);
 
     void setId(const std::string &id);
 };
