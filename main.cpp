@@ -1,17 +1,14 @@
 #include <iostream>
-#include "src/Container.h"
+#include "src/data_objects/Container.h"
 #include <fstream>
-#include "src/InputOutput.h"
+#include "src/io/InputOutput.h"
+#include "src/actors/Port.h"
 
 using namespace std;
 
 int main() {
-    Container cont(2, Port(), "d");
+    Container cont(2, PortId("TAU"), "d");
+    Port port(PortId("TAU"));
     cout << cont << endl;
-
-    // basic input output
-
-    write("blabla\nblafsdfbla");
-
-    read();
+    cout << port << endl;
 }

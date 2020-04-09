@@ -1,0 +1,14 @@
+//
+// Created by Orr on 4/9/2020.
+//
+
+#ifndef SHIP_STOWAGE_MODEL_STOWAGEALGORITHM_H
+#define SHIP_STOWAGE_MODEL_STOWAGEALGORITHM_H
+
+
+class StowageAlgorithm {
+
+};
+
+
+#endif //SHIP_STOWAGE_MODEL_STOWAGEALGORITHM_H
