@@ -13,16 +13,19 @@
  * Algorithm that for given
  */
 class StowageAlgorithmInterface {
-private:
-    ContainerShip &ship;
-    std::map<PortId, Port> &ports;
 
+protected:
+    ContainerShip ship;
 public:
-    StowageAlgorithmInterface(ContainerShip &ship, std::map<PortId, Port> &ports);
+
+    virtual void readShipPlan(const std::string& full_path_and_file_name) = 0;
+
+    virtual void readShipRoute(const std::string& full_path_and_file_name) = 0;
+
+    virtual void setWeightBalanceCalculator(WeightBalanceCalculator& calculator) = 0;
 
     virtual void getInstructionsForCargo(const std::string& input_full_path_and_file_name,
                                          const std::string& output_full_path_and_file_name) = 0;
-
 };
 
 
