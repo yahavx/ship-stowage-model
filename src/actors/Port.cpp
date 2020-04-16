@@ -23,7 +23,7 @@ void Port::addContainer(const Container &container) {
     return storage.addContainer(container);
 }
 
-void Port::removeContainer(std::string containerId) {
+Container &Port::removeContainer(std::string containerId) {
     return storage.removeContainer(containerId);
 }
 

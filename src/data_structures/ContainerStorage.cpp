@@ -14,6 +14,6 @@ void ContainerStorage::addContainer(const Container &container) {
 }
 
 //TODO: Remove container
-void ContainerStorage::removeContainer(std::string containerId) {
+Container &ContainerStorage::removeContainer(std::string containerId) {
 
 }

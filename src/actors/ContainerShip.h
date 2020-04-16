@@ -11,13 +11,11 @@
 #include "../data_objects/PackingOperation.h"
 #include "../data_objects/ShipRoute.h"
 #include "../algorithms/WeightBalanceCalculator.h"
-
-//class ShipPlan;
-//class ShipRoute;
-//class WeightBalanceCalculator;
+#include "../data_structures/Cargo.h"
 
 class ContainerShip {
     ShipPlan shipPlan;
+    Cargo cargo;
     ShipRoute shipRoute;
     WeightBalanceCalculator balanceCalculator;
 
