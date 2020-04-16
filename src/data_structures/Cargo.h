@@ -8,9 +8,10 @@
 #include <vector>
 #include "../data_objects/Container.h"
 #include "../data_objects/ShipPlan.h"
+#include "../data_objects/ContainerPosition.h"
 
 class Cargo {
-    std::vector<std::vector<std::vector<Container>>> containers;
+    std::vector<std::vector<std::vector<Container &>>> containers;
     ShipPlan &shipPlan;
 
 public:
@@ -19,6 +20,8 @@ public:
     const Container &removeTopContainer(int x, int y);
 
     int addContainerOnTop(int x, int y, const Container &container);
+
+    std::vector<ContainerPosition> getContainersForPort(PortId &portId);
 };
 
 
