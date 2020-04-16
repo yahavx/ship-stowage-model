@@ -3,6 +3,8 @@ project(ship_stowage_model)
 
 set(CMAKE_CXX_STANDARD 14)
 
+# Keep this order when you add a file
+
 add_executable(ship_stowage_model
         main.cpp
 
@@ -24,8 +26,8 @@ add_executable(ship_stowage_model
         src/data_structures/Cargo.cpp src/data_structures/Cargo.h
         src/data_structures/ContainerStorage.cpp src/data_structures/ContainerStorage.h
 
-        src/io/InputOutput.cpp src/io/InputOutput.h
+        src/io/FileReader.cpp src/io/FileReader.h
         src/io/ObjectsReader.cpp src/io/ObjectsReader.h
 
-        src/utils/definitions.h
-        )
+        src/utils/Definitions.h
+        src/utils/UtilFunctions.cpp src/utils/UtilFunctions.h)

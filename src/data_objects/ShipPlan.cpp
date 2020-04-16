@@ -4,17 +4,23 @@
 
 #include "ShipPlan.h"
 
-int ShipPlan::getMinimumHeight(int x, int y) {
-    return 0;
+
+// Constructors
+ShipPlan::ShipPlan() {
+
 }
 
 ShipPlan::ShipPlan(const std::tuple<int, int, int> &dimensions, const std::vector<std::vector<int>> &heights)
         : dimensions(dimensions), heights(heights) {}
 
 
+// Functions
+int ShipPlan::getMinimumHeight(int x, int y) {
+    return 0;
+}
+
 
 // Getters and setters
-
 const std::tuple<int, int, int> &ShipPlan::getDimensions() const {
     return dimensions;
 }

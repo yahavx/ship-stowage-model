@@ -15,18 +15,27 @@ class Port {
     ContainerStorage storage;
 
 public:
+    // Constructors
     Port(const PortId &id);
 
-    const PortId &getId() const;
+    Port(const PortId &id, const ContainerStorage &storage);
 
-    void setId(const PortId &id);
 
+    // Functions
     std::vector<Container> getContainersForDestination(const PortId &destId) ;
 
     void addContainer(const Container &container);
 
     const Container &removeContainer(std::string containerId);
 
+
+    // Getters and setters
+    const PortId &getId() const;
+
+    void setId(const PortId &id);
+
+
+    // Printer
     friend std::ostream &operator<<(std::ostream &os, const Port &port);
 };
 

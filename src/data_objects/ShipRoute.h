@@ -14,13 +14,18 @@ class ShipRoute {
     std::vector<PortId> ports;
 
 public:
+    // Constructors
     ShipRoute(const std::vector<PortId> &ports);
 
+
+    // Getters and setters
     const std::vector<PortId> &getPorts() const;
 
-    friend std::ostream &operator<<(std::ostream &os, const ShipRoute &route);
-
     void setPorts(const std::vector<PortId> &ports);
+
+
+    // Printer
+    friend std::ostream &operator<<(std::ostream &os, const ShipRoute &route);
 };
 
 

@@ -2,12 +2,13 @@
 // Created by t-yabeny on 4/7/2020.
 //
 
-#include "InputOutput.h"
+#include "FileReader.h"
 #include <fstream>
 #include <iostream>
 #include <cstring>
 #include <algorithm>
 #include <sstream>
+#include "../utils/UtilFunctions.h"
 
 bool SkipBOM(std::istream &in)  // some files contains garbage bytes at the start, this will eliminate them if needed
 {
@@ -30,19 +31,17 @@ StringStringVector readFile(const std::string &path) {
     SkipBOM(fin);  // we can ignore the return value
 
     while (getline(fin, line)) {  // reads a row
-        data.emplace_back();  // adds a new empty vector (data row)
-
         if (line[0] == '#' || std::all_of(line.begin(), line.end(), isspace))  // skip lines with # or empty lines
             continue;
+
+        data.emplace_back();  // adds a new empty vector (data row)
 
         std::stringstream s(line);  // used to split string to tokens
 
         while (getline(s, word, ',')) {  // get tokens one by one with ', ' delimiter
-            std::cout << word;
+            trimWhitespaces(word);
             data.back().push_back(word);  // push word to current row
         }
-
-        std::cout << std::endl;
     }
 
     return data;
@@ -80,3 +79,4 @@ IntIntVector convertDataToInt(const StringStringVector &data) {
 
     return intData;
 }
+

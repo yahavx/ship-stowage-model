@@ -1,14 +1,24 @@
 #include <iostream>
-#include "src/data_objects/Container.h"
-#include <fstream>
-#include "src/io/InputOutput.h"
-#include "src/actors/Port.h"
+#include "src/io/FileReader.h"
+#include "src/utils/UtilFunctions.h"
+#include "src/io/ObjectsReader.h"
+#include "assert.h"
 
 using namespace std;
 
+void readShipPlanTest();
+
 int main() {
-    Container cont(2, PortId("TAU"), "d");
-    Port port(PortId("TAU"));
-    cout << cont << endl;
-    cout << port << endl;
+    readShipPlanTest();
+}
+
+
+void readShipPlanTest() {
+    ShipPlan shipPlan;
+    bool result = readShipPlan("../input-examples/ShipPlan.csv", shipPlan);
+    assert(result);
+}
+
+void readRouteFileTest() {
+    
 }
