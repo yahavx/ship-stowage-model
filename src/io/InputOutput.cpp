@@ -5,27 +5,25 @@
 #include "InputOutput.h"
 #include <fstream>
 #include <iostream>
+#include <cstring>
 #include <algorithm>
 #include <sstream>
-
-// basic read write example
-
 
 bool SkipBOM(std::istream &in)  // some files contains garbage bytes at the start, this will eliminate them if needed
 {
     char test[4] = {0};
     in.read(test, 3);
-    if (strcmp(test, "\xEF\xBB\xBF") == 0)
+    if (strcmp(test, "\xEF\xBB\xBF") == 0)  // TODO: validate that strcmp is really from cstring
         return true;
     in.seekg(0);
     return false;
 }
 
-std::vector<std::vector<std::string>> read_csv_file(std::string path) {
+StringStringVector readFile(const std::string &path) {
     std::fstream fin;
 
     fin.open(path, std::ios::in);
-    std::vector<std::vector<std::string>> data;  // the data from the file will be saved as a matrix
+    StringStringVector data;  // the data from the file will be saved as a matrix
 
     std::string line, word;
 
@@ -43,12 +41,6 @@ std::vector<std::vector<std::string>> read_csv_file(std::string path) {
             std::cout << word;
             data.back().push_back(word);  // push word to current row
         }
-        std::cout << " Current:";
-        for (auto const& c : data.back())
-            std::cout << c;
-        std::cout << "try..";
-        std::cout << data[0][0];
-        std::cout << "end";
 
         std::cout << std::endl;
     }
@@ -56,3 +48,35 @@ std::vector<std::vector<std::string>> read_csv_file(std::string path) {
     return data;
 }
 
+bool isInteger(const std::string &str) {
+    return !str.empty() && std::find_if(str.begin(),
+                                        str.end(), [](unsigned char c) { return !std::isdigit(c); }) == str.end();
+}
+
+int stringToInt(const std::string &str) {
+    return std::stoi(str);
+}
+
+bool isDataOnlyIntegers(const StringStringVector &data) {
+    for (auto &dataRow : data) {
+        for (auto &token : dataRow) {
+            if (!isInteger(token))
+                return false;
+        }
+    }
+    return true;
+}
+
+IntIntVector convertDataToInt(const StringStringVector &data) {
+
+    IntIntVector intData;
+
+    for (auto &currentRow : data) {
+        intData.emplace_back();  // add new row entry
+        for (auto &token : currentRow) {
+            intData.back().push_back(stringToInt(token));  // add tokens to row
+        }
+    }
+
+    return intData;
+}

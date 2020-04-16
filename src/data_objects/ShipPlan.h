@@ -11,14 +11,25 @@
 #include "Container.h"
 
 class ShipPlan {
-    std::tuple<int,int,int> dimensions;
-    std::vector<std::vector<int>> heights;  // entry (x,y) is the minimum height allowed to place containers in position (x,y) in the ship
+    std::tuple<int,int,int> dimensions;  // (x,y,z)
+    std::vector<std::vector<int>> heights;
 
 public:
 
     ShipPlan(const std::tuple<int, int, int> &dimensions, const std::vector<std::vector<int>> &heights);
 
     int getMinimumHeight(int x, int y);  // get the minimum height of (x,y)
+
+    // Getters and setters
+
+    const std::tuple<int, int, int> &getDimensions() const;
+
+    void setDimensions(const std::tuple<int, int, int> &dimensions);
+
+    const std::vector<std::vector<int>> &getHeights() const;
+
+    void setHeights(const std::vector<std::vector<int>> &heights);
+
 };
 
 
