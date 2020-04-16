@@ -7,16 +7,9 @@
 
 
 #include <string>
+#include <vector>
 
-class InputOutput {
-
-};
-
-void write(std::string data);
-
-void read();
-
-
+std::vector<std::vector<std::string>> read_csv_file(std::string path);  // Reads a .csv or .txt file to a 2-dimension matrix
 
 
 #endif //SHIP_STOWAGE_MODEL_INPUTOUTPUT_H
