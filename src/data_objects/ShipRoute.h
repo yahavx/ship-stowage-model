@@ -15,6 +15,8 @@ class ShipRoute {
 
 public:
     // Constructors
+    ShipRoute();
+
     ShipRoute(const std::vector<PortId> &ports);
 
 

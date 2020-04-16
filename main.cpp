@@ -7,9 +7,11 @@
 using namespace std;
 
 void readShipPlanTest();
+void readShipRouteTest();
+
 
 int main() {
-    readShipPlanTest();
+    readShipRouteTest();
 }
 
 
@@ -19,6 +21,10 @@ void readShipPlanTest() {
     assert(result);
 }
 
-void readRouteFileTest() {
-    
+void readShipRouteTest() {
+    ShipRoute shipRoute;
+    string path = "../input-examples/RouteFile.csv";
+    bool result = readShipRoute(path, shipRoute);
+    cout << shipRoute;
+    assert(result);
 }

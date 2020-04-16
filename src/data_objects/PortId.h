@@ -8,18 +8,23 @@
 #include <iostream>
 #include <stdio.h>
 
+
 class PortId {
     std::string code;
 
 public:
-
-    friend std::ostream &operator<<(std::ostream &os, const PortId &id);
-
+    // Constructors
     explicit PortId(const std::string &code);
 
+
+    // Getters and setters
     const std::string &getCode() const;
 
     void setCode(const std::string &code);
+
+
+    // Printer
+    friend std::ostream &operator<<(std::ostream &os, const PortId &id);
 };
 
 

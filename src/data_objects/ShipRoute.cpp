@@ -6,6 +6,8 @@
 
 
 // Constructors
+ShipRoute::ShipRoute() {}
+
 ShipRoute::ShipRoute(const std::vector<PortId> &ports) : ports(ports) {}
 
 
@@ -21,6 +23,10 @@ void ShipRoute::setPorts(const std::vector<PortId> &ports) {
 
 // Printer
 std::ostream &operator<<(std::ostream &os, const ShipRoute &route) {
-    os << "ports: " << route.ports;
+    std::cout << "ShipRoute(";
+    auto ports = route.getPorts();
+    for(int i = 0; i < ports.size() - 1; i++)
+        std::cout << ports[i] << ", ";
+    std::cout << ports.back() << ')';
     return os;
 }

@@ -80,3 +80,12 @@ IntIntVector convertDataToInt(const StringStringVector &data) {
     return intData;
 }
 
+bool isEnglishWord(const std::string &str) {
+    for (char letter : str) {
+        if (!((letter >= 'a' && letter <= 'z') || (letter >= 'A' && letter <= 'Z'))) {
+            return false;
+        }
+    }
+
+    return true;
+}

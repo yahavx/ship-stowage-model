@@ -16,7 +16,7 @@
 bool readShipPlan(const std::string &filePath, ShipPlan &shipPlan);
 
 /// Reads a route file (list of ports).
-bool readRouteFile(const std::string &filePath, ShipRoute &shipRoute);
+bool readShipRoute(const std::string &filePath, ShipRoute &shipRoute);
 
 
 #endif //SHIP_STOWAGE_MODEL_OBJECTSREADER_H

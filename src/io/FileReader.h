@@ -26,6 +26,8 @@ int stringToInt(const std::string &str);
 /// Converts strings vector to ints vector. Doesn't validate the strings are actual numbers.
 IntIntVector convertDataToInt(const StringStringVector &data);
 
+/// Checks if word consists only of english letters (a-z, A-Z)
+bool isEnglishWord(const std::string &str);
 
 
 #endif //SHIP_STOWAGE_MODEL_FILEREADER_H

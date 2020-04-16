@@ -7,10 +7,13 @@
 1, 1, 8
 # X, Y, allowed height in (X, Y)
 
-5, 8, 10
-5, 8, 15
+5, 8, 24
+5, 8, 20
 # should raise an error (floor too high)
 
 16, 2, 2
-2, 3, 23
+8, 15, 5
 # should raise an error (X or Y out of range)
+
+2, 4
+# insufficient arguments
