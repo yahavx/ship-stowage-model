@@ -3,5 +3,3 @@
 //
 
 #include "StowageAlgorithmInterface.h"
-
-StowageAlgorithmInterface::StowageAlgorithmInterface(ContainerShip &ship, std::map<PortId, Port> &ports) : ship(ship), ports(ports) {}

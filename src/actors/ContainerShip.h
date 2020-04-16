@@ -20,7 +20,24 @@ class ContainerShip {
     WeightBalanceCalculator balanceCalculator;
 
 public:
+
     std::vector<PackingOperation> dock(const PortId &portId, const std::vector<Container> &containersToLoad);
+
+    const ShipPlan &getShipPlan() const;
+
+    void setShipPlan(const ShipPlan &shipPlan);
+
+    const Cargo &getCargo() const;
+
+    void setCargo(const Cargo &cargo);
+
+    const ShipRoute &getShipRoute() const;
+
+    void setShipRoute(const ShipRoute &shipRoute);
+
+    const WeightBalanceCalculator &getBalanceCalculator() const;
+
+    void setBalanceCalculator(const WeightBalanceCalculator &balanceCalculator);
 };
 
 #endif //SHIP_STOWAGE_MODEL_CONTAINERSHIP_H
