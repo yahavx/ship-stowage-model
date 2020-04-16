@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <tuple>
+#include <ostream>
 #include "Container.h"
 
 class ShipPlan {
@@ -18,6 +19,8 @@ class ShipPlan {
 public:
     // Constructors
     ShipPlan();
+
+    friend std::ostream &operator<<(std::ostream &os, const ShipPlan &plan);
 
     ShipPlan(const std::tuple<int, int, int> &dimensions, const std::vector<std::vector<int>> &heights);
 

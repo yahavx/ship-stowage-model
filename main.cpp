@@ -11,13 +11,14 @@ void readShipRouteTest();
 
 
 int main() {
-    readShipRouteTest();
+    readShipPlanTest();
 }
 
 
 void readShipPlanTest() {
     ShipPlan shipPlan;
     bool result = readShipPlan("../input-examples/ShipPlan.csv", shipPlan);
+    cout << shipPlan;
     assert(result);
 }
 

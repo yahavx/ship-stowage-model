@@ -10,10 +10,16 @@
 
 
 /// Prints a string vector.
-std::ostream &operator<<(std::ostream &os, const StringVector &string);
+std::ostream &operator<<(std::ostream &os, const StringVector &stringVector);
 
 /// Prints 2-dimensional string vector.
-std::ostream &operator<<(std::ostream &os, const StringStringVector &string);
+std::ostream &operator<<(std::ostream &os, const StringStringVector &stringStringVector);
+
+/// Prints an int vector.
+std::ostream &operator<<(std::ostream &os, const IntVector &intVector);
+
+/// Prints 2-dimensional int vector.
+std::ostream &operator<<(std::ostream &os, const IntIntVector &intIntVector);
 
 /// Trim leading and trailing whitespaces from a string (in place).
 void trimWhitespaces(std::string &s);
