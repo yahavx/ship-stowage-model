@@ -25,7 +25,7 @@ public:
 
     void addContainer(const Container &container);
 
-    Container &removeContainer(std::string containerId);
+    const Container &removeContainer(std::string containerId);
 
     friend std::ostream &operator<<(std::ostream &os, const Port &port);
 };
