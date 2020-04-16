@@ -17,7 +17,7 @@ public:
 
     void addContainer(const Container &container);
 
-    void removeContainer(std::string containerId);
+    const Container &removeContainer(std::string containerId);
 };
 
 

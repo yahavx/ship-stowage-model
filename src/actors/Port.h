@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include <stdio.h>
-#include "ContainerStorage.h"
+#include "../data_structures/ContainerStorage.h"
 #include "../data_objects/PortId.h"
 
 class Port {
@@ -25,7 +25,7 @@ public:
 
     void addContainer(const Container &container);
 
-    void removeContainer(std::string containerId);
+    const Container &removeContainer(std::string containerId);
 
     friend std::ostream &operator<<(std::ostream &os, const Port &port);
 };
