@@ -27,7 +27,7 @@ public:
 
     void setShipPlan(const ShipPlan &shipPlan);
 
-    const Cargo &getCargo() const;
+    Cargo &getCargo();
 
     void setCargo(const Cargo &cargo);
 
@@ -38,6 +38,25 @@ public:
     const WeightBalanceCalculator &getBalanceCalculator() const;
 
     void setBalanceCalculator(const WeightBalanceCalculator &balanceCalculator);
+
+private:
+    /**
+     * returns legal PackingOperation for loading the container to an arbitrary position.
+     * If there was no available legal position found returns NULL TODO: check how to return null
+     *
+     * @param container - container to load
+     * @return legal PackingOperation or NULL if none was found
+     */
+    std::vector<PackingOperation> loadContainerToaArbitraryPosition(const Container &container);
+
+    /**
+    * returns series legal of PackingOperation's for unloading container.
+    * If there was no available series legal of PackingOperation's found returns NULL TODO: check how to return null
+    *
+    * @param container - container to load
+    * @return legal series of PackingOperation's or NULL if none was found
+    */
+    std::vector<PackingOperation> unloadContainer(const ContainerPosition &container);
 };
 
 #endif //SHIP_STOWAGE_MODEL_CONTAINERSHIP_H

@@ -9,6 +9,7 @@
 #include "../data_objects/Container.h"
 #include "../data_objects/ShipPlan.h"
 #include "../data_objects/ContainerPosition.h"
+#include "../algorithms/WeightBalanceCalculator.h"
 
 class Cargo {
     std::vector<std::vector<std::vector<Container &>>> containers;
@@ -21,7 +22,7 @@ public:
 
     int addContainerOnTop(int x, int y, const Container &container);
 
-    std::vector<ContainerPosition> getContainersForPort(PortId &portId);
+    std::vector<ContainerPosition> getContainersForPort(const PortId &portId) const;
 };
 
 
