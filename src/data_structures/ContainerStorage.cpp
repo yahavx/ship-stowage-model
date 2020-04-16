@@ -5,6 +5,7 @@
 #include "ContainerStorage.h"
 
 //TODO: Return all containers for specified port
+// The garage of a port
 std::vector<Container> ContainerStorage::getContainersForDestination(const PortId &destId) {
     return std::vector<Container>();
 }
