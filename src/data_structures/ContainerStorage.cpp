@@ -15,6 +15,6 @@ void ContainerStorage::addContainer(const Container &container) {
 }
 
 //TODO: Remove container
-Container &ContainerStorage::removeContainer(std::string containerId) {
-
+const Container &ContainerStorage::removeContainer(std::string containerId) {
+    return Container(100, PortId("id"), "id");
 }
