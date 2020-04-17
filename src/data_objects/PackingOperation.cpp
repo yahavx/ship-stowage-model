@@ -7,8 +7,12 @@
 
 // Constructors
 PackingOperation::PackingOperation(const std::string &containerId, const std::tuple<int, int, int> &fromPosition,
+                                   PackingType type) : containerId(containerId), fromPosition(fromPosition),
+                                                       type(type) {}  // Only one position
+
+PackingOperation::PackingOperation(const std::string &containerId, const std::tuple<int, int, int> &fromPosition,
                                    const std::tuple<int, int, int> &toPosition, PackingType type) : containerId(
-        containerId), fromPosition(fromPosition), toPosition(toPosition), type(type) {}
+        containerId), fromPosition(fromPosition), toPosition(toPosition), type(type) {}   // two positions (move)
 
 
 // Getters and setters
@@ -34,3 +38,4 @@ std::ostream &operator<<(std::ostream &os, const PackingOperation &operation) { 
 //    os << "containerId: " << operation.containerId << " indices: " << operation.indices << " type: " << (int)operation.type;
     return os;
 }
+

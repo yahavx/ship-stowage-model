@@ -21,6 +21,7 @@ add_executable(ship_stowage_model
         src/data_objects/ContainerPosition.cpp src/data_objects/ContainerPosition.h
         src/data_objects/PackingOperation.cpp src/data_objects/PackingOperation.h
         src/data_objects/PortId.cpp src/data_objects/PortId.h
+        src/data_objects/Position.cpp src/data_objects/Position.h
         src/data_objects/ShipPlan.cpp src/data_objects/ShipPlan.h
         src/data_objects/ShipRoute.cpp src/data_objects/ShipRoute.h
 

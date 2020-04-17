@@ -6,7 +6,7 @@
 
 
 // Constructors
-ContainerPosition::ContainerPosition(Container &container, const std::tuple<int, int, int> &position) : container(
+ContainerPosition::ContainerPosition(Container &container, const POS &position) : container(
         container), position(position) {}
 
 
@@ -19,10 +19,22 @@ void ContainerPosition::setContainer(Container &container) {
     ContainerPosition::container = container;
 }
 
-const std::tuple<int, int, int> &ContainerPosition::getPosition() const {
+const POS &ContainerPosition::getPosition() const {
     return position;
 }
 
-void ContainerPosition::setPosition(const std::tuple<int, int, int> &position) {
+void ContainerPosition::setPosition(const POS &position) {
     ContainerPosition::position = position;
+}
+
+int ContainerPosition::x() const {
+    return std::get<0>(position);
+}
+
+int ContainerPosition::y() const {
+    return std::get<1>(position);
+}
+
+int ContainerPosition::z() const {
+    return std::get<2>(position);
 }

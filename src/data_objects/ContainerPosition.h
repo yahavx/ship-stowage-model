@@ -8,18 +8,16 @@
 #include "Container.h"
 #include <vector>
 #include <tuple>
-#include "Container.h"
 
 
 /// Wraps a container with his position the ship
 class ContainerPosition {
     Container &container;
-
-    std::tuple<int,int,int> position;
+    POS position;
 
 public:
     // Constructors
-    ContainerPosition(Container &container, const std::tuple<int, int, int> &position);
+    ContainerPosition(Container &container, const POS &position);
 
 
     // Getters and setters
@@ -27,9 +25,13 @@ public:
 
     void setContainer(Container &container);
 
-    const std::tuple<int, int, int> &getPosition() const;
+    const POS &getPosition() const;
 
-    void setPosition(const std::tuple<int, int, int> &position);
+    void setPosition(const POS &position);
+
+    int x() const;
+    int y() const;
+    int z() const;
 };
 
 

@@ -9,7 +9,7 @@
 
 //class ContainerShip;  // pre declare
 
-enum BalanceStatus{
+enum class BalanceStatus{
     APPROVED,
     X_IMBALANCED,
     Y_IMBALANCED,

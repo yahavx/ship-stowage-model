@@ -8,7 +8,7 @@ CraneOperationResult preformLoadOperation(const PackingOperation& op, Port &port
     const Container &container = port.removeContainer(op.getContainerId());
     //TODO: handle container not found and return CraneOperationResult ::FAIL_CONTAINER_NOT_FOUND
     std::tuple<int, int, int> pos = op.getFromPosition();
-    int result = ship.getCargo().addContainerOnTop(std::get<0>(pos), std::get<1>(pos), container);
+    int result = ship.getCargo().loadContainerOnTop(std::get<0>(pos), std::get<1>(pos), container);
 
     //If load load to ship failed, put container back at port and return false
     if(result < 0) {

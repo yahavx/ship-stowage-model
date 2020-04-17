@@ -27,6 +27,8 @@ public:
     PackingOperation(const std::string &containerId, const std::tuple<int, int, int> &fromPosition,
                      const std::tuple<int, int, int> &toPosition, PackingType type);
 
+    PackingOperation(const std::string &containerId, const std::tuple<int, int, int> &fromPosition, PackingType type);
+
 
     //Getters and setters
     const std::string &getContainerId() const;

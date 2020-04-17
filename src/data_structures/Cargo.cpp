@@ -16,10 +16,20 @@ const Container &Cargo::removeTopContainer(int x, int y) {
     return tmpContainer;
 }
 
-int Cargo::addContainerOnTop(int x, int y, const Container &container) {
+int Cargo::canLoadContainerOnTop(int x, int y, const Container &container) const {
+    return 0;
+}
+
+int Cargo::loadContainerOnTop(int x, int y, const Container &container) {
     return 0;
 }
 
 std::vector<ContainerPosition> Cargo::getContainersForPort(const PortId &portId) const {
     return std::vector<ContainerPosition>();
 }
+
+int Cargo::currentHeight(int x, int y) const {
+    return 0;
+}
+
+
