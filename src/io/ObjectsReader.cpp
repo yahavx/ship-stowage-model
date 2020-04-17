@@ -61,7 +61,7 @@ bool readShipPlanFromFile(const std::string &filePath, ShipPlan &shipPlan) {  //
     shipPlan.setHeights(heights);
 
     std::cout << "Read ship plan successfully." << std::endl;
-    
+
     return true;
 }
 
