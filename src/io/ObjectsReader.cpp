@@ -31,26 +31,26 @@ bool readShipPlanFromFile(const std::string &filePath, ShipPlan &shipPlan) {  //
 
     IntIntVector heights(x, IntVector(y, 0));  // init matrix of size (x,y) with zeroes
 
-    for (IntVector row : intData) {  // iterate on rows
-        if (row.size() < 3) {
-            std::cout << "Warning: input contains less than 3 arguments, ignoring"
+    for (IntVector intDataRow : intData) {  // iterate on rows
+        if (intDataRow.size() < 3) {
+            std::cout << "Warning: data row contains less than 3 arguments, ignoring"
                       << std::endl;
             continue;
         }
 
-        int n = row[0];
-        int m = row[1];
-        int availableContainers = row[2];
+        int n = intDataRow[0];
+        int m = intDataRow[1];
+        int availableContainers = intDataRow[2];
 
         if (n <= 0 || n >= x || m <= 0 || m >= y) {
-            std::cout << "Warning: input exceeds the ship dimensions, ignoring"
+            std::cout << "Warning: data row exceeds the ship dimensions, ignoring"
                       << std::endl;
             continue;
         }
 
         if (availableContainers >= z) {
             std::cout
-                    << "Warning: input exceeds the maximum available containers, ignoring"
+                    << "Warning: data row exceeds the maximum available containers, ignoring"
                     << std::endl;
             continue;
         }
@@ -73,8 +73,8 @@ bool readShipRouteFromFile(const std::string &filePath, ShipRoute &shipRoute) {
 
     std::string previousPort;  // to check that the same port doesn't appear twice
 
-    for (StringVector row : data) {
-        std::string token = row[0];  // ignore extra tokens in a row
+    for (StringVector dataRow : data) {
+        std::string token = dataRow[0];  // ignore extra tokens in a row
 
         if (!isEnglishWord(token) || token.length() != 5) {
             std::cout
@@ -89,4 +89,43 @@ bool readShipRouteFromFile(const std::string &filePath, ShipRoute &shipRoute) {
     shipRoute.setPorts(ports);
 }
 
-bool readCargoToPortFromFile(const std::string &filePath, Port &port);
+bool readCargoToPortFromFile(const std::string &filePath, Port &port) {
+    std::cout << "Attempting to cargo data..." << std::endl;
+    StringStringVector data = readFile(filePath);
+
+    std::vector<Container> containersToAdd;
+
+    for (StringVector dataRow : data) {
+        if (dataRow.size() < 3) {
+            std::cout << "Warning: data row contains less than 3 arguments, ignoring"
+                      << std::endl;
+            continue;
+        }
+
+        std::string id = dataRow[0], weight = dataRow[1], destPort = dataRow[2];
+
+        if (!Port::isIdInIsoFormat(id)) {
+            std::cout << "Warning: container id not in ISO format, ignoring"
+                      << std::endl;
+            continue;
+        }
+
+        if (!isInteger(weight)) {
+            std::cout << "Warning: container weight is not an integer, ignoring"
+                      << std::endl;
+            continue;
+        }
+
+        if (!isEnglishWord(destPort) || destPort.length() != 5) {
+            std::cout
+                    << "Warning: port symbol is invalid, ignoring"
+                    << std::endl;
+            continue;
+        }
+
+        containersToAdd.push_back(Container(id, stringToInt(weight), PortId(destPort)));
+    }
+
+    std::cout << "Read cargo data successfully." << std::endl;
+    port.addContainers(containersToAdd);
+}

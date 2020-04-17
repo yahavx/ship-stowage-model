@@ -6,6 +6,7 @@
 #define SHIP_STOWAGE_MODEL_CONTAINERSTORAGE_H
 
 #include <vector>
+#include <ostream>
 #include "../data_objects/Container.h"
 
 
@@ -18,9 +19,15 @@ public:
 
     void addContainer(const Container &container);
 
+    void addContainers(const std::vector<Container> &containers);
+
     const Container &removeContainer(std::string containerId);
 
-    void addContainers(const std::vector<Container> &containers);
+
+    // Getters and setters
+    const std::vector<Container> &getContainers() const;
+
+    friend std::ostream &operator<<(std::ostream &os, const ContainerStorage &storage);
 };
 
 

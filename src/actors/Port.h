@@ -22,11 +22,15 @@ public:
 
 
     // Functions
-    std::vector<Container> getContainersForDestination(const PortId &destId) ;
+    std::vector<Container> getContainersForDestination(const PortId &destId);
 
     void addContainer(const Container &container);
 
+    void addContainers(const std::vector<Container> &containers);
+
     const Container &removeContainer(std::string containerId);
+
+    static bool isIdInIsoFormat(const std::string &id);
 
 
     // Getters and setters

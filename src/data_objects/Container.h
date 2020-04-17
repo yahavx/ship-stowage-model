@@ -11,13 +11,13 @@
 #include "PortId.h"
 
 class Container {
+    std::string id;
     int weight;
     PortId destPort;
-    std::string id;
 
 public:
     // Constructs
-    Container(int weight, const PortId &destPort, const std::string &id);
+    Container(const std::string &id, int weight, const PortId &destPort);
 
 
     // Getters and setters

@@ -8,8 +8,8 @@
 
 
 // Constructors
-Container::Container(int weight, const PortId &destPort, const std::string &id) : weight(weight), destPort(destPort),
-                                                                                  id(id) {}
+Container::Container(const std::string &id, int weight, const PortId &destPort) : id(id), weight(weight),
+                                                                                  destPort(destPort) {}
 
 
 // Getters and setters
@@ -40,6 +40,8 @@ void Container::setId(const std::string &id) {
 
 // Printer
 std::ostream &operator<<(std::ostream &os, const Container &container) {
-    os << "weight: " << container.weight << " destPort: " << container.destPort << " id: " << container.id;
+    os << "Container(weight: " << container.weight << " destPort: " << container.destPort << " id: " << container.id
+       << ")";
     return os;
 }
+

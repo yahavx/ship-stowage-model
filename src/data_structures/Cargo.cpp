@@ -6,7 +6,7 @@
 #include "../algorithms/WeightBalanceCalculator.h"
 
 //TODO: just to have something to return, can't return null reference
-static Container tmpContainer (100, PortId("id"), "id");
+static Container tmpContainer ("id", 100 , PortId("id"));
 
 const Container &Cargo::getTopContainer(int x, int y) {
     return tmpContainer;

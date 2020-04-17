@@ -4,7 +4,7 @@
 
 #include "Port.h"
 #include "../data_objects/PortId.h"
-
+#include "../utils/UtilFunctions.h"
 
 // Constructors
 Port::Port(const PortId &id) : id(id) {}
@@ -22,8 +22,24 @@ void Port::addContainer(const Container &container) {
     return storage.addContainer(container);
 }
 
+void Port::addContainers(const std::vector<Container> &containers) {
+    return storage.addContainers(containers);
+}
+
 const Container &Port::removeContainer(std::string containerId) {
     return storage.removeContainer(containerId);
+}
+
+bool Port::isIdInIsoFormat(const std::string &id) {
+    if (id.length() != 11){
+        return false;
+    }
+
+    if (!isEnglishWord(id.substr(0, 4)) || !isInteger(id.substr(4, 7))){
+        return false;
+    }
+
+    return true;
 }
 
 
@@ -39,7 +55,9 @@ void Port::setId(const PortId &id) {
 
 // Printer
 std::ostream &operator<<(std::ostream &os, const Port &port) {
-    os << "id: " << port.id;
+    os << "Port(" << port.id << std::endl;
+    os << port.storage;
+    os << ")" << std::endl;
     return os;
 }
 
