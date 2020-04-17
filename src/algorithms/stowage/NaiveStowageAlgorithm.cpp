@@ -3,6 +3,7 @@
 //
 
 #include "NaiveStowageAlgorithm.h"
+#include "../CranesOperation.h"
 #include "../../io/ObjectsReader.h"
 
 void NaiveStowageAlgorithm::readShipPlan(const std::string &filePath) {
@@ -34,12 +35,16 @@ void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile
     PortId currentPortId("test");
     Port port(currentPortId);
 
-    for (PortId id : ship.getShipRoute().getPorts()) {
+    for (const PortId& id : ship.getShipRoute().getPorts()) {
         std::vector<PackingOperation> newInstructions = ship.dock(id, port.getContainersForDestination(id));
         instructions.insert(instructions.end(), newInstructions.begin(), newInstructions.end());
-        //TODO: perform instructions on local copy of ship, so it is updated for the next port in the list
-    }
 
+        //Perform operations on local shop and port
+        for(const PackingOperation& op : newInstructions) {
+            CranesOperation::preformOperation(op, port, ship);
+            //TODO: Handle failing operation
+        }
+    }
 
     //TODO: Write instructions to output file
 }

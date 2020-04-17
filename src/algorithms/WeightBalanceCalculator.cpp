@@ -8,4 +8,14 @@ BalanceStatus WeightBalanceCalculator::tryOperation(char loadUnload, int kg, int
     return APPROVED;
 }
 
-WeightBalanceCalculator::WeightBalanceCalculator(int tmp) : tmp(tmp) {}
+Cargo &WeightBalanceCalculator::getCargo() {
+    return cargo;
+}
+
+void WeightBalanceCalculator::setCargo(Cargo &cargo) {
+
+}
+
+//void WeightBalanceCalculator::setCargo(Cargo &cargo) {
+//    WeightBalanceCalculator::cargo = cargo;
+//}

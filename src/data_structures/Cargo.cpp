@@ -17,7 +17,7 @@ const Container &Cargo::removeTopContainer(int x, int y) {
 }
 
 int Cargo::addContainerOnTop(int x, int y, const Container &container) {
-    return false;
+    return 0;
 }
 
 std::vector<ContainerPosition> Cargo::getContainersForPort(const PortId &portId) const {

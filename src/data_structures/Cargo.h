@@ -5,11 +5,8 @@
 #ifndef SHIP_STOWAGE_MODEL_CARGO_H
 #define SHIP_STOWAGE_MODEL_CARGO_H
 
-#include <vector>
-#include "../data_objects/Container.h"
 #include "../data_objects/ShipPlan.h"
 #include "../data_objects/ContainerPosition.h"
-#include "../algorithms/WeightBalanceCalculator.h"
 
 
 /// Cargo is the stock of containers in the ship

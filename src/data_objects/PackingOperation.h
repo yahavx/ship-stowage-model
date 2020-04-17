@@ -5,7 +5,6 @@
 #ifndef SHIP_STOWAGE_MODEL_PACKINGOPERATION_H
 #define SHIP_STOWAGE_MODEL_PACKINGOPERATION_H
 
-#include <string>
 #include <tuple>
 #include <ostream>
 
