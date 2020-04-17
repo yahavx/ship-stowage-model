@@ -8,7 +8,7 @@
 #include "Container.h"
 #include <vector>
 #include <tuple>
-
+#include "../utils/Definitions.h"
 
 /// Wraps a container with his position the ship
 class ContainerPosition {

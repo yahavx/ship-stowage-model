@@ -7,7 +7,7 @@
 
 #include <string>
 #include <vector>
-
+#include "../data_objects/PackingOperation.h"
 
 /// Put popular typedefs/structs here
 
@@ -18,6 +18,10 @@ typedef std::vector<std::vector<int>> IntIntVector;
 typedef std::vector<std::string> StringVector;
 
 typedef std::vector<std::vector<std::string>> StringStringVector;
+
+typedef std::tuple<int, int, int> POS;
+
+typedef std::vector<PackingOperation> OPS;
 
 
 #endif //SHIP_STOWAGE_MODEL_DEFINITIONS_H

@@ -5,11 +5,12 @@
 #ifndef SHIP_STOWAGE_MODEL_SHIPPLAN_H
 #define SHIP_STOWAGE_MODEL_SHIPPLAN_H
 
-
 #include <vector>
 #include <tuple>
 #include <ostream>
 #include "Container.h"
+#include "../utils/Definitions.h"
+
 
 class ShipPlan {
     POS dimensions;

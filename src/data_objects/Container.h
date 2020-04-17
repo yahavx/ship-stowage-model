@@ -12,8 +12,6 @@
 #include "PortId.h"
 #include "PackingOperation.h"
 
-typedef std::tuple<int, int, int> POS;
-typedef std::vector<PackingOperation> OPS;
 
 class Container {
     std::string id;

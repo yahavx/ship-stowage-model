@@ -4,6 +4,7 @@
 
 #include "ContainerShip.h"
 #include "../algorithms/CranesOperation.h"
+#include "../utils/Definitions.h"
 
 OPS
 ContainerShip::dock(const PortId &portId, const std::vector<Container> &containersToLoad) {
