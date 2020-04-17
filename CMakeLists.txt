@@ -11,9 +11,10 @@ add_executable(ship_stowage_model
         src/actors/ContainerShip.cpp src/actors/ContainerShip.h
         src/actors/Port.cpp src/actors/Port.h
 
+        src/algorithms/stowage/NaiveStowageAlgorithm.cpp src/algorithms/stowage/NaiveStowageAlgorithm.h
+        src/algorithms/stowage/StowageAlgorithmInterface.cpp src/algorithms/stowage/StowageAlgorithmInterface.h
+
         src/algorithms/CranesOperation.cpp src/algorithms/CranesOperation.h
-        src/algorithms/NaiveStowageAlgorithm.cpp src/algorithms/NaiveStowageAlgorithm.h
-        src/algorithms/StowageAlgorithmInterface.cpp src/algorithms/StowageAlgorithmInterface.h
         src/algorithms/WeightBalanceCalculator.cpp src/algorithms/WeightBalanceCalculator.h
 
         src/data_objects/Container.cpp src/data_objects/Container.h
