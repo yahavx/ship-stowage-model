@@ -6,9 +6,12 @@
 #define SHIP_STOWAGE_MODEL_NAIVESTOWAGEALGORITHM_H
 
 
-#include "StowageAlgorithmInterface.h"
+#include "IStowageAlgorithm.h"
 
-class NaiveStowageAlgorithm : StowageAlgorithmInterface {
+/**
+ * A naive implementation.
+ */
+class NaiveStowageAlgorithm : IStowageAlgorithm {
 
 public:
 

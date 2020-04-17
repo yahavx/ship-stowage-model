@@ -15,5 +15,4 @@
 StringStringVector readFile(const std::string &path);
 
 
-
 #endif //SHIP_STOWAGE_MODEL_FILEREADER_H

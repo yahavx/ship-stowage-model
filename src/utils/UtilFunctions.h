@@ -6,6 +6,7 @@
 #define SHIP_STOWAGE_MODEL_UTILFUNCTIONS_H
 
 #include <ostream>
+#include <map>
 #include "Definitions.h"
 
 

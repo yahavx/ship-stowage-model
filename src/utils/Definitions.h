@@ -7,9 +7,11 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include "../data_objects/PackingOperation.h"
 
-/// Put popular typedefs/structs here
+
+/// Popular typedefs/structs
 
 typedef std::vector<int> IntVector;
 
@@ -22,6 +24,8 @@ typedef std::vector<std::vector<std::string>> StringStringVector;
 typedef std::tuple<int, int, int> POS;
 
 typedef std::vector<PackingOperation> OPS;
+
+typedef std::map<std::string, std::vector<std::string>> StringToStringVectorMap;
 
 
 #endif //SHIP_STOWAGE_MODEL_DEFINITIONS_H

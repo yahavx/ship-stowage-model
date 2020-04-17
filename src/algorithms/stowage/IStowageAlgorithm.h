@@ -2,17 +2,17 @@
 // Created by Orr on 4/9/2020.
 //
 
-#ifndef SHIP_STOWAGE_MODEL_STOWAGEALGORITHMINTERFACE_H
-#define SHIP_STOWAGE_MODEL_STOWAGEALGORITHMINTERFACE_H
+#ifndef SHIP_STOWAGE_MODEL_ISTOWAGEALGORITHM_H
+#define SHIP_STOWAGE_MODEL_ISTOWAGEALGORITHM_H
 
 
 #include <map>
 #include "../../actors/ContainerShip.h"
 
 /**
- * Algorithm that for given
+ * The basic algorithm that is supplied to the simulator.
  */
-class StowageAlgorithmInterface {
+class IStowageAlgorithm {
 
 protected:
     ContainerShip ship;
@@ -29,4 +29,4 @@ public:
 };
 
 
-#endif //SHIP_STOWAGE_MODEL_STOWAGEALGORITHMINTERFACE_H
+#endif //SHIP_STOWAGE_MODEL_ISTOWAGEALGORITHM_H
