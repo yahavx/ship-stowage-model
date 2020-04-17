@@ -12,14 +12,14 @@ class NaiveStowageAlgorithm : StowageAlgorithmInterface {
 
 public:
 
-    void readShipPlan(const std::string& full_path_and_file_name) override;
+    void readShipPlan(const std::string& filePath) override;
 
-    void readShipRoute(const std::string& full_path_and_file_name) override;
+    void readShipRoute(const std::string& filePath) override;
 
     void setWeightBalanceCalculator(WeightBalanceCalculator& calculator) override;
 
-    void getInstructionsForCargo(const std::string& input_full_path_and_file_name,
-                                 const std::string& output_full_path_and_file_name) override;
+    void getInstructionsForCargo(const std::string& inputFileName,
+                                 const std::string& outputFileName) override;
 };
 
 

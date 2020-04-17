@@ -11,8 +11,11 @@
 #include "../data_objects/ContainerPosition.h"
 #include "../algorithms/WeightBalanceCalculator.h"
 
+
+/// Cargo is the stock of containers in the ship
 class Cargo {
     std::vector<std::vector<std::vector<Container &>>> containers;
+
     ShipPlan &shipPlan;
 
 public:

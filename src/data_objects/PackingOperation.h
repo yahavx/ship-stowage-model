@@ -13,10 +13,13 @@ enum class PackingType {
     load, unload, reject
 };
 
+/// Instructions for loading and unloading cargo to the ship
 class PackingOperation {
     std::string containerId;
 
-    std::tuple<int, int, int> indices;
+    std::tuple<int, int, int> fromPosition;
+
+    std::tuple<int, int, int> toPosition;
 
     PackingType type;
 
@@ -31,6 +34,7 @@ public:
     const std::tuple<int, int, int> &getIndices() const;
 
     PackingType getType() const;
+
 
     // Printer
     friend std::ostream &operator<<(std::ostream &os, const PackingOperation &operation);

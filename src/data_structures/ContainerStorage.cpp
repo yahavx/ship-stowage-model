@@ -18,3 +18,7 @@ void ContainerStorage::addContainer(const Container &container) {
 const Container &ContainerStorage::removeContainer(std::string containerId) {
     return Container(100, PortId("id"), "id");
 }
+
+void ContainerStorage::addContainers(const std::vector<Container> &containers) {
+    this->containers.insert(this->containers.end(), containers.begin(), containers.end());
+}

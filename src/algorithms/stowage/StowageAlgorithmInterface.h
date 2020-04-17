@@ -18,14 +18,14 @@ protected:
     ContainerShip ship;
 public:
 
-    virtual void readShipPlan(const std::string& full_path_and_file_name) = 0;
+    virtual void readShipPlan(const std::string& filePath) = 0;
 
-    virtual void readShipRoute(const std::string& full_path_and_file_name) = 0;
+    virtual void readShipRoute(const std::string& filePath) = 0;
 
     virtual void setWeightBalanceCalculator(WeightBalanceCalculator& calculator) = 0;
 
-    virtual void getInstructionsForCargo(const std::string& input_full_path_and_file_name,
-                                         const std::string& output_full_path_and_file_name) = 0;
+    virtual void getInstructionsForCargo(const std::string& inputFileName,
+                                         const std::string& outputFileName) = 0;
 };
 
 

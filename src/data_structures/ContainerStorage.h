@@ -5,19 +5,22 @@
 #ifndef SHIP_STOWAGE_MODEL_CONTAINERSTORAGE_H
 #define SHIP_STOWAGE_MODEL_CONTAINERSTORAGE_H
 
-
 #include <vector>
 #include "../data_objects/Container.h"
+
 
 class ContainerStorage {
     std::vector<Container> containers;
 
 public:
+    // Functions
     std::vector<Container> getContainersForDestination(const PortId &destId);
 
     void addContainer(const Container &container);
 
     const Container &removeContainer(std::string containerId);
+
+    void addContainers(const std::vector<Container> &containers);
 };
 
 

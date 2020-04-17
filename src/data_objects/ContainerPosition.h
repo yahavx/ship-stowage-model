@@ -10,6 +10,8 @@
 #include <tuple>
 #include "Container.h"
 
+
+/// Wraps a container with his position the ship
 class ContainerPosition {
     Container &container;
 
