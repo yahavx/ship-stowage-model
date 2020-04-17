@@ -3,19 +3,23 @@
 //
 
 #include "Cargo.h"
+#include "../algorithms/WeightBalanceCalculator.h"
+
+//TODO: just to have something to return, can't return null reference
+static Container tmpContainer (100, PortId("id"), "id");
 
 const Container &Cargo::getTopContainer(int x, int y) {
-    return Container(100, PortId("id"), "id");
+    return tmpContainer;
 }
 
 const Container &Cargo::removeTopContainer(int x, int y) {
-    return Container(100, PortId("id"), "id");
+    return tmpContainer;
 }
 
 int Cargo::addContainerOnTop(int x, int y, const Container &container) {
     return false;
 }
 
-std::vector<ContainerPosition> Cargo::getContainersForPort(PortId &portId) {
+std::vector<ContainerPosition> Cargo::getContainersForPort(const PortId &portId) const {
     return std::vector<ContainerPosition>();
 }

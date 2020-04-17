@@ -22,9 +22,8 @@ void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string& input_ful
     std::vector<PackingOperation> instructions = std::vector<PackingOperation>();
 
     //TODO: Read input file and initiate port object, line below is a mockup
-    Port port(PortId("test"));
-
-    //TODO: Unpack all containers with current port as destination
+    PortId currentPortId("test");
+    Port port(currentPortId);
 
     for(PortId id : ship.getShipRoute().getPorts()) {
         std::vector<PackingOperation> newInstructions = ship.dock(id, port.getContainersForDestination(id));
