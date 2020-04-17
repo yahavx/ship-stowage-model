@@ -23,10 +23,9 @@ void ShipRoute::setPorts(const std::vector<PortId> &ports) {
 
 // Printer
 std::ostream &operator<<(std::ostream &os, const ShipRoute &route) {
-    std::cout << "ShipRoute(";
-    auto ports = route.getPorts();
-    for(int i = 0; i < ports.size() - 1; i++)
-        std::cout << ports[i] << ", ";
-    std::cout << ports.back() << ')';
+    std::cout << "ShipRoute {" << std::endl;
+    for (auto port : route.ports)
+        std::cout << "\t" << port << std::endl;
+    std::cout << "}" << std::endl;
     return os;
 }

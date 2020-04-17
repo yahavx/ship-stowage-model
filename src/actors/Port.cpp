@@ -55,9 +55,10 @@ void Port::setId(const PortId &id) {
 
 // Printer
 std::ostream &operator<<(std::ostream &os, const Port &port) {
-    os << "Port(" << port.id << std::endl;
+    os << "Port {" << std::endl;
+    os << "\t" << port.id << std::endl;
     os << port.storage;
-    os << ")" << std::endl;
+    os << "}" << std::endl;
     return os;
 }
 

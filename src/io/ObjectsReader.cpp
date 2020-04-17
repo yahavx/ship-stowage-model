@@ -81,6 +81,7 @@ bool readShipRouteFromFile(const std::string &filePath, ShipRoute &shipRoute) {
             std::cout
                     << "Warning: invalid port format, ignoring"
                     << std::endl;
+            continue;
         }
 
         ports.push_back(PortId(token));
@@ -93,7 +94,7 @@ bool readShipRouteFromFile(const std::string &filePath, ShipRoute &shipRoute) {
 }
 
 bool readCargoToPortFromFile(const std::string &filePath, Port &port) {
-    std::cout << "Attempting to cargo data..." << std::endl;
+    std::cout << "Attempting to read cargo data..." << std::endl;
     StringStringVector data = readFile(filePath);
 
     std::vector<Container> containersToAdd;

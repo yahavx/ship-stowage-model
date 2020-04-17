@@ -44,8 +44,9 @@ std::ostream &operator<<(std::ostream &os, const ShipPlan &plan) {
     auto dimensions = plan.getDimensions();
     auto heights = plan.getHeights();
 
-    os << "ShipPlan(" << std::endl << "Dimensions: " << dimensions << std::endl;
-    os << "Heights: " << std::endl << heights << ")" << std::endl;
-
+    os << "ShipPlan {" << std::endl;
+    os << "\tDimensions: " << dimensions << std::endl;
+    os << "\tHeights:" << std::endl << heights;
+    os << "}" << std::endl;
     return os;
 }

@@ -8,11 +8,15 @@
 using namespace std;
 
 void readShipPlanTest();
+
 void readShipRouteTest();
+
 void readCargoToPortFromFileTest();
 
 
 int main() {
+//    readShipPlanTest();
+//    readShipRouteTest();
     readCargoToPortFromFileTest();
 }
 
@@ -29,6 +33,7 @@ void readShipRouteTest() {
     string path = "../input-examples/RouteFile.csv";
     bool result = readShipRouteFromFile(path, shipRoute);
     assert(result);
+    assert(shipRoute.getPorts().size() == 4);
     cout << shipRoute;
 }
 
@@ -37,6 +42,6 @@ void readCargoToPortFromFileTest() {
     string path = "../input-examples/PortCargo.cargo_data";
     std::cout << "Port before loading cargo: " << endl << port << endl;
     bool result = readCargoToPortFromFile(path, port);
-
+    assert(result);
     std::cout << endl << "Port after loading cargo: " << endl << port;
 }

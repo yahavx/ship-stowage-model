@@ -23,7 +23,7 @@ std::ostream &operator<<(std::ostream &os, const StringStringVector &stringStrin
 }
 
 std::ostream &operator<<(std::ostream &os, const IntVector &intVector) {
-    std::cout << '[';
+    std::cout << "\t[";
     for (int i = 0; i < intVector.size() - 1; i++) {
         std::cout << intVector[i] << ", \t";
     }

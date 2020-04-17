@@ -34,16 +34,16 @@ const std::vector<Container> &ContainerStorage::getContainers() const {
 // Printer
 std::ostream &operator<<(std::ostream &os, const ContainerStorage &storage) {
     if (storage.containers.size() == 0) {
-        std::cout << "<EmptyContainerStorage>" << std::endl;
+        std::cout << "\t<EmptyContainerStorage>" << std::endl;
         return os;
     }
 
-    std::cout << " ContainerStorage:" << std::endl;
+    std::cout << "\tContainerStorage {" << std::endl;
 
     for (int i = 0; i < storage.containers.size(); i++) {
 
-        os << "  " << i + 1 << ": " << storage.containers[i] << std::endl;
+        os << "\t\t" << i + 1 << ": " << storage.containers[i] << std::endl;
     }
-
+    std::cout << "\t}" << std::endl;
     return os;
 }
