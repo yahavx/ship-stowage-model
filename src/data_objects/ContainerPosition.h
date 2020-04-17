@@ -13,18 +13,22 @@ class ContainerPosition {
 
 private:
     Container &container;
-    std::tuple<int,int,int> position;
+    POS position;
 
 public:
-    ContainerPosition(Container &container, const std::tuple<int, int, int> &position);
+    ContainerPosition(Container &container, const POS &position);
 
     Container &getContainer() const;
 
     void setContainer(Container &container);
 
-    const std::tuple<int, int, int> &getPosition() const;
+    const POS &getPosition() const;
 
-    void setPosition(const std::tuple<int, int, int> &position);
+    void setPosition(const POS &position);
+
+    int x() const;
+    int y() const;
+    int z() const;
 
 
 };

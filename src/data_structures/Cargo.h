@@ -13,11 +13,21 @@ class Cargo {
     ShipPlan &shipPlan;
 
 public:
+    /**
+     * If possible to load the container on top in this x,y position returns the height it would be loaded to.
+     * else returns negative integer
+     */
+    int canLoadContainerOnTop(int x, int y, const Container &container) const;
+
+    int currentHeight(int x, int y) const;
+
+
     const Container &getTopContainer(int x, int y);
 
     const Container &removeTopContainer(int x, int y);
 
-    int addContainerOnTop(int x, int y, const Container &container);
+
+    int loadContainerOnTop(int x, int y, const Container &container);
 
     std::vector<ContainerPosition> getContainersForPort(const PortId &portId) const;
 };

@@ -5,7 +5,7 @@
 #include "WeightBalanceCalculator.h"
 
 BalanceStatus WeightBalanceCalculator::tryOperation(char loadUnload, int kg, int X, int Y) {
-    return APPROVED;
+    return BalanceStatus::APPROVED;
 }
 
 Cargo &WeightBalanceCalculator::getCargo() {
