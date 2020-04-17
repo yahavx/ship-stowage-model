@@ -6,7 +6,8 @@
 #include "FileReader.h"
 
 
-bool readShipPlan(const std::string &filePath, ShipPlan &shipPlan) {  // TODO: check if indices are 0 or 1 based
+bool readShipPlanFromFile(const std::string &filePath, ShipPlan &shipPlan) {  // TODO: check if indices are 0 or 1 based
+    std::cout << "Attempting to read ship plan..." << std::endl;
     StringStringVector data = readFile(filePath);
 
     if (!isDataOnlyIntegers(data)) {  // couldn't convert data to int
@@ -18,7 +19,7 @@ bool readShipPlan(const std::string &filePath, ShipPlan &shipPlan) {  // TODO: c
     IntVector firstRow = intData[0];
     if (firstRow.size() < 3) {
         std::cout
-                << "Error in loading ship plan from file: insufficient number of arguments for ship dimensions, exiting"
+                << "Error: insufficient number of arguments for ship dimensions, exiting"
                 << std::endl;
         return false;
     }
@@ -31,7 +32,7 @@ bool readShipPlan(const std::string &filePath, ShipPlan &shipPlan) {  // TODO: c
 
     for (IntVector row : intData) {  // iterate on rows
         if (row.size() < 3) {
-            std::cout << "Warning in loading ship plan from file: input contains less than 3 arguments, ignoring"
+            std::cout << "Warning: input contains less than 3 arguments, ignoring"
                       << std::endl;
             continue;
         }
@@ -41,14 +42,14 @@ bool readShipPlan(const std::string &filePath, ShipPlan &shipPlan) {  // TODO: c
         int availableContainers = row[2];
 
         if (n <= 0 || n >= x || m <= 0 || m >= y) {
-            std::cout << "Warning in loading ship plan from file: input exceeds the ship dimensions, ignoring"
+            std::cout << "Warning: input exceeds the ship dimensions, ignoring"
                       << std::endl;
             continue;
         }
 
         if (availableContainers >= z) {
             std::cout
-                    << "Warning in loading ship plan from file: input exceeds the maximum available containers, ignoring"
+                    << "Warning: input exceeds the maximum available containers, ignoring"
                     << std::endl;
             continue;
         }
@@ -58,11 +59,13 @@ bool readShipPlan(const std::string &filePath, ShipPlan &shipPlan) {  // TODO: c
 
     shipPlan.setHeights(heights);
 
+    std::cout << "Read ship plan successfully." << std::endl;
     return true;
 }
 
 
-bool readShipRoute(const std::string &filePath, ShipRoute &shipRoute) {
+bool readShipRouteFromFile(const std::string &filePath, ShipRoute &shipRoute) {
+    std::cout << "Attempting to read ship route..." << std::endl;
     StringStringVector data = readFile(filePath);
 
     std::vector<PortId> ports;
@@ -74,13 +77,13 @@ bool readShipRoute(const std::string &filePath, ShipRoute &shipRoute) {
 
         if (!isEnglishWord(token) || token.length() != 5) {
             std::cout
-                    << "Error in loading ship route from file: invalid port format, exiting"
+                    << "Warning: invalid port format, ignoring"
                     << std::endl;
-            return false;
         }
 
         ports.push_back(PortId(token));
     }
 
+    std::cout << "Read ship route successfully." << std::endl;
     shipRoute.setPorts(ports);
 }

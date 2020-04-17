@@ -12,24 +12,22 @@ void readShipRouteTest();
 
 int main() {
     readShipPlanTest();
-    cout << endl << endl;
+    cout << endl;
     readShipRouteTest();
 }
 
 
 void readShipPlanTest() {
-    cout << "Attempting to read ship plan:" << endl;
     ShipPlan shipPlan;
-    bool result = readShipPlan("../input-examples/ShipPlan.csv", shipPlan);
-    cout << shipPlan;
+    bool result = readShipPlanFromFile("../input-examples/ShipPlan.csv", shipPlan);
     assert(result);
+    cout << shipPlan;
 }
 
 void readShipRouteTest() {
-    cout << "Attempting to read ship route:" << endl;
     ShipRoute shipRoute;
     string path = "../input-examples/RouteFile.csv";
-    bool result = readShipRoute(path, shipRoute);
-    cout << shipRoute;
+    bool result = readShipRouteFromFile(path, shipRoute);
     assert(result);
+    cout << shipRoute;
 }
