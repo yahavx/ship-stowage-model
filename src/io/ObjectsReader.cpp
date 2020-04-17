@@ -61,6 +61,7 @@ bool readShipPlanFromFile(const std::string &filePath, ShipPlan &shipPlan) {  //
     shipPlan.setHeights(heights);
 
     std::cout << "Read ship plan successfully." << std::endl;
+    
     return true;
 }
 
@@ -87,6 +88,8 @@ bool readShipRouteFromFile(const std::string &filePath, ShipRoute &shipRoute) {
 
     std::cout << "Read ship route successfully." << std::endl;
     shipRoute.setPorts(ports);
+
+    return true;
 }
 
 bool readCargoToPortFromFile(const std::string &filePath, Port &port) {
@@ -128,4 +131,6 @@ bool readCargoToPortFromFile(const std::string &filePath, Port &port) {
 
     std::cout << "Read cargo data successfully." << std::endl;
     port.addContainers(containersToAdd);
+
+    return true;
 }

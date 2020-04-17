@@ -6,6 +6,7 @@
 
 //TODO: Return all containers for specified port
 // The garage of a port
+
 std::vector<Container> ContainerStorage::getContainersForDestination(const PortId &destId) {
     return std::vector<Container>();
 }
@@ -18,9 +19,9 @@ void ContainerStorage::addContainers(const std::vector<Container> &containers) {
     this->containers.insert(this->containers.end(), containers.begin(), containers.end());
 }
 
-//TODO: Remove container
+// TODO: implement
 const Container &ContainerStorage::removeContainer(std::string containerId) {
-    return Container("id", 100, PortId("id"));
+    return staticContainer;
 }
 
 
@@ -37,8 +38,11 @@ std::ostream &operator<<(std::ostream &os, const ContainerStorage &storage) {
         return os;
     }
 
+    std::cout << " ContainerStorage:" << std::endl;
+
     for (int i = 0; i < storage.containers.size(); i++) {
-        os << " " << i + 1 << ": " << storage.containers[i] << std::endl;
+
+        os << "  " << i + 1 << ": " << storage.containers[i] << std::endl;
     }
 
     return os;

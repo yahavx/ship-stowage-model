@@ -10,6 +10,8 @@
 #include "../data_objects/Container.h"
 
 
+static Container staticContainer("id", 100, PortId("id")); // TODO: remove this
+
 class ContainerStorage {
     std::vector<Container> containers;
 

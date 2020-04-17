@@ -40,7 +40,7 @@ void Container::setId(const std::string &id) {
 
 // Printer
 std::ostream &operator<<(std::ostream &os, const Container &container) {
-    os << "Container(weight: " << container.weight << " destPort: " << container.destPort << " id: " << container.id
+    os << "Container(weight: " << container.weight << ", destPort: " << container.destPort << ", id: " << container.id
        << ")";
     return os;
 }
