@@ -8,7 +8,7 @@ std::vector<PackingOperation>
 ContainerShip::dock(const PortId &portId, const std::vector<Container> &containersToLoad) {
     std::vector<PackingOperation> operations = std::vector<PackingOperation>();
 
-    std::vector<ContainerPosition> containersToUnload = this->cargo.getContainersForPort(portId);
+    std::vector<ContainerPosition> containersToUnload = this->getCargo().getContainersForPort(portId);
 
     //Unload all required containers
     for(const ContainerPosition &containerPos: containersToUnload) {
@@ -48,7 +48,7 @@ void ContainerShip::setShipPlan(const ShipPlan &shipPlan) {
 }
 
 Cargo &ContainerShip::getCargo() {
-    return cargo;
+    return this->balanceCalculator.getCargo();
 }
 
 void ContainerShip::setCargo(const Cargo &cargo) {
@@ -68,5 +68,5 @@ const WeightBalanceCalculator &ContainerShip::getBalanceCalculator() const {
 }
 
 void ContainerShip::setBalanceCalculator(const WeightBalanceCalculator &balanceCalculator) {
-    ContainerShip::balanceCalculator = balanceCalculator;
+//    ContainerShip::balanceCalculator = balanceCalculator;
 }

@@ -8,9 +8,12 @@
 #include "Container.h"
 #include <vector>
 #include <tuple>
-#include "Container.h"
 
 class ContainerPosition {
+
+private:
+    Container &container;
+    std::tuple<int,int,int> position;
 
 public:
     ContainerPosition(Container &container, const std::tuple<int, int, int> &position);
@@ -23,9 +26,7 @@ public:
 
     void setPosition(const std::tuple<int, int, int> &position);
 
-private:
-    Container &container; 
-    std::tuple<int,int,int> position;
+
 };
 
 

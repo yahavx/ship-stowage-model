@@ -4,6 +4,9 @@
 
 #include "ContainerStorage.h"
 
+//TODO: just to have something to return, can't return null reference
+static Container tmpContainer (100, PortId("id"), "id");
+
 //TODO: Return all containers for specified port
 // The garage of a port
 std::vector<Container> ContainerStorage::getContainersForDestination(const PortId &destId) {
@@ -16,5 +19,5 @@ void ContainerStorage::addContainer(const Container &container) {
 
 //TODO: Remove container
 const Container &ContainerStorage::removeContainer(std::string containerId) {
-    return Container(100, PortId("id"), "id");
+    return tmpContainer;
 }

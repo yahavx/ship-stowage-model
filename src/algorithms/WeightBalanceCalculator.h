@@ -5,7 +5,9 @@
 #ifndef SHIP_STOWAGE_MODEL_WEIGHTBALANCECALCULATOR_H
 #define SHIP_STOWAGE_MODEL_WEIGHTBALANCECALCULATOR_H
 
-class ContainerShip;  // pre declare
+#include "../data_structures/Cargo.h"
+
+//class ContainerShip;  // pre declare
 
 enum BalanceStatus{
     APPROVED,
@@ -16,16 +18,14 @@ enum BalanceStatus{
 
 class WeightBalanceCalculator {
 
-    /* TODO: Remove?
-    bool isBalancedAfterLoad(ContainerShip &containerShip, int x, int y, int z);
-
-    bool isBalancedAfterUnload(int x, int y, int z);
-     */
-    int tmp;
+    Cargo cargo;
 
 public:
-    WeightBalanceCalculator(int tmp);
     BalanceStatus tryOperation(char loadUnload, int kg, int X, int Y);
+
+    Cargo &getCargo();
+
+    void setCargo(Cargo &cargo);
 };
 
 

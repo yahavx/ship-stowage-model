@@ -15,7 +15,6 @@
 
 class ContainerShip {
     ShipPlan shipPlan;
-    Cargo cargo;
     ShipRoute shipRoute;
     WeightBalanceCalculator balanceCalculator;
 
