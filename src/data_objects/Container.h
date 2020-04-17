@@ -16,8 +16,11 @@ class Container {
     std::string id;
 
 public:
+    // Constructs
     Container(int weight, const PortId &destPort, const std::string &id);
 
+
+    // Getters and setters
     int getWeight() const;
 
     void setWeight(int weight);
@@ -30,6 +33,8 @@ public:
 
     void setId(const std::string &id);
 
+
+    // Printer
     friend std::ostream &operator<<(std::ostream &os, const Container &container);
 };
 

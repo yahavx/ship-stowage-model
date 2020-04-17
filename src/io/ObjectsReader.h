@@ -19,4 +19,5 @@ bool readShipPlan(const std::string &filePath, ShipPlan &shipPlan);
 bool readShipRoute(const std::string &filePath, ShipRoute &shipRoute);
 
 
+
 #endif //SHIP_STOWAGE_MODEL_OBJECTSREADER_H

@@ -4,9 +4,13 @@
 
 #include "ContainerPosition.h"
 
+
+// Constructors
 ContainerPosition::ContainerPosition(Container &container, const std::tuple<int, int, int> &position) : container(
         container), position(position) {}
 
+
+// Getters and setters
 Container &ContainerPosition::getContainer() const {
     return container;
 }

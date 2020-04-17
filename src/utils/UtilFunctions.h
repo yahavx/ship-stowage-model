@@ -21,6 +21,9 @@ std::ostream &operator<<(std::ostream &os, const IntVector &intVector);
 /// Prints 2-dimensional int vector.
 std::ostream &operator<<(std::ostream &os, const IntIntVector &intIntVector);
 
+/// Prints 3-tuple.
+std::ostream &operator<<(std::ostream &os, const std::tuple<int, int, int> &tup);
+
 /// Trim leading and trailing whitespaces from a string (in place).
 void trimWhitespaces(std::string &s);
 

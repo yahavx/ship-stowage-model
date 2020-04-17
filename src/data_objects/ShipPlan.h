@@ -20,8 +20,6 @@ public:
     // Constructors
     ShipPlan();
 
-    friend std::ostream &operator<<(std::ostream &os, const ShipPlan &plan);
-
     ShipPlan(const std::tuple<int, int, int> &dimensions, const std::vector<std::vector<int>> &heights);
 
 
@@ -37,6 +35,10 @@ public:
     const std::vector<std::vector<int>> &getHeights() const;
 
     void setHeights(const std::vector<std::vector<int>> &heights);
+
+
+    // Printer
+    friend std::ostream &operator<<(std::ostream &os, const ShipPlan &plan);
 };
 
 

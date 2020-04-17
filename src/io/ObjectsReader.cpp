@@ -53,7 +53,7 @@ bool readShipPlan(const std::string &filePath, ShipPlan &shipPlan) {  // TODO: c
             continue;
         }
 
-        heights[n][m] = z - availableContainers + 1;  // we save the minimum available floor (z is the top)
+        heights[n][m] = z - availableContainers;  // we save the minimum available floor (z is the top)
     }
 
     shipPlan.setHeights(heights);

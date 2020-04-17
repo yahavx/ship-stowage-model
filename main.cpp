@@ -2,7 +2,7 @@
 #include "src/io/FileReader.h"
 #include "src/utils/UtilFunctions.h"
 #include "src/io/ObjectsReader.h"
-#include "assert.h"
+#include <cassert>
 
 using namespace std;
 

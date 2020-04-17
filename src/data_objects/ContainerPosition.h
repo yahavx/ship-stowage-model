@@ -11,10 +11,16 @@
 #include "Container.h"
 
 class ContainerPosition {
+    Container &container;
+
+    std::tuple<int,int,int> position;
 
 public:
+    // Constructors
     ContainerPosition(Container &container, const std::tuple<int, int, int> &position);
 
+
+    // Getters and setters
     Container &getContainer() const;
 
     void setContainer(Container &container);
@@ -22,10 +28,6 @@ public:
     const std::tuple<int, int, int> &getPosition() const;
 
     void setPosition(const std::tuple<int, int, int> &position);
-
-private:
-    Container &container; 
-    std::tuple<int,int,int> position;
 };
 
 

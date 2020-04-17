@@ -38,12 +38,14 @@ void ShipPlan::setHeights(const std::vector<std::vector<int>> &heights) {
     ShipPlan::heights = heights;
 }
 
+
+// Printer
 std::ostream &operator<<(std::ostream &os, const ShipPlan &plan) {
     auto dimensions = plan.getDimensions();
     auto heights = plan.getHeights();
 
-    os << "ShipPlan(" << std::endl << "Dimensions: [" << std::get<0>(dimensions) << ", " << std::get<1>(dimensions) << ", "
-       << std::get<2>(dimensions) << "]" << std::endl << heights << ")" << std::endl;
+    os << "ShipPlan(" << std::endl << "Dimensions: " << dimensions << std::endl;
+    os << "Heights: " << std::endl << heights << ")" << std::endl;
 
     return os;
 }
