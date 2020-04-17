@@ -20,6 +20,6 @@ void PortId::setCode(const std::string &code) {
 
 // Printer
 std::ostream &operator<<(std::ostream &os, const PortId &id) {
-    os << "code: " << id.code;
+    os << "PortCode: " << id.code;
     return os;
 }
