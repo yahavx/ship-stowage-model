@@ -25,13 +25,16 @@ class PackingOperation {
 
 public:
     // Constructors
-    PackingOperation(const std::string &containerId, const std::tuple<int, int, int> &indices, PackingType type);
+    PackingOperation(const std::string &containerId, const std::tuple<int, int, int> &fromPosition,
+                     const std::tuple<int, int, int> &toPosition, PackingType type);
 
 
     //Getters and setters
     const std::string &getContainerId() const;
 
-    const std::tuple<int, int, int> &getIndices() const;
+    const std::tuple<int, int, int> &getFromPosition() const;
+
+    const std::tuple<int, int, int> &getToPosition() const;
 
     PackingType getType() const;
 

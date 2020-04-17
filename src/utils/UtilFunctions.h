@@ -9,23 +9,24 @@
 #include "Definitions.h"
 
 
-/// Prints a string vector.
-std::ostream &operator<<(std::ostream &os, const StringVector &stringVector);
-
-/// Prints 2-dimensional string vector.
-std::ostream &operator<<(std::ostream &os, const StringStringVector &stringStringVector);
-
-/// Prints an int vector.
-std::ostream &operator<<(std::ostream &os, const IntVector &intVector);
-
-/// Prints 2-dimensional int vector.
-std::ostream &operator<<(std::ostream &os, const IntIntVector &intIntVector);
-
-/// Prints 3-tuple.
-std::ostream &operator<<(std::ostream &os, const std::tuple<int, int, int> &tup);
-
 /// Trim leading and trailing whitespaces from a string (in place).
 void trimWhitespaces(std::string &s);
+
+/// Checks if string is an integer.
+bool isInteger(const std::string &str);
+
+/// Checks if 2-dimensional vector string contains only integers.
+bool isDataOnlyIntegers(const StringStringVector &data);
+
+/// Converts string to int. Doesn't validate its legal.
+int stringToInt(const std::string &str);
+
+/// Converts strings vector to ints vector. Doesn't validate the strings are actual numbers.
+IntIntVector convertDataToInt(const StringStringVector &data);
+
+/// Checks if word consists only of english letters (a-z, A-Z)
+bool isEnglishWord(const std::string &str);
+
 
 
 #endif //SHIP_STOWAGE_MODEL_UTILFUNCTIONS_H

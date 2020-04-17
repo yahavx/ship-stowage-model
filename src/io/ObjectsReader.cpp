@@ -4,6 +4,7 @@
 
 #include "ObjectsReader.h"
 #include "FileReader.h"
+#include "../utils/UtilFunctions.h"
 
 
 bool readShipPlanFromFile(const std::string &filePath, ShipPlan &shipPlan) {  // TODO: check if indices are 0 or 1 based
@@ -87,3 +88,5 @@ bool readShipRouteFromFile(const std::string &filePath, ShipRoute &shipRoute) {
     std::cout << "Read ship route successfully." << std::endl;
     shipRoute.setPorts(ports);
 }
+
+bool readCargoToPortFromFile(const std::string &filePath, Port &port);

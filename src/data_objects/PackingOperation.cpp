@@ -6,8 +6,9 @@
 #include "../utils/UtilFunctions.h"
 
 // Constructors
-PackingOperation::PackingOperation(const std::string &containerId, const std::tuple<int, int, int> &indices,
-                                   PackingType type) : containerId(containerId), indices(indices), type(type) {}
+PackingOperation::PackingOperation(const std::string &containerId, const std::tuple<int, int, int> &fromPosition,
+                                   const std::tuple<int, int, int> &toPosition, PackingType type) : containerId(
+        containerId), fromPosition(fromPosition), toPosition(toPosition), type(type) {}
 
 
 // Getters and setters
@@ -15,17 +16,21 @@ const std::string &PackingOperation::getContainerId() const {
     return containerId;
 }
 
-const std::tuple<int, int, int> &PackingOperation::getIndices() const {
-    return indices;
-}
-
 PackingType PackingOperation::getType() const {
     return type;
 }
 
+const std::tuple<int, int, int> &PackingOperation::getFromPosition() const {
+    return fromPosition;
+}
+
+const std::tuple<int, int, int> &PackingOperation::getToPosition() const {
+    return toPosition;
+}
+
 
 // Printers
-std::ostream &operator<<(std::ostream &os, const PackingOperation &operation) {
-    os << "containerId: " << operation.containerId << " indices: " << operation.indices << " type: " << (int)operation.type;
+std::ostream &operator<<(std::ostream &os, const PackingOperation &operation) {  // TODO
+//    os << "containerId: " << operation.containerId << " indices: " << operation.indices << " type: " << (int)operation.type;
     return os;
 }
