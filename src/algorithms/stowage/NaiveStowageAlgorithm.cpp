@@ -45,7 +45,7 @@ void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile
             std::cout << "Crane received illegal operation, didn't find container with ID:" << op.getContainerId()
                       << std::endl;
         if (opResult == CraneOperationResult::FAIL_ILLEGAL_OP)
-            std::cout << "Crane received illegal operation:" << op << "\n";
+            std::cout << "Crane received illegal operation: " << op << "\n";
         // TODO: Handle failing operation ??
     }
 

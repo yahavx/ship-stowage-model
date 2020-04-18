@@ -48,4 +48,4 @@ add_executable(ship_stowage_model
 
         # tests
         tests/IOTests.h
-        )
+        tests/SimulationTests.h)
