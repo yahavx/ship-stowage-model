@@ -10,8 +10,11 @@
 #include "../../src/common/io/ObjectsReader.h"
 
 void inline readShipPlanTest();
+
 void inline readShipRouteTest();
+
 void inline readCargoToPortFromFileTest();
+
 void inline readPackingOperationsTest();
 
 using namespace std;
@@ -30,10 +33,12 @@ void inline runIOTests() {
 }
 
 void inline readShipPlanTest() {
-    ShipPlan shipPlan;
-    bool result = readShipPlanFromFile("../input-examples/tests/ShipPlan.csv", shipPlan);
+    string path = "../input-examples/tests/ShipPlan.csv";
+    optional<ShipPlan> shipPlan = readShipPlanFromFile(path);
     assert(result);
-    cout << shipPlan;
+    if (shipPlan.has_value()) {
+        cout << *shipPlan;
+    }
 }
 
 void inline readShipRouteTest() {
@@ -47,10 +52,10 @@ void inline readShipRouteTest() {
 
 void inline readCargoToPortFromFileTest() {
     string path = "../input-examples/tests/AGHCS_17.cargo_data";
-    optional<Port> optPort = readCargoToPortFromFile(path);
-    assert(optPort.has_value());
-    if (optPort.has_value()) {
-        cout << endl << "Port after loading cargo: " << endl << *optPort;
+    optional<Port> port = readCargoToPortFromFile(path);
+    assert(port.has_value());
+    if (port.has_value()) {
+        cout << endl << "Port after loading cargo: " << endl << *port;
     }
 }
 

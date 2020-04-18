@@ -12,7 +12,7 @@ void NaiveStowageAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &
 }
 
 void NaiveStowageAlgorithm::setShipPlanFromPath(const std::string &shipPlanPath) {
-    readShipPlanFromFile(shipPlanPath, shipPlan);
+    this->shipPlan = *readShipPlanFromFile(shipPlanPath);
 }
 
 void NaiveStowageAlgorithm::setShipRouteFromPath(const std::string &shipRoutePath) {

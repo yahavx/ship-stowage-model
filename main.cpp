@@ -12,5 +12,5 @@ using namespace std;
 
 
 int main() {
-    readCargoToPortFromFileTest();
+    runIOTests();
 }

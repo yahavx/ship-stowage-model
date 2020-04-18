@@ -23,8 +23,13 @@ void Simulator::runSimulation(IStowageAlgorithm& algorithm, const std::string& t
     std::string shipRoutePath = getShipRoutePath(travel);
 
     // Init for simulation
-    readShipPlanFromFile(shipPlanPath, shipPlan);
+    std::optional<ShipPlan> optShipPlan = readShipPlanFromFile(shipPlanPath);
     readShipRouteFromFile(shipRoutePath, shipRoute);
+
+    if (!optShipPlan.has_value()) { // TODO: handle error (maybe its okay like this)
+        std::cout << "Simulation failed: couldn't initialize from files" << std::endl;
+        return;
+    }
 
     // Init for algorithm
     algorithm.setShipPlanFromPath(shipPlanPath);

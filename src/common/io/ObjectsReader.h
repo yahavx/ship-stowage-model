@@ -15,7 +15,7 @@
    * Reads the ship plan from a file. Returns true if finished successfully.
    * @param shipPlan Ship plan that will be modified, should be passed empty.
    */
-bool readShipPlanFromFile(const std::string &filePath, ShipPlan &shipPlan);
+std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath);
 
 /// Reads a route file (list of ports).
 bool readShipRouteFromFile(const std::string &filePath, ShipRoute &shipRoute);

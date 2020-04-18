@@ -93,7 +93,7 @@ std::string intToString(int num) {
 }
 
 void printSeparator() {
-    std::cout << std::endl << "--------------------------------------" << std::endl;
+    std::cout << std::endl << std::endl << "--------------------------------------" << std::endl << std::endl;
 }
 
 std::string extractFilenameFromPath(const std::string &path, bool removeExtension) {

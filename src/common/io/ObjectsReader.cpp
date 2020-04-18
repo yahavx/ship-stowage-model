@@ -7,20 +7,22 @@
 #include "../../utils/UtilFunctions.h"
 #include <tuple>
 
-bool readShipPlanFromFile(const std::string &filePath, ShipPlan &shipPlan) {  // TODO: check if indices are 0 or 1 based
+std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath) {
     std::cout << "Attempting to read ship plan..." << std::endl;
     StringStringVector data = readFile(filePath);
 
     if (!isDataOnlyIntegers(data)) {  // couldn't convert data to int
-        return false;
+        std::cout << "Error: data contain non-integers" << std::endl;
+        return std::nullopt;
     }
 
-    IntIntVector intData = convertDataToInt(data);
+    ShipPlan shipPlan;
 
+    IntIntVector intData = convertDataToInt(data);
     IntVector firstRow = intData[0];
     if (firstRow.size() < 3) {
         std::cout << "Error: insufficient number of arguments for ship dimensions, exiting" << std::endl;
-        return false;
+        return std::nullopt;
     }
 
     int x = firstRow[0], y = firstRow[1], z = firstRow[2];
@@ -56,7 +58,7 @@ bool readShipPlanFromFile(const std::string &filePath, ShipPlan &shipPlan) {  //
 
     std::cout << "Read ship plan successfully." << std::endl;
 
-    return true;
+    return shipPlan;
 }
 
 bool readShipRouteFromFile(const std::string &filePath, ShipRoute &shipRoute) {
