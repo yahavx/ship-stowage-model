@@ -6,8 +6,9 @@
 #define SHIP_STOWAGE_MODEL_IOTESTS_H
 
 #include <assert.h>
-#include "../../src/data_objects/ShipPlan.h"
-#include "../../src/common/io/ObjectsReader.h"
+#include "../src/data_objects/ShipPlan.h"
+#include "../src/common/io/ObjectsReader.h"
+#include "../src/utils/Printers.h"
 
 void inline readShipPlanTest();
 

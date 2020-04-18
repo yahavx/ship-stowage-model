@@ -27,5 +27,8 @@ std::ostream &operator<<(std::ostream &os, const std::tuple<int, int, int> &tup)
 /// Prints an operations vector.
 std::ostream &operator<<(std::ostream &os, const OPS &ops);
 
+/// Prints a separator line (of dashes).
+void printSeparator();
+
 
 #endif //SHIP_STOWAGE_MODEL_PRINTERS_H

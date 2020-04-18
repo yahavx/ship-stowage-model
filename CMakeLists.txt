@@ -48,5 +48,5 @@ add_executable(ship_stowage_model
         src/utils/UtilFunctions.cpp src/utils/UtilFunctions.h
 
         # tests
-        tests/io_tests/IOTests.h
+        tests/IOTests.h
         )

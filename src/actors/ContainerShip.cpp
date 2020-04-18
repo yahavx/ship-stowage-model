@@ -6,6 +6,52 @@
 #include "../algorithms/CranesOperation.h"
 #include "../utils/Definitions.h"
 
+// region Constructors
+
+ContainerShip::ContainerShip() {}
+
+ContainerShip::ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRoute) : shipPlan(shipPlan),
+                                                                                     shipRoute(shipRoute) {}
+// endregion
+
+// region Getters and setters
+
+
+const ShipPlan &ContainerShip::getShipPlan() const {
+    return shipPlan;
+}
+
+void ContainerShip::setShipPlan(const ShipPlan &shipPlan) {
+    ContainerShip::shipPlan = shipPlan;
+}
+
+Cargo &ContainerShip::getCargo() {
+    return this->balanceCalculator.getCargo();
+}
+
+void ContainerShip::setCargo(const Cargo &cargo) {
+
+}
+
+const ShipRoute &ContainerShip::getShipRoute() const {
+    return shipRoute;
+}
+
+void ContainerShip::setShipRoute(const ShipRoute &shipRoute) {
+    ContainerShip::shipRoute = shipRoute;
+}
+
+const WeightBalanceCalculator &ContainerShip::getBalanceCalculator() const {
+    return balanceCalculator;
+}
+
+void ContainerShip::setBalanceCalculator(const WeightBalanceCalculator &balanceCalculator) {
+    ContainerShip::balanceCalculator = balanceCalculator;
+}
+// endregion
+
+// region Functions
+
 OPS
 ContainerShip::dock(const PortId &portId, const Containers &containersToLoad) {
     OPS operations = OPS();
@@ -139,36 +185,4 @@ OPS ContainerShip::unloadContainer(const ContainerPosition &containerPos) {
 
     return ops;
 }
-
-const ShipPlan &ContainerShip::getShipPlan() const {
-    return shipPlan;
-}
-
-void ContainerShip::setShipPlan(const ShipPlan &shipPlan) {
-    ContainerShip::shipPlan = shipPlan;
-}
-
-Cargo &ContainerShip::getCargo() {
-    return this->balanceCalculator.getCargo();
-}
-
-void ContainerShip::setCargo(const Cargo &cargo) {
-
-}
-
-const ShipRoute &ContainerShip::getShipRoute() const {
-    return shipRoute;
-}
-
-void ContainerShip::setShipRoute(const ShipRoute &shipRoute) {
-    ContainerShip::shipRoute = shipRoute;
-}
-
-const WeightBalanceCalculator &ContainerShip::getBalanceCalculator() const {
-    return balanceCalculator;
-}
-
-void ContainerShip::setBalanceCalculator(const WeightBalanceCalculator &balanceCalculator) {
-    ContainerShip::balanceCalculator = balanceCalculator;
-}
-
+// endregion

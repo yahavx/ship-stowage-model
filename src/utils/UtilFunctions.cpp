@@ -92,10 +92,6 @@ std::string intToString(int num) {
     return std::to_string(num);
 }
 
-void printSeparator() {
-    std::cout << std::endl << std::endl << "--------------------------------------" << std::endl << std::endl;
-}
-
 std::string extractFilenameFromPath(const std::string &path, bool removeExtension) {
     std::string pathCopy = path;  // it works inplace so we create a copy
     // Remove directory if present.

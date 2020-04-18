@@ -11,18 +11,19 @@ void NaiveStowageAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &
     this->ship.setBalanceCalculator(calculator);
 }
 
-void NaiveStowageAlgorithm::setShipPlanFromPath(const std::string &shipPlanPath) {
-    this->shipPlan = *readShipPlanFromFile(shipPlanPath);
+void NaiveStowageAlgorithm::setShipPlanFromPath(
+        const std::string &shipPlanPath) {  // TODO: verify the <optional> is valid? (the simulator will kill the run before this call if invalid)
+    this->ship.setShipPlan(*readShipPlanFromFile(shipPlanPath));
 }
 
 void NaiveStowageAlgorithm::setShipRouteFromPath(const std::string &shipRoutePath) {
-    this->shipRoute = *readShipRouteFromFile(shipRoutePath);
+    this->ship.setShipRoute(*readShipRouteFromFile(shipRoutePath));
 }
 
 void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
     std::optional<Port> optPort = readCargoToPortFromFile(inputFile);
 
-    if (!optPort.has_value()){
+    if (!optPort.has_value()) {
         std::cout << "Error in getInstructionsForCargo(): couldn't load port" << std::endl;
     }
     Port port = *optPort;
@@ -39,10 +40,11 @@ void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile
     // Perform operations on local shop and port
     for (const PackingOperation &op : ops) {
         auto opResult = CranesOperation::preformOperation(op, port, ship);
-        if(opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND)
-            std::cout << "Crane got illegal operation, didn't find container with ID:" << op.getContainerId() << "\n";
-        if(opResult == CraneOperationResult::FAIL_ILLEGAL_OP)
-            std::cout << "Crane got illegal operation" << op << "\n";
+        if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND)
+            std::cout << "Crane received illegal operation, didn't find container with ID:" << op.getContainerId()
+                      << std::endl;
+        if (opResult == CraneOperationResult::FAIL_ILLEGAL_OP)
+            std::cout << "Crane received illegal operation:" << op << "\n";
         // TODO: Handle failing operation ??
     }
 

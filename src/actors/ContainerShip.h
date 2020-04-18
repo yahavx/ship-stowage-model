@@ -19,12 +19,14 @@ class ContainerShip {
     WeightBalanceCalculator balanceCalculator;
 
 public:
+    // region Constructors
 
-    /**
-     * Receives the next id of port to dock into, and list of containers that needs to be loaded.
-     * @return list of operations: first unload all containers for this port, and than load all the containers that needs to be loaded.
-     */
-    std::vector<PackingOperation> dock(const PortId &portId, const Containers &containersToLoad);
+    ContainerShip();
+
+    ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRoute);
+    // endregion
+
+    // region Getters and setters
 
     const ShipPlan &getShipPlan() const;
 
@@ -41,6 +43,16 @@ public:
     const WeightBalanceCalculator &getBalanceCalculator() const;
 
     void setBalanceCalculator(const WeightBalanceCalculator &balanceCalculator);
+    // endregion
+
+    // region Functions
+
+    /**
+     * Receives the next id of port to dock into, and list of containers that needs to be loaded.
+     * @return list of operations: first unload all containers for this port, and than load all the containers that needs to be loaded.
+    */
+    std::vector<PackingOperation> dock(const PortId &portId, const Containers &containersToLoad);
+
 
 private:
     /**
@@ -60,6 +72,7 @@ private:
     * @return legal series of PackingOperation's or NULL if none was found
     */
     std::vector<PackingOperation> unloadContainer(const ContainerPosition &container);
+    // endregion
 };
 
 #endif //SHIP_STOWAGE_MODEL_CONTAINERSHIP_H

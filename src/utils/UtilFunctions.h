@@ -40,13 +40,11 @@ PackingType packingTypeToString(char type);
 /// Converts packing type to its string representation. Doesn't validate input.
 std::string packingTypeFromString(PackingType type);
 
-/// Prints a seperator line (of dashes).
-void printSeparator();
-
 /**
  * Extracts file name from a path (C:/A/B/C/d.txt -> d.txt).
  * @param removeExtension removes the file extension if exists (.txt for example).
  */
 std::string extractFilenameFromPath(const std::string &file, bool removeExtension);
+
 
 #endif //SHIP_STOWAGE_MODEL_UTILFUNCTIONS_H

@@ -15,8 +15,6 @@
 class IStowageAlgorithm {
 
 protected:
-    ShipPlan shipPlan;
-    ShipRoute shipRoute;
     ContainerShip ship;
 
 public:

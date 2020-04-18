@@ -6,7 +6,7 @@
 #include <fstream>
 #include "src/actors/Port.h"
 #include "src/utils/Printers.h"
-#include "tests/io_tests/IOTests.h"
+#include "tests/IOTests.h"
 
 using namespace std;
 

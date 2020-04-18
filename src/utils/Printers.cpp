@@ -57,3 +57,7 @@ std::ostream &operator<<(std::ostream &os, const OPS &ops) {
     std::cout << "}" << std::endl;
     return os;
 }
+
+void printSeparator() {
+    std::cout << std::endl << std::endl << "--------------------------------------" << std::endl << std::endl;
+}
