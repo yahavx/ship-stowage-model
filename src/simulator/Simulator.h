@@ -10,7 +10,7 @@
 
 class Simulator {
     /**
-     * Simulates a single travel of an algorithm.
+     * Simulates an algorithm on a single travel.
      * @param travel a directory that contains Plan, Route, and list of <portId>_<number>.cargo_data files.
      */
     void runSimulation(IStowageAlgorithm &algorithm, const std::string& travel);

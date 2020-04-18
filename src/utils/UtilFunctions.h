@@ -28,6 +28,8 @@ IntIntVector convertDataToInt(const StringStringVector &data);
 /// Checks if word consists only of english letters (a-z, A-Z)
 bool isEnglishWord(const std::string &str);
 
+/// endWith string function.
+bool endsWith(const std::string &str, const std::string &suffix);
 
 
 #endif //SHIP_STOWAGE_MODEL_UTILFUNCTIONS_H

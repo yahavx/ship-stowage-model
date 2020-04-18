@@ -10,6 +10,7 @@
 #include <sstream>
 #include "../utils/UtilFunctions.h"
 
+
 bool SkipBOM(std::istream &in)  // some files contains garbage bytes at the start, this will eliminate them if needed
 {
     char test[4] = {0};
@@ -45,4 +46,45 @@ StringStringVector readFile(const std::string &path) {
     }
 
     return data;
+}
+
+/// Returns a list of file (names) of a directory
+StringVector getFilesFromDirectory(const std::string &directoryPath) {  // returns list of files in a directory
+    // TODO
+}
+
+/// Checks if a file is in cargo format: ABCDE_<num>.cargo_data
+bool isCargoDataFileFormat(const std::string &fileName) {
+    if (!endsWith(fileName, ".cargo_data")) {
+        return false;
+    }
+
+    if (!isEnglishWord(fileName.substr(0, 5))) {  // no port name at start
+        return false;
+    }
+
+    if (fileName[5] != '_') {
+        return false;
+    }
+
+    int size = fileName.length();
+    std::string num = fileName.substr(6, size - 17);  // gets the supposed number from the file name
+
+    if (!isInteger(num))
+        return false;
+
+    return true;
+}
+
+StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath) {
+    StringToStringVectorMap map;
+
+    StringVector files = getFilesFromDirectory(directoryPath);
+
+    for (std::string file : files) {
+        if (!isCargoDataFileFormat(file)) {
+            continue;
+        }
+
+    }
 }

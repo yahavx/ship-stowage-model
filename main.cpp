@@ -6,15 +6,10 @@
 #include "src/actors/Port.h"
 #include "tests/io_tests/IOTests.h"
 
-
 using namespace std;
 
 
-
 int main() {
-//    readShipPlanTest();
-//    readShipRouteTest();
-    readCargoToPortFromFileTest();
 }
 
 

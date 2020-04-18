@@ -21,4 +21,5 @@ bool readShipRouteFromFile(const std::string &filePath, ShipRoute &shipRoute);
 /// Adds cargo to a port.
 bool readCargoToPortFromFile(const std::string &filePath, Port &port);
 
+
 #endif //SHIP_STOWAGE_MODEL_OBJECTSREADER_H

@@ -15,12 +15,15 @@
 class IStowageAlgorithm {
 
 protected:
+    ShipPlan shipPlan;
+    ShipRoute shipRoute;
     ContainerShip ship;
+
 public:
 
-    virtual void readShipPlan(const std::string& filePath) = 0;
+    virtual ShipPlan readShipPlan(const std::string& filePath) = 0;
 
-    virtual void readShipRoute(const std::string& filePath) = 0;
+    virtual ShipRoute readShipRoute(const std::string& filePath) = 0;
 
     virtual void setWeightBalanceCalculator(WeightBalanceCalculator& calculator) = 0;
 

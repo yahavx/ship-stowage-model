@@ -6,20 +6,22 @@
 #include "../CranesOperation.h"
 #include "../../io/ObjectsReader.h"
 
-void NaiveStowageAlgorithm::readShipPlan(const std::string &filePath) {
+ShipPlan NaiveStowageAlgorithm::readShipPlan(const std::string &filePath) {
     ShipPlan shipPlan;
     bool result = readShipPlanFromFile(filePath, shipPlan);
     if (!result) {
-        // Handle error
+        // TODO: handle error
     }
+    return shipPlan;
 }
 
-void NaiveStowageAlgorithm::readShipRoute(const std::string &filePath) {
+ShipRoute NaiveStowageAlgorithm::readShipRoute(const std::string &filePath) {
     ShipRoute shipRoute;
     bool result = readShipRouteFromFile(filePath, shipRoute);
     if (!result) {
-        // Handle error
+        // TODO: handle error
     }
+    return shipRoute;
 }
 
 void NaiveStowageAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &calculator) {
@@ -28,26 +30,25 @@ void NaiveStowageAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &
 
 void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &input_full_path_and_file_name,
                                                     const std::string &output_full_path_and_file_name) {
-    //TODO: Read input file and initiate port object, line below is a mockup
+    // TODO: Read input file and initiate port object, line below is a mockup
     PortId currentPortId("test");
     Port port(currentPortId);
 
     std::vector<Container> containersToLoad = std::vector<Container>();
-    //Collect all containers that needs to be loaded
+    // Collect all containers that needs to be loaded
     for (const PortId &id : ship.getShipRoute().getPorts()) {
         std::vector<Container> portContainers = port.getContainersForDestination(id);
         containersToLoad.insert(containersToLoad.end(), containersToLoad.begin(), containersToLoad.end());
     }
-    //Get instructions for unloading and loading from ship
+    // Get instructions for unloading and loading from ship
     std::vector<PackingOperation> instructions = ship.dock(currentPortId, containersToLoad);
 
-    //Perform operations on local shop and port
+    // Perform operations on local shop and port
     for (const PackingOperation &op : instructions) {
         CranesOperation::preformOperation(op, port, ship);
-        //TODO: Handle failing operation, for example maybe return the container to port
+        // TODO: Handle failing operation, for example maybe return the container to port
     }
 
     //TODO: Write instructions to output file
 }
-
 
