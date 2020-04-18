@@ -27,7 +27,7 @@ void ContainerStorage::addContainers(const Containers &newContainers) {
 
 OptionalContainer ContainerStorage::removeContainer(const std::string& containerId) {
     int foundIndex = -1;
-    for (int i = 0; i < containers.size(); i++) {
+    for (longUInt i = 0; i < containers.size(); i++) {
         Container container = containers[i];
         if (container.getId() == containerId) {
             foundIndex = i;
@@ -62,7 +62,7 @@ std::ostream &operator<<(std::ostream &os, const ContainerStorage &storage) {
 
     std::cout << "\tContainerStorage {" << std::endl;
 
-    for (int i = 0; i < storage.containers.size(); i++) {
+    for (longUInt i = 0; i < storage.containers.size(); i++) {
 
         os << "\t\t" << i + 1 << ": " << storage.containers[i] << std::endl;
     }

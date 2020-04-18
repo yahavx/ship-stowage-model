@@ -34,7 +34,7 @@ public:
 
     Cargo &getCargo();
 
-    void setCargo(const Cargo &cargo);
+    void setCargo(Cargo &cargo);  // TODO: need const?
 
     const ShipRoute &getShipRoute() const;
 

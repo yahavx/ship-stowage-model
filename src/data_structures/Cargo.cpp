@@ -50,6 +50,8 @@ int Cargo::canLoadContainerOnTop(int x, int y, const Container &container) const
     int loadedToHeight = containers.size();
 
     return loadedToHeight;
+    std::cout << container;  // TODO: remove (need this parameter?)
+    return loadedToHeight;
 }
 
 int Cargo::loadContainerOnTop(int x, int y, const Container &container) {
@@ -76,7 +78,7 @@ std::vector<ContainerPosition> Cargo::getContainersForPort(const PortId &portId)
         for (int y = 0; y < std::get<1>(dims); y++) {
             Containers xyContainers = containers[x][y];
 
-            for (int z = 0; z < xyContainers.size(); z++)
+            for (longUInt z = 0; z < xyContainers.size(); z++)
                 if (xyContainers[z].getDestPort() == portId) {
                     result.push_back(ContainerPosition(xyContainers[z], {x, y, z}));
                 }

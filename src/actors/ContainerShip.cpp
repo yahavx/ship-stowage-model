@@ -29,8 +29,8 @@ Cargo &ContainerShip::getCargo() {
     return this->balanceCalculator.getCargo();
 }
 
-void ContainerShip::setCargo(const Cargo &cargo) {
-
+void ContainerShip::setCargo(Cargo &cargo) {
+    this->balanceCalculator.setCargo(cargo);
 }
 
 const ShipRoute &ContainerShip::getShipRoute() const {

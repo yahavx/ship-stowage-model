@@ -53,6 +53,8 @@ StringStringVector readFile(const std::string &path) {
 /// Returns a list of file (names) of a directory
 StringVector getFilesFromDirectory(const std::string &directoryPath) {  // returns list of files in a directory
     // TODO
+    std::cout << directoryPath;
+    return StringVector();
 }
 
 bool isCargoDataFileFormat(const std::string &fileName) {
@@ -88,6 +90,8 @@ StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath) {
         }
 
     }
+
+    return map;  // TODO
 }
 // endregion
 
@@ -96,7 +100,7 @@ bool writeFile(const std::string &path, StringStringVector data) {
     std::ofstream outputFile(path);
 
     for (StringVector dataRow : data) {
-        for (int i = 0; i < dataRow.size() - 1; i++) {
+        for (longUInt i = 0; i < dataRow.size() - 1; i++) {
             outputFile << dataRow[i] << ", ";
         }
         outputFile << dataRow.back() << std::endl;

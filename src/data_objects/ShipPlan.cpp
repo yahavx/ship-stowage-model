@@ -18,6 +18,7 @@ ShipPlan::ShipPlan(const std::tuple<int, int, int> &dimensions, const std::vecto
 // Functions
 int ShipPlan::getMinimumHeight(int x, int y) {
     return 0;
+    std::cout << x << y;  // TODO: remove
 }
 
 

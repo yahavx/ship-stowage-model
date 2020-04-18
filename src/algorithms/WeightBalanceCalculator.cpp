@@ -6,6 +6,7 @@
 
 BalanceStatus WeightBalanceCalculator::tryOperation(char loadUnload, int kg, int X, int Y) {
     return BalanceStatus::APPROVED;
+    std::cout << loadUnload << kg << X << Y;  // TODO: remove
 }
 
 Cargo &WeightBalanceCalculator::getCargo() {
@@ -13,7 +14,7 @@ Cargo &WeightBalanceCalculator::getCargo() {
 }
 
 void WeightBalanceCalculator::setCargo(Cargo &cargo) {
-
+    this->cargo = cargo;
 }
 
 //void WeightBalanceCalculator::setCargo(Cargo &cargo) {

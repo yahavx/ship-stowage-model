@@ -8,7 +8,7 @@
 
 std::ostream &operator<<(std::ostream &os, const StringVector &stringVector) {
     std::cout << '[';
-    for (int i = 0; i < stringVector.size() - 1; i++) {
+    for (longUInt i = 0; i < stringVector.size() - 1; i++) {
         std::cout << stringVector[i] << ", \t\t";
     }
     std::cout << stringVector.back() << "]" << std::endl;
@@ -16,7 +16,7 @@ std::ostream &operator<<(std::ostream &os, const StringVector &stringVector) {
 }
 
 std::ostream &operator<<(std::ostream &os, const StringStringVector &stringStringVector) {
-    for (int i = 0; i < stringStringVector.size(); i++) {
+    for (longUInt i = 0; i < stringStringVector.size(); i++) {
         std::cout << ' ' << stringStringVector[i];
     }
     return os;
@@ -24,7 +24,7 @@ std::ostream &operator<<(std::ostream &os, const StringStringVector &stringStrin
 
 std::ostream &operator<<(std::ostream &os, const IntVector &intVector) {
     std::cout << "\t[";
-    for (int i = 0; i < intVector.size() - 1; i++) {
+    for (longUInt i = 0; i < intVector.size() - 1; i++) {
         std::cout << intVector[i] << ", \t";
     }
     std::cout << intVector.back() << "]" << std::endl;
@@ -33,7 +33,7 @@ std::ostream &operator<<(std::ostream &os, const IntVector &intVector) {
 
 
 std::ostream &operator<<(std::ostream &os, const IntIntVector &intIntVector) {
-    for (int i = 0; i < intIntVector.size(); i++) {
+    for (longUInt i = 0; i < intIntVector.size(); i++) {
         std::cout << '\t' << intIntVector[i];
     }
     return os;
@@ -51,7 +51,7 @@ std::ostream &operator<<(std::ostream &os, const OPS &ops) {
         return os;
     }
     std::cout << "Operations {" << std::endl;
-    for (int i = 0; i < ops.size(); i++) {
+    for (longUInt i = 0; i < ops.size(); i++) {
         std::cout << '\t' << ops[i] << std::endl;
     }
     std::cout << "}" << std::endl;
