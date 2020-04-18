@@ -1,3 +1,3 @@
 # ship-stowage-model
 
-A stowage model for ships.
+A stowage model for container ships.

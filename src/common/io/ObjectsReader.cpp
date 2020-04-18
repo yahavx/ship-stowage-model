@@ -195,15 +195,15 @@ bool writeOperationsToFile(const std::string &filePath, OPS &operations) {
         currRow.push_back(op.getContainerId());  // add container id
 
         IntTuple3 fromPos = op.getFromPosition();  // add fromPosition
-        currRow.push_back(intToString(std::get<0>(fromPos));)
-        currRow.push_back(intToString(std::get<1>(fromPos));)
-        currRow.push_back(intToString(std::get<2>(fromPos));)
+        currRow.push_back(intToString(std::get<0>(fromPos)));
+        currRow.push_back(intToString(std::get<1>(fromPos)));
+        currRow.push_back(intToString(std::get<2>(fromPos)));
 
         if (op.getType() == PackingType::move) {
             IntTuple3 toPos = op.getFromPosition();  // add toPosition (if move operation)
-            currRow.push_back(intToString(std::get<0>(toPos));)
-            currRow.push_back(intToString(std::get<1>(toPos));)
-            currRow.push_back(intToString(std::get<2>(toPos));)
+            currRow.push_back(intToString(std::get<0>(toPos)));
+            currRow.push_back(intToString(std::get<1>(toPos)));
+            currRow.push_back(intToString(std::get<2>(toPos)));
         }
     }
 

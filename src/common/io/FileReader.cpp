@@ -94,4 +94,14 @@ StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath) {
 
 bool writeFile(const std::string &path, StringStringVector data) {
 
+    std::ofstream outputFile(path);
+
+    for (StringVector dataRow : data) {
+        for (int i = 0; i < dataRow.size() - 1; i++) {
+            outputFile << dataRow[i] << ", ";
+        }
+        outputFile << dataRow.back() << std::endl;
+    }
+
+    return true;
 }
