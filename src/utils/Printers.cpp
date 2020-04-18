@@ -34,7 +34,7 @@ std::ostream &operator<<(std::ostream &os, const IntVector &intVector) {
 
 std::ostream &operator<<(std::ostream &os, const IntIntVector &intIntVector) {
     for (int i = 0; i < intIntVector.size(); i++) {
-        std::cout << ' ' << intIntVector[i];
+        std::cout << '\t' << intIntVector[i];
     }
     return os;
 }

@@ -38,14 +38,14 @@ OPS ContainerShip::loadContainerToaArbitraryPosition(const Container &container)
     POS dims = this->shipPlan.getDimensions();
     int z = -1;
 
-    ///Loop over all possible ship matrix cells and try to load the container on top, until sucess
+    /// Loop over all possible ship matrix cells and try to load the container on top, until sucess
     for (int x = 0; (x < std::get<0>(dims)) && (z < 0); x++) {
         for (int y = 0; (y < std::get<1>(dims)) && (z < 0); y++) {
             BalanceStatus status = this->balanceCalculator.tryOperation('L', container.getWeight(), x, y);
             if (status == BalanceStatus::APPROVED) {
                 z = this->getCargo().canLoadContainerOnTop(x, y, container);
-                if (z >= 0) ///Successfully loaded
-                    ops.push_back(PackingOperation(container.getId(), {x, y, z}, PackingType::load));
+                if (z >= 0) /// Successfully loaded
+                    ops.push_back(PackingOperation(PackingType::load, container.getId(), {x, y, z}));
             }
         }
     }
@@ -60,29 +60,30 @@ OPS ContainerShip::unloadContainer(const ContainerPosition &containerPos) {
 
     Containers containersOnTop = Containers();
 
-    ///Unload all containers on top, later we will load them back
+    /// Unload all containers on top, later we will load them back
     for (int i = 0; i < numOfContainersOnTop; i++) {
         //TODO: Check if balance calculator allows to unload
         Container container = this->getCargo().removeTopContainer(containerPos.x(), containerPos.y());
         containersOnTop.push_back(container);
-        ops.push_back(PackingOperation(container.getId(),
+        ops.push_back(PackingOperation(PackingType::unload, container.getId(),
                                        {containerPos.x(), containerPos.y(),
-                                        containerPos.z() + (numOfContainersOnTop - i)},
-                                       PackingType::unload));
+                                        containerPos.z() + (numOfContainersOnTop - i)}
+        ));
     }
 
-    ///Unload the specified container
+    /// Unload the specified container
     Container container = this->getCargo().removeTopContainer(containerPos.x(), containerPos.y());
     containersOnTop.push_back(container);
 
-    ///Load back the containers that were on top
+    /// Load back the containers that were on top
     for (int i = 0; i < containersOnTop.size(); i++) {
         Container cont = containersOnTop[i];
         //TODO: check if balance calculator allows to load, if not load to another place
         this->getCargo().loadContainerOnTop(containerPos.x(), containerPos.y(), cont);
-        ops.push_back(PackingOperation(container.getId(),
-                                       {containerPos.x(), containerPos.y(), containerPos.z() + i},
-                                       PackingType::load));
+        ops.push_back(PackingOperation(PackingType::load,
+                                       container.getId(),
+                                       {containerPos.x(), containerPos.y(), containerPos.z() + i}
+        ));
     }
 
     return ops;

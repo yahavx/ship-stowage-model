@@ -14,23 +14,25 @@ enum class PackingType {
 
 /// Instructions for loading and unloading cargo to the ship
 class PackingOperation {
+    PackingType type;
+
     std::string containerId;
 
     std::tuple<int, int, int> fromPosition;
 
     std::tuple<int, int, int> toPosition;
 
-    PackingType type;
-
 public:
-    // Constructors
-    PackingOperation(const std::string &containerId, const std::tuple<int, int, int> &fromPosition,
-                     const std::tuple<int, int, int> &toPosition, PackingType type);
+    // region Constructors
 
-    PackingOperation(const std::string &containerId, const std::tuple<int, int, int> &fromPosition, PackingType type);
+    PackingOperation(PackingType type, const std::string &containerId, const std::tuple<int, int, int> &fromPosition,
+                     const std::tuple<int, int, int> &toPosition);
 
+    PackingOperation(PackingType type, const std::string &containerId, const std::tuple<int, int, int> &fromPosition);
+    // endregion
 
-    //Getters and setters
+    // region Getters and setters
+
     const std::string &getContainerId() const;
 
     const std::tuple<int, int, int> &getFromPosition() const;
@@ -38,10 +40,12 @@ public:
     const std::tuple<int, int, int> &getToPosition() const;
 
     PackingType getType() const;
+    // endregion
 
+    // region Printer
 
-    // Printer
     friend std::ostream &operator<<(std::ostream &os, const PackingOperation &operation);
+    // endregion
 };
 
 

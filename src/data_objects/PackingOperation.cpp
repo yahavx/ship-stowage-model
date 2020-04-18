@@ -5,23 +5,28 @@
 #include "PackingOperation.h"
 #include "../utils/UtilFunctions.h"
 
-// Constructors
-PackingOperation::PackingOperation(const std::string &containerId, const std::tuple<int, int, int> &fromPosition,
-                                   PackingType type) : containerId(containerId), fromPosition(fromPosition),
-                                                       type(type) {}  // Only one position
+// region Constructors
 
-PackingOperation::PackingOperation(const std::string &containerId, const std::tuple<int, int, int> &fromPosition,
-                                   const std::tuple<int, int, int> &toPosition, PackingType type) : containerId(
-        containerId), fromPosition(fromPosition), toPosition(toPosition), type(type) {}   // two positions (move)
+PackingOperation::PackingOperation(PackingType type, const std::string &containerId,
+                                   const std::tuple<int, int, int> &fromPosition,
+                                   const std::tuple<int, int, int> &toPosition) : type(type), containerId(containerId),
+                                                                                  fromPosition(fromPosition),
+                                                                                  toPosition(toPosition) {}
 
+PackingOperation::PackingOperation(PackingType type, const std::string &containerId,
+                                   const std::tuple<int, int, int> &fromPosition) : type(type),
+                                                                                    containerId(containerId),
+                                                                                    fromPosition(fromPosition) {}
+// endregion
 
-// Getters and setters
-const std::string &PackingOperation::getContainerId() const {
-    return containerId;
-}
+// region Getters and setters
 
 PackingType PackingOperation::getType() const {
     return type;
+}
+
+const std::string &PackingOperation::getContainerId() const {
+    return containerId;
 }
 
 const std::tuple<int, int, int> &PackingOperation::getFromPosition() const {
@@ -31,11 +36,12 @@ const std::tuple<int, int, int> &PackingOperation::getFromPosition() const {
 const std::tuple<int, int, int> &PackingOperation::getToPosition() const {
     return toPosition;
 }
+// endregion
 
+// region Printer
 
-// Printers
 std::ostream &operator<<(std::ostream &os, const PackingOperation &operation) {  // TODO
 //    os << "containerId: " << operation.containerId << " indices: " << operation.indices << " type: " << (int)operation.type;
     return os;
 }
-
+// endregion

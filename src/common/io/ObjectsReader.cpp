@@ -65,7 +65,6 @@ bool readShipPlanFromFile(const std::string &filePath, ShipPlan &shipPlan) {  //
     return true;
 }
 
-
 bool readShipRouteFromFile(const std::string &filePath, ShipRoute &shipRoute) {
     std::cout << "Attempting to read ship route..." << std::endl;
     StringStringVector data = readFile(filePath);
@@ -134,4 +133,14 @@ bool readCargoToPortFromFile(const std::string &filePath, Port &port) {
     port.addContainers(containersToAdd);
 
     return true;
+}
+
+bool readOperationsFromFile(const std::string &filePath, OPS &operations) {
+    std::cout << "Attempting to read cargo data..." << std::endl;
+    StringStringVector data = readFile(filePath);
+
+}
+
+bool writeOperationsToFile(const std::string &filePath, OPS &operations) {
+
 }
