@@ -30,14 +30,15 @@ void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile
 
     Containers containersToLoad = Containers();
     // Collect all containers that needs to be loaded
+    // TODO: only remaining route should be considerd
     for (const PortId &id : ship.getShipRoute().getPorts()) {
         Containers portContainers = port.getContainersForDestination(id);
-        containersToLoad.insert(containersToLoad.end(), containersToLoad.begin(), containersToLoad.end());
+        containersToLoad.insert(containersToLoad.end(), portContainers.begin(), portContainers.end());
     }
     // Get ops for unloading and loading from ship
     OPS ops = ship.dock(port.getId(), containersToLoad);
 
-    // Perform operations on local shop and port
+    // Perform operations on local ship and port
     for (const PackingOperation &op : ops) {
         auto opResult = CranesOperation::preformOperation(op, port, ship);
         if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND)
