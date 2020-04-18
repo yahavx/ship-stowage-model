@@ -112,3 +112,5 @@ fabric.properties
 
 .idea
 .vs
+
+/input-examples/results

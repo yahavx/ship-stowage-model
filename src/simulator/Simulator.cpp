@@ -45,7 +45,13 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string& t
     std::string input = "../input-examples/tests/AGHCS_17.cargo_data", output = "../input-examples/results";  // Until one works fine..
     algorithm.getInstructionsForCargo(input, output);
     
-    OPS ops = *readPackingOperationsFromFile(output);
+    std::optional<OPS> optionalOps = readPackingOperationsFromFile(output);
 
-    std::cout << ops;
+    if (!optionalOps.has_value()) {
+        std::cout << "No operations found.";
+    }
+    else {
+        std::cout << "Operations generated:" << std::endl;
+        std::cout << *optionalOps;
+    }
 }

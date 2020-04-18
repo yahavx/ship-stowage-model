@@ -21,5 +21,4 @@ int main() {
     string path = "../input-examples/tests";
 
     simulator.runSimulation(algorithm, path);
-
 }
