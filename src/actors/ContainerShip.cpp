@@ -28,6 +28,7 @@ const ShipPlan &ContainerShip::getShipPlan() const {
 
 void ContainerShip::setShipPlan(const ShipPlan &shipPlan) {
     ContainerShip::shipPlan = shipPlan;
+    ContainerShip::cargo = Cargo(shipPlan);
 }
 
 const ShipRoute &ContainerShip::getShipRoute() const {

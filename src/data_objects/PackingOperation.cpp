@@ -46,7 +46,7 @@ std::ostream &operator<<(std::ostream &os, const PackingOperation &operation) { 
     os << "Op(Type='" << packingTypeFromString(operation.type) << "', ContainerID=" << operation.containerId;
     os << ", From " << operation.fromPosition;
     if (std::get<0>(operation.toPosition) != -1) {
-        os << " To " << operation.fromPosition;
+        os << " To " << operation.toPosition;
     }
     os << ")";
     return os;

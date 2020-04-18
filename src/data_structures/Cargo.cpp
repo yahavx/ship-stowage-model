@@ -73,13 +73,13 @@ int Cargo::loadContainerOnTop(int x, int y, const Container &container) {
     if (!validateXY(x, y, shipPlan))
         return -1;
 
-    int maxHeight = shipPlan.getHeights()[x][y];
+    int maxHeight = std::get<2>(shipPlan.getDimensions());
     int currentHeight = currentNumContainers(x, y);
     if (currentHeight >= maxHeight)
         return -1;
 
-    Containers xyContainers = containers[x][y];
-    int loadedToHeight = containers.size();
+    Containers &xyContainers = containers[x][y];
+    int loadedToHeight = xyContainers.size();
     xyContainers.push_back(container);
 
     return loadedToHeight;
@@ -115,5 +115,5 @@ int Cargo::currentNumContainers(int x, int y) const {
 std::ostream &operator<<(std::ostream &os, const Cargo &cargo) {
     os << "CargoPrintNotImplemented: " << std::endl;
     return os;
-    os << *cargo.getTopContainer(1,1);
+    os << *cargo.getTopContainer(1, 1);
 }

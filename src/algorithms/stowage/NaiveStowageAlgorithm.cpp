@@ -13,7 +13,8 @@ void NaiveStowageAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &
 
 void NaiveStowageAlgorithm::setShipPlanFromPath(
         const std::string &shipPlanPath) {  // TODO: verify the <optional> is valid? (the simulator will kill the run before this call if invalid)
-    this->ship.setShipPlan(*readShipPlanFromFile(shipPlanPath));
+    auto shipPlan = *readShipPlanFromFile(shipPlanPath);
+    this->ship.setShipPlan(shipPlan);
 }
 
 void NaiveStowageAlgorithm::setShipRouteFromPath(const std::string &shipRoutePath) {

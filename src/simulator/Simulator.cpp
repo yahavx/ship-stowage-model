@@ -16,9 +16,6 @@ std::string getShipRoutePath(const std::string& travel){
 }
 
 void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string& travel) {
-    ShipPlan shipPlan;
-    ShipRoute shipRoute;
-
     // Get plan and route paths
     std::string shipPlanPath = getShipPlanPath(travel);
     std::string shipRoutePath = getShipRoutePath(travel);
@@ -32,9 +29,12 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string& t
         return;
     }
 
-    WeightBalanceCalculator weightBalanceCalculator;
+    ShipPlan &shipPlan = *optShipPlan;
+    ShipRoute &shipRoute = *optShipRoute;
 
-    ContainerShip ship(*optShipPlan, *optShipRoute, weightBalanceCalculator);  // TODO: add balance calculator
+    WeightBalanceCalculator weightBalanceCalculator(shipPlan);
+
+    ContainerShip ship(shipPlan, shipRoute, weightBalanceCalculator);  // TODO: add balance calculator
 
     // Init for algorithm
     algorithm.setShipPlanFromPath(shipPlanPath);
