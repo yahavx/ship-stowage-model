@@ -7,23 +7,41 @@
 
 // region Functions
 
-//TODO: Return all containers for specified port
-// The garage of a port
 Containers ContainerStorage::getContainersForDestination(const PortId &destId) {
-    return Containers();
+    Containers result = Containers();
+    for (const Container &container : containers)
+        if (container.getDestPort() == destId) {
+            result.push_back(container);
+        }
+
+    return result;
 }
 
 void ContainerStorage::addContainer(const Container &container) {
     containers.push_back(container);
 }
 
-void ContainerStorage::addContainers(const Containers &containers) {
-    this->containers.insert(this->containers.end(), containers.begin(), containers.end());
+void ContainerStorage::addContainers(const Containers &newContainers) {
+    this->containers.insert(this->containers.end(), newContainers.begin(), newContainers.end());
 }
 
-// TODO: implement
-const Container &ContainerStorage::removeContainer(std::string containerId) {
-    return staticContainer;
+OptionalContainer ContainerStorage::removeContainer(const std::string& containerId) {
+    int foundIndex = -1;
+    for (int i = 0; i < containers.size(); i++) {
+        Container container = containers[i];
+        if (container.getId() == containerId) {
+            foundIndex = i;
+            break;
+        }
+    }
+
+    if (foundIndex > 0) {
+        const Container &container = containers[foundIndex];
+        containers.erase(containers.begin() + foundIndex);
+        return container;
+    }
+
+    return {};
 }
 // endregion
 
