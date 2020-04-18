@@ -27,6 +27,8 @@ bool writeFile(const std::string &path, StringStringVector data);
  */
 StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath);  // TODO
 
+/// Checks if a file is in cargo format: ABCDE_<num>.cargo_data.
+bool isCargoDataFileFormat(const std::string &fileName);
 
 
 #endif //SHIP_STOWAGE_MODEL_FILEREADER_H

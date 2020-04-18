@@ -95,3 +95,23 @@ std::string intToString(int num) {
 void printSeparator() {
     std::cout << std::endl << "--------------------------------------" << std::endl;
 }
+
+std::string extractFilenameFromPath(const std::string &path, bool removeExtension) {
+    std::string pathCopy = path;  // it works inplace so we create a copy
+    // Remove directory if present.
+    // Do this before extension removal incase directory has a period character.
+    const size_t last_slash_idx = pathCopy.find_last_of("\\/");
+    if (std::string::npos != last_slash_idx) {
+        pathCopy.erase(0, last_slash_idx + 1);
+    }
+
+    // Remove extension if present.
+    if (removeExtension) {
+        const size_t period_idx = pathCopy.rfind('.');
+        if (std::string::npos != period_idx) {
+            pathCopy.erase(period_idx);
+        }
+    }
+
+    return pathCopy;
+}

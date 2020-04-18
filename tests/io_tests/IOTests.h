@@ -14,6 +14,8 @@ void inline readShipRouteTest();
 void inline readCargoToPortFromFileTest();
 void inline readPackingOperationsTest();
 
+using namespace std;
+
 void inline runIOTests() {
     readShipPlanTest();
     printSeparator();
@@ -31,35 +33,35 @@ void inline readShipPlanTest() {
     ShipPlan shipPlan;
     bool result = readShipPlanFromFile("../input-examples/tests/ShipPlan.csv", shipPlan);
     assert(result);
-    std::cout << shipPlan;
+    cout << shipPlan;
 }
 
 void inline readShipRouteTest() {
     ShipRoute shipRoute;
-    std::string path = "../input-examples/tests/RouteFile.csv";
+    string path = "../input-examples/tests/RouteFile.csv";
     bool result = readShipRouteFromFile(path, shipRoute);
     assert(result);
     assert(shipRoute.getPorts().size() == 4);
-    std::cout << shipRoute;
+    cout << shipRoute;
 }
 
 void inline readCargoToPortFromFileTest() {
-    Port port(PortId("DLDAS"));
-    std::string path = "../input-examples/tests/PortCargo.cargo_data";
-    std::cout << "Port before loading cargo: " << std::endl << port << std::endl;
-    bool result = readCargoToPortFromFile(path, port);
-    assert(result);
-    std::cout << std::endl << "Port after loading cargo: " << std::endl << port;
+    string path = "../input-examples/tests/AGHCS_17.cargo_data";
+    optional<Port> optPort = readCargoToPortFromFile(path);
+    assert(optPort.has_value());
+    if (optPort.has_value()) {
+        cout << endl << "Port after loading cargo: " << endl << *optPort;
+    }
 }
 
 void inline readPackingOperationsTest() {
     OPS operations;
-    std::string path = "../input-examples/tests/CargoInstructions";
-    std::cout << "Operations before: " << std::endl << operations << std::endl;
+    string path = "../input-examples/tests/CargoInstructions";
+    cout << "Operations before: " << endl << operations << endl;
     bool result = readPackingOperationsFromFile(path, operations);
     assert(result);
     assert(operations.size() == 8);
-    std::cout << "Operations after: " << std::endl << operations;
+    cout << "Operations after: " << endl << operations;
 }
 
 

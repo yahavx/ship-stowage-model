@@ -55,7 +55,6 @@ StringVector getFilesFromDirectory(const std::string &directoryPath) {  // retur
     // TODO
 }
 
-/// Checks if a file is in cargo format: ABCDE_<num>.cargo_data
 bool isCargoDataFileFormat(const std::string &fileName) {
     if (!endsWith(fileName, ".cargo_data")) {
         return false;

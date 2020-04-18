@@ -84,11 +84,20 @@ bool readShipRouteFromFile(const std::string &filePath, ShipRoute &shipRoute) {
     return true;
 }
 
-bool readCargoToPortFromFile(const std::string &filePath, Port &port) {
+std::optional<Port> readCargoToPortFromFile(const std::string &filePath) {
     std::cout << "Attempting to read cargo data..." << std::endl;
-    StringStringVector data = readFile(filePath);
 
+    std::string fileName = extractFilenameFromPath(filePath, false);  // false keeps the .cargo_data
+    if (!isCargoDataFileFormat(fileName)) {
+        std::cout << "Error: filename is in incorrect format, exiting" << std::endl;
+        return std::nullopt;
+    }
+
+    PortId portId = PortId(fileName.substr(0, 5));
+    Port port = Port(portId);
     Containers containersToAdd;
+
+    StringStringVector data = readFile(filePath);
 
     for (StringVector dataRow : data) {
         if (dataRow.size() < 3) {
@@ -119,7 +128,7 @@ bool readCargoToPortFromFile(const std::string &filePath, Port &port) {
     std::cout << "Read cargo data successfully." << std::endl;
     port.addContainers(containersToAdd);
 
-    return true;
+    return port;
 }
 
 bool readPackingOperationsFromFile(const std::string &filePath, OPS &operations) {

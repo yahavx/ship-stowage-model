@@ -20,8 +20,8 @@ bool readShipPlanFromFile(const std::string &filePath, ShipPlan &shipPlan);
 /// Reads a route file (list of ports).
 bool readShipRouteFromFile(const std::string &filePath, ShipRoute &shipRoute);
 
-/// Adds cargo to a port.
-bool readCargoToPortFromFile(const std::string &filePath, Port &port);
+/// Returns a port with the cargo loaded from file. Port id is as in the file (assuming path is ID_<num>.cargo_data).
+std::optional<Port> readCargoToPortFromFile(const std::string &filePath);
 
 /// Reads operations from a file.
 bool readPackingOperationsFromFile(const std::string &filePath, OPS &operations);

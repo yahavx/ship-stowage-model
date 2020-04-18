@@ -20,10 +20,12 @@ void NaiveStowageAlgorithm::setShipRouteFromPath(const std::string &shipRoutePat
 }
 
 void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
-    // TODO: Read input file and initiate port object, line below is a mockup
-    PortId currentPortId("test");
+    std::optional<Port> optPort = readCargoToPortFromFile(inputFile);
 
-    readCargoToPortFromFile(inputFile, port);
+    if (!optPort.has_value()){
+        std::cout << "Error in getInstructionsForCargo(): couldn't load port" << std::endl;
+    }
+    Port port = *optPort;
 
     Containers containersToLoad = Containers();
     // Collect all containers that needs to be loaded
@@ -32,7 +34,7 @@ void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile
         containersToLoad.insert(containersToLoad.end(), containersToLoad.begin(), containersToLoad.end());
     }
     // Get ops for unloading and loading from ship
-    OPS ops = ship.dock(currentPortId, containersToLoad);
+    OPS ops = ship.dock(port.getId(), containersToLoad);
 
     // Perform operations on local shop and port
     for (const PackingOperation &op : ops) {
