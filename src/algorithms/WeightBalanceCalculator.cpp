@@ -4,21 +4,17 @@
 
 #include "WeightBalanceCalculator.h"
 
-WeightBalanceCalculator::WeightBalanceCalculator(const ShipPlan &plan) : plan(plan), cargo(plan){}
+// region Constructors
 
-BalanceStatus WeightBalanceCalculator::tryOperation(char loadUnload, int kg, int X, int Y) {
+WeightBalanceCalculator::WeightBalanceCalculator(const ShipPlan &plan) : plan(plan) {}
+
+WeightBalanceCalculator::WeightBalanceCalculator() {}
+// endregion
+
+// region Functions
+
+BalanceStatus WeightBalanceCalculator::tryOperation(Cargo &cargo, char loadUnload, int kg, int X, int Y) {
     return BalanceStatus::APPROVED;
-    std::cout << loadUnload << kg << X << Y;  // TODO: remove
+    std::cout << loadUnload << kg << X << Y << cargo;  // TODO: remove
 }
-
-Cargo &WeightBalanceCalculator::getCargo() {
-    return cargo;
-}
-
-void WeightBalanceCalculator::setCargo(Cargo &cargo) {
-    this->cargo = cargo;
-}
-
-//void WeightBalanceCalculator::setCargo(Cargo &cargo) {
-//    WeightBalanceCalculator::cargo = cargo;
-//}
+// endregion

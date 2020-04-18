@@ -5,6 +5,7 @@
 #ifndef SHIP_STOWAGE_MODEL_CARGO_H
 #define SHIP_STOWAGE_MODEL_CARGO_H
 
+#include <ostream>
 #include "../data_objects/ShipPlan.h"
 #include "../data_objects/ContainerPosition.h"
 
@@ -66,6 +67,8 @@ public:
      */
     int loadContainerOnTop(int x, int y, const Container &container);
     // endregion
+
+    friend std::ostream &operator<<(std::ostream &os, const Cargo &cargo);
 };
 
 

@@ -16,7 +16,7 @@
 class ContainerShip {
     ShipPlan shipPlan;
     ShipRoute shipRoute;
-//    Cargo cargo;
+    Cargo cargo;
     WeightBalanceCalculator balanceCalculator;
 
 public:
@@ -33,13 +33,13 @@ public:
 
     void setShipPlan(const ShipPlan &shipPlan);
 
-    Cargo &getCargo();
-
-    void setCargo(Cargo &cargo);  // TODO: need const?
-
     const ShipRoute &getShipRoute() const;
 
     void setShipRoute(const ShipRoute &shipRoute);
+
+    Cargo &getCargo();  // Not const
+
+    void setCargo(const Cargo &cargo);
 
     const WeightBalanceCalculator &getBalanceCalculator() const;
 

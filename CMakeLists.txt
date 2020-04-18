@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project(ship_stowage_model)
 
 set(CMAKE_CXX_STANDARD 20)
-set(GCC_COVERAGE_COMPILE_FLAGS "-std=c++2a -Wall -Wextra -pedantic-errors -DNDEBUG")
-# don't forget to add -Werror at the end (or ignore unused variable for now)
+set(GCC_COVERAGE_COMPILE_FLAGS "-std=c++2a -Wall -Wextra -Werror -pedantic-errors -DNDEBUG")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}" )
 
 # Keep this order when you add a file

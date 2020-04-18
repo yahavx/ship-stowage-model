@@ -19,17 +19,19 @@ enum class BalanceStatus{
 class WeightBalanceCalculator {
 
     ShipPlan plan;
-    Cargo cargo;
 
 public:
+    // region Constructors
 
-    explicit WeightBalanceCalculator(const ShipPlan &plan);
+    WeightBalanceCalculator();
 
-    BalanceStatus tryOperation(char loadUnload, int kg, int X, int Y);
+    WeightBalanceCalculator(const ShipPlan &plan);
+    // endregion
 
-    Cargo &getCargo();
+    // region Functions
 
-    void setCargo(Cargo &cargo);
+    BalanceStatus tryOperation(Cargo &cargo, char loadUnload, int kg, int X, int Y);
+    // endregion
 };
 
 
