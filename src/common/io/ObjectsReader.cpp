@@ -15,7 +15,7 @@ std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath) {
     StringStringVector data = readFile(filePath);
 
     if (!isDataOnlyIntegers(data)) {  // couldn't convert data to int
-        std::cout << "Error: data contain non-integers" << std::endl;
+        std::cout << "Error: data contain non-integers" << std::endl << std::endl;
         return std::nullopt;
     }
 
@@ -24,7 +24,7 @@ std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath) {
     IntIntVector intData = convertDataToInt(data);
     IntVector firstRow = intData[0];
     if (firstRow.size() < 3) {
-        std::cout << "Error: insufficient number of arguments for ship dimensions, exiting" << std::endl;
+        std::cout << "Error: insufficient number of arguments for ship dimensions, exiting" << std::endl << std::endl;
         return std::nullopt;
     }
 
@@ -59,7 +59,7 @@ std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath) {
 
     shipPlan.setHeights(heights);
 
-    std::cout << "Read ship plan successfully." << std::endl;
+    std::cout << "Read ship plan successfully." << std::endl << std::endl;
 
     return shipPlan;
 }
@@ -89,7 +89,7 @@ std::optional<ShipRoute> readShipRouteFromFile(const std::string &filePath) {
         ports.push_back(PortId(token));
     }
 
-    std::cout << "Read ship route successfully." << std::endl;
+    std::cout << "Read ship route successfully." << std::endl << std::endl;
 
     ShipRoute shipRoute(ports);
     return shipRoute;
@@ -100,7 +100,7 @@ std::optional<Port> readCargoToPortFromFile(const std::string &filePath) {
 
     std::string fileName = extractFilenameFromPath(filePath, false);  // false keeps the .cargo_data
     if (!isCargoDataFileFormat(fileName)) {
-        std::cout << "Error: filename is in incorrect format, exiting" << std::endl;
+        std::cout << "Error: filename is in incorrect format, exiting" << std::endl << std::endl;
         return std::nullopt;
     }
 
@@ -136,7 +136,7 @@ std::optional<Port> readCargoToPortFromFile(const std::string &filePath) {
         containersToAdd.push_back(Container(id, stringToInt(weight), PortId(destPort)));
     }
 
-    std::cout << "Read cargo data successfully." << std::endl;
+    std::cout << "Read cargo data successfully." << std::endl << std::endl;
 
     port.addContainers(containersToAdd);
 
@@ -199,11 +199,11 @@ std::optional<OPS> readPackingOperationsFromFile(const std::string &filePath) {
     }
 
     if (operations.size() == 0) {
-        std::cout << "Error: failed to read any operation" << std::endl;
+        std::cout << "Error: failed to read any operation" << std::endl << std::endl;
         return std::nullopt;
     }
 
-    std::cout << "Read operations successfully." << std::endl;
+    std::cout << "Read operations successfully." << std::endl << std::endl;
     return operations;
 }
 
@@ -235,9 +235,9 @@ bool writePackingOperationsToFile(const std::string &filePath, OPS &operations) 
     bool res = writeFile(filePath, data);
 
     if (!res) {
-        std::cout << "Error: couldn't write to file." << std::endl;
+        std::cout << "Error: couldn't write to file." << std::endl << std::endl;
         return false;
     }
-    std::cout << "Wrote operations successfully." << std::endl;
+    std::cout << "Wrote operations successfully." << std::endl << std::endl;
     return true;
 }
