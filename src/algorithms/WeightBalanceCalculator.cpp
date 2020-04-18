@@ -4,6 +4,8 @@
 
 #include "WeightBalanceCalculator.h"
 
+WeightBalanceCalculator::WeightBalanceCalculator(const ShipPlan &plan) : plan(plan), cargo(plan){}
+
 BalanceStatus WeightBalanceCalculator::tryOperation(char loadUnload, int kg, int X, int Y) {
     return BalanceStatus::APPROVED;
     std::cout << loadUnload << kg << X << Y;  // TODO: remove

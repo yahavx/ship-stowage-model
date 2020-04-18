@@ -15,6 +15,12 @@ bool validateXY(int x, int y, const ShipPlan &shipPlan) {
     return true;
 }
 
+Cargo::Cargo(const ShipPlan &shipPlan) : shipPlan(shipPlan) {
+    POS dims = shipPlan.getDimensions();
+    auto x = std::get<0>(dims), y = std::get<1>(dims);
+    this->containers = std::vector<std::vector<Containers>>(x, std::vector<Containers>(y, Containers()));
+}
+
 OptionalContainer Cargo::getTopContainer(int x, int y) const {
     if (!validateXY(x, y, shipPlan))
         return {};

@@ -16,6 +16,9 @@ class Cargo {
     ShipPlan shipPlan;
 
 public:
+
+    explicit Cargo(const ShipPlan &shipPlan);
+
     /**
      * If possible to load the container on top in this x,y position returns the height it would be loaded to.
      * else returns negative integer

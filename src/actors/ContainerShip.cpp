@@ -8,10 +8,11 @@
 
 // region Constructors
 
-ContainerShip::ContainerShip() {}
+//ContainerShip::ContainerShip() {}
 
 ContainerShip::ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRoute) : shipPlan(shipPlan),
-                                                                                     shipRoute(shipRoute) {}
+                                                                                     shipRoute(shipRoute),
+                                                                                     balanceCalculator(shipPlan) {}
 // endregion
 
 // region Getters and setters

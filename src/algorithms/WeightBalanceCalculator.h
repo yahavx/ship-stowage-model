@@ -18,9 +18,13 @@ enum class BalanceStatus{
 
 class WeightBalanceCalculator {
 
+    ShipPlan plan;
     Cargo cargo;
 
 public:
+
+    explicit WeightBalanceCalculator(const ShipPlan &plan);
+
     BalanceStatus tryOperation(char loadUnload, int kg, int X, int Y);
 
     Cargo &getCargo();
