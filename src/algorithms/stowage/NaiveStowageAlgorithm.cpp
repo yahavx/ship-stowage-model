@@ -35,7 +35,7 @@ void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile
         // TODO: Handle failing operation ??
     }
 
-    writeOperationsToFile(outputFile, ops);
+    writePackingOperationsToFile(outputFile, ops);
 }
 
 void NaiveStowageAlgorithm::setShipPlanFromPath(const std::string &shipPlanPath) {
