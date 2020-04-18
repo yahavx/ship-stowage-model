@@ -5,7 +5,9 @@
 #include "ObjectsReader.h"
 #include "FileReader.h"
 #include "../../utils/UtilFunctions.h"
+#include "../../utils/Printers.h"
 #include <tuple>
+#
 
 
 std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath) {
@@ -135,6 +137,7 @@ std::optional<Port> readCargoToPortFromFile(const std::string &filePath) {
     }
 
     std::cout << "Read cargo data successfully." << std::endl;
+
     port.addContainers(containersToAdd);
 
     return port;
@@ -144,7 +147,7 @@ std::optional<OPS> readPackingOperationsFromFile(const std::string &filePath) {
     std::cout << "Attempting to read operations..." << std::endl;
     StringStringVector data = readFile(filePath);
 
-    std::optional<OPS> operations;
+    OPS operations;
 
     for (StringVector dataRow : data) {
         if (dataRow.size() < 5) {
@@ -178,7 +181,7 @@ std::optional<OPS> readPackingOperationsFromFile(const std::string &filePath) {
         int floor = stringToInt(floorStr), x = stringToInt(xStr), y = stringToInt(yStr);
 
         if (packingType != PackingType::move) {  // We have all the arguments needed
-            operations->push_back(PackingOperation(packingType, containerId, {floor, x, y}));
+            operations.push_back(PackingOperation(packingType, containerId, {floor, x, y}));
             continue;
         }
 
@@ -192,10 +195,10 @@ std::optional<OPS> readPackingOperationsFromFile(const std::string &filePath) {
         }
         int floor2 = stringToInt(floorStr2), x2 = stringToInt(xStr2), y2 = stringToInt(yStr2);
 
-        operations->push_back(PackingOperation(packingType, containerId, {floor, x, y}, {floor2, x2, y2}));
+        operations.push_back(PackingOperation(packingType, containerId, {floor, x, y}, {floor2, x2, y2}));
     }
 
-    if (operations->size() == 0) {
+    if (operations.size() == 0) {
         std::cout << "Error: failed to read any operation" << std::endl;
         return std::nullopt;
     }

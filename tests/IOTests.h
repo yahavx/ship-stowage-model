@@ -10,6 +10,7 @@
 #include "../src/common/io/ObjectsReader.h"
 #include "../src/utils/Printers.h"
 
+
 void inline readShipPlanTest();
 
 void inline readShipRouteTest();
