@@ -24,7 +24,7 @@ ContainerShip::dock(const PortId &portId, const Containers &containersToLoad) {
     //Load all required containers , TODO: Handle case where there is no more space
     for (const Container &container: containersToLoad) {
         //Get instructions for adding the container
-        OPS loadOps = this->loadContainerToaArbitraryPosition(container);
+        OPS loadOps = this->loadContainerToArbitraryPosition(container);
 
         //Add load operations to set of all instructions
         operations.insert(operations.end(), loadOps.begin(), loadOps.end());
@@ -33,7 +33,7 @@ ContainerShip::dock(const PortId &portId, const Containers &containersToLoad) {
     return operations;
 }
 
-OPS ContainerShip::loadContainerToaArbitraryPosition(const Container &container) {
+OPS ContainerShip::loadContainerToArbitraryPosition(const Container &container) {
     OPS ops = OPS();
     POS dims = this->shipPlan.getDimensions();
     int z = -1;
@@ -48,6 +48,12 @@ OPS ContainerShip::loadContainerToaArbitraryPosition(const Container &container)
                     ops.push_back(PackingOperation(PackingType::load, container.getId(), {x, y, z}));
             }
         }
+    }
+
+    if (z < 0) {
+        ops = OPS();
+        ops.push_back(PackingOperation(PackingType::reject, container.getId(), {-1, -1, -1}));
+        return ops;
     }
 
     return ops;
@@ -124,9 +130,12 @@ OPS ContainerShip::unloadContainer(const ContainerPosition &containerPos) {
         ops.push_back(PackingOperation(PackingType::load, cont.getId(), {x, y, z + i}));
     }
 
-    //TODO: think what to return if failed maybe PackingType::reject ??
-    if (failed)
-        return OPS();
+    /// If failed return reject packing operation
+    if (failed) {
+        ops = OPS();
+        ops.push_back(PackingOperation(PackingType::reject, containerPos.getContainer().getId(), {-1, -1, -1}));
+        return ops;
+    }
 
     return ops;
 }

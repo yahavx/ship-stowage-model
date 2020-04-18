@@ -46,7 +46,7 @@ private:
      * @param container - container to load
      * @return legal PackingOperation or NULL if none was found
      */
-    std::vector<PackingOperation> loadContainerToaArbitraryPosition(const Container &container);
+    std::vector<PackingOperation> loadContainerToArbitraryPosition(const Container &container);
 
     /**
     * returns legal series of PackingOperation's for unloading container.
