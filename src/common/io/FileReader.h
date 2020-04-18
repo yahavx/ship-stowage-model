@@ -19,7 +19,7 @@ StringStringVector readFile(const std::string &path);
  * @param path to write to, overwritten if exists.
  * @return true if completed successfully.
  */
-bool writeFile(const std::string &path, StringStringVector data);  // TODO
+bool writeFile(const std::string &path, StringStringVector data);
 
 /**
  * Receives a travel directory and sorts the .cargo_files for each port.

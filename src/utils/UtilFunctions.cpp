@@ -91,3 +91,7 @@ std::string packingTypeFromString(PackingType type) {
 std::string intToString(int num) {
     return std::to_string(num);
 }
+
+void printSeparator() {
+    std::cout << std::endl << "--------------------------------------" << std::endl;
+}

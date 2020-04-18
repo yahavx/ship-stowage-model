@@ -24,5 +24,8 @@ std::ostream &operator<<(std::ostream &os, const IntIntVector &intIntVector);
 /// Prints 3-tuple.
 std::ostream &operator<<(std::ostream &os, const std::tuple<int, int, int> &tup);
 
+/// Prints an operations vector.
+std::ostream &operator<<(std::ostream &os, const OPS &ops);
+
 
 #endif //SHIP_STOWAGE_MODEL_PRINTERS_H

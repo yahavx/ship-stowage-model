@@ -22,10 +22,10 @@ bool readShipRouteFromFile(const std::string &filePath, ShipRoute &shipRoute);
 bool readCargoToPortFromFile(const std::string &filePath, Port &port);
 
 /// Reads operations from a file.
-bool readOperationsFromFile(const std::string &filePath, OPS &operations);
+bool readPackingOperationsFromFile(const std::string &filePath, OPS &operations);
 
 /// Write operations to a file.
-bool writeOperationsToFile(const std::string &filePath, OPS &operations);
+bool writePackingOperationsToFile(const std::string &filePath, OPS &operations);
 
 
 #endif //SHIP_STOWAGE_MODEL_OBJECTSREADER_H

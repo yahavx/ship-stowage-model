@@ -122,7 +122,7 @@ bool readCargoToPortFromFile(const std::string &filePath, Port &port) {
     return true;
 }
 
-bool readOperationsFromFile(const std::string &filePath, OPS &operations) {
+bool readPackingOperationsFromFile(const std::string &filePath, OPS &operations) {
     std::cout << "Attempting to read operations..." << std::endl;
     StringStringVector data = readFile(filePath);
 
@@ -153,6 +153,7 @@ bool readOperationsFromFile(const std::string &filePath, OPS &operations) {
 
         if (!isInteger(floorStr) || !isInteger(xStr) || !isInteger(yStr)) {
             std::cout << "Warning: floor, x or y are not an integers, ignoring" << std::endl;
+            continue;
         }
         int floor = stringToInt(floorStr), x = stringToInt(xStr), y = stringToInt(yStr);
 
@@ -167,6 +168,7 @@ bool readOperationsFromFile(const std::string &filePath, OPS &operations) {
 
         if (!isInteger(floorStr2) || !isInteger(xStr2) || !isInteger(yStr2)) {
             std::cout << "Warning: floor, x or y are not an integers, ignoring" << std::endl;
+            continue;
         }
         int floor2 = stringToInt(floorStr2), x2 = stringToInt(xStr2), y2 = stringToInt(yStr2);
 
@@ -182,7 +184,7 @@ bool readOperationsFromFile(const std::string &filePath, OPS &operations) {
     return true;
 }
 
-bool writeOperationsToFile(const std::string &filePath, OPS &operations) {
+bool writePackingOperationsToFile(const std::string &filePath, OPS &operations) {
     StringStringVector data;
 
     std::cout << "Attempting to write operations..." << std::endl;

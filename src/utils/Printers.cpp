@@ -44,3 +44,16 @@ std::ostream &operator<<(std::ostream &os, const std::tuple<int, int, int> &tup)
     os << std::get<0>(tup) << ", " << std::get<1>(tup) << ", " << std::get<2>(tup);
     return os << "]";
 }
+
+std::ostream &operator<<(std::ostream &os, const OPS &ops) {
+    if (ops.size() == 0) {
+        std::cout << "<NoOperations>" << std::endl;
+        return os;
+    }
+    std::cout << "Operations {" << std::endl;
+    for (int i = 0; i < ops.size(); i++) {
+        std::cout << '\t' << ops[i] << std::endl;
+    }
+    std::cout << "}" << std::endl;
+    return os;
+}

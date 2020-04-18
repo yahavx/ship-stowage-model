@@ -5,18 +5,26 @@
 #ifndef SHIP_STOWAGE_MODEL_IOTESTS_H
 #define SHIP_STOWAGE_MODEL_IOTESTS_H
 
-#include <cassert>
+#include <assert.h>
 #include "../../src/data_objects/ShipPlan.h"
 #include "../../src/common/io/ObjectsReader.h"
 
 void inline readShipPlanTest();
 void inline readShipRouteTest();
 void inline readCargoToPortFromFileTest();
+void inline readPackingOperationsTest();
 
 void inline runIOTests() {
     readShipPlanTest();
+    printSeparator();
+
     readShipRouteTest();
+    printSeparator();
+
     readCargoToPortFromFileTest();
+    printSeparator();
+
+    readPackingOperationsTest();
 }
 
 void inline readShipPlanTest() {
@@ -42,6 +50,16 @@ void inline readCargoToPortFromFileTest() {
     bool result = readCargoToPortFromFile(path, port);
     assert(result);
     std::cout << std::endl << "Port after loading cargo: " << std::endl << port;
+}
+
+void inline readPackingOperationsTest() {
+    OPS operations;
+    std::string path = "../input-examples/tests/CargoInstructions";
+    std::cout << "Operations before: " << std::endl << operations << std::endl;
+    bool result = readPackingOperationsFromFile(path, operations);
+    assert(false);
+    assert(operations.size() == 8);
+    std::cout << "Operations after: " << std::endl << operations;
 }
 
 

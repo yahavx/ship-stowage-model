@@ -40,4 +40,6 @@ PackingType packingTypeToString(char type);
 /// Converts packing type to its string representation. Doesn't validate input.
 std::string packingTypeFromString(PackingType type);
 
+/// Prints a seperator line (of dashes).
+void printSeparator();
 #endif //SHIP_STOWAGE_MODEL_UTILFUNCTIONS_H
