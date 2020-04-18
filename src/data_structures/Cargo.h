@@ -16,9 +16,12 @@ class Cargo {
     ShipPlan shipPlan;
 
 public:
+    // region Constructors
 
     explicit Cargo(const ShipPlan &shipPlan);
+    // endregion
 
+    // region Functions
     /**
      * If possible to load the container on top in this x,y position returns the height it would be loaded to.
      * else returns negative integer
@@ -62,6 +65,7 @@ public:
      * @return - if operation succeeded returns the height te container was loaded to, else returns negative integer
      */
     int loadContainerOnTop(int x, int y, const Container &container);
+    // endregion
 };
 
 
