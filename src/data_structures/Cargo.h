@@ -13,7 +13,7 @@
 class Cargo {
     std::vector<std::vector<std::vector<Container>>> containers;
 
-    ShipPlan &shipPlan;
+    ShipPlan shipPlan;
 
 public:
     /**

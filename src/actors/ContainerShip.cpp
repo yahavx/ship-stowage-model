@@ -160,6 +160,6 @@ const WeightBalanceCalculator &ContainerShip::getBalanceCalculator() const {
 }
 
 void ContainerShip::setBalanceCalculator(const WeightBalanceCalculator &balanceCalculator) {
-//    ContainerShip::balanceCalculator = balanceCalculator;
+    ContainerShip::balanceCalculator = balanceCalculator;
 }
 
