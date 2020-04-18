@@ -11,10 +11,19 @@ void NaiveStowageAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &
     this->ship.setBalanceCalculator(calculator);
 }
 
+void NaiveStowageAlgorithm::setShipPlanFromPath(const std::string &shipPlanPath) {
+    readShipPlanFromFile(shipPlanPath, shipPlan);
+}
+
+void NaiveStowageAlgorithm::setShipRouteFromPath(const std::string &shipRoutePath) {
+    readShipRouteFromFile(shipRoutePath, shipRoute);
+}
+
 void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
     // TODO: Read input file and initiate port object, line below is a mockup
     PortId currentPortId("test");
-    Port port(currentPortId);
+
+    readCargoToPortFromFile(inputFile, port);
 
     Containers containersToLoad = Containers();
     // Collect all containers that needs to be loaded
@@ -37,13 +46,3 @@ void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile
 
     writePackingOperationsToFile(outputFile, ops);
 }
-
-void NaiveStowageAlgorithm::setShipPlanFromPath(const std::string &shipPlanPath) {
-    readShipPlanFromFile(shipPlanPath, shipPlan);
-}
-
-void NaiveStowageAlgorithm::setShipRouteFromPath(const std::string &shipRoutePath) {
-    readShipRouteFromFile(shipRoutePath, shipRoute);
-}
-
-

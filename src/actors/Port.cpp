@@ -13,7 +13,6 @@ Port::Port(const PortId &id) : id(id) {}
 Port::Port(const PortId &id, const ContainerStorage &storage) : id(id), storage(storage) {}
 // endregion
 
-
 // region Functions
 
 Containers Port::getContainersForDestination(const PortId &destId) {

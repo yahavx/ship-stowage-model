@@ -9,6 +9,8 @@
 #include "../../data_objects/ShipRoute.h"
 
 
+// TODO: return objects instead of modifying
+
 /**
    * Reads the ship plan from a file. Returns true if finished successfully.
    * @param shipPlan Ship plan that will be modified, should be passed empty.
