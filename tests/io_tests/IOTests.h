@@ -7,8 +7,17 @@
 
 #include <cassert>
 #include "../../src/data_objects/ShipPlan.h"
-#include "../../src/io/ObjectsReader.h"
+#include "../../src/common/io/ObjectsReader.h"
 
+void inline readShipPlanTest();
+void inline readShipRouteTest();
+void inline readCargoToPortFromFileTest();
+
+void inline runIOTests() {
+    readShipPlanTest();
+    readShipRouteTest();
+    readCargoToPortFromFileTest();
+}
 
 void inline readShipPlanTest() {
     ShipPlan shipPlan;

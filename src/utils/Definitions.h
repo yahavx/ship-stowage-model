@@ -13,6 +13,8 @@
 
 /// Popular typedefs/structs
 
+class PackingOperation;
+
 typedef std::vector<int> IntVector;
 
 typedef std::vector<std::vector<int>> IntIntVector;

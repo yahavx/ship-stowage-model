@@ -8,7 +8,7 @@
 #include <cstring>
 #include <algorithm>
 #include <sstream>
-#include "../utils/UtilFunctions.h"
+#include "../../utils/UtilFunctions.h"
 
 
 bool SkipBOM(std::istream &in)  // some files contains garbage bytes at the start, this will eliminate them if needed

@@ -4,7 +4,7 @@
 
 #include "ObjectsReader.h"
 #include "FileReader.h"
-#include "../utils/UtilFunctions.h"
+#include "../../utils/UtilFunctions.h"
 
 
 bool readShipPlanFromFile(const std::string &filePath, ShipPlan &shipPlan) {  // TODO: check if indices are 0 or 1 based

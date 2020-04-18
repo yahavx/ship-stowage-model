@@ -4,25 +4,8 @@
 
 #include "NaiveStowageAlgorithm.h"
 #include "../CranesOperation.h"
-#include "../../io/ObjectsReader.h"
+#include "../../common/io/ObjectsReader.h"
 
-ShipPlan NaiveStowageAlgorithm::readShipPlan(const std::string &filePath) {
-    ShipPlan shipPlan;
-    bool result = readShipPlanFromFile(filePath, shipPlan);
-    if (!result) {
-        // TODO: handle error
-    }
-    return shipPlan;
-}
-
-ShipRoute NaiveStowageAlgorithm::readShipRoute(const std::string &filePath) {
-    ShipRoute shipRoute;
-    bool result = readShipRouteFromFile(filePath, shipRoute);
-    if (!result) {
-        // TODO: handle error
-    }
-    return shipRoute;
-}
 
 void NaiveStowageAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &calculator) {
     this->ship.setBalanceCalculator(calculator);
@@ -51,4 +34,13 @@ void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &input_ful
 
     //TODO: Write instructions to output file
 }
+
+void NaiveStowageAlgorithm::setShipPlanFromPath(const std::string &shipPlanPath) {
+    readShipPlanFromFile(shipPlanPath, shipPlan);
+}
+
+void NaiveStowageAlgorithm::setShipRouteFromPath(const std::string &shipRoutePath) {
+    readShipRouteFromFile(shipRoutePath,shipRoute);
+}
+
 

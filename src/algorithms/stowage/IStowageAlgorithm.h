@@ -21,14 +21,14 @@ protected:
 
 public:
 
-    virtual ShipPlan readShipPlan(const std::string& filePath) = 0;
-
-    virtual ShipRoute readShipRoute(const std::string& filePath) = 0;
-
     virtual void setWeightBalanceCalculator(WeightBalanceCalculator& calculator) = 0;
 
     virtual void getInstructionsForCargo(const std::string& inputFileName,
                                          const std::string& outputFileName) = 0;
+
+    virtual void setShipPlanFromPath(const std::string& shipPlanPath) = 0 ;
+
+    virtual void setShipRouteFromPath(const std::string& shipRoutePath) = 0;
 };
 
 

@@ -4,6 +4,7 @@
 
 #include "Simulator.h"
 #include "../algorithms/stowage/NaiveStowageAlgorithm.h"
+#include "../common/io/ObjectsReader.h"
 
 std::string getShipPlanPath(const std::string& travel){
     return travel + "/Plan";
@@ -17,6 +18,16 @@ void Simulator::runSimulation(IStowageAlgorithm& algorithm, const std::string& t
     ShipPlan shipPlan;
     ShipRoute shipRoute;
 
-    shipPlan = algorithm.readShipPlan(getShipPlanPath(travel));  // TODO: does algorithm should contain the readShipPlan, readShipRoute? or maybe the simulator?
-    shipRoute = algorithm.readShipRoute(getShipRoutePath(travel)); //
+    // Get plan and route paths
+    std::string shipPlanPath = getShipPlanPath(travel);
+    std::string shipRoutePath = getShipRoutePath(travel);
+
+    // Init for simulation
+    readShipPlanFromFile(shipPlanPath, shipPlan);
+    readShipRouteFromFile(shipRoutePath, shipRoute);
+
+    // Init for algorithm
+    algorithm.setShipPlanFromPath(shipPlanPath);
+    algorithm.setShipRouteFromPath(shipRoutePath);
+
 }

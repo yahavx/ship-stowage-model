@@ -15,14 +15,14 @@ class NaiveStowageAlgorithm : IStowageAlgorithm {
 
 public:
 
-    ShipPlan readShipPlan(const std::string& filePath) override;
+    void setWeightBalanceCalculator(WeightBalanceCalculator &calculator) override;
 
-    ShipRoute readShipRoute(const std::string& filePath) override;
+    void getInstructionsForCargo(const std::string &inputFileName,
+                                 const std::string &outputFileName) override;
 
-    void setWeightBalanceCalculator(WeightBalanceCalculator& calculator) override;
+    void setShipPlanFromPath(const std::string &shipPlanPath) override;
 
-    void getInstructionsForCargo(const std::string& inputFileName,
-                                 const std::string& outputFileName) override;
+    void setShipRouteFromPath(const std::string &shipRoutePath) override;
 };
 
 

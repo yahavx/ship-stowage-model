@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.15)
 project(ship_stowage_model)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
+set(GCC_COVERAGE_COMPILE_FLAGS "-std=c++2a -Wall -Wextra -pedantic-errors -DNDEBUG")
+# don't forget to add -Werror at the end (or ignore unused variable for now)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}" )
 
 # Keep this order when you add a file
 
@@ -14,7 +17,7 @@ add_executable(ship_stowage_model
 
         # algorithms
         src/algorithms/stowage/NaiveStowageAlgorithm.cpp src/algorithms/stowage/NaiveStowageAlgorithm.h
-        src/algorithms/stowage/IStowageAlgorithm.cpp src/algorithms/stowage/IStowageAlgorithm.h
+        src/algorithms/stowage/IStowageAlgorithm.h
 
         src/algorithms/CranesOperation.cpp src/algorithms/CranesOperation.h
         src/algorithms/WeightBalanceCalculator.cpp src/algorithms/WeightBalanceCalculator.h
@@ -33,8 +36,8 @@ add_executable(ship_stowage_model
         src/data_structures/ContainerStorage.cpp src/data_structures/ContainerStorage.h
 
         # io
-        src/io/FileReader.cpp src/io/FileReader.h
-        src/io/ObjectsReader.cpp src/io/ObjectsReader.h
+        src/common/io/FileReader.cpp src/common/io/FileReader.h
+        src/common/io/ObjectsReader.cpp src/common/io/ObjectsReader.h
 
         # simulator
         src/simulator/Simulator.cpp src/simulator/Simulator.h

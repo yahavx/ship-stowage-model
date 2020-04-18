@@ -19,12 +19,15 @@ class Container {
     PortId destPort;
 
 public:
-    // Constructs
+    // region Constructors
+
     Container(const std::string &id, int weight, const PortId &destPort);
+    // endregion
 
+    // region Getters and setters
 
-    // Getters and setters
     int getWeight() const;
+
 
     void setWeight(int weight);
 
@@ -35,10 +38,12 @@ public:
     const std::string &getId() const;
 
     void setId(const std::string &id);
+    // endregion
 
+    // region Printer
 
-    // Printer
     friend std::ostream &operator<<(std::ostream &os, const Container &container);
+    // endregion
 };
 
 
