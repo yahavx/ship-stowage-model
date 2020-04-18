@@ -19,13 +19,30 @@ class ContainerStorage {
 public:
     // region Functions
 
+    /**
+     * Returns all containers in this cargo that are targeted to the given port
+     * @param portId - target port
+     */
     Containers getContainersForDestination(const PortId &destId);
 
+    /**
+     * Add container to this storage
+     * @param container - container to add
+     */
     void addContainer(const Container &container);
 
-    void addContainers(const Containers&containers);
+    /**
+     * Add all given container to this storage
+     * @param newContainers - newContainers to add
+     */
+    void addContainers(const Containers &newContainers);
 
-    const Container &removeContainer(std::string containerId);
+
+    /**
+     * Remove container from this storage
+     * @param container - container to add
+     */
+    OptionalContainer removeContainer(const std::string& containerId);
     // endregion
 
     // region Getters and setters

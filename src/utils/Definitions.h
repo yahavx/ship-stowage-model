@@ -33,4 +33,6 @@ typedef std::map<std::string, std::vector<std::string>> StringToStringVectorMap;
 
 typedef std::vector<Container> Containers;
 
+typedef std::optional<Container> OptionalContainer;
+
 #endif //SHIP_STOWAGE_MODEL_DEFINITIONS_H

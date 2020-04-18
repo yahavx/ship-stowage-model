@@ -18,7 +18,7 @@ class Port {
 public:
     // region Constructors
 
-    Port(const PortId &id);
+    explicit Port(const PortId &id);
 
     Port(const PortId &id, const ContainerStorage &storage);
     // endregion
@@ -31,7 +31,7 @@ public:
 
     void addContainers(const Containers &containers);
 
-    const Container &removeContainer(std::string containerId);
+    OptionalContainer removeContainer(const std::string &containerId);
 
     static bool isIdInIsoFormat(const std::string &id);
     // endregion

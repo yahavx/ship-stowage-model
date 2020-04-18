@@ -28,7 +28,7 @@ void Port::addContainers(const Containers &containers) {
     return storage.addContainers(containers);
 }
 
-const Container &Port::removeContainer(std::string containerId) {
+OptionalContainer Port::removeContainer(const std::string &containerId) {
     return storage.removeContainer(containerId);
 }
 

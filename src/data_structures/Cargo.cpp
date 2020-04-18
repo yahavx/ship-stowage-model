@@ -3,7 +3,6 @@
 //
 
 #include "Cargo.h"
-#include "../algorithms/WeightBalanceCalculator.h"
 
 bool validateXY(int x, int y, const ShipPlan &shipPlan) {
     POS dims = shipPlan.getDimensions();
@@ -16,19 +15,23 @@ bool validateXY(int x, int y, const ShipPlan &shipPlan) {
     return true;
 }
 
-const Container &Cargo::getTopContainer(int x, int y) const {
-    //TODO: handle bad x,y or no containers at x,y
-    //   if (!validateXY(x, y, shipPlan))
-    //      return NULL;
+OptionalContainer Cargo::getTopContainer(int x, int y) const {
+    if (!validateXY(x, y, shipPlan))
+        return {};
     Containers xyContainers = containers[x][y];
+    if (xyContainers.empty())
+        return {};
+
     return xyContainers.back();
 }
 
-const Container &Cargo::removeTopContainer(int x, int y) {
-    //TODO: handle bad x,y or no containers at x,y
-    //   if (!validateXY(x, y, shipPlan))
-    //      return NULL;
+OptionalContainer Cargo::removeTopContainer(int x, int y) {
+    if (!validateXY(x, y, shipPlan))
+        return {};
     Containers xyContainers = containers[x][y];
+    if (xyContainers.empty())
+        return {};
+
     const Container &container = xyContainers.back();
     xyContainers.pop_back();
     return container;

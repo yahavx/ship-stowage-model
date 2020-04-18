@@ -35,7 +35,7 @@ public:
      * @param x - row
      * @param y - col
      */
-    const Container &getTopContainer(int x, int y) const;
+    OptionalContainer getTopContainer(int x, int y) const;
 
     /**
      * Returns positions for all containers in this cargo that are targeted to the given port
@@ -49,7 +49,7 @@ public:
      * @param x - row
      * @param y - col
      */
-    const Container &removeTopContainer(int x, int y);
+    OptionalContainer removeTopContainer(int x, int y);
 
     /**
      * Loads container to position (x,y) of possible, and returns the height it was loaded to
