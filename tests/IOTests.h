@@ -35,7 +35,7 @@ void inline runIOTests() {
 }
 
 void inline readShipPlanTest() {
-    string path = "../input-examples/tests/ShipPlan.csv";
+    string path = "../input-examples/tests/Plan";
     optional<ShipPlan> shipPlan = readShipPlanFromFile(path);
     assert(result);
     if (shipPlan.has_value()) {
@@ -44,7 +44,7 @@ void inline readShipPlanTest() {
 }
 
 void inline readShipRouteTest() {
-    string path = "../input-examples/tests/RouteFile.csv";
+    string path = "../input-examples/tests/Route";
     optional<ShipRoute> shipRoute = readShipRouteFromFile(path);
     assert(shipRoute.has_value());
     assert(shipRoute.getPorts().size() == 4);
@@ -64,7 +64,7 @@ void inline readCargoToPortFromFileTest() {
 
 void inline readPackingOperationsTest() {
 
-    string path = "../input-examples/tests/CargoInstructions";
+    string path = "../input-examples/tests/DASDF_13.cargo_data";
     optional<OPS> operations;
     cout << "Operations before: " << endl << *operations << endl;
     operations = readPackingOperationsFromFile(path);

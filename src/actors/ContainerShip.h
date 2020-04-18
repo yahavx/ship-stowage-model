@@ -24,6 +24,9 @@ public:
 
     ContainerShip();
 
+    ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRoute,
+                  WeightBalanceCalculator &balanceCalculator);
+
     ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRoute);
     // endregion
 

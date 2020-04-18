@@ -8,11 +8,16 @@
 
 // region Constructors
 
-//ContainerShip::ContainerShip() {}
+ContainerShip::ContainerShip() {}
 
 ContainerShip::ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRoute) : shipPlan(shipPlan),
                                                                                      shipRoute(shipRoute),
                                                                                      cargo(shipPlan) {}
+
+ContainerShip::ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRoute,
+                             WeightBalanceCalculator &balanceCalculator) : shipPlan(shipPlan), shipRoute(shipRoute),
+                                                                           cargo(shipPlan),
+                                                                           balanceCalculator(&balanceCalculator) {}
 // endregion
 
 // region Getters and setters
@@ -186,5 +191,4 @@ OPS ContainerShip::unloadContainer(const ContainerPosition &containerPos) {
 
     return ops;
 }
-
 // endregion

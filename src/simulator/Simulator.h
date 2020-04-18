@@ -9,6 +9,8 @@
 
 
 class Simulator {
+
+public:
     /**
      * Simulates an algorithm on a single travel.
      * @param travel a directory that contains Plan, Route, and list of <portId>_<number>.cargo_data files.

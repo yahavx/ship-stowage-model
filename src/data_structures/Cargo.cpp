@@ -7,6 +7,8 @@
 
 // region Constructors
 
+Cargo::Cargo() {}
+
 Cargo::Cargo(const ShipPlan &shipPlan) : shipPlan(shipPlan) {
     POS dims = shipPlan.getDimensions();
     auto x = std::get<0>(dims), y = std::get<1>(dims);

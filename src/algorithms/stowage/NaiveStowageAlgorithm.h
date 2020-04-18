@@ -11,7 +11,7 @@
 /**
  * A naive implementation.
  */
-class NaiveStowageAlgorithm : IStowageAlgorithm {
+class NaiveStowageAlgorithm : public IStowageAlgorithm {
 
 public:
 

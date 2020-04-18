@@ -18,6 +18,7 @@ class Cargo {
 
 public:
     // region Constructors
+    Cargo();
 
     explicit Cargo(const ShipPlan &shipPlan);
     // endregion
