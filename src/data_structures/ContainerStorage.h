@@ -8,26 +8,27 @@
 #include <vector>
 #include <ostream>
 #include "../data_objects/Container.h"
+#include "../utils/Definitions.h"
 
 
 static Container staticContainer("id", 100, PortId("id")); // TODO: remove this
 
 class ContainerStorage {
-    std::vector<Container> containers;
+    Containers containers;
 
 public:
     // Functions
-    std::vector<Container> getContainersForDestination(const PortId &destId);
+    Containers getContainersForDestination(const PortId &destId);
 
     void addContainer(const Container &container);
 
-    void addContainers(const std::vector<Container> &containers);
+    void addContainers(const Containers&containers);
 
     const Container &removeContainer(std::string containerId);
 
 
     // Getters and setters
-    const std::vector<Container> &getContainers() const;
+    const Containers &getContainers() const;
 
     friend std::ostream &operator<<(std::ostream &os, const ContainerStorage &storage);
 };

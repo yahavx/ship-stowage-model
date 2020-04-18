@@ -20,7 +20,7 @@ class ContainerShip {
 
 public:
 
-    std::vector<PackingOperation> dock(const PortId &portId, const std::vector<Container> &containersToLoad);
+    std::vector<PackingOperation> dock(const PortId &portId, const Containers &containersToLoad);
 
     const ShipPlan &getShipPlan() const;
 

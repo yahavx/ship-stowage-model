@@ -8,7 +8,9 @@
 #include <string>
 #include <vector>
 #include <map>
+#include "../data_objects/Container.h"
 #include "../data_objects/PackingOperation.h"
+
 
 
 /// Popular typedefs/structs
@@ -27,5 +29,6 @@ typedef std::vector<PackingOperation> OPS;
 
 typedef std::map<std::string, std::vector<std::string>> StringToStringVectorMap;
 
+typedef std::vector<Container> Containers;
 
 #endif //SHIP_STOWAGE_MODEL_DEFINITIONS_H

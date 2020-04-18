@@ -7,7 +7,7 @@
 #include "../utils/Definitions.h"
 
 OPS
-ContainerShip::dock(const PortId &portId, const std::vector<Container> &containersToLoad) {
+ContainerShip::dock(const PortId &portId, const Containers &containersToLoad) {
     OPS operations = OPS();
 
     std::vector<ContainerPosition> containersToUnload = this->getCargo().getContainersForPort(portId);
@@ -58,7 +58,7 @@ OPS ContainerShip::unloadContainer(const ContainerPosition &containerPos) {
     int currentHeight = this->getCargo().currentHeight(containerPos.x(), containerPos.y());
     int numOfContainersOnTop = currentHeight - containerPos.z();
 
-    std::vector<Container> containersOnTop = std::vector<Container>();
+    Containers containersOnTop = Containers();
 
     ///Unload all containers on top, later we will load them back
     for (int i = 0; i < numOfContainersOnTop; i++) {

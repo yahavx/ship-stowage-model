@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include "../data_structures/ContainerStorage.h"
 #include "../data_objects/PortId.h"
+#include "../utils/Definitions.h"
 
 class Port {
     PortId id;
@@ -22,11 +23,11 @@ public:
 
 
     // Functions
-    std::vector<Container> getContainersForDestination(const PortId &destId);
+    Containers getContainersForDestination(const PortId &destId);
 
     void addContainer(const Container &container);
 
-    void addContainers(const std::vector<Container> &containers);
+    void addContainers(const Containers &containers);
 
     const Container &removeContainer(std::string containerId);
 

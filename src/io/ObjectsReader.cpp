@@ -97,7 +97,7 @@ bool readCargoToPortFromFile(const std::string &filePath, Port &port) {
     std::cout << "Attempting to read cargo data..." << std::endl;
     StringStringVector data = readFile(filePath);
 
-    std::vector<Container> containersToAdd;
+    Containers containersToAdd;
 
     for (StringVector dataRow : data) {
         if (dataRow.size() < 3) {
