@@ -22,6 +22,9 @@ public:
 
     void setCode(const std::string &code);
 
+    bool operator==(const PortId &rhs) const;
+
+    bool operator!=(const PortId &rhs) const;
 
     // Printer
     friend std::ostream &operator<<(std::ostream &os, const PortId &id);

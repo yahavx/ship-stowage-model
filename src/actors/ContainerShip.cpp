@@ -55,7 +55,7 @@ OPS ContainerShip::loadContainerToaArbitraryPosition(const Container &container)
 
 OPS ContainerShip::unloadContainer(const ContainerPosition &containerPos) {
     OPS ops = OPS();
-    int currentHeight = this->getCargo().currentHeight(containerPos.x(), containerPos.y());
+    int currentHeight = this->getCargo().currentNumContainers(containerPos.x(), containerPos.y());
     int numOfContainersOnTop = currentHeight - containerPos.z();
 
     Containers containersOnTop = Containers();

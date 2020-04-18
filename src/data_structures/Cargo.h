@@ -22,17 +22,43 @@ public:
      */
     int canLoadContainerOnTop(int x, int y, const Container &container) const;
 
-    int currentHeight(int x, int y) const;
+    /**
+     * Returns the current number of containers in position (x,y), or -1 if x or y are out of bounds.
+     * @param x - row
+     * @param y - col
+     */
+    int currentNumContainers(int x, int y) const;
 
+    /**
+     * Returns the top container in position (x,y)
+     * //TODO: Switch to optional
+     * @param x - row
+     * @param y - col
+     */
+    const Container &getTopContainer(int x, int y) const;
 
-    const Container &getTopContainer(int x, int y);
+    /**
+     * Returns positions for all containers in this cargo that are targeted to the given port
+     * @param portId - target port
+     */
+    std::vector<ContainerPosition> getContainersForPort(const PortId &portId) const;
 
+    /**
+     * Removes and returns the top container in position (x,y)
+     * //TODO: Switch to optional
+     * @param x - row
+     * @param y - col
+     */
     const Container &removeTopContainer(int x, int y);
 
-
+    /**
+     * Loads container to position (x,y) of possible, and returns the height it was loaded to
+     * @param x - row
+     * @param y - col
+     * @param container - container to load
+     * @return - if operation succeeded returns the height te container was loaded to, else returns negative integer
+     */
     int loadContainerOnTop(int x, int y, const Container &container);
-
-    std::vector<ContainerPosition> getContainersForPort(const PortId &portId) const;
 };
 
 
