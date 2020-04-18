@@ -6,18 +6,20 @@
 #include "../data_objects/PortId.h"
 #include "../utils/UtilFunctions.h"
 
-// Constructors
+// region Constructors
+
 Port::Port(const PortId &id) : id(id) {}
 
 Port::Port(const PortId &id, const ContainerStorage &storage) : id(id), storage(storage) {}
+// endregion
 
+
+// region Functions
 
 Containers Port::getContainersForDestination(const PortId &destId) {
     return storage.getContainersForDestination(destId);
 }
 
-
-// Functions
 void Port::addContainer(const Container &container) {
     return storage.addContainer(container);
 }
@@ -41,9 +43,10 @@ bool Port::isIdInIsoFormat(const std::string &id) {
 
     return true;
 }
+// endregion
 
+// region Getters and setters
 
-// Getters and setters
 const PortId &Port::getId() const {
     return id;
 }
@@ -51,9 +54,10 @@ const PortId &Port::getId() const {
 void Port::setId(const PortId &id) {
     Port::id = id;
 }
+// endregion
 
+// region Printer
 
-// Printer
 std::ostream &operator<<(std::ostream &os, const Port &port) {
     os << "Port {" << std::endl;
     os << "\t" << port.id << std::endl;
@@ -61,4 +65,4 @@ std::ostream &operator<<(std::ostream &os, const Port &port) {
     os << "}" << std::endl;
     return os;
 }
-
+// endregion

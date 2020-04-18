@@ -16,13 +16,15 @@ class Port {
     ContainerStorage storage;
 
 public:
-    // Constructors
+    // region Constructors
+
     Port(const PortId &id);
 
     Port(const PortId &id, const ContainerStorage &storage);
+    // endregion
 
+    // region Functions
 
-    // Functions
     Containers getContainersForDestination(const PortId &destId);
 
     void addContainer(const Container &container);
@@ -32,16 +34,19 @@ public:
     const Container &removeContainer(std::string containerId);
 
     static bool isIdInIsoFormat(const std::string &id);
+    // endregion
 
+    //region Getters and setters
 
-    // Getters and setters
     const PortId &getId() const;
 
     void setId(const PortId &id);
+    // endregion
 
+    // region Printer
 
-    // Printer
     friend std::ostream &operator<<(std::ostream &os, const Port &port);
+    // endregion
 };
 
 

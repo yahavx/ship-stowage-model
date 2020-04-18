@@ -5,9 +5,10 @@
 #include "ContainerStorage.h"
 #include "../utils/Definitions.h"
 
+// region Functions
+
 //TODO: Return all containers for specified port
 // The garage of a port
-
 Containers ContainerStorage::getContainersForDestination(const PortId &destId) {
     return Containers();
 }
@@ -24,15 +25,17 @@ void ContainerStorage::addContainers(const Containers &containers) {
 const Container &ContainerStorage::removeContainer(std::string containerId) {
     return staticContainer;
 }
+// endregion
 
+// region Getters and setters
 
-// Getters and setters
 const Containers &ContainerStorage::getContainers() const {
     return containers;
 }
+// endregion
 
+// region Printer
 
-// Printer
 std::ostream &operator<<(std::ostream &os, const ContainerStorage &storage) {
     if (storage.containers.size() == 0) {
         std::cout << "\t<EmptyContainerStorage>" << std::endl;
@@ -48,3 +51,4 @@ std::ostream &operator<<(std::ostream &os, const ContainerStorage &storage) {
     std::cout << "\t}" << std::endl;
     return os;
 }
+// endregion

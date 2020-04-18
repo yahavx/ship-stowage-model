@@ -17,7 +17,8 @@ class ContainerStorage {
     Containers containers;
 
 public:
-    // Functions
+    // region Functions
+
     Containers getContainersForDestination(const PortId &destId);
 
     void addContainer(const Container &container);
@@ -25,12 +26,17 @@ public:
     void addContainers(const Containers&containers);
 
     const Container &removeContainer(std::string containerId);
+    // endregion
 
+    // region Getters and setters
 
-    // Getters and setters
     const Containers &getContainers() const;
+    // endregion
+
+    //region Printer
 
     friend std::ostream &operator<<(std::ostream &os, const ContainerStorage &storage);
+    // endregion
 };
 
 
