@@ -57,7 +57,7 @@ void inline readPackingOperationsTest() {
     std::string path = "../input-examples/tests/CargoInstructions";
     std::cout << "Operations before: " << std::endl << operations << std::endl;
     bool result = readPackingOperationsFromFile(path, operations);
-    assert(false);
+    assert(result);
     assert(operations.size() == 8);
     std::cout << "Operations after: " << std::endl << operations;
 }
