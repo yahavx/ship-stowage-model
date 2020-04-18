@@ -17,7 +17,7 @@ class ContainerShip {
     ShipPlan shipPlan;
     ShipRoute shipRoute;
     Cargo cargo;
-    WeightBalanceCalculator balanceCalculator;
+    WeightBalanceCalculator *balanceCalculator;
 
 public:
     // region Constructors
@@ -43,7 +43,7 @@ public:
 
     const WeightBalanceCalculator &getBalanceCalculator() const;
 
-    void setBalanceCalculator(const WeightBalanceCalculator &balanceCalculator);
+    void setBalanceCalculator(WeightBalanceCalculator &balanceCalculator);
     // endregion
 
     // region Functions

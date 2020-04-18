@@ -42,11 +42,12 @@ void ContainerShip::setCargo(const Cargo &cargo) {
 }
 
 const WeightBalanceCalculator &ContainerShip::getBalanceCalculator() const {
-    return balanceCalculator;
+    return *balanceCalculator;
 }
 
-void ContainerShip::setBalanceCalculator(const WeightBalanceCalculator &balanceCalculator) {
-    ContainerShip::balanceCalculator = balanceCalculator;
+void ContainerShip::setBalanceCalculator(WeightBalanceCalculator &balanceCalculator) {
+    ContainerShip::balanceCalculator = &balanceCalculator;
+    balanceCalculator.setCargo(cargo);
 }
 // endregion
 
@@ -87,7 +88,7 @@ OPS ContainerShip::loadContainerToArbitraryPosition(const Container &container) 
     /// Loop over all possible ship matrix cells and try to load the container on top, until success
     for (int x = 0; (x < std::get<0>(dims)) && (z < 0); x++) {
         for (int y = 0; (y < std::get<1>(dims)) && (z < 0); y++) {
-            BalanceStatus status = this->balanceCalculator.tryOperation(cargo, 'L', container.getWeight(), x, y);
+            BalanceStatus status = this->balanceCalculator->tryOperation('L', container.getWeight(), x, y);
             if (status == BalanceStatus::APPROVED) {
                 z = this->getCargo().loadContainerOnTop(x, y, container);
                 if (z >= 0) /// Successfully loaded
@@ -123,7 +124,7 @@ OPS ContainerShip::unloadContainer(const ContainerPosition &containerPos) {
     for (int i = 0; i < numOfContainersOnTop; i++) {
         //TODO: Check if balance calculator allows to unload
         auto topCont = this->getCargo().getTopContainer(x, y);
-        BalanceStatus status = this->balanceCalculator.tryOperation(cargo,'U', topCont->getWeight(), x, y);
+        BalanceStatus status = this->balanceCalculator->tryOperation('U', topCont->getWeight(), x, y);
         if (status != BalanceStatus::APPROVED) {
             failed = true;
             break;
@@ -149,7 +150,7 @@ OPS ContainerShip::unloadContainer(const ContainerPosition &containerPos) {
 
     // Unload the requested container
     auto topCont = this->getCargo().getTopContainer(x, y);
-    BalanceStatus status = this->balanceCalculator.tryOperation(cargo, 'U', topCont->getWeight(), x, y);
+    BalanceStatus status = this->balanceCalculator->tryOperation('U', topCont->getWeight(), x, y);
     if (status != BalanceStatus::APPROVED) {
         failed = true;
     }

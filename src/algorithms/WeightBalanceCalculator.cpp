@@ -11,10 +11,22 @@ WeightBalanceCalculator::WeightBalanceCalculator(const ShipPlan &plan) : plan(pl
 WeightBalanceCalculator::WeightBalanceCalculator() {}
 // endregion
 
+// region Getters and setters
+
+Cargo &WeightBalanceCalculator::getCargo() const {
+    return *cargo;
+}
+
+void WeightBalanceCalculator::setCargo(Cargo &cargo) {
+    WeightBalanceCalculator::cargo = &cargo;
+}
+// endregion
+
 // region Functions
 
-BalanceStatus WeightBalanceCalculator::tryOperation(Cargo &cargo, char loadUnload, int kg, int X, int Y) {
+BalanceStatus WeightBalanceCalculator::tryOperation(char loadUnload, int kg, int X, int Y) {
     return BalanceStatus::APPROVED;
     std::cout << loadUnload << kg << X << Y << cargo;  // TODO: remove
 }
+
 // endregion

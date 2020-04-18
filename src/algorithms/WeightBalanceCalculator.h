@@ -19,6 +19,7 @@ enum class BalanceStatus{
 class WeightBalanceCalculator {
 
     ShipPlan plan;
+    Cargo *cargo;
 
 public:
     // region Constructors
@@ -28,9 +29,16 @@ public:
     WeightBalanceCalculator(const ShipPlan &plan);
     // endregion
 
+    // region Getters and setters
+
+    Cargo &getCargo() const;
+
+    void setCargo(Cargo &cargo);
+    // endregion
+
     // region Functions
 
-    BalanceStatus tryOperation(Cargo &cargo, char loadUnload, int kg, int X, int Y);
+    BalanceStatus tryOperation(char loadUnload, int kg, int X, int Y);
     // endregion
 };
 
