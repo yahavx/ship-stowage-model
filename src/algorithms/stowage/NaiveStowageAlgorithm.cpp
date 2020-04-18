@@ -16,7 +16,7 @@ void NaiveStowageAlgorithm::setShipPlanFromPath(const std::string &shipPlanPath)
 }
 
 void NaiveStowageAlgorithm::setShipRouteFromPath(const std::string &shipRoutePath) {
-    readShipRouteFromFile(shipRoutePath, shipRoute);
+    this->shipRoute = *readShipRouteFromFile(shipRoutePath);
 }
 
 void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {

@@ -7,6 +7,7 @@
 #include "../../utils/UtilFunctions.h"
 #include <tuple>
 
+
 std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath) {
     std::cout << "Attempting to read ship plan..." << std::endl;
     StringStringVector data = readFile(filePath);
@@ -61,12 +62,11 @@ std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath) {
     return shipPlan;
 }
 
-bool readShipRouteFromFile(const std::string &filePath, ShipRoute &shipRoute) {
+std::optional<ShipRoute> readShipRouteFromFile(const std::string &filePath) {
     std::cout << "Attempting to read ship route..." << std::endl;
     StringStringVector data = readFile(filePath);
 
     std::vector<PortId> ports;
-
     std::string previousPort;  // to check that the same port doesn't appear twice
 
     for (StringVector dataRow : data) {
@@ -77,13 +77,20 @@ bool readShipRouteFromFile(const std::string &filePath, ShipRoute &shipRoute) {
             continue;
         }
 
+        if (token.compare(previousPort) == 0) {
+            std::cout << "Warning: same port appears twice in a row, ignoring" << std::endl;
+            continue;
+        }
+
+        previousPort = token;
+
         ports.push_back(PortId(token));
     }
 
     std::cout << "Read ship route successfully." << std::endl;
-    shipRoute.setPorts(ports);
 
-    return true;
+    ShipRoute shipRoute(ports);
+    return shipRoute;
 }
 
 std::optional<Port> readCargoToPortFromFile(const std::string &filePath) {
@@ -133,9 +140,11 @@ std::optional<Port> readCargoToPortFromFile(const std::string &filePath) {
     return port;
 }
 
-bool readPackingOperationsFromFile(const std::string &filePath, OPS &operations) {
+std::optional<OPS> readPackingOperationsFromFile(const std::string &filePath) {
     std::cout << "Attempting to read operations..." << std::endl;
     StringStringVector data = readFile(filePath);
+
+    std::optional<OPS> operations;
 
     for (StringVector dataRow : data) {
         if (dataRow.size() < 5) {
@@ -169,7 +178,7 @@ bool readPackingOperationsFromFile(const std::string &filePath, OPS &operations)
         int floor = stringToInt(floorStr), x = stringToInt(xStr), y = stringToInt(yStr);
 
         if (packingType != PackingType::move) {  // We have all the arguments needed
-            operations.push_back(PackingOperation(packingType, containerId, {floor, x, y}));
+            operations->push_back(PackingOperation(packingType, containerId, {floor, x, y}));
             continue;
         }
 
@@ -183,16 +192,16 @@ bool readPackingOperationsFromFile(const std::string &filePath, OPS &operations)
         }
         int floor2 = stringToInt(floorStr2), x2 = stringToInt(xStr2), y2 = stringToInt(yStr2);
 
-        operations.push_back(PackingOperation(packingType, containerId, {floor, x, y}, {floor2, x2, y2}));
+        operations->push_back(PackingOperation(packingType, containerId, {floor, x, y}, {floor2, x2, y2}));
     }
 
-    if (operations.size() == 0) {
+    if (operations->size() == 0) {
         std::cout << "Error: failed to read any operation" << std::endl;
-        return false;
+        return std::nullopt;
     }
 
     std::cout << "Read operations successfully." << std::endl;
-    return true;
+    return operations;
 }
 
 bool writePackingOperationsToFile(const std::string &filePath, OPS &operations) {
