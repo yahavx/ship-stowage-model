@@ -22,6 +22,9 @@ bool isDataOnlyIntegers(const StringStringVector &data);
 /// Converts string to int. Doesn't validate its legal.
 int stringToInt(const std::string &str);
 
+/// Converts int to string.
+std::string intToString(int num);
+
 /// Converts strings vector to ints vector. Doesn't validate the strings are actual numbers.
 IntIntVector convertDataToInt(const StringStringVector &data);
 
@@ -31,5 +34,10 @@ bool isEnglishWord(const std::string &str);
 /// endWith string function.
 bool endsWith(const std::string &str, const std::string &suffix);
 
+/// Converts string representation of packing type to a packing type. Doesn't validate input.
+PackingType packingTypeToString(char type);
+
+/// Converts packing type to its string representation. Doesn't validate input.
+std::string packingTypeFromString(PackingType type);
 
 #endif //SHIP_STOWAGE_MODEL_UTILFUNCTIONS_H

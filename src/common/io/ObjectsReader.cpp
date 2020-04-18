@@ -5,7 +5,7 @@
 #include "ObjectsReader.h"
 #include "FileReader.h"
 #include "../../utils/UtilFunctions.h"
-
+#include <tuple>
 
 bool readShipPlanFromFile(const std::string &filePath, ShipPlan &shipPlan) {  // TODO: check if indices are 0 or 1 based
     std::cout << "Attempting to read ship plan..." << std::endl;
@@ -19,9 +19,7 @@ bool readShipPlanFromFile(const std::string &filePath, ShipPlan &shipPlan) {  //
 
     IntVector firstRow = intData[0];
     if (firstRow.size() < 3) {
-        std::cout
-                << "Error: insufficient number of arguments for ship dimensions, exiting"
-                << std::endl;
+        std::cout << "Error: insufficient number of arguments for ship dimensions, exiting" << std::endl;
         return false;
     }
 
@@ -33,8 +31,7 @@ bool readShipPlanFromFile(const std::string &filePath, ShipPlan &shipPlan) {  //
 
     for (IntVector intDataRow : intData) {  // iterate on rows
         if (intDataRow.size() < 3) {
-            std::cout << "Warning: data row contains less than 3 arguments, ignoring"
-                      << std::endl;
+            std::cout << "Warning: data row contains less than 3 arguments, ignoring" << std::endl;
             continue;
         }
 
@@ -43,15 +40,12 @@ bool readShipPlanFromFile(const std::string &filePath, ShipPlan &shipPlan) {  //
         int availableContainers = intDataRow[2];
 
         if (n <= 0 || n >= x || m <= 0 || m >= y) {
-            std::cout << "Warning: data row exceeds the ship dimensions, ignoring"
-                      << std::endl;
+            std::cout << "Warning: data row exceeds the ship dimensions, ignoring" << std::endl;
             continue;
         }
 
         if (availableContainers >= z) {
-            std::cout
-                    << "Warning: data row exceeds the maximum available containers, ignoring"
-                    << std::endl;
+            std::cout << "Warning: data row exceeds the maximum available containers, ignoring" << std::endl;
             continue;
         }
 
@@ -77,9 +71,7 @@ bool readShipRouteFromFile(const std::string &filePath, ShipRoute &shipRoute) {
         std::string token = dataRow[0];  // ignore extra tokens in a row
 
         if (!isEnglishWord(token) || token.length() != 5) {
-            std::cout
-                    << "Warning: invalid port format, ignoring"
-                    << std::endl;
+            std::cout << "Warning: invalid port format, ignoring" << std::endl;
             continue;
         }
 
@@ -100,29 +92,24 @@ bool readCargoToPortFromFile(const std::string &filePath, Port &port) {
 
     for (StringVector dataRow : data) {
         if (dataRow.size() < 3) {
-            std::cout << "Warning: data row contains less than 3 arguments, ignoring"
-                      << std::endl;
+            std::cout << "Warning: data row contains less than 3 arguments, ignoring" << std::endl;
             continue;
         }
 
         std::string id = dataRow[0], weight = dataRow[1], destPort = dataRow[2];
 
         if (!Port::isIdInIsoFormat(id)) {
-            std::cout << "Warning: container id not in ISO format, ignoring"
-                      << std::endl;
+            std::cout << "Warning: container id not in ISO format, ignoring" << std::endl;
             continue;
         }
 
         if (!isInteger(weight)) {
-            std::cout << "Warning: container weight is not an integer, ignoring"
-                      << std::endl;
+            std::cout << "Warning: container weight is not an integer, ignoring" << std::endl;
             continue;
         }
 
         if (!isEnglishWord(destPort) || destPort.length() != 5) {
-            std::cout
-                    << "Warning: port symbol is invalid, ignoring"
-                    << std::endl;
+            std::cout << "Warning: port symbol is invalid, ignoring" << std::endl;
             continue;
         }
 
@@ -136,11 +123,96 @@ bool readCargoToPortFromFile(const std::string &filePath, Port &port) {
 }
 
 bool readOperationsFromFile(const std::string &filePath, OPS &operations) {
-    std::cout << "Attempting to read cargo data..." << std::endl;
+    std::cout << "Attempting to read operations..." << std::endl;
     StringStringVector data = readFile(filePath);
 
+    for (StringVector dataRow : data) {
+        if (dataRow.size() < 5) {
+            std::cout << "Warning: data row contains less than 5 arguments, ignoring" << std::endl;
+            continue;
+        }
+
+        std::string opStr = dataRow[0], containerId = dataRow[1];  // Str suffix indicates its string representation
+        std::string floorStr = dataRow[2], xStr = dataRow[3], yStr = dataRow[4];
+
+        if (opStr.size() != 1 || (opStr[0] != 'L' && opStr[0] != 'U' && opStr[0] != 'M' && opStr[0] != 'R')) {
+            std::cout << "Warning: invalid operation type, ignoring" << std::endl;
+            continue;
+        }
+        PackingType packingType = packingTypeToString(opStr[0]);
+
+        if (packingType == PackingType::move && dataRow.size() < 8) {
+            std::cout << "Warning: data row contains less than 8 arguments for move operation, ignoring" << std::endl;
+            continue;
+        }
+
+        if (!Port::isIdInIsoFormat(containerId)) {
+            std::cout << "Warning: container id not in ISO format, ignoring" << std::endl;
+            continue;
+        }
+
+        if (!isInteger(floorStr) || !isInteger(xStr) || !isInteger(yStr)) {
+            std::cout << "Warning: floor, x or y are not an integers, ignoring" << std::endl;
+        }
+        int floor = stringToInt(floorStr), x = stringToInt(xStr), y = stringToInt(yStr);
+
+        if (packingType != PackingType::move) {  // We have all the arguments needed
+            operations.push_back(PackingOperation(packingType, containerId, {floor, x, y}));
+            continue;
+        }
+
+        // It's a move operation
+
+        std::string floorStr2 = dataRow[5], xStr2 = dataRow[6], yStr2 = dataRow[7];
+
+        if (!isInteger(floorStr2) || !isInteger(xStr2) || !isInteger(yStr2)) {
+            std::cout << "Warning: floor, x or y are not an integers, ignoring" << std::endl;
+        }
+        int floor2 = stringToInt(floorStr2), x2 = stringToInt(xStr2), y2 = stringToInt(yStr2);
+
+        operations.push_back(PackingOperation(packingType, containerId, {floor, x, y}, {floor2, x2, y2}));
+    }
+
+    if (operations.size() == 0) {
+        std::cout << "Error: failed to read any operation" << std::endl;
+        return false;
+    }
+
+    std::cout << "Read operations successfully." << std::endl;
+    return true;
 }
 
 bool writeOperationsToFile(const std::string &filePath, OPS &operations) {
+    StringStringVector data;
 
+    std::cout << "Attempting to write operations..." << std::endl;
+
+    for (PackingOperation op : operations) {
+        data.emplace_back();  // add new row
+        StringVector &currRow = data.back();
+
+        currRow.push_back(packingTypeFromString(op.getType()));  // add operation type (L, U, M, R)
+        currRow.push_back(op.getContainerId());  // add container id
+
+        IntTuple3 fromPos = op.getFromPosition();  // add fromPosition
+        currRow.push_back(intToString(std::get<0>(fromPos));)
+        currRow.push_back(intToString(std::get<1>(fromPos));)
+        currRow.push_back(intToString(std::get<2>(fromPos));)
+
+        if (op.getType() == PackingType::move) {
+            IntTuple3 toPos = op.getFromPosition();  // add toPosition (if move operation)
+            currRow.push_back(intToString(std::get<0>(toPos));)
+            currRow.push_back(intToString(std::get<1>(toPos));)
+            currRow.push_back(intToString(std::get<2>(toPos));)
+        }
+    }
+
+    bool res = writeFile(filePath, data);
+
+    if (!res) {
+        std::cout << "Error: couldn't write to file." << std::endl;
+        return false;
+    }
+    std::cout << "Wrote operations successfully." << std::endl;
+    return true;
 }

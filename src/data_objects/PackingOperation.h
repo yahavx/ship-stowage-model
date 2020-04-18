@@ -9,7 +9,7 @@
 #include <ostream>
 
 enum class PackingType {
-    load, unload, reject
+    load, unload, reject, move
 };
 
 /// Instructions for loading and unloading cargo to the ship

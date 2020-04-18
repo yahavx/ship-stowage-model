@@ -27,4 +27,5 @@ bool readOperationsFromFile(const std::string &filePath, OPS &operations);
 /// Write operations to a file.
 bool writeOperationsToFile(const std::string &filePath, OPS &operations);
 
+
 #endif //SHIP_STOWAGE_MODEL_OBJECTSREADER_H

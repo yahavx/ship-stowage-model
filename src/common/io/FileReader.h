@@ -11,14 +11,21 @@
 #include "../../utils/Definitions.h"
 
 
-/// Reads a .csv or .txt file to a 2-dimension matrix, ignores lines that start with '#' and empty lines.
+/// Reads a file to a 2-dimension matrix, ignores lines that start with '#' and empty lines.
 StringStringVector readFile(const std::string &path);
+
+/**
+ * Writes 2-dimension matrix to a file, a line per entry, tokens in a line split with commas.
+ * @param path to write to, overwritten if exists.
+ * @return true if completed successfully.
+ */
+bool writeFile(const std::string &path, StringStringVector data);  // TODO
 
 /**
  * Receives a travel directory and sorts the .cargo_files for each port.
  * @return a map from each portID to a string vector of his .cargo_files, ordered from small to big.
  */
-StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath);  // TODO: implement
+StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath);  // TODO
 
 
 

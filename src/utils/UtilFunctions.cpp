@@ -61,3 +61,33 @@ bool isEnglishWord(const std::string &str) {
 bool endsWith(const std::string &str, const std::string &suffix) {
     return str.size() >= suffix.size() && 0 == str.compare(str.size() - suffix.size(), suffix.size(), suffix);
 }
+
+PackingType packingTypeToString(char type) {
+    switch (type) {
+        case 'L':
+            return PackingType::load;
+        case 'U':
+            return PackingType::unload;
+        case 'M':
+            return PackingType::move;
+        default:  // case 'R'
+            return PackingType::reject;
+    }
+}
+
+std::string packingTypeFromString(PackingType type) {
+    switch (type) {
+        case PackingType::load:
+            return "L";
+        case PackingType::unload:
+            return "U";
+        case PackingType::move:
+            return "M";
+        default:  // case PackingType::reject
+            return "R";
+    }
+}
+
+std::string intToString(int num) {
+    return std::to_string(num);
+}

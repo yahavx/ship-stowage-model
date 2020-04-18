@@ -12,7 +12,6 @@
 #include "../data_objects/PackingOperation.h"
 
 
-
 /// Popular typedefs/structs
 
 class PackingOperation;
@@ -32,5 +31,8 @@ typedef std::vector<PackingOperation> OPS;
 typedef std::map<std::string, std::vector<std::string>> StringToStringVectorMap;
 
 typedef std::vector<Container> Containers;
+
+typedef std::tuple<int, int, int> IntTuple3;
+
 
 #endif //SHIP_STOWAGE_MODEL_DEFINITIONS_H

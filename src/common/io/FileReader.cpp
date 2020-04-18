@@ -15,7 +15,7 @@ bool SkipBOM(std::istream &in)  // some files contains garbage bytes at the star
 {
     char test[4] = {0};
     in.read(test, 3);
-    if (strcmp(test, "\xEF\xBB\xBF") == 0)  // TODO: validate that strcmp is really from cstring
+    if (strcmp(test, "\xEF\xBB\xBF") == 0)
         return true;
     in.seekg(0);
     return false;
@@ -47,6 +47,8 @@ StringStringVector readFile(const std::string &path) {
 
     return data;
 }
+
+// region sortTravelCargoData
 
 /// Returns a list of file (names) of a directory
 StringVector getFilesFromDirectory(const std::string &directoryPath) {  // returns list of files in a directory
@@ -87,4 +89,9 @@ StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath) {
         }
 
     }
+}
+// endregion
+
+bool writeFile(const std::string &path, StringStringVector data) {
+
 }
