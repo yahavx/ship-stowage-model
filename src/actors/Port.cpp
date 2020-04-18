@@ -12,7 +12,7 @@ Port::Port(const PortId &id) : id(id) {}
 Port::Port(const PortId &id, const ContainerStorage &storage) : id(id), storage(storage) {}
 
 
-std::vector<Container> Port::getContainersForDestination(const PortId &destId) {
+Containers Port::getContainersForDestination(const PortId &destId) {
     return storage.getContainersForDestination(destId);
 }
 
@@ -22,7 +22,7 @@ void Port::addContainer(const Container &container) {
     return storage.addContainer(container);
 }
 
-void Port::addContainers(const std::vector<Container> &containers) {
+void Port::addContainers(const Containers &containers) {
     return storage.addContainers(containers);
 }
 

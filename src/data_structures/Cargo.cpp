@@ -5,31 +5,89 @@
 #include "Cargo.h"
 #include "../algorithms/WeightBalanceCalculator.h"
 
-//TODO: just to have something to return, can't return null reference
-static Container tmpContainer ("id", 100 , PortId("id"));
+bool validateXY(int x, int y, const ShipPlan &shipPlan) {
+    POS dims = shipPlan.getDimensions();
+    if (x < 0 || x >= std::get<0>(dims))
+        return false;
 
-const Container &Cargo::getTopContainer(int x, int y) {
-    return tmpContainer;
+    if (y < 0 || y >= std::get<1>(dims))
+        return false;
+
+    return true;
+}
+
+const Container &Cargo::getTopContainer(int x, int y) const {
+    //TODO: handle bad x,y or no containers at x,y
+    //   if (!validateXY(x, y, shipPlan))
+    //      return NULL;
+    Containers xyContainers = containers[x][y];
+    return xyContainers.back();
 }
 
 const Container &Cargo::removeTopContainer(int x, int y) {
-    return tmpContainer;
+    //TODO: handle bad x,y or no containers at x,y
+    //   if (!validateXY(x, y, shipPlan))
+    //      return NULL;
+    Containers xyContainers = containers[x][y];
+    const Container &container = xyContainers.back();
+    xyContainers.pop_back();
+    return container;
 }
 
 int Cargo::canLoadContainerOnTop(int x, int y, const Container &container) const {
-    return 0;
+    if (!validateXY(x, y, shipPlan))
+        return -1;
+
+    int maxHeight = shipPlan.getHeights()[x][y];
+    int currentHeight = currentNumContainers(x, y);
+    if (currentHeight >= maxHeight)
+        return -1;
+
+    Containers xyContainers = containers[x][y];
+    int loadedToHeight = containers.size();
+
+    return loadedToHeight;
 }
 
 int Cargo::loadContainerOnTop(int x, int y, const Container &container) {
-    return 0;
+    if (!validateXY(x, y, shipPlan))
+        return -1;
+
+    int maxHeight = shipPlan.getHeights()[x][y];
+    int currentHeight = currentNumContainers(x, y);
+    if (currentHeight >= maxHeight)
+        return -1;
+
+    Containers xyContainers = containers[x][y];
+    int loadedToHeight = containers.size();
+    xyContainers.push_back(container);
+
+    return loadedToHeight;
 }
 
 std::vector<ContainerPosition> Cargo::getContainersForPort(const PortId &portId) const {
-    return std::vector<ContainerPosition>();
+    std::vector<ContainerPosition> result = std::vector<ContainerPosition>();
+
+    POS dims = shipPlan.getDimensions();
+    for (int x = 0; x < std::get<0>(dims); x++)
+        for (int y = 0; y < std::get<1>(dims); y++) {
+            Containers xyContainers = containers[x][y];
+
+            for (int z = 0; z < xyContainers.size(); z++)
+                if (xyContainers[z].getDestPort() == portId) {
+                    result.push_back(ContainerPosition(xyContainers[z], {x, y, z}));
+                }
+        }
+
+
+    return result;
 }
 
-int Cargo::currentHeight(int x, int y) const {
-    return 0;
-}
+int Cargo::currentNumContainers(int x, int y) const {
+    if (!validateXY(x, y, shipPlan))
+        return -1;
 
+    Containers xyContainers = containers[x][y];
+    return xyContainers.size();
+}
 

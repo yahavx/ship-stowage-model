@@ -17,14 +17,14 @@ void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &input_ful
     PortId currentPortId("test");
     Port port(currentPortId);
 
-    std::vector<Container> containersToLoad = std::vector<Container>();
+    Containers containersToLoad = Containers();
     // Collect all containers that needs to be loaded
     for (const PortId &id : ship.getShipRoute().getPorts()) {
-        std::vector<Container> portContainers = port.getContainersForDestination(id);
+        Containers portContainers = port.getContainersForDestination(id);
         containersToLoad.insert(containersToLoad.end(), containersToLoad.begin(), containersToLoad.end());
     }
     // Get instructions for unloading and loading from ship
-    std::vector<PackingOperation> instructions = ship.dock(currentPortId, containersToLoad);
+    OPS instructions = ship.dock(currentPortId, containersToLoad);
 
     // Perform operations on local shop and port
     for (const PackingOperation &op : instructions) {

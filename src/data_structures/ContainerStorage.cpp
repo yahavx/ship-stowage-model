@@ -3,19 +3,20 @@
 //
 
 #include "ContainerStorage.h"
+#include "../utils/Definitions.h"
 
 //TODO: Return all containers for specified port
 // The garage of a port
 
-std::vector<Container> ContainerStorage::getContainersForDestination(const PortId &destId) {
-    return std::vector<Container>();
+Containers ContainerStorage::getContainersForDestination(const PortId &destId) {
+    return Containers();
 }
 
 void ContainerStorage::addContainer(const Container &container) {
     containers.push_back(container);
 }
 
-void ContainerStorage::addContainers(const std::vector<Container> &containers) {
+void ContainerStorage::addContainers(const Containers &containers) {
     this->containers.insert(this->containers.end(), containers.begin(), containers.end());
 }
 
@@ -26,7 +27,7 @@ const Container &ContainerStorage::removeContainer(std::string containerId) {
 
 
 // Getters and setters
-const std::vector<Container> &ContainerStorage::getContainers() const {
+const Containers &ContainerStorage::getContainers() const {
     return containers;
 }
 
