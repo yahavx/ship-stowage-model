@@ -11,8 +11,7 @@ void NaiveStowageAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &
     this->ship.setBalanceCalculator(calculator);
 }
 
-void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &input_full_path_and_file_name,
-                                                    const std::string &output_full_path_and_file_name) {
+void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
     // TODO: Read input file and initiate port object, line below is a mockup
     PortId currentPortId("test");
     Port port(currentPortId);
@@ -23,16 +22,20 @@ void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &input_ful
         Containers portContainers = port.getContainersForDestination(id);
         containersToLoad.insert(containersToLoad.end(), containersToLoad.begin(), containersToLoad.end());
     }
-    // Get instructions for unloading and loading from ship
-    OPS instructions = ship.dock(currentPortId, containersToLoad);
+    // Get ops for unloading and loading from ship
+    OPS ops = ship.dock(currentPortId, containersToLoad);
 
     // Perform operations on local shop and port
-    for (const PackingOperation &op : instructions) {
-        CranesOperation::preformOperation(op, port, ship);
-        // TODO: Handle failing operation, for example maybe return the container to port
+    for (const PackingOperation &op : ops) {
+        auto opResult = CranesOperation::preformOperation(op, port, ship);
+        if(opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND)
+            std::cout << "Crane got illegal operation, didn't find container with ID:" << op.getContainerId() << "\n";
+        if(opResult == CraneOperationResult::FAIL_ILLEGAL_OP)
+            std::cout << "Crane got illegal operation" << op << "\n";
+        // TODO: Handle failing operation ??
     }
 
-    //TODO: Write instructions to output file
+    writeOperationsToFile(outputFile, ops);
 }
 
 void NaiveStowageAlgorithm::setShipPlanFromPath(const std::string &shipPlanPath) {
@@ -40,7 +43,7 @@ void NaiveStowageAlgorithm::setShipPlanFromPath(const std::string &shipPlanPath)
 }
 
 void NaiveStowageAlgorithm::setShipRouteFromPath(const std::string &shipRoutePath) {
-    readShipRouteFromFile(shipRoutePath,shipRoute);
+    readShipRouteFromFile(shipRoutePath, shipRoute);
 }
 
 
