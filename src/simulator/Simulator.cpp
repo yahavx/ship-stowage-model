@@ -55,6 +55,7 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
 
     std::cout << "Validating route..." << std::endl;
     filterUnusedPorts(map, ship.getShipRoute());  // remove the port files which are not on the ship route
+    std::cout << "Finished." << std::endl;
 
     printSeparator(1, 1);
 
@@ -73,7 +74,6 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
 
         res = getInstructionsForCargo(algorithm, travel, map,
                                       port);  // triggers algorithm getInstructions(), sets port ContainerStorage if needed
-
         if (!res)
             continue; // failed to read current dock file, errors were printed inside  // TODO: check if we can continue anyways
 

@@ -28,11 +28,13 @@ void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile
     Port port;
     initializePort(inputFile, port);
 
-    Containers containersToLoad = Containers();
+    Containers containersToLoad;
 
     // Collect all containers that needs to be loaded
-    for (longUInt i = 1; i < this->ship.getShipRoute().getPorts().size(); i++) {
-        const PortId &id = ship.getShipRoute().getPorts()[i];
+    std::vector<PortId>& ports = this->ship.getShipRoute().getPorts();
+
+    for (longUInt i = 1; i < ports.size(); i++) {
+        PortId &id = ports[i];
         Containers portContainers = port.getContainersForDestination(id);
         containersToLoad.insert(containersToLoad.end(), portContainers.begin(), portContainers.end());
     }

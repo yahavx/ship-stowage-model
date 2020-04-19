@@ -36,4 +36,5 @@ typedef std::optional<Container> OptionalContainer;
 
 typedef long long unsigned int longUInt;
 
+
 #endif //SHIP_STOWAGE_MODEL_DEFINITIONS_H
