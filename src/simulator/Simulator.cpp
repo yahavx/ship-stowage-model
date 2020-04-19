@@ -82,16 +82,7 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
         if (!optOps.has_value()) {
             std::cout << "Warning: no packing operations were read" << std::endl;
         } else {
-            // Perform operations on local ship and port
-            for (const PackingOperation &op : *optOps) {
-                auto opResult = CranesOperation::preformOperation(op, port, ship);
-                if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND)
-                    std::cout << "Crane received illegal operation, didn't find container with ID:"
-                              << op.getContainerId()
-                              << std::endl;
-                if (opResult == CraneOperationResult::FAIL_ILLEGAL_OP)
-                    std::cout << "Crane received illegal operation: " << op << "\n";
-            }
+            performPackingOperations(ship, port, *optOps);
         }
 
         std::cout << "The ship is continuing to the next port..." << std::endl;
@@ -104,6 +95,18 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
     std::cout << "The ship has completed its journey!" << std::endl;
 
     printSeparator(1, 1);
+}
+
+void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const OPS &ops) const {// Perform operations on local ship and port
+    for (const PackingOperation &op : ops) {
+        auto opResult = CranesOperation::preformOperation(op, port, ship);
+        if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND)
+            std::cout << "Crane received illegal operation, didn't find container with ID:"
+                      << op.getContainerId()
+                      << std::endl;
+        if (opResult == CraneOperationResult::FAIL_ILLEGAL_OP)
+            std::cout << "Crane received illegal operation: " << op << std::endl;
+    }
 }
 
 void Simulator::initAlgorithm(IStowageAlgorithm &algorithm, const std::string &shipPlanPath,

@@ -27,13 +27,17 @@ public:
 private:
 
     /**
-     * Inits the ship of the simulation. Returns true if succeed.
+     * Inits the ship of a single simulation. Returns true if succeed.
      * @return true if succeed.
      */
     bool initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath, ContainerShip &ship) const;
 
+    /// Inits the algorithm in a single simulation.
     void initAlgorithm(IStowageAlgorithm &algorithm, const std::string &shipPlanPath,
                        const std::string &shipRoutePath) const;
+
+    /// Perform packing operations received from algorithm, on simulator's ship. Validates each operation is legal.
+    void performPackingOperations(ContainerShip &ship, Port &port, const OPS &ops) const;
 };
 
 
