@@ -12,12 +12,11 @@
 #include "src/algorithms/stowage/NaiveStowageAlgorithm.h"
 #include "src/simulator/SimulatorUtil.h"
 
-
 using namespace std;
 
-int main() {
-//    simulationTest();
-    auto x = sortTravelCargoData("../input-examples/Travel_4");
-    cout << x;
 
+int main() {
+    simulationTest();
+//    auto x = sortTravelCargoData("../input-examples/Travel_4");
+//    cout << x;
 }

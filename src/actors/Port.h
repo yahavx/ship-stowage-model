@@ -18,6 +18,8 @@ class Port {
 public:
     // region Constructors
 
+    Port();
+
     explicit Port(const PortId &id);
 
     Port(const PortId &id, const ContainerStorage &storage);

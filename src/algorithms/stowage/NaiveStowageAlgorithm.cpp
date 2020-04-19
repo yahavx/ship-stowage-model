@@ -5,6 +5,7 @@
 #include "NaiveStowageAlgorithm.h"
 #include "../CranesOperation.h"
 #include "../../common/io/ObjectsReader.h"
+#include "../../utils/UtilFunctions.h"
 
 
 void NaiveStowageAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &calculator) {
@@ -22,16 +23,24 @@ void NaiveStowageAlgorithm::setShipRouteFromPath(const std::string &shipRoutePat
 }
 
 void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
-    std::optional<Port> optPort = readCargoToPortFromFile(inputFile);
-
-    if (!optPort.has_value()) {
-        std::cout << "Error in getInstructionsForCargo(): couldn't load port" << std::endl;
+    Port port;
+    if (startsWith(inputFile, unloadOnly)) {  // TODO: make this not arabic
+        std::string portCode = inputFile.substr(11, 5);
+        port.setId(PortId(portCode));
     }
-    Port port = *optPort;
+
+    else {
+        std::optional<Port> optPort = readCargoToPortFromFile(inputFile);
+
+        if (!optPort.has_value()) {
+            std::cout << "Error in getInstructionsForCargo(): couldn't load port" << std::endl;
+        }
+        port = *optPort;
+    }
 
     Containers containersToLoad = Containers();
     // Collect all containers that needs to be loaded
-    // TODO: only remaining route should be considerd
+    // TODO: only remaining route should be considered
     for (const PortId &id : ship.getShipRoute().getPorts()) {
         Containers portContainers = port.getContainersForDestination(id);
         containersToLoad.insert(containersToLoad.end(), portContainers.begin(), portContainers.end());

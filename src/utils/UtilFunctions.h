@@ -34,6 +34,9 @@ bool isEnglishWord(const std::string &str);
 /// endWith string function.
 bool endsWith(const std::string &str, const std::string &suffix);
 
+/// startsWith string function.
+bool startsWith(const std::string &str, const std::string &prefix);
+
 /// Converts string representation of packing type to a packing type. Doesn't validate input.
 PackingType packingTypeToString(char type);
 

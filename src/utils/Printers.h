@@ -30,8 +30,12 @@ std::ostream &operator<<(std::ostream &os, const OPS &ops);
 /// Prints a map from string to StringStringVector.
 std::ostream &operator<<(std::ostream &os, const StringToStringVectorMap &map);
 
-/// Prints a separator line (of dashes).
-void printSeparator();
+/**
+ * Prints a separator line (of dashes).
+ * @param linesBefore number of line spaces before
+ * @param linesAfter number of line spaces after
+ */
+void printSeparator(int linesBefore, int linesAfter);
 
 
 #endif //SHIP_STOWAGE_MODEL_PRINTERS_H

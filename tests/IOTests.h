@@ -23,13 +23,13 @@ using namespace std;
 
 void inline runIOTests() {
     readShipPlanTest();
-    printSeparator();
+    printSeparator(1, 1);
 
     readShipRouteTest();
-    printSeparator();
+    printSeparator(1, 1);
 
     readCargoToPortFromFileTest();
-    printSeparator();
+    printSeparator(1, 1);
 
     readPackingOperationsTest();
 }
@@ -37,7 +37,7 @@ void inline runIOTests() {
 void inline readShipPlanTest() {
     string path = "../input-examples/tests/Plan";
     optional<ShipPlan> shipPlan = readShipPlanFromFile(path);
-    assert(result);
+    assert(shipPlan.has_value());
     if (shipPlan.has_value()) {
         cout << *shipPlan;
     }
@@ -47,7 +47,7 @@ void inline readShipRouteTest() {
     string path = "../input-examples/tests/Route";
     optional<ShipRoute> shipRoute = readShipRouteFromFile(path);
     assert(shipRoute.has_value());
-    assert(shipRoute.getPorts().size() == 4);
+    assert(shipRoute->getPorts().size() == 4);
     if (shipRoute.has_value()) {
         cout << *shipRoute;
     }
@@ -63,14 +63,15 @@ void inline readCargoToPortFromFileTest() {
 }
 
 void inline readPackingOperationsTest() {
-
     string path = "../input-examples/tests/DASDF_13.cargo_data";
     optional<OPS> operations;
     cout << "Operations before: " << endl << *operations << endl;
     operations = readPackingOperationsFromFile(path);
-    assert(result);
-    assert(operations.size() == 8);
-    cout << "Operations after: " << endl << *operations;
+    assert(operations.has_value());
+    assert(operations->size() == 8);
+    if (operations.has_value()) {
+        cout << "Operations after: " << endl << *operations;
+    }
 }
 
 

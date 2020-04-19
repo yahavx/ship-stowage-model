@@ -77,3 +77,58 @@ StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath) {
     return map;
 }
 // endregion
+
+std::optional<std::string> getNextFileForPort(StringToStringVectorMap &map, const std::string &portId) {
+    if (map.find(portId) == map.end()) {  // this port does not exist
+        return std::nullopt;
+    }
+
+    StringVector &filesForPort = map[portId];
+
+    if (filesForPort.size() == 0) {  // no files remaining
+        return std::nullopt;
+    }
+
+    std::string first = filesForPort[0];  // retrieve first element
+    filesForPort.erase(filesForPort.begin());  // pop first element
+    return first;
+}
+
+void filterUnusedPorts(StringToStringVectorMap &map, const ShipRoute &shipRoute) {
+    StringVector toErase;
+
+    for (auto &entry: map) {
+        std::string currPortCode = entry.first;  // get a port id
+
+        bool found = false;  // indicates if we found this port in the route
+        for (const PortId &portId : shipRoute.getPorts()) {
+            if (portId.getCode() == currPortCode) {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {  // port is not in the route, remove it
+            std::cout << "Warning: port " << currPortCode << " has cargo files but doesn't appear in the route, ignoring" << std::endl;
+            toErase.push_back(currPortCode);  // we don't erase in-place because it will crash the map iterator
+        }
+    }
+
+    for (std::string& port : toErase){
+        map.erase(port);
+    }
+}
+
+void filterTwiceInARowPorts(ShipRoute &shipRoute) {
+    StringVector toErase;
+    std::string last = "";
+    std::vector<PortId> newPorts;
+
+    for (PortId portId : shipRoute.getPorts()) {
+        if (portId.getCode() == last)
+            continue;
+        last = portId.getCode();
+        newPorts.push_back(PortId(portId));
+    }
+    shipRoute.setPorts(newPorts);  // we don't if we didn't change anything also, but whatever
+}

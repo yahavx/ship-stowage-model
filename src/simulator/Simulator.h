@@ -11,6 +11,8 @@
 class Simulator {
 
 public:
+    std::string staticOutputFile = "../simulation-output/cargo_instructions";
+    std::string unloadOnly = "UnloadOnly:";
     /**
      * Simulates an algorithm on a single travel.
      * @param travel a directory that contains Plan, Route, and list of <portId>_<number>.cargo_data files.

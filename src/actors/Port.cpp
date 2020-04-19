@@ -8,6 +8,8 @@
 
 // region Constructors
 
+Port::Port() : id("") {}
+
 Port::Port(const PortId &id) : id(id) {}
 
 Port::Port(const PortId &id, const ContainerStorage &storage) : id(id), storage(storage) {}
