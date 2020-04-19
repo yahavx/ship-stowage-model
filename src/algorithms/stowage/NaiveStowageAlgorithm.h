@@ -27,6 +27,8 @@ public:
 
 private:
 
+    bool initPortId(const std::string &inputFile, Port &port) const;
+
     void initializePort(const std::string &inputFile, Port &port) const;
 };
 

@@ -31,6 +31,7 @@ void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile
     Containers containersToLoad;
 
     std::vector<PortId> ids;
+
     // Collect all containers that needs to be loaded
     for (longUInt i = 1; i < this->ship.getShipRoute().getPorts().size(); i++) {
         const PortId &id = ship.getShipRoute().getPorts()[i];
@@ -50,20 +51,33 @@ void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile
     ship.markCurrentVisitDone(); // pop the current port from the ShipRoute
 }
 
+/// Returns true if inputFile is not a file (unloadOnly).
+bool NaiveStowageAlgorithm::initPortId(const std::string &inputFile, Port &port) const {
+    if (startsWith(inputFile, unloadOnly)) {
+        std::string portCode = inputFile.substr(11, 5);
+        port.setId(PortId(portCode));
+        return true;
+    } else {
+        std::string id = extractFilenameFromPath(inputFile, true).substr(0, 5);  // extract port id from path
+        port.setId(PortId(id));
+        return false;
+    }
+}
 
 /// Modifies the port, inits his id and storage if exist.
 void NaiveStowageAlgorithm::initializePort(const std::string &inputFile, Port &port) const {
-    if (startsWith(inputFile, unloadOnly)) {  // TODO: communicate this unloadOnly in a more proper way
-        std::string portCode = inputFile.substr(11, 5);
-        port.setId(PortId(portCode));
+    bool isUnloadOnly = initPortId(inputFile, port);
+
+    if (isUnloadOnly) {
+        return;
+    }
+
+    std::optional<ContainerStorage> storage = readCargoToPortFromFile(inputFile);
+
+    if (!storage.has_value()) {
+        std::cout << "Error in getting instructions for cargo: couldn't load port" << std::endl;
+
     } else {
-        std::optional<ContainerStorage> storage = readCargoToPortFromFile(inputFile);
-
-        if (!storage.has_value()) {
-            std::cout << "Error in getting instructions for cargo: couldn't load port" << std::endl;
-
-        } else {
-            port.setStorage(*storage);
-        }
+        port.setStorage(*storage);
     }
 }

@@ -58,7 +58,7 @@ StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath) {
 
         if (!isCargoDataFileFormat(fileName)) {
             if (fileName == "Route" || fileName == "Plan") {
-                continue;  // we except to see this, need to just ignore
+                continue;  // we except to see this, so just ignore
             }
 
             std::cout << "Warning: invalid file in travel folder: " << fileName << std::endl;
