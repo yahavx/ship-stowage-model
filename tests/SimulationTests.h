@@ -12,7 +12,7 @@
 using namespace std;
 
 
-void inline simulationTest(string path = "../input-examples\\Travel_3"){
+void inline simulationTest(string path = "../input-examples\\Travel_4"){
     Simulator simulator;
 
     NaiveStowageAlgorithm naiveStowageAlgorithm;

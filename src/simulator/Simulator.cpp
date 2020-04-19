@@ -107,6 +107,8 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
         if (opResult == CraneOperationResult::FAIL_ILLEGAL_OP)
             std::cout << "Crane received illegal operation: " << op << std::endl;
     }
+
+    std::cout << ops;
 }
 
 void Simulator::initAlgorithm(IStowageAlgorithm &algorithm, const std::string &shipPlanPath,

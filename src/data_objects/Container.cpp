@@ -45,3 +45,11 @@ std::ostream &operator<<(std::ostream &os, const Container &container) {
     return os;
 }
 
+bool Container::operator==(const Container &rhs) const {
+    return id == rhs.id;
+}
+
+bool Container::operator!=(const Container &rhs) const {
+    return !(rhs == *this);
+}
+
