@@ -59,7 +59,7 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
 
     // Start simulation
     StringToStringVectorMap map = sortTravelCargoData(travel);  // get list of .cargo_data files, ordered for each port
-    std::cout << map;
+
 //    test(algorithm);  // remove comment to test one .cargo_data
 //    return;
 
@@ -117,7 +117,7 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
 
         std::cout << "The ship is continuing to the next port..." << std::endl;
 
-        printSeparator(0, 0);
+        printSeparator(1, 1);
     }
 
     printSeparator(1, 1);
