@@ -159,6 +159,11 @@ OPS ContainerShip::unloadContainer(Port &port, const ContainerPosition &containe
         }
 
         auto container = containerOptional.value();
+
+        //Add to list of containers to load back only if the container destination is not current port
+        //TODO : check why this is not working
+//        if (container.getDestPort() != port.getId())
+//            containersOnTop.push_back(container);
         containersOnTop.push_back(container);
         auto op = PackingOperation(PackingType::unload, container.getId(), {x, y, z + (numOfContainersOnTop - i)});
         auto result = CranesOperation::preformOperation(op, port, *this);
