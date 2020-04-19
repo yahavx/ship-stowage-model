@@ -24,6 +24,10 @@ public:
     void setShipPlanFromPath(const std::string &shipPlanPath) override;
 
     void setShipRouteFromPath(const std::string &shipRoutePath) override;
+
+private:
+
+    void initializePort(const std::string &inputFile, Port &port) const;
 };
 
 

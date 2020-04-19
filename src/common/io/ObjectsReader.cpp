@@ -106,7 +106,7 @@ std::optional<ShipRoute> readShipRouteFromFile(const std::string &filePath) {
     return shipRoute;
 }
 
-std::optional<Port> readCargoToPortFromFile(const std::string &filePath) {
+std::optional<ContainerStorage> readCargoToPortFromFile(const std::string &filePath) {
 #ifdef DEBUG
     std::cout << "Attempting to read cargo data..." << std::endl;
 #endif
@@ -116,9 +116,7 @@ std::optional<Port> readCargoToPortFromFile(const std::string &filePath) {
         return std::nullopt;
     }
 
-    PortId portId = PortId(fileName.substr(0, 5));
-    Port port = Port(portId);
-    Containers containersToAdd;
+    Containers containers;
 
     StringStringVector data = readFile(filePath);
 
@@ -145,15 +143,14 @@ std::optional<Port> readCargoToPortFromFile(const std::string &filePath) {
             continue;
         }
 
-        containersToAdd.push_back(Container(id, stringToInt(weight), PortId(destPort)));
+        containers.push_back(Container(id, stringToInt(weight), PortId(destPort)));
     }
 
 #ifdef DEBUG
     std::cout << "Read cargo data successfully." << std::endl;
 #endif
-    port.addContainers(containersToAdd);
 
-    return port;
+    return ContainerStorage(containers);
 }
 
 std::optional<OPS> readPackingOperationsFromFile(const std::string &filePath) {

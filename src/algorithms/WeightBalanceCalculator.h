@@ -33,6 +33,10 @@ public:
 
     Cargo &getCargo() const;
 
+    const ShipPlan &getPlan() const;
+
+    void setPlan(const ShipPlan &plan);
+
     void setCargo(Cargo &cargo);
     // endregion
 

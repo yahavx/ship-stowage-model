@@ -17,6 +17,14 @@ class ContainerStorage {
     Containers containers;
 
 public:
+
+    // region Constructors
+
+    ContainerStorage();
+
+    ContainerStorage(const Containers &containers);
+    // endregion
+
     // region Functions
 
     /**

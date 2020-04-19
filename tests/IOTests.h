@@ -55,10 +55,10 @@ void inline readShipRouteTest() {
 
 void inline readCargoToPortFromFileTest() {
     string path = "../input-examples/tests/AGHCS_17.cargo_data";
-    optional<Port> port = readCargoToPortFromFile(path);
-    assert(port.has_value());
-    if (port.has_value()) {
-        cout << endl << "Port after loading cargo: " << endl << *port;
+    optional<ContainerStorage> storage = readCargoToPortFromFile(path);
+    assert(storage.has_value());
+    if (storage.has_value()) {
+        cout << endl << "Port after loading cargo: " << endl << *storage;
     }
 }
 

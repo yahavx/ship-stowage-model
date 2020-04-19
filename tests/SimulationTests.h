@@ -12,13 +12,11 @@
 using namespace std;
 
 
-void inline simulationTest(){
+void inline simulationTest(string path = "../input-examples\\Travel_3"){
     Simulator simulator;
 
     NaiveStowageAlgorithm naiveStowageAlgorithm;
     IStowageAlgorithm &algorithm(naiveStowageAlgorithm);
-
-    string path = "../input-examples\\Travel_5";
 
     simulator.runSimulation(algorithm, path);
 }

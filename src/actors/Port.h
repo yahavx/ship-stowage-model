@@ -43,6 +43,10 @@ public:
     const PortId &getId() const;
 
     void setId(const PortId &id);
+
+    const ContainerStorage &getStorage() const;
+
+    void setStorage(const ContainerStorage &storage);
     // endregion
 
     // region Printer

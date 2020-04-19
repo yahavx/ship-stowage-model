@@ -21,6 +21,23 @@ public:
 
     /// Run a cartesian loop of “travel” X “algorithm”.
 //    void runSimulations(std::vector<IStowageAlgorithm> algorithms, StringVector travels);
+
+private:
+
+    /**
+     * Triggers the getInstructionsForCargo of the algorithm, adds storage to the port (of simulator) if needed.
+     * @return true if succeed.
+     */
+    bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &travel,
+                                 StringToStringVectorMap &map, Port &port) const;
+    /**
+     * Inits the ship of the simulation. Returns true if succeed.
+     * @return true if succeed.
+     */
+    bool initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath, ContainerShip &ship) const;
+
+    void initAlgorithm(IStowageAlgorithm &algorithm, const std::string &shipPlanPath,
+                       const std::string &shipRoutePath) const;
 };
 
 

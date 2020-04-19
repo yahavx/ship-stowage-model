@@ -5,6 +5,14 @@
 #include "ContainerStorage.h"
 #include "../utils/Definitions.h"
 
+// region Constructors
+
+ContainerStorage::ContainerStorage() {}
+
+
+ContainerStorage::ContainerStorage(const Containers &containers) : containers(containers) {}
+// endregion
+
 // region Functions
 
 Containers ContainerStorage::getContainersForDestination(const PortId &destId) {

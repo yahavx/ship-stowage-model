@@ -46,7 +46,7 @@ public:
 
     void setCargo(const Cargo &cargo);
 
-    const WeightBalanceCalculator &getBalanceCalculator() const;
+    WeightBalanceCalculator &getBalanceCalculator() const;
 
     void setBalanceCalculator(WeightBalanceCalculator &balanceCalculator);
     // endregion

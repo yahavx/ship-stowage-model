@@ -33,80 +33,51 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
         return;
     }
 
+    ///////////////////////
+    ///     Init         //
+    ///////////////////////
+
     // Get plan and route paths
     std::string shipPlanPath = getShipPlanPath(travel);
     std::string shipRoutePath = getShipRoutePath(travel);
 
     // Init for simulation
-    std::cout << "Initializing simulation..." << std::endl;
-    std::optional<ShipPlan> optShipPlan = readShipPlanFromFile(shipPlanPath);
-    std::optional<ShipRoute> optShipRoute = readShipRouteFromFile(shipRoutePath);
-
-    if (!optShipPlan.has_value() || !optShipRoute.has_value()) { // TODO: handle error (maybe its okay like this)
-        std::cout << "Simulation failed: couldn't initialize from files" << std::endl;
-        return;
-    }
-    std::cout << "Success." << std::endl;
-
-    printSeparator(1, 1);
-
-    ShipPlan &shipPlan = *optShipPlan;
-    ShipRoute &shipRoute = *optShipRoute;
-    WeightBalanceCalculator weightBalanceCalculator(shipPlan);
-    ContainerShip ship(shipPlan, shipRoute, weightBalanceCalculator);
+    ContainerShip ship;
+    bool res = initSimulation(shipPlanPath, shipRoutePath, ship);
+    if (!res)
+        return;  // failed to init simulation, errors were printed inside
 
     // Init for algorithm
-    std::cout << "Initializing algorithm..." << std::endl;
-    algorithm.setShipPlanFromPath(shipPlanPath);
-    algorithm.setShipRouteFromPath(shipRoutePath);
-    WeightBalanceCalculator algoWeightBalanceCalculator(shipPlan);
-    algorithm.setWeightBalanceCalculator(algoWeightBalanceCalculator);
-    std::cout << "Success." << std::endl;
+    initAlgorithm(algorithm, shipPlanPath, shipRoutePath);
 
-    printSeparator(1, 1);
-
-    // Start simulation
     StringToStringVectorMap map = sortTravelCargoData(travel);  // get list of .cargo_data files, ordered for each port
 
-//    test(algorithm);  // remove comment to test one .cargo_data
-//    return;
-
     std::cout << "Validating route..." << std::endl;
-    filterUnusedPorts(map, shipRoute);  // remove the port files which are not on the ship route
-//    filterTwiceInARowPorts(shipRoute);  // this is not needed probably, will remove it when i'm sure
+    filterUnusedPorts(map, ship.getShipRoute());  // remove the port files which are not on the ship route
 
     printSeparator(1, 1);
+
+    ///////////////////////
+    /// Start simulation //
+    ///////////////////////
 
     std::cout << "The ship has started its journey!" << std::endl;
 
     printSeparator(1, 1);
 
-    for (const PortId &portId : shipRoute.getPorts()) {  // Start the journey
+    for (const PortId &portId : ship.getShipRoute().getPorts()) {  // Start the journey
         std::cout << "The ship has docked at port " << portId.getCode() << "." << std::endl;
 
-        std::optional<std::string> cargoFile = getNextFileForPort(map,
-                                                                  portId.getCode());
-        Port port;
+        Port port(portId);
 
-        if (!cargoFile.has_value()) {
-            std::cout << "Warning: no cargo file for current visit, ship will only unload" << std::endl;
-            algorithm.getInstructionsForCargo(unloadOnly + portId.getCode(), staticOutputFile);  // TODO: fix
-            port.setId(portId);
-        } else {
-            std::string cargoFilePath = getCargoPath(travel, *cargoFile);
-            algorithm.getInstructionsForCargo(cargoFilePath, staticOutputFile);
+        res = getInstructionsForCargo(algorithm, travel, map,
+                                      port);  // triggers algorithm getInstructions(), sets port ContainerStorage if needed
 
-            std::optional<Port> optPort = readCargoToPortFromFile(cargoFilePath);
+        if (!res)
+            continue; // failed to read current dock file, errors were printed inside  // TODO: check if we can continue anyways
 
-            if (!optPort.has_value()) {
-                std::cout << "Critical warning: couldn't load port information" << std::endl;
-                std::cout << "The ship is continuing to the next port..." << std::endl;
-                continue;
-            }
-            port = *optPort;
-        }
-
-        auto optOps = readPackingOperationsFromFile(staticOutputFile);
+        auto optOps = readPackingOperationsFromFile(
+                staticOutputFile);  // read the operations to perform, written by the algorithm
 
         if (!optOps.has_value()) {
             std::cout << "Warning: no packing operations were read" << std::endl;
@@ -134,9 +105,71 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
 
     printSeparator(1, 1);
 }
+
+void Simulator::initAlgorithm(IStowageAlgorithm &algorithm, const std::string &shipPlanPath,
+                              const std::string &shipRoutePath) const {
+    std::cout << "Initializing algorithm..." << std::endl;
+
+    algorithm.setShipPlanFromPath(shipPlanPath);  // set plan
+    algorithm.setShipRouteFromPath(shipRoutePath);  // set route
+    WeightBalanceCalculator algoWeightBalanceCalculator;
+    algorithm.setWeightBalanceCalculator(algoWeightBalanceCalculator);
+
+    std::cout << "Success." << std::endl;
+    printSeparator(1, 1);
+}
+
+bool Simulator::initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath,
+                               ContainerShip &ship) const {
+    std::cout << "Initializing simulation..." << std::endl;
+    std::optional<ShipPlan> optShipPlan = readShipPlanFromFile(shipPlanPath);
+    std::optional<ShipRoute> optShipRoute = readShipRouteFromFile(shipRoutePath);
+
+    if (!optShipPlan.has_value() || !optShipRoute.has_value()) { // TODO: handle error (maybe its okay like this)
+        std::cout << "Simulation failed: couldn't initialize from files" << std::endl;
+        return false;
+    }
+
+    ShipPlan &shipPlan = *optShipPlan;
+    ShipRoute &shipRoute = *optShipRoute;
+
+    WeightBalanceCalculator weightBalanceCalculator(shipPlan);
+    ship = ContainerShip(shipPlan, shipRoute, weightBalanceCalculator);
+
+    std::cout << "Success." << std::endl;
+    printSeparator(1, 1);
+    return true;
+}
+
+bool Simulator::getInstructionsForCargo(IStowageAlgorithm &algorithm,
+                                        const std::string &travel, // TODO: maybe move this to the SimulatorUtil (it doesn't use any state)
+                                        StringToStringVectorMap &map, Port &port) const {
+
+    std::optional<std::string> cargoFile = getNextFileForPort(map, port.getId().getCode());  // get cargo file of current port
+
+    if (!cargoFile.has_value()) {  // couldn't find a cargo file
+        std::cout << "Warning: no cargo file for current visit, ship will only unload" << std::endl;
+        algorithm.getInstructionsForCargo(Simulator::unloadOnly + port.getId().getCode(), Simulator::staticOutputFile);  // TODO: find a proper way to communicate the unload
+        return true;
+    }
+
+    std::string cargoFilePath = getCargoPath(travel, *cargoFile);
+    algorithm.getInstructionsForCargo(cargoFilePath, Simulator::staticOutputFile);
+
+    std::optional<ContainerStorage> containers = readCargoToPortFromFile(cargoFilePath);
+
+    if (!containers.has_value()) {
+        std::cout << "Critical warning: couldn't load port information" << std::endl;
+        std::cout << "The ship is continuing to the next port..." << std::endl;
+        return false;
+    }
+    port.setStorage(*containers);
+
+    return true;
+}
 // endregion
 
-void test(IStowageAlgorithm &algorithm) {
+void test(IStowageAlgorithm &algorithm) {  // TODO: remove
 
     std::string input = "../input-examples/Travel_3/AAAAA_17.cargo_data", output = "../input-examples/results";  // Until one works fine..
     algorithm.getInstructionsForCargo(input, output);

@@ -16,5 +16,5 @@ using namespace std;
 
 
 int main() {
-    simulationTest();
+    simulationTest("../input-examples\\Travel_3");  // can call with no parameter (travel_3 is default)
 }

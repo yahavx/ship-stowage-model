@@ -55,6 +55,14 @@ const PortId &Port::getId() const {
 void Port::setId(const PortId &id) {
     Port::id = id;
 }
+
+const ContainerStorage &Port::getStorage() const {
+    return storage;
+}
+
+void Port::setStorage(const ContainerStorage &storage) {
+    Port::storage = storage;
+}
 // endregion
 
 // region Printer

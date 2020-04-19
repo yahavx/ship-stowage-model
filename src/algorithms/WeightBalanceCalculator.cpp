@@ -20,6 +20,14 @@ Cargo &WeightBalanceCalculator::getCargo() const {
 void WeightBalanceCalculator::setCargo(Cargo &cargo) {
     WeightBalanceCalculator::cargo = &cargo;
 }
+
+const ShipPlan &WeightBalanceCalculator::getPlan() const {
+    return plan;
+}
+
+void WeightBalanceCalculator::setPlan(const ShipPlan &plan) {
+    WeightBalanceCalculator::plan = plan;
+}
 // endregion
 
 // region Functions
@@ -28,5 +36,4 @@ BalanceStatus WeightBalanceCalculator::tryOperation(char loadUnload, int kg, int
     return BalanceStatus::APPROVED;
     std::cout << loadUnload << kg << X << Y << cargo;  // TODO: remove
 }
-
 // endregion

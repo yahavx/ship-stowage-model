@@ -47,7 +47,7 @@ void ContainerShip::setCargo(const Cargo &cargo) {
     ContainerShip::cargo = cargo;
 }
 
-const WeightBalanceCalculator &ContainerShip::getBalanceCalculator() const {
+WeightBalanceCalculator &ContainerShip::getBalanceCalculator() const {
     return *balanceCalculator;
 }
 
