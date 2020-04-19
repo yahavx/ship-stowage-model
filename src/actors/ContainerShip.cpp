@@ -160,7 +160,7 @@ OPS ContainerShip::unloadContainer(Port &port, const ContainerPosition &containe
 
         auto container = containerOptional.value();
         containersOnTop.push_back(container);
-        auto op = PackingOperation(PackingType::unload, container.getId(), {x, y, z + (numOfContainersOnTop - i)});
+        auto op = PackingOperation(PackingType::unload, container.getId(), {x, y, z + (numOfContainersOnTop - i - 1)});
         auto result = CranesOperation::preformOperation(op, port, *this);
         if (result != CraneOperationResult::SUCCESS) {
             std::cout

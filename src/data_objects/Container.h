@@ -13,7 +13,7 @@
 #include "PackingOperation.h"
 
 
-class Container {
+class   Container {
     std::string id;
     int weight;
     PortId destPort;
