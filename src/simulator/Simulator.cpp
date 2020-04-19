@@ -7,6 +7,8 @@
 #include "../common/io/ObjectsReader.h"
 #include "../utils/Printers.h"
 #include "SimulatorUtil.h"
+#include "../algorithms/CranesOperation.h"
+
 
 // region Simulation core
 
@@ -69,48 +71,50 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
 
     std::cout << "The ship has started its journey!" << std::endl;
 
-    printSeparator(1,1);
+    printSeparator(1, 1);
 
     for (const PortId &portId : shipRoute.getPorts()) {  // Start the journey
         std::cout << "The ship has docked at port " << portId.getCode() << "." << std::endl;
 
-        std::optional<std::string> cargoFile = getNextFileForPort(map, portId.getCode());  // TODO: check if we need to save storage that wasn't loaded to the ship from the port
+        std::optional<std::string> cargoFile = getNextFileForPort(map,
+                                                                  portId.getCode());  // TODO: check if we need to save storage that wasn't loaded to the ship from the port
 
         if (!cargoFile.has_value()) {
             std::cout << "Warning: no cargo file for current visit, ship will only unload" << std::endl;
             algorithm.getInstructionsForCargo(unloadOnly + portId.getCode(), staticOutputFile);  // TODO: fix
-        }
-
-        else {
+        } else {
             algorithm.getInstructionsForCargo(*cargoFile, staticOutputFile);
         }
 
-        auto optOps = readPackingOperationsFromFile(staticOutputFile);
+        auto optionalOps = readPackingOperationsFromFile(staticOutputFile);
 
-        if (!optOps.has_value()) {
+        if (!optionalOps.has_value()) {
             std::cout << " Warning: no packing operations were read" << std::endl;
-        }
+        } else {
 
-        else {
-            // TODO: perform operations
 
+            // Perform operations on local ship and port
+            for (const PackingOperation &op : *optionalOps) {
+                auto opResult = CranesOperation::preformOperation(op, port, ship);
+                if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND)
+                    std::cout << "Crane received illegal operation, didn't find container with ID:"
+                              << op.getContainerId()
+                              << std::endl;
+                if (opResult == CraneOperationResult::FAIL_ILLEGAL_OP)
+                    std::cout << "Crane received illegal operation: " << op << "\n";
+            }
         }
 
         std::cout << "The ship is continuing to the next port..." << std::endl;
 
-        printSeparator(0,0);
+        printSeparator(0, 0);
     }
 
-    printSeparator(1,1 );
+    printSeparator(1, 1);
 
     std::cout << "The ship has completed its journey!" << std::endl;
 
-    printSeparator(1,1);
-
-
-
-
-
+    printSeparator(1, 1);
 }
 // endregion
 

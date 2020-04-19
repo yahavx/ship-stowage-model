@@ -52,21 +52,16 @@ OptionalContainer Cargo::removeTopContainer(int x, int y) {
     return container;
 }
 
-int Cargo::canLoadContainerOnTop(int x, int y, const Container &container) const {
+int Cargo::canLoadContainerOnTop(int x, int y) const {
     if (!validateXY(x, y, shipPlan))
         return -1;
 
-    int maxHeight = shipPlan.getHeights()[x][y];
-    int currentHeight = currentNumContainers(x, y);
+    int maxHeight = std::get<2>(shipPlan.getDimensions());
+    int currentHeight = currentTopHeight(x, y);
     if (currentHeight >= maxHeight)
         return -1;
 
-    Containers xyContainers = containers[x][y];
-    int loadedToHeight = containers.size();
-
-    return loadedToHeight;
-    std::cout << container;  // TODO: remove (need this parameter?)
-    return loadedToHeight;
+    return currentHeight;
 }
 
 int Cargo::loadContainerOnTop(int x, int y, const Container &container) {
@@ -74,15 +69,14 @@ int Cargo::loadContainerOnTop(int x, int y, const Container &container) {
         return -1;
 
     int maxHeight = std::get<2>(shipPlan.getDimensions());
-    int currentHeight = currentNumContainers(x, y);
+    int currentHeight = currentTopHeight(x, y);
     if (currentHeight >= maxHeight)
         return -1;
 
     Containers &xyContainers = containers[x][y];
-    int loadedToHeight = xyContainers.size();
     xyContainers.push_back(container);
 
-    return loadedToHeight;
+    return currentHeight;
 }
 
 std::vector<ContainerPosition> Cargo::getContainersForPort(const PortId &portId) const {
@@ -95,7 +89,8 @@ std::vector<ContainerPosition> Cargo::getContainersForPort(const PortId &portId)
 
             for (longUInt z = 0; z < xyContainers.size(); z++)
                 if (xyContainers[z].getDestPort() == portId) {
-                    result.push_back(ContainerPosition(xyContainers[z], {x, y, z}));
+                    auto height = this->shipPlan.getHeights()[x][y] + z;
+                    result.push_back(ContainerPosition(xyContainers[z], {x, y, height}));
                 }
         }
 
@@ -103,12 +98,13 @@ std::vector<ContainerPosition> Cargo::getContainersForPort(const PortId &portId)
     return result;
 }
 
-int Cargo::currentNumContainers(int x, int y) const {
+int Cargo::currentTopHeight(int x, int y) const {
     if (!validateXY(x, y, shipPlan))
         return -1;
 
-    Containers xyContainers = containers[x][y];
-    return xyContainers.size();
+    const Containers &xyContainers = containers[x][y];
+    auto height = this->shipPlan.getHeights()[x][y] + xyContainers.size();
+    return height;
 }
 // endregion
 

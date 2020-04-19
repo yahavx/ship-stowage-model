@@ -39,7 +39,7 @@ void ContainerShip::setShipRoute(const ShipRoute &shipRoute) {
     ContainerShip::shipRoute = shipRoute;
 }
 
- Cargo &ContainerShip::getCargo()  {
+Cargo &ContainerShip::getCargo() {
     return cargo;
 }
 
@@ -60,15 +60,15 @@ void ContainerShip::setBalanceCalculator(WeightBalanceCalculator &balanceCalcula
 // region Functions
 
 OPS
-ContainerShip::dock(const PortId &portId, const Containers &containersToLoad) {
+ContainerShip::dock(Port &port, const Containers &containersToLoad) {
     OPS operations = OPS();
 
-    std::vector<ContainerPosition> containersToUnload = this->getCargo().getContainersForPort(portId);
+    std::vector<ContainerPosition> containersToUnload = this->getCargo().getContainersForPort(port.getId());
 
     // Unload all required containers
     for (const ContainerPosition &containerPos: containersToUnload) {
         // Get instructions for removing the container
-        OPS unloadOps = this->unloadContainer(containerPos);
+        OPS unloadOps = this->unloadContainer(port, containerPos);
 
         // Add unload operations  to set of all instructions
         operations.insert(operations.end(), unloadOps.begin(), unloadOps.end());
@@ -77,7 +77,7 @@ ContainerShip::dock(const PortId &portId, const Containers &containersToLoad) {
     // Load all required containers , TODO: Handle case where there is no more space
     for (const Container &container: containersToLoad) {
         // Get instructions for adding the container
-        OPS loadOps = this->loadContainerToArbitraryPosition(container);
+        OPS loadOps = this->loadContainerToArbitraryPosition(port, container);
 
         // Add load operations to set of all instructions
         operations.insert(operations.end(), loadOps.begin(), loadOps.end());
@@ -86,7 +86,7 @@ ContainerShip::dock(const PortId &portId, const Containers &containersToLoad) {
     return operations;
 }
 
-OPS ContainerShip::loadContainerToArbitraryPosition(const Container &container) {
+OPS ContainerShip::loadContainerToArbitraryPosition(Port &port, const Container &container) {
     OPS ops = OPS();
     POS dims = this->shipPlan.getDimensions();
     int z = -1;
@@ -96,32 +96,47 @@ OPS ContainerShip::loadContainerToArbitraryPosition(const Container &container) 
         for (int y = 0; (y < std::get<1>(dims)) && (z < 0); y++) {
             BalanceStatus status = this->balanceCalculator->tryOperation('L', container.getWeight(), x, y);
             if (status == BalanceStatus::APPROVED) {
-                z = this->getCargo().loadContainerOnTop(x, y, container);
-                if (z >= 0) /// Successfully loaded
-                    ops.push_back(PackingOperation(PackingType::load, container.getId(), {x, y, z}));
+                z = this->getCargo().canLoadContainerOnTop(x, y);
+                if (z >= 0) {
+                    auto op = PackingOperation(PackingType::load, container.getId(), {x, y, z});
+                    auto result = CranesOperation::preformOperation(op, port, *this);
+                    if (result == CraneOperationResult::SUCCESS) { /// Successfully loaded
+                        ops.push_back(op);
+                    } else {
+                        std::cout
+                                << "Error loading container, crane operation failed to load container: "
+                                << op << "\n";
+                        z = -1;
+                    }
+
+                }
             }
         }
     }
 
     if (z < 0) {
         ops = OPS();
-        ops.push_back(PackingOperation(PackingType::reject, container.getId(), {-1, -1, -1}));
-        return ops;
+        ops.
+                push_back(PackingOperation(PackingType::reject, container.getId(), {-1, -1, -1})
+        );
+        return
+                ops;
     }
 
-    return ops;
+    return
+            ops;
 }
 
-OPS ContainerShip::unloadContainer(const ContainerPosition &containerPos) {
+OPS ContainerShip::unloadContainer(Port &port, const ContainerPosition &containerPos) {
     OPS ops;
-    int currentHeight = this->getCargo().currentNumContainers(containerPos.x(), containerPos.y());
-    int numOfContainersOnTop = currentHeight - containerPos.z();
-
-    Containers containersOnTop = Containers();
-
     auto x = containerPos.x();
     auto y = containerPos.y();
     auto z = containerPos.z();
+
+    int currentHeight = this->getCargo().currentTopHeight(containerPos.x(), containerPos.y());
+    int numOfContainersOnTop = currentHeight - z;
+
+    Containers containersOnTop = Containers();
 
     // Failed is true if some part of the unloading operation is not possible
     bool failed = false;
@@ -136,7 +151,7 @@ OPS ContainerShip::unloadContainer(const ContainerPosition &containerPos) {
             break;
         }
 
-        auto containerOptional = this->getCargo().removeTopContainer(x, y);
+        auto containerOptional = this->getCargo().getTopContainer(x, y);
         if (!containerOptional.has_value()) {
             std::cout
                     << "Error unloading container, could not remove top container from cargo, one on top of required one ("
@@ -148,39 +163,54 @@ OPS ContainerShip::unloadContainer(const ContainerPosition &containerPos) {
 
         auto container = containerOptional.value();
         containersOnTop.push_back(container);
-        ops.push_back(PackingOperation(PackingType::unload, container.getId(),
-                                       {containerPos.x(), containerPos.y(),
-                                        containerPos.z() + (numOfContainersOnTop - i)}
-        ));
+        auto op = PackingOperation(PackingType::unload, container.getId(), {x, y, z + (numOfContainersOnTop - i)});
+        auto result = CranesOperation::preformOperation(op, port, *this);
+        if (result != CraneOperationResult::SUCCESS) {
+            std::cout
+                    << "Error unloading container, crane operation failed to unload one on top of required one: "
+                    << op << "\n";
+
+            failed = true;
+            break;
+        }
+        ops.push_back(op);
+
     }
 
     // Unload the requested container
-    auto topCont = this->getCargo().getTopContainer(x, y);
-    BalanceStatus status = this->balanceCalculator->tryOperation('U', topCont->getWeight(), x, y);
-    if (status != BalanceStatus::APPROVED) {
+    auto containerOptional = this->getCargo().getTopContainer(x, y);
+    if (!containerOptional.has_value()) {
+        std::cout << "Error unloading container, could not get top container from cargo, the required one ("
+                  << containerPos.x() << ", " << containerPos.y() << ")" << std::endl;
         failed = true;
-    }
+    } else {
+        auto container = containerOptional.value();
+        BalanceStatus status = this->balanceCalculator->tryOperation('U', container.getWeight(), x, y);
+        if (status == BalanceStatus::APPROVED) {
+            auto op = PackingOperation(PackingType::unload, container.getId(), {x, y, z});
+            auto result = CranesOperation::preformOperation(op, port, *this);
+            if (result == CraneOperationResult::SUCCESS) {
+                ops.push_back(op);
+            } else { // CranesOperation failed
+                std::cout
+                        << "Error unloading container, crane operation failed to unload requested container: "
+                        << op << std::endl;
 
-    if (!failed) { //If not failed actually remove top container
-        auto containerOptional = this->getCargo().removeTopContainer(x, y);
-        if (!containerOptional.has_value()) {
-            std::cout << "Error unloading container, could not remove top container from cargo, the required one ("
-                      << containerPos.x() << ", " << containerPos.y() << ")" << "\n";
-
+                failed = true;
+            }
+        } else { // balanceCalculator did not approve
             failed = true;
-        } else {
-            // Add unload op for the requested container
-            auto container = containerOptional.value();
-            ops.push_back(PackingOperation(PackingType::unload, container.getId(), {x, y, z}));
         }
     }
 
-    // Load back the containers that were on top and were unloaded
+    // Load back the containers that were on top and were unloaded, also if the operation failed
     for (std::size_t i = 0, max = containersOnTop.size(); i < max; i++) {
         Container cont = containersOnTop[i];
         //TODO: check if balance calculator allows to load, if not load to another place
-        this->getCargo().loadContainerOnTop(x, y, cont);
-        ops.push_back(PackingOperation(PackingType::load, cont.getId(), {x, y, z + i}));
+        auto op = PackingOperation(PackingType::load, cont.getId(), {x, y, z + i});
+        CranesOperation::preformOperation(op, port, *this);
+//        this->getCargo().loadContainerOnTop(x, y, cont);
+        ops.push_back(op);
     }
 
     // If failed return reject packing operation

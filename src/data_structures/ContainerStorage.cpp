@@ -35,8 +35,8 @@ OptionalContainer ContainerStorage::removeContainer(const std::string& container
         }
     }
 
-    if (foundIndex > 0) {
-        const Container &container = containers[foundIndex];
+    if (foundIndex >= 0) {
+        const Container container = containers[foundIndex];
         containers.erase(containers.begin() + foundIndex);
         return container;
     }
