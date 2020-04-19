@@ -58,6 +58,21 @@ std::ostream &operator<<(std::ostream &os, const OPS &ops) {
     return os;
 }
 
+std::ostream &operator<<(std::ostream &os, const StringToStringVectorMap &map) {
+    std::cout << "StringToStringStringVector map {" << std::endl;
+    for (auto key : map) {
+        std::cout << "\t\"" << key.first << "\":" << std::endl;
+        for (auto &val : key.second) {
+            std::cout <<"\t\t" << val << std::endl;
+        }
+    }
+
+    std::cout << "}" << std::endl;
+
+    return os;
+}
+
+
 void printSeparator() {
     std::cout << std::endl << std::endl << "--------------------------------------" << std::endl << std::endl;
 }

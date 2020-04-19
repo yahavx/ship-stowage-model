@@ -18,9 +18,10 @@ void inline simulationTest(){
     NaiveStowageAlgorithm naiveStowageAlgorithm;
     IStowageAlgorithm &algorithm(naiveStowageAlgorithm);
 
-    string path = "../input-examples/Travel_3";
+    string path = "../input-examples\\Travel_3";
 
     simulator.runSimulation(algorithm, path);
 }
+
 
 #endif //SHIP_STOWAGE_MODEL_SIMULATIONTESTS_H

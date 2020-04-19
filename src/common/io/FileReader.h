@@ -21,12 +21,6 @@ StringStringVector readFile(const std::string &path);
  */
 bool writeFile(const std::string &path, StringStringVector data);
 
-/**
- * Receives a travel directory and sorts the .cargo_files for each port.
- * @return a map from each portID to a string vector of his .cargo_files, ordered from small to big.
- */
-StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath);  // TODO
-
 /// Checks if a file is in cargo format: ABCDE_<num>.cargo_data.
 bool isCargoDataFileFormat(const std::string &fileName);
 

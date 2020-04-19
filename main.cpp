@@ -10,9 +10,14 @@
 #include "tests/SimulationTests.h"
 #include "src/simulator/Simulator.h"
 #include "src/algorithms/stowage/NaiveStowageAlgorithm.h"
+#include "src/simulator/SimulatorUtil.h"
+
 
 using namespace std;
 
 int main() {
-    simulationTest();
+//    simulationTest();
+    auto x = sortTravelCargoData("../input-examples/Travel_4");
+    cout << x;
+
 }

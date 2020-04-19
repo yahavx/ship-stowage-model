@@ -31,17 +31,15 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string& t
 
     ShipPlan &shipPlan = *optShipPlan;
     ShipRoute &shipRoute = *optShipRoute;
-
     WeightBalanceCalculator weightBalanceCalculator(shipPlan);
-
-    ContainerShip ship(shipPlan, shipRoute, weightBalanceCalculator);  // TODO: add balance calculator
+    ContainerShip ship(shipPlan, shipRoute, weightBalanceCalculator);
 
     // Init for algorithm
     algorithm.setShipPlanFromPath(shipPlanPath);
     algorithm.setShipRouteFromPath(shipRoutePath);
-
     algorithm.setWeightBalanceCalculator(weightBalanceCalculator);
 
+    // Start simulation
     std::string input = "../input-examples/Travel_3/AAAAA_17.cargo_data", output = "../input-examples/results";  // Until one works fine..
     algorithm.getInstructionsForCargo(input, output);
     

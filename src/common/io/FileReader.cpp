@@ -48,14 +48,20 @@ StringStringVector readFile(const std::string &path) {
     return data;
 }
 
-// region sortTravelCargoData
+bool writeFile(const std::string &path, StringStringVector data) {
 
-/// Returns a list of file (names) of a directory
-StringVector getFilesFromDirectory(const std::string &directoryPath) {  // returns list of files in a directory
-    // TODO
-    std::cout << directoryPath;
-    return StringVector();
+    std::ofstream outputFile(path);
+
+    for (StringVector dataRow : data) {
+        for (longUInt i = 0; i < dataRow.size() - 1; i++) {
+            outputFile << dataRow[i] << ", ";
+        }
+        outputFile << dataRow.back() << std::endl;
+    }
+
+    return true;
 }
+
 
 bool isCargoDataFileFormat(const std::string &fileName) {
     if (!endsWith(fileName, ".cargo_data")) {
@@ -75,36 +81,6 @@ bool isCargoDataFileFormat(const std::string &fileName) {
 
     if (!isInteger(num))
         return false;
-
-    return true;
-}
-
-StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath) {
-    StringToStringVectorMap map;
-
-    StringVector files = getFilesFromDirectory(directoryPath);
-
-    for (std::string file : files) {
-        if (!isCargoDataFileFormat(file)) {
-            continue;
-        }
-
-    }
-
-    return map;  // TODO
-}
-// endregion
-
-bool writeFile(const std::string &path, StringStringVector data) {
-
-    std::ofstream outputFile(path);
-
-    for (StringVector dataRow : data) {
-        for (longUInt i = 0; i < dataRow.size() - 1; i++) {
-            outputFile << dataRow[i] << ", ";
-        }
-        outputFile << dataRow.back() << std::endl;
-    }
 
     return true;
 }
