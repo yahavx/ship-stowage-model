@@ -37,5 +37,8 @@ std::ostream &operator<<(std::ostream &os, const StringToStringVectorMap &map);
  */
 void printSeparator(int linesBefore, int linesAfter);
 
+/// Prints empty lines.
+void printEmptyLines(int amount);
+
 
 #endif //SHIP_STOWAGE_MODEL_PRINTERS_H

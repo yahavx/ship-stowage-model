@@ -10,7 +10,9 @@
 
 
 std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath) {
+#ifdef DEBUG
     std::cout << "Attempting to read ship plan..." << std::endl;
+#endif
     StringStringVector data = readFile(filePath);
 
     if (!isDataOnlyIntegers(data)) {  // couldn't convert data to int
@@ -58,14 +60,16 @@ std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath) {
     }
 
     shipPlan.setHeights(heights);
-
+#ifdef DEBUG
     std::cout << "Read ship plan successfully." << std::endl;
-
+#endif
     return shipPlan;
 }
 
 std::optional<ShipRoute> readShipRouteFromFile(const std::string &filePath) {
+#ifdef DEBUG
     std::cout << "Attempting to read ship route..." << std::endl;
+#endif
     StringStringVector data = readFile(filePath);
 
     std::vector<PortId> ports;
@@ -88,16 +92,17 @@ std::optional<ShipRoute> readShipRouteFromFile(const std::string &filePath) {
 
         ports.push_back(PortId(token));
     }
-
+#ifdef DEBUG
     std::cout << "Read ship route successfully." << std::endl;
-
+#endif
     ShipRoute shipRoute(ports);
     return shipRoute;
 }
 
 std::optional<Port> readCargoToPortFromFile(const std::string &filePath) {
+#ifdef DEBUG
     std::cout << "Attempting to read cargo data..." << std::endl;
-
+#endif
     std::string fileName = extractFilenameFromPath(filePath, false);  // false keeps the .cargo_data
     if (!isCargoDataFileFormat(fileName)) {
         std::cout << "Error: filename is in incorrect format, exiting" << std::endl;
@@ -136,15 +141,18 @@ std::optional<Port> readCargoToPortFromFile(const std::string &filePath) {
         containersToAdd.push_back(Container(id, stringToInt(weight), PortId(destPort)));
     }
 
+#ifdef DEBUG
     std::cout << "Read cargo data successfully." << std::endl;
-
+#endif
     port.addContainers(containersToAdd);
 
     return port;
 }
 
 std::optional<OPS> readPackingOperationsFromFile(const std::string &filePath) {
+#ifdef DEBUG
     std::cout << "Attempting to read operations..." << std::endl;
+#endif
     StringStringVector data = readFile(filePath);
 
     OPS operations;
@@ -203,15 +211,17 @@ std::optional<OPS> readPackingOperationsFromFile(const std::string &filePath) {
         return std::nullopt;
     }
 
+#ifdef DEBUG
     std::cout << "Read operations successfully." << std::endl;
+#endif
     return operations;
 }
 
 bool writePackingOperationsToFile(const std::string &filePath, OPS &operations) {
     StringStringVector data;
-
+#ifdef DEBUG
     std::cout << "Attempting to write operations..." << std::endl;
-
+#endif
     for (PackingOperation op : operations) {
         data.emplace_back();  // add new row
         StringVector &currRow = data.back();
@@ -238,6 +248,8 @@ bool writePackingOperationsToFile(const std::string &filePath, OPS &operations) 
         std::cout << "Error: couldn't write to file." << std::endl;
         return false;
     }
+#ifdef DEBUG
     std::cout << "Wrote operations successfully." << std::endl;
+#endif
     return true;
 }

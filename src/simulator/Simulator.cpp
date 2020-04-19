@@ -9,7 +9,6 @@
 #include "SimulatorUtil.h"
 #include "../algorithms/CranesOperation.h"
 
-
 // region Simulation core
 
 std::string getShipPlanPath(const std::string &travel) {
@@ -32,7 +31,7 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
     std::string shipRoutePath = getShipRoutePath(travel);
 
     // Init for simulation
-    std::cout << "***Initializing simulation***" << std::endl;
+    std::cout << "Initializing simulation..." << std::endl;
     std::optional<ShipPlan> optShipPlan = readShipPlanFromFile(shipPlanPath);
     std::optional<ShipRoute> optShipRoute = readShipRouteFromFile(shipRoutePath);
 
@@ -40,6 +39,7 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
         std::cout << "Simulation failed: couldn't initialize from files" << std::endl;
         return;
     }
+    std::cout << "Success." << std::endl;
 
     printSeparator(1, 1);
 
@@ -49,17 +49,18 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
     ContainerShip ship(shipPlan, shipRoute, weightBalanceCalculator);
 
     // Init for algorithm
-    std::cout << "***Initializing algorithm***" << std::endl;
+    std::cout << "Initializing algorithm..." << std::endl;
     algorithm.setShipPlanFromPath(shipPlanPath);
     algorithm.setShipRouteFromPath(shipRoutePath);
     WeightBalanceCalculator algoWeightBalanceCalculator(shipPlan);
     algorithm.setWeightBalanceCalculator(algoWeightBalanceCalculator);
+    std::cout << "Success." << std::endl;
 
     printSeparator(1, 1);
 
     // Start simulation
     StringToStringVectorMap map = sortTravelCargoData(travel);  // get list of .cargo_data files, ordered for each port
-    std::cout << map;
+
 //    test(algorithm);  // remove comment to test one .cargo_data
 //    return;
 
@@ -117,7 +118,7 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
 
         std::cout << "The ship is continuing to the next port..." << std::endl;
 
-        printSeparator(0, 0);
+        printSeparator(1, 1);
     }
 
     printSeparator(1, 1);
