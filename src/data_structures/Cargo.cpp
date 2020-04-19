@@ -43,7 +43,7 @@ OptionalContainer Cargo::getTopContainer(int x, int y) const {
 OptionalContainer Cargo::removeTopContainer(int x, int y) {
     if (!validateXY(x, y, shipPlan))
         return {};
-    Containers xyContainers = containers[x][y];
+    Containers &xyContainers = containers[x][y];
     if (xyContainers.empty())
         return {};
 
