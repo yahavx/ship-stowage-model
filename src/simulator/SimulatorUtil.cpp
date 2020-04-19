@@ -13,7 +13,12 @@
 #include <filesystem>
 #include "../utils/Printers.h"
 #include "../common/io/FileReader.h"
+#include "../algorithms/stowage/IStowageAlgorithm.h"
+#include "Simulator.h"
+#include "../common/io/ObjectsReader.h"
 
+static std::string staticOutputFile =  "../simulation-output/cargo_instructions";  // TODO: take it from the simulator class somehow!
+static std::string unloadOnly = "UnloadOnly:";
 
 // region sortTravelCargoData
 
@@ -132,3 +137,33 @@ void filterTwiceInARowPorts(ShipRoute &shipRoute) {
     }
     shipRoute.setPorts(newPorts);  // we don't if we didn't change anything also, but whatever
 }
+
+std::string getCargoPath(const std::string &travel, const std::string &cargoFile) {
+    return travel + "/" + cargoFile;
+}
+
+bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map, Port &port) {
+
+    std::optional<std::string> cargoFile = getNextFileForPort(map, port.getId().getCode());  // get cargo file of current port
+
+    if (!cargoFile.has_value()) {  // couldn't find a cargo file
+        std::cout << "Warning: no cargo file for current visit, ship will only unload" << std::endl;
+        algorithm.getInstructionsForCargo(unloadOnly + port.getId().getCode(), staticOutputFile);  // TODO: find a proper way to communicate the unload
+        return true;
+    }
+
+    std::string cargoFilePath = getCargoPath(travel, *cargoFile);
+    algorithm.getInstructionsForCargo(cargoFilePath, staticOutputFile);
+
+    std::optional<ContainerStorage> containers = readCargoToPortFromFile(cargoFilePath);
+
+    if (!containers.has_value()) {
+        std::cout << "Critical warning: couldn't load port information" << std::endl;
+        std::cout << "The ship is continuing to the next port..." << std::endl;
+        return false;
+    }
+    port.setStorage(*containers);
+
+    return true;
+}
+

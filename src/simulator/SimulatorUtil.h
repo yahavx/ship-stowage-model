@@ -7,6 +7,7 @@
 
 #include "../utils/Definitions.h"
 #include "../data_objects/ShipRoute.h"
+#include "../algorithms/stowage/IStowageAlgorithm.h"
 
 
 /**
@@ -23,5 +24,11 @@ void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute);
 
 /// Removes from route ports that appears twice in a row.
 void filterTwiceInARowPorts(ShipRoute &shipRoute);
+
+/**
+ * Triggers the getInstructionsForCargo of the algorithm, adds storage to the port (of simulator) if needed.
+ * @return true if succeed.
+ */
+bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map, Port &port);
 
 #endif //SHIP_STOWAGE_MODEL_SIMULATORUTIL_H

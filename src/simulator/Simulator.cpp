@@ -10,6 +10,13 @@
 #include "../algorithms/CranesOperation.h"
 #include "../common/io/FileReader.h"
 
+// region Constructors
+
+Simulator::Simulator() {
+    staticOutputFile = "../simulation-output/cargo_instructions";
+}
+// endregion
+
 // region Simulation core
 
 std::string getShipPlanPath(const std::string &travel) {
@@ -19,12 +26,6 @@ std::string getShipPlanPath(const std::string &travel) {
 std::string getShipRoutePath(const std::string &travel) {
     return travel + "/Route";
 }
-
-std::string getCargoPath(const std::string &travel, const std::string &cargoFile) {
-    return travel + "/" + cargoFile;
-}
-
-void test(IStowageAlgorithm &algorithm);
 
 void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &travel) {
     // Validate root folder exists
@@ -76,8 +77,7 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
         if (!res)
             continue; // failed to read current dock file, errors were printed inside  // TODO: check if we can continue anyways
 
-        auto optOps = readPackingOperationsFromFile(
-                staticOutputFile);  // read the operations to perform, written by the algorithm
+        auto optOps = readPackingOperationsFromFile(staticOutputFile);  // read the operations to perform, written by the algorithm
 
         if (!optOps.has_value()) {
             std::cout << "Warning: no packing operations were read" << std::endl;
@@ -138,33 +138,6 @@ bool Simulator::initSimulation(const std::string &shipPlanPath, const std::strin
 
     std::cout << "Success." << std::endl;
     printSeparator(1, 1);
-    return true;
-}
-
-bool Simulator::getInstructionsForCargo(IStowageAlgorithm &algorithm,
-                                        const std::string &travel, // TODO: maybe move this to the SimulatorUtil (it doesn't use any state)
-                                        StringToStringVectorMap &map, Port &port) const {
-
-    std::optional<std::string> cargoFile = getNextFileForPort(map, port.getId().getCode());  // get cargo file of current port
-
-    if (!cargoFile.has_value()) {  // couldn't find a cargo file
-        std::cout << "Warning: no cargo file for current visit, ship will only unload" << std::endl;
-        algorithm.getInstructionsForCargo(Simulator::unloadOnly + port.getId().getCode(), Simulator::staticOutputFile);  // TODO: find a proper way to communicate the unload
-        return true;
-    }
-
-    std::string cargoFilePath = getCargoPath(travel, *cargoFile);
-    algorithm.getInstructionsForCargo(cargoFilePath, Simulator::staticOutputFile);
-
-    std::optional<ContainerStorage> containers = readCargoToPortFromFile(cargoFilePath);
-
-    if (!containers.has_value()) {
-        std::cout << "Critical warning: couldn't load port information" << std::endl;
-        std::cout << "The ship is continuing to the next port..." << std::endl;
-        return false;
-    }
-    port.setStorage(*containers);
-
     return true;
 }
 // endregion

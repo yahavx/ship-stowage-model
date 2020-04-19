@@ -11,8 +11,10 @@
 class Simulator {
 
 public:
-    std::string staticOutputFile = "../simulation-output/cargo_instructions";
-    std::string unloadOnly = "UnloadOnly:";
+    std::string staticOutputFile;
+
+    Simulator();
+
     /**
      * Simulates an algorithm on a single travel.
      * @param travel a directory that contains Plan, Route, and list of <portId>_<number>.cargo_data files.
@@ -24,12 +26,6 @@ public:
 
 private:
 
-    /**
-     * Triggers the getInstructionsForCargo of the algorithm, adds storage to the port (of simulator) if needed.
-     * @return true if succeed.
-     */
-    bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &travel,
-                                 StringToStringVectorMap &map, Port &port) const;
     /**
      * Inits the ship of the simulation. Returns true if succeed.
      * @return true if succeed.
