@@ -1,0 +1,10 @@
+# Containers awaiting at port
+
+BAAU1234569, 7, BBBBB
+BBCU1234562, 7, BBBBB
+
+CAIJ4838435, 12, CCCCC
+CBIJ4838435, 12, CCCCC
+CCIJ4838435, 12, CCCCC
+
+# container id, weight, destination port id

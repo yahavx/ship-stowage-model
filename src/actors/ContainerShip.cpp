@@ -116,15 +116,12 @@ OPS ContainerShip::loadContainerToArbitraryPosition(Port &port, const Container 
 
     if (z < 0) {
         ops = OPS();
-        ops.
-                push_back(PackingOperation(PackingType::reject, container.getId(), {-1, -1, -1})
+        ops.push_back(PackingOperation(PackingType::reject, container.getId(), {-1, -1, -1})
         );
-        return
-                ops;
+        return ops;
     }
 
-    return
-            ops;
+    return ops;
 }
 
 OPS ContainerShip::unloadContainer(Port &port, const ContainerPosition &containerPos) {
