@@ -67,13 +67,20 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
 
     printSeparator(1, 1);
 
-    for (const PortId &portId : ship.getShipRoute().getPorts()) {  // Start the journey
+    auto &ports = ship.getShipRoute().getPorts();
+
+    for (longUInt i = 0; i < ports.size(); i++) {  // Start the journey
+        auto &portId = ports[i];
+
         std::cout << "The ship has docked at port " << portId.getCode() << "." << std::endl;
 
         Port port(portId);
 
-        res = getInstructionsForCargo(algorithm, travel, map,
-                                      port);  // triggers algorithm getInstructions(), sets port ContainerStorage if needed
+        bool isLast = (i == ports.size() - 1);  // our last port is treated a bit different
+
+        res = getInstructionsForCargo(algorithm, travel, map, port, isLast);
+        // triggers algorithm getInstructions(), sets port ContainerStorage if needed
+
         if (!res)
             continue; // failed to read current dock file, errors were printed inside  // TODO: check if we can continue anyways
 
@@ -85,10 +92,17 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
             performPackingOperations(ship, port, *optOps);
         }
 
-        std::cout << "The ship is continuing to the next port..." << std::endl;
+        if (!isLast) {
+            std::cout << "The ship is continuing to the next port..." << std::endl;
+        } else {
+            std::cout << "The ship finished its work in the final destination..." << std::endl;
+        }
 
         printSeparator(1, 1);
     }
+
+    validateNoCargoFilesLeft(
+            map);  // if there are remaining cargo files in the map, we need to print a warning because we couldn't use them
 
     printSeparator(1, 1);
 
@@ -97,7 +111,8 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
     printSeparator(1, 1);
 }
 
-void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const OPS &ops) const {// Perform operations on local ship and port
+void Simulator::performPackingOperations(ContainerShip &ship, Port &port,
+                                         const OPS &ops) const {// Perform operations on local ship and port
     for (const PackingOperation &op : ops) {
         auto opResult = CranesOperation::preformOperation(op, port, ship);
         if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND)

@@ -17,7 +17,7 @@
 #include "Simulator.h"
 #include "../common/io/ObjectsReader.h"
 
-static std::string staticOutputFile =  "../simulation-output/cargo_instructions";  // TODO: take it from the simulator class somehow!
+static std::string staticOutputFile = "../simulation-output/cargo_instructions";  // TODO: take it from the simulator class somehow!
 static std::string unloadOnly = "UnloadOnly:";
 
 // region sortTravelCargoData
@@ -119,7 +119,7 @@ void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute) {
         }
     }
 
-    for (std::string& port : toErase){
+    for (std::string &port : toErase) {
         map.erase(port);
     }
 }
@@ -142,11 +142,13 @@ std::string getCargoPath(const std::string &travel, const std::string &cargoFile
     return travel + "/" + cargoFile;
 }
 
-bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map, Port &port) {
+bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map,
+                             Port &port, bool isLast) {
     std::optional<std::string> cargoFile = getNextFileForPort(map, port.getId().getCode());  // get cargo file of current port
 
     if (!cargoFile.has_value()) {  // couldn't find a cargo file
-        std::cout << "Warning: no cargo file for current visit, ship will only unload" << std::endl;
+        if (!isLast)  // if its the last, its an expected behaviour
+            std::cout << "Warning: no cargo file for current visit, ship will only unload" << std::endl;
         algorithm.getInstructionsForCargo(unloadOnly + port.getId().getCode(), staticOutputFile);  // TODO: find a proper way to communicate the unload
         return true;
     }
@@ -166,3 +168,12 @@ bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &tr
     return true;
 }
 
+void validateNoCargoFilesLeft(StringToStringVectorMap &map) {
+    for (auto &entry: map) {
+        std::string portId = entry.first;
+        if (map[portId].size() > 0) {
+            std::cout << "Warning: finished the route, but port " << portId << " have cargo files that were not used"
+                      << std::endl;
+        }
+    }
+}
