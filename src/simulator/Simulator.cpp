@@ -42,7 +42,7 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string& t
 
     algorithm.setWeightBalanceCalculator(weightBalanceCalculator);
 
-    std::string input = "../input-examples/tests/AGHCS_17.cargo_data", output = "../input-examples/results";  // Until one works fine..
+    std::string input = "../input-examples/Travel_3/AAAAA_17.cargo_data", output = "../input-examples/results";  // Until one works fine..
     algorithm.getInstructionsForCargo(input, output);
     
     std::optional<OPS> optionalOps = readPackingOperationsFromFile(output);
