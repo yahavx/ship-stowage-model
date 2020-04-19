@@ -36,8 +36,10 @@ void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile
         Containers portContainers = port.getContainersForDestination(id);
         containersToLoad.insert(containersToLoad.end(), portContainers.begin(), portContainers.end());
     }
+
+    ContainerShip tmpShip = ship;
     // Get ops for unloading and loading from ship
-    OPS ops = ship.dock(port.getId(), containersToLoad);
+    OPS ops = tmpShip.dock(port.getId(), containersToLoad);
 
     // Perform operations on local ship and port
     for (const PackingOperation &op : ops) {
