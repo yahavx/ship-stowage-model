@@ -79,7 +79,6 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
 
         std::optional<std::string> cargoFile = getNextFileForPort(map,
                                                                   portId.getCode());  // TODO: check if we need to save storage that wasn't loaded to the ship from the port
-
         Port port;
 
         if (!cargoFile.has_value()) {
@@ -87,9 +86,10 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
             algorithm.getInstructionsForCargo(unloadOnly + portId.getCode(), staticOutputFile);  // TODO: fix
             port.setId(portId);
         } else {
-            algorithm.getInstructionsForCargo(*cargoFile, staticOutputFile);
+            std::string cargoFilePath = getCargoPath(travel, *cargoFile);
+            algorithm.getInstructionsForCargo(cargoFilePath, staticOutputFile);
 
-            std::optional<Port> optPort = readCargoToPortFromFile(*cargoFile);
+            std::optional<Port> optPort = readCargoToPortFromFile(cargoFilePath);
 
             if (!optPort.has_value()) {
                 std::cout << "Critical warning: couldn't load port information" << std::endl;

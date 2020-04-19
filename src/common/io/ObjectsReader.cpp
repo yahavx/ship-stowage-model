@@ -8,6 +8,7 @@
 #include "../../utils/Printers.h"
 #include <tuple>
 
+//#define DEBUG
 
 std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath) {
 #ifdef DEBUG

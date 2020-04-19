@@ -61,7 +61,7 @@ void ContainerShip::setBalanceCalculator(WeightBalanceCalculator &balanceCalcula
 
 OPS
 ContainerShip::dock(Port &port, const Containers &containersToLoad) {
-    OPS operations = OPS();
+    OPS operations;
 
     std::vector<ContainerPosition> containersToUnload = this->getCargo().getContainersForPort(port.getId());
 
@@ -91,7 +91,7 @@ OPS ContainerShip::loadContainerToArbitraryPosition(Port &port, const Container 
     POS dims = this->shipPlan.getDimensions();
     int z = -1;
 
-    /// Loop over all possible ship matrix cells and try to load the container on top, until success
+    // Loop over all possible ship matrix cells and try to load the container on top, until success
     for (int x = 0; (x < std::get<0>(dims)) && (z < 0); x++) {
         for (int y = 0; (y < std::get<1>(dims)) && (z < 0); y++) {
             BalanceStatus status = this->balanceCalculator->tryOperation('L', container.getWeight(), x, y);
