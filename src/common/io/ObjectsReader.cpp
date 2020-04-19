@@ -28,7 +28,7 @@ std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath) {
         return std::nullopt;
     }
 
-    int x = firstRow[0], y = firstRow[1], z = firstRow[2];
+    int z = firstRow[0], x = firstRow[1], y = firstRow[2];  // TODO: Changed from x, y ,z to z, x, y, validate it didn't ruin anything
     std::tuple<int, int, int> dimensions(x, y, z);
     shipPlan.setDimensions(dimensions);
 
