@@ -94,7 +94,7 @@ std::optional<std::string> getNextFileForPort(StringToStringVectorMap &map, cons
     return first;
 }
 
-void filterUnusedPorts(StringToStringVectorMap &map, const ShipRoute &shipRoute) {
+void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute) {
     StringVector toErase;
 
     for (auto &entry: map) {

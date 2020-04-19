@@ -31,11 +31,11 @@ void ContainerShip::setShipPlan(const ShipPlan &shipPlan) {
     ContainerShip::cargo = Cargo(shipPlan);
 }
 
-const ShipRoute &ContainerShip::getShipRoute() const {
+ShipRoute &ContainerShip::getShipRoute() {
     return shipRoute;
 }
 
-void ContainerShip::setShipRoute(const ShipRoute &shipRoute) {
+void ContainerShip::setShipRoute(ShipRoute &shipRoute) {
     ContainerShip::shipRoute = shipRoute;
 }
 
@@ -221,5 +221,9 @@ OPS ContainerShip::unloadContainer(Port &port, const ContainerPosition &containe
     }
 
     return ops;
+}
+
+void ContainerShip::markCurrentVisitDone() {
+    this->shipRoute.getPorts().erase(this->shipRoute.getPorts().begin());
 }
 // endregion

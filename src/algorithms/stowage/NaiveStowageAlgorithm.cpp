@@ -19,7 +19,8 @@ void NaiveStowageAlgorithm::setShipPlanFromPath(
 }
 
 void NaiveStowageAlgorithm::setShipRouteFromPath(const std::string &shipRoutePath) {
-    this->ship.setShipRoute(*readShipRouteFromFile(shipRoutePath));
+    auto route = *readShipRouteFromFile(shipRoutePath);
+    this->ship.setShipRoute(route);
 }
 
 void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
@@ -41,25 +42,16 @@ void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile
     Containers containersToLoad = Containers();
     // Collect all containers that needs to be loaded
     // TODO: only remaining route should be considered
-    for (const PortId &id : ship.getShipRoute().getPorts()) {
+    for (longUInt i = 1; i < this->ship.getShipRoute().getPorts().size(); i++) {
+        const PortId &id = ship.getShipRoute().getPorts()[i];
         Containers portContainers = port.getContainersForDestination(id);
         containersToLoad.insert(containersToLoad.end(), portContainers.begin(), portContainers.end());
     }
 
-    ContainerShip tmpShip = ship;
     // Get ops for unloading and loading from ship
-    OPS ops = tmpShip.dock(port, containersToLoad);
-
-//    // Perform operations on local ship and port
-//    for (const PackingOperation &op : ops) {
-//        auto opResult = CranesOperation::preformOperation(op, port, ship);
-//        if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND)
-//            std::cout << "Crane received illegal operation, didn't find container with ID:" << op.getContainerId()
-//                      << std::endl;
-//        if (opResult == CraneOperationResult::FAIL_ILLEGAL_OP)
-//            std::cout << "Crane received illegal operation: " << op << "\n";
-//        // TODO: Handle failing operation ??
-//    }
+    OPS ops = ship.dock(port, containersToLoad);
 
     writePackingOperationsToFile(outputFile, ops);
+
+    ship.markCurrentVisitDone();
 }

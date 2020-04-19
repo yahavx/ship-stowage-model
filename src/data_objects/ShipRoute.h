@@ -21,9 +21,9 @@ public:
 
 
     // Getters and setters
-    const std::vector<PortId> &getPorts() const;
+    std::vector<PortId> &getPorts();
 
-    void setPorts(const std::vector<PortId> &ports);
+    void setPorts(std::vector<PortId> &ports);
 
 
     // Printer

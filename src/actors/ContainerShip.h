@@ -32,13 +32,15 @@ public:
 
     // region Getters and setters
 
+    void markCurrentVisitDone();
+
     const ShipPlan &getShipPlan() const;
 
     void setShipPlan(const ShipPlan &shipPlan);
 
-    const ShipRoute &getShipRoute() const;
+    ShipRoute &getShipRoute();
 
-    void setShipRoute(const ShipRoute &shipRoute);
+    void setShipRoute(ShipRoute &shipRoute);
 
     Cargo &getCargo();  // Not const
 

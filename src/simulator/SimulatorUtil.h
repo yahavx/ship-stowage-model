@@ -19,7 +19,7 @@ StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath);
 std::optional<std::string> getNextFileForPort(StringToStringVectorMap &map, const std::string &portId);
 
 /// Removes from map ports that doesn't appear in the route.
-void filterUnusedPorts(StringToStringVectorMap &map, const ShipRoute &shipRoute);
+void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute);
 
 /// Removes from route ports that appears twice in a row.
 void filterTwiceInARowPorts(ShipRoute &shipRoute);

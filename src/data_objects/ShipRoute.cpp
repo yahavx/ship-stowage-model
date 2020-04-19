@@ -12,11 +12,11 @@ ShipRoute::ShipRoute(const std::vector<PortId> &ports) : ports(ports) {}
 
 
 // Setters and getters
-const std::vector<PortId> &ShipRoute::getPorts() const {
+std::vector<PortId> &ShipRoute::getPorts() {
     return ports;
 }
 
-void ShipRoute::setPorts(const std::vector<PortId> &ports) {
+void ShipRoute::setPorts(std::vector<PortId> &ports) {
     ShipRoute::ports = ports;
 }
 
