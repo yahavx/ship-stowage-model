@@ -143,7 +143,6 @@ std::string getCargoPath(const std::string &travel, const std::string &cargoFile
 }
 
 bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map, Port &port) {
-
     std::optional<std::string> cargoFile = getNextFileForPort(map, port.getId().getCode());  // get cargo file of current port
 
     if (!cargoFile.has_value()) {  // couldn't find a cargo file
