@@ -93,6 +93,12 @@ std::optional<ShipRoute> readShipRouteFromFile(const std::string &filePath) {
 
         ports.push_back(PortId(token));
     }
+
+    if (ports.size() == 0) {
+        std::cout << "Error: couldn't read any port from route file" << std::endl;
+        return std::nullopt;
+    }
+
 #ifdef DEBUG
     std::cout << "Read ship route successfully." << std::endl;
 #endif

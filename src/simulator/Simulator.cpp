@@ -8,6 +8,7 @@
 #include "../utils/Printers.h"
 #include "SimulatorUtil.h"
 #include "../algorithms/CranesOperation.h"
+#include "../common/io/FileReader.h"
 
 // region Simulation core
 
@@ -26,6 +27,12 @@ std::string getCargoPath(const std::string &travel, const std::string &cargoFile
 void test(IStowageAlgorithm &algorithm);
 
 void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &travel) {
+    // Validate root folder exists
+    if (!isDirectoryExists(travel)) {
+        std::cout << "Simulation failed: the travel path supplied is not a directory" << std::endl;
+        return;
+    }
+
     // Get plan and route paths
     std::string shipPlanPath = getShipPlanPath(travel);
     std::string shipRoutePath = getShipRoutePath(travel);
@@ -78,7 +85,7 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
         std::cout << "The ship has docked at port " << portId.getCode() << "." << std::endl;
 
         std::optional<std::string> cargoFile = getNextFileForPort(map,
-                                                                  portId.getCode());  // TODO: check if we need to save storage that wasn't loaded to the ship from the port
+                                                                  portId.getCode());
         Port port;
 
         if (!cargoFile.has_value()) {

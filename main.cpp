@@ -17,6 +17,4 @@ using namespace std;
 
 int main() {
     simulationTest();
-//    auto x = sortTravelCargoData("../input-examples/Travel_4");
-//    cout << x;
 }

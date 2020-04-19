@@ -18,7 +18,7 @@ void inline simulationTest(){
     NaiveStowageAlgorithm naiveStowageAlgorithm;
     IStowageAlgorithm &algorithm(naiveStowageAlgorithm);
 
-    string path = "../input-examples\\Travel_3";
+    string path = "../input-examples\\Travel_5";
 
     simulator.runSimulation(algorithm, path);
 }
