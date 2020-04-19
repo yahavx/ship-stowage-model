@@ -79,22 +79,32 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
         std::optional<std::string> cargoFile = getNextFileForPort(map,
                                                                   portId.getCode());  // TODO: check if we need to save storage that wasn't loaded to the ship from the port
 
+        Port port;
+
         if (!cargoFile.has_value()) {
             std::cout << "Warning: no cargo file for current visit, ship will only unload" << std::endl;
             algorithm.getInstructionsForCargo(unloadOnly + portId.getCode(), staticOutputFile);  // TODO: fix
+            port.setId(portId);
         } else {
             algorithm.getInstructionsForCargo(*cargoFile, staticOutputFile);
+
+            std::optional<Port> optPort = readCargoToPortFromFile(*cargoFile);
+
+            if (!optPort.has_value()) {
+                std::cout << "Critical warning: couldn't load port information" << std::endl;
+                std::cout << "The ship is continuing to the next port..." << std::endl;
+                continue;
+            }
+            port = *optPort;
         }
 
-        auto optionalOps = readPackingOperationsFromFile(staticOutputFile);
+        auto optOps = readPackingOperationsFromFile(staticOutputFile);
 
-        if (!optionalOps.has_value()) {
-            std::cout << " Warning: no packing operations were read" << std::endl;
+        if (!optOps.has_value()) {
+            std::cout << "Warning: no packing operations were read" << std::endl;
         } else {
-
-
             // Perform operations on local ship and port
-            for (const PackingOperation &op : *optionalOps) {
+            for (const PackingOperation &op : *optOps) {
                 auto opResult = CranesOperation::preformOperation(op, port, ship);
                 if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND)
                     std::cout << "Crane received illegal operation, didn't find container with ID:"
