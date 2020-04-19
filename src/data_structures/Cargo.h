@@ -28,14 +28,14 @@ public:
      * If possible to load the container on top in this x,y position returns the height it would be loaded to.
      * else returns negative integer
      */
-    int canLoadContainerOnTop(int x, int y, const Container &container) const;
+    int canLoadContainerOnTop(int x, int y) const;
 
     /**
      * Returns the current number of containers in position (x,y), or -1 if x or y are out of bounds.
      * @param x - row
      * @param y - col
      */
-    int currentNumContainers(int x, int y) const;
+    int currentTopHeight(int x, int y) const;
 
     /**
      * Returns the top container in position (x,y)

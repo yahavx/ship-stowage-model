@@ -6,6 +6,7 @@
 #include "../algorithms/stowage/NaiveStowageAlgorithm.h"
 #include "../common/io/ObjectsReader.h"
 #include "../utils/Printers.h"
+#include "../algorithms/CranesOperation.h"
 
 std::string getShipPlanPath(const std::string& travel){
     return travel + "/Plan";
@@ -43,8 +44,17 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string& t
     algorithm.setWeightBalanceCalculator(weightBalanceCalculator);
 
     std::string input = "../input-examples/Travel_3/AAAAA_17.cargo_data", output = "../input-examples/results";  // Until one works fine..
+
+    std::optional<Port> optPort = readCargoToPortFromFile(input);
+
+    if (!optPort.has_value()) {
+        std::cout << "Error in getInstructionsForCargo(): couldn't load port" << std::endl;
+    }
+    Port port = *optPort;
+
+    // Run the algorithm
     algorithm.getInstructionsForCargo(input, output);
-    
+
     std::optional<OPS> optionalOps = readPackingOperationsFromFile(output);
 
     if (!optionalOps.has_value()) {
@@ -53,5 +63,15 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string& t
     else {
         std::cout << "Operations generated:" << std::endl;
         std::cout << *optionalOps;
+
+        // Perform operations on local ship and port
+        for (const PackingOperation &op : *optionalOps) {
+            auto opResult = CranesOperation::preformOperation(op, port, ship);
+            if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND)
+                std::cout << "Crane received illegal operation, didn't find container with ID:" << op.getContainerId()
+                          << std::endl;
+            if (opResult == CraneOperationResult::FAIL_ILLEGAL_OP)
+                std::cout << "Crane received illegal operation: " << op << "\n";
+        }
     }
 }

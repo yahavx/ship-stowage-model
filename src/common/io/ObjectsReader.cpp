@@ -44,7 +44,7 @@ std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath) {
         int m = intDataRow[1];
         int availableContainers = intDataRow[2];
 
-        if (n <= 0 || n >= x || m <= 0 || m >= y) {
+        if (n < 0 || n >= x || m < 0 || m >= y) {
             std::cout << "Warning: data row exceeds the ship dimensions, ignoring" << std::endl;
             continue;
         }

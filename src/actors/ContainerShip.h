@@ -55,7 +55,7 @@ public:
      * Receives the next id of port to dock into, and list of containers that needs to be loaded.
      * @return list of operations: first unload all containers for this port, and than load all the containers that needs to be loaded.
     */
-    std::vector<PackingOperation> dock(const PortId &portId, const Containers &containersToLoad);
+    std::vector<PackingOperation> dock(Port &port, const Containers &containersToLoad);
 
 
 private:
@@ -66,7 +66,7 @@ private:
      * @param container - container to load
      * @return legal PackingOperation or NULL if none was found
      */
-    std::vector<PackingOperation> loadContainerToArbitraryPosition(const Container &container);
+    std::vector<PackingOperation> loadContainerToArbitraryPosition(Port &port, const Container &container);
 
     /**
     * returns legal series of PackingOperation's for unloading container.
@@ -75,7 +75,7 @@ private:
     * @param container - container to load
     * @return legal series of PackingOperation's or NULL if none was found
     */
-    std::vector<PackingOperation> unloadContainer(const ContainerPosition &container);
+    std::vector<PackingOperation> unloadContainer(Port &port, const ContainerPosition &container);
     // endregion
 };
 
