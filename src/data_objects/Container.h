@@ -44,6 +44,10 @@ public:
 
     friend std::ostream &operator<<(std::ostream &os, const Container &container);
     // endregion
+
+    bool operator==(const Container &rhs) const;
+
+    bool operator!=(const Container &rhs) const;
 };
 
 
