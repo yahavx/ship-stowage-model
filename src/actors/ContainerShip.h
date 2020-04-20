@@ -63,7 +63,6 @@ public:
 private:
     /**
      * returns legal PackingOperation for loading the container to an arbitrary position.
-     * If there was no available legal position found returns NULL TODO: check how to return null
      *
      * @param container - container to load
      * @return legal PackingOperation or NULL if none was found
@@ -72,7 +71,6 @@ private:
 
     /**
     * returns legal series of PackingOperation's for unloading container.
-    * If there was no available series legal of PackingOperation's found returns NULL TODO: check how to return null
     *
     * @param container - container to load
     * @return legal series of PackingOperation's or NULL if none was found

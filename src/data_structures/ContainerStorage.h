@@ -11,8 +11,6 @@
 #include "../utils/Definitions.h"
 
 
-static Container staticContainer("id", 100, PortId("id")); // TODO: remove this
-
 class ContainerStorage {
     Containers containers;
 

@@ -9,9 +9,6 @@
 #include "../../data_objects/ShipRoute.h"
 
 
-// TODO: return objects instead of modifying
-
-
 /// Reads the ship plan from a file.
 std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath);
 

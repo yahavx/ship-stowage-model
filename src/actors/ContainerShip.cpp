@@ -74,7 +74,7 @@ ContainerShip::dock(Port &port, const Containers &containersToLoad) {
         operations.insert(operations.end(), unloadOps.begin(), unloadOps.end());
     }
 
-    // Load all required containers , TODO: Handle case where there is no more space
+    // Load all required containers
     for (const Container &container: containersToLoad) {
         // Get instructions for adding the container
         OPS loadOps = this->loadContainerToArbitraryPosition(port, container);
@@ -140,7 +140,6 @@ OPS ContainerShip::unloadContainer(Port &port, const ContainerPosition &containe
 
     // Unload all containers on top, later we will load them back
     for (int i = 0; i < numOfContainersOnTop; i++) {
-        //TODO: Check if balance calculator allows to unload
         auto topCont = this->getCargo().getTopContainer(x, y);
         BalanceStatus status = this->balanceCalculator->tryOperation('U', topCont->getWeight(), x, y);
         if (status != BalanceStatus::APPROVED) {
@@ -160,9 +159,6 @@ OPS ContainerShip::unloadContainer(Port &port, const ContainerPosition &containe
         auto container = containerOptional.value();
 
         //Add to list of containers to load back only if the container destination is not current port
-        //TODO : check why this is not working
-//        if (container.getDestPort() != port.getId())
-//            containersOnTop.push_back(container);
         containersOnTop.push_back(container);
         auto op = PackingOperation(PackingType::unload, container.getId(), {x, y, z + (numOfContainersOnTop - i)});
         auto result = CranesOperation::preformOperation(op, port, *this);
@@ -207,7 +203,7 @@ OPS ContainerShip::unloadContainer(Port &port, const ContainerPosition &containe
     // Load back the containers that were on top and were unloaded, also if the operation failed
     for (std::size_t i = 0, max = containersOnTop.size(); i < max; i++) {
         Container cont = containersOnTop[i];
-        //TODO: check if balance calculator allows to load, if not load to another place
+        // TODO: check if balance calculator allows to load back, if not load to another place
         auto op = PackingOperation(PackingType::load, cont.getId(), {x, y, z + i});
         CranesOperation::preformOperation(op, port, *this);
         ops.push_back(op);

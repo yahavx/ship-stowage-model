@@ -1,29 +1,15 @@
 #include <iostream>
 #include "src/common/io/FileReader.h"
-#include "src/utils/UtilFunctions.h"
 #include "src/common/io/ObjectsReader.h"
-#include <cassert>
-#include <fstream>
-#include "src/actors/Port.h"
-#include "src/utils/Printers.h"
-#include "tests/IOTests.h"
 #include "tests/SimulationTests.h"
-#include "src/simulator/Simulator.h"
-#include "src/algorithms/stowage/NaiveStowageAlgorithm.h"
-#include "src/simulator/SimulatorUtil.h"
-
-using namespace std;  // TODO: remove this and all redundant includes
 
 
 int main(int argc, char **argv) {
 //        simulationTest("../input-examples\\Travel_4");  // TODO: remove at the end
 //    return 0;
-//    ShipRoute shipRoute = *readShipRouteFromFile("../input-examples/Travel_1/Route");
-//    cout << shipRoute;
-//    return 0;
 
     if (argc == 1) {
-        cout << "No arguments supplied. Please read the README for usage instructions. Program is terminated." << endl;
+        std::cout << "No arguments supplied. Please read the README for usage instructions. Program is terminated." << std::endl;
         return 1;
     }
 

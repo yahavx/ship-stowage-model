@@ -39,7 +39,6 @@ public:
 
     /**
      * Returns the top container in position (x,y)
-     * //TODO: Switch to optional
      * @param x - row
      * @param y - col
      */
@@ -53,7 +52,6 @@ public:
 
     /**
      * Removes and returns the top container in position (x,y)
-     * //TODO: Switch to optional
      * @param x - row
      * @param y - col
      */

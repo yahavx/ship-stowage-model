@@ -12,7 +12,7 @@ class Simulator {
 
 public:
     std::string staticOutputFile;
-    std::vector<IStowageAlgorithm*> algorithms;  // TODO: init dynamically? (Gittik style)
+    std::vector<IStowageAlgorithm*> algorithms;
 
     Simulator();
 
@@ -31,7 +31,7 @@ private:
      * Inits the ship of a single simulation. Returns true if succeed.
      * @return true if succeed.
      */
-    bool initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath, ContainerShip &ship) const;
+    bool initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath, ContainerShip &ship, StringVector &errors) const;
 
     /// Inits the algorithm in a single simulation.
     void initAlgorithm(IStowageAlgorithm &algorithm, const std::string &shipPlanPath,

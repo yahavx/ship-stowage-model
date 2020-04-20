@@ -74,7 +74,7 @@ StringStringVector Simulator::runSimulation(IStowageAlgorithm &algorithm, const 
 
     // Init for simulation
     ContainerShip ship;
-    bool res = initSimulation(shipPlanPath, shipRoutePath, ship);
+    bool res = initSimulation(shipPlanPath, shipRoutePath, ship, errors);
     if (!res)
         return report;  // failed to init simulation, errors were printed inside TODO: add error
 
@@ -112,7 +112,7 @@ StringStringVector Simulator::runSimulation(IStowageAlgorithm &algorithm, const 
         // triggers algorithm getInstructions(), sets port ContainerStorage if needed
 
         if (!res)
-            continue; // failed to read current dock file, errors were printed inside  // TODO: check if we can continue anyways
+            continue; // failed to read current dock file, errors were printed inside
 
         auto optOps = readPackingOperationsFromFile(staticOutputFile);  // read the operations to perform, written by the algorithm
 
@@ -191,13 +191,14 @@ void Simulator::initAlgorithm(IStowageAlgorithm &algorithm, const std::string &s
 }
 
 bool Simulator::initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath,
-                               ContainerShip &ship) const {
+                               ContainerShip &ship, StringVector &errors) const {
     std::cout << "Initializing simulation..." << std::endl;
     std::optional<ShipPlan> optShipPlan = readShipPlanFromFile(shipPlanPath);
     std::optional<ShipRoute> optShipRoute = readShipRouteFromFile(shipRoutePath);
 
-    if (!optShipPlan.has_value() || !optShipRoute.has_value()) { // TODO: handle error (maybe its okay like this)
+    if (!optShipPlan.has_value() || !optShipRoute.has_value()) {
         std::cout << "Simulation failed: couldn't initialize from files" << std::endl;
+        errors.push_back("<SimulationFailed>");
         return false;
     }
 

@@ -18,7 +18,7 @@
 #include "../common/io/ObjectsReader.h"
 
 // TODO: move it to a more proper place (maybe a constants module?)
-static std::string s_staticOutputFile = "../simulation-output/cargo_instructions";  // TODO: take it from the simulator class somehow!
+static std::string s_staticOutputFile = "../simulation-output/cargo_instructions";
 static std::string s_unloadOnly = "UnloadOnly:";
 static std::string s_resultsTableTitle = "RESULTS";
 static std::string s_errorsTableTitle = "ERRORS";
@@ -159,7 +159,7 @@ bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &tr
     std::optional<std::string> cargoFile = getNextFileForPort(map, port.getId().getCode());  // get cargo file of current port
     if (!cargoFile.has_value()) {  // couldn't find a cargo file
         std::cout << "Warning: no cargo file for current visit, ship will only unload" << std::endl;
-        algorithm.getInstructionsForCargo(s_unloadOnly + port.getId().getCode(), s_staticOutputFile);  // TODO: find a proper way to communicate the unload
+        algorithm.getInstructionsForCargo(s_unloadOnly + port.getId().getCode(), s_staticOutputFile);
         return true;
     }
 

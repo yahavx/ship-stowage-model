@@ -14,7 +14,7 @@
 class NaiveStowageAlgorithm : public IStowageAlgorithm {
 
 public:
-    std::string unloadOnly = "UnloadOnly:";  // TODO
+    std::string unloadOnly = "UnloadOnly:";  // TODO: remove
 
     void setWeightBalanceCalculator(WeightBalanceCalculator &calculator) override;
 

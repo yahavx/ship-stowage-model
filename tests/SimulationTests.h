@@ -9,10 +9,8 @@
 #include "../src/simulator/Simulator.h"
 #include "../src/algorithms/stowage/NaiveStowageAlgorithm.h"
 
-using namespace std;
 
-
-void inline simulationTest(string path = "../input-examples\\Travel_4"){
+void inline simulationTest(std::string path = "../input-examples\\Travel_4"){
     Simulator simulator;
 
     NaiveStowageAlgorithm naiveStowageAlgorithm;

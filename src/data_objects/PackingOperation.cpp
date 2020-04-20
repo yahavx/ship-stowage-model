@@ -42,7 +42,7 @@ const std::tuple<int, int, int> &PackingOperation::getToPosition() const {
 
 // region Printer
 
-std::ostream &operator<<(std::ostream &os, const PackingOperation &operation) {  // TODO
+std::ostream &operator<<(std::ostream &os, const PackingOperation &operation) {
     os << "Op(Type='" << packingTypeFromString(operation.type) << "', ContainerID=" << operation.containerId;
     os << ", From " << operation.fromPosition;
     if (std::get<0>(operation.toPosition) != -1) {
