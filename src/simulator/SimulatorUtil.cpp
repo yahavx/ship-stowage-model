@@ -122,7 +122,7 @@ void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute) {
         }
 
         if (!found) {  // port is not in the route, remove it
-            std::cout << "Warning: port " << currPortCode << " has cargo files but doesn't appear in the route, ignoring" << std::endl;
+            std::cerr << "Warning: port " << currPortCode << " has cargo files but doesn't appear in the route, ignoring" << std::endl;
             toErase.push_back(currPortCode);  // we don't erase in-place because it will crash the map iterator
         }
     }

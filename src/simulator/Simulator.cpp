@@ -159,8 +159,10 @@ std::string getShipRoutePath(const std::string &travel) {
 void
 Simulator::performPackingOperations(ContainerShip &ship, Port &port, const OPS &ops, StringVector &errors) const {// Perform operations on local ship and port
 
-    // TODO: validate the operations are safe (are we already doing this?)
     // TODO: when loading from port, check that container exists on port, and that x,y,z is a legal position
+    // TODO: when loading from port, check that same container ID is not in the ship
+    // TODO: check that when leaving the port, all containers are loaded (if possible)
+    // TODO: check that any containers that were loaded to the port to unload others, are back in ship
 
     for (const PackingOperation &op : ops) {
 
