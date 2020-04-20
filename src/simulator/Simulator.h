@@ -12,6 +12,7 @@ class Simulator {
 
 public:
     std::string staticOutputFile;
+    std::vector<IStowageAlgorithm*> algorithms;  // TODO: init dynamically? (Gittik style)
 
     Simulator();
 
@@ -22,7 +23,7 @@ public:
     void runSimulation(IStowageAlgorithm &algorithm, const std::string &travel);
 
     /// Run a cartesian loop of “travel” X “algorithm”.
-//    void runSimulations(std::vector<IStowageAlgorithm> algorithms, StringVector travels);
+    void runSimulations(StringVector travels);
 
 private:
 
