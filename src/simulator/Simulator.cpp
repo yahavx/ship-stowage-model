@@ -109,12 +109,19 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
 
     std::cout << "The ship has completed its journey. total number of operations: " << totalNumberOfOps << std::endl;
 
-    printSeparator(1, 1);
+    printSeparator(1, 5);
 }
 
 void Simulator::runSimulations(StringVector travels) {
     for (auto& algorithm : algorithms) {
         for (auto& travel: travels) {  // TODO: reset the algorithm after every travel
+
+            printSeparator(1, 1);
+
+            std::cout << "Simulating travel " << travel <<std::endl;
+
+            printSeparator(1, 1);
+
             runSimulation(*algorithm, travel);  // TODO: save results to a file
         }
     }

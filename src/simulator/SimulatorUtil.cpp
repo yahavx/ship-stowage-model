@@ -145,7 +145,7 @@ std::string getCargoPath(const std::string &travel, const std::string &cargoFile
 bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map,
                              Port &port, bool isLast) {
     if (isLast) {  // the last one only unloads
-        algorithm.getInstructionsForCargo(unloadOnly + port.getId().getCode(), staticOutputFile;
+        algorithm.getInstructionsForCargo(unloadOnly + port.getId().getCode(), staticOutputFile);
         return true;
     }
 

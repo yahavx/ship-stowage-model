@@ -80,7 +80,7 @@ std::optional<ShipRoute> readShipRouteFromFile(const std::string &filePath) {
         std::string token = dataRow[0];  // ignore extra tokens in a row
 
         if (!isEnglishWord(token) || token.length() != 5) {
-            std::cout << "Warning: invalid port format, ignoring" << std::endl;
+            std::cout << "Warning: invalid port format, ignoring : " << token << std::endl;
             continue;
         }
 
@@ -211,7 +211,7 @@ std::optional<OPS> readPackingOperationsFromFile(const std::string &filePath) {
     }
 
     if (operations.empty()) {
-        std::cerr << "Error: failed to read any operation" << std::endl;
+        std::cerr << "Warning: failed to read any operation" << std::endl;
         return std::nullopt;
     }
 
