@@ -12,12 +12,31 @@
 #include "src/algorithms/stowage/NaiveStowageAlgorithm.h"
 #include "src/simulator/SimulatorUtil.h"
 
-using namespace std;
+using namespace std;  // TODO: remove this and all redundant includes
 
 
-int main() {
+int main(int argc, char **argv) {
+    //    simulationTest("../input-examples\\Travel_4");  // TODO: remove at the end
+//    return 0;
 
+    if (argc == 1) {
+        cout << "No arguments supplied. Please read the README for usage instructions. Program is terminated." << endl;
+        return 1;
+    }
+
+    //Direct log prints to log files
     freopen( "../simulation-output/output.txt", "w", stdout );
     freopen( "../simulation-output/error.txt", "w", stderr );
-    simulationTest("../input-examples\\Travel_4");  // can call with no parameter (travel_3 is default)
+
+    StringVector travels;
+
+    for (int i = 1; i < argc; i++){
+        travels.push_back(argv[i]);
+    }
+
+    Simulator simulator;
+
+    simulator.runSimulations(travels);
+
+    return 0;
 }

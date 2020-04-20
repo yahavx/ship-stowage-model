@@ -10,22 +10,22 @@
 #include "../algorithms/CranesOperation.h"
 #include "../common/io/FileReader.h"
 
+
 // region Constructors
 
 Simulator::Simulator() {
     staticOutputFile = "../simulation-output/cargo_instructions";
+    NaiveStowageAlgorithm* naiveStowageAlgorithm = new NaiveStowageAlgorithm();
+    algorithms.push_back(naiveStowageAlgorithm);  // TODO: passing by value kills the build so I think we can only pass a pointer
+                                                  // TODO: if we keep it like this, may need a destructor (default can be fine also maybe)
 }
 // endregion
 
-// region Simulation core
+// region Simulation run
 
-std::string getShipPlanPath(const std::string &travel) {
-    return travel + "/Plan";
-}
+std::string getShipPlanPath(const std::string &travel);
 
-std::string getShipRoutePath(const std::string &travel) {
-    return travel + "/Route";
-}
+std::string getShipRoutePath(const std::string &travel);
 
 void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &travel) {
     // Validate root folder exists
@@ -89,7 +89,7 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
         if (!optOps.has_value()) {
             std::cout << "Warning: no packing operations were read" << std::endl;
         } else {
-            performPackingOperations(ship, port, *optOps);
+            performPackingOperations(ship, port, *optOps); // TODO: validate the operations are safe (inside the function call)
             totalNumberOfOps = totalNumberOfOps+ optOps.value().size();
         }
 
@@ -112,9 +112,29 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
     printSeparator(1, 1);
 }
 
+void Simulator::runSimulations(StringVector travels) {
+    for (auto& algorithm : algorithms) {
+        for (auto& travel: travels) {  // TODO: reset the algorithm after every travel
+            runSimulation(*algorithm, travel);  // TODO: save results to a file
+        }
+    }
+
+}
+// endregion
+
+// region Simulation core
+
+std::string getShipPlanPath(const std::string &travel) {
+    return travel + "/Plan";
+}
+
+std::string getShipRoutePath(const std::string &travel) {
+    return travel + "/Route";
+}
+
 void Simulator::performPackingOperations(ContainerShip &ship, Port &port,
                                          const OPS &ops) const {// Perform operations on local ship and port
-    for (const PackingOperation &op : ops) {
+    for (const PackingOperation &op : ops) {  // TODO: validate the operations are safe (are we already doing this?)
         auto opResult = CranesOperation::preformOperation(op, port, ship);
         if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND)
             std::cout << "Crane received illegal operation, didn't find container with ID:"
@@ -161,19 +181,5 @@ bool Simulator::initSimulation(const std::string &shipPlanPath, const std::strin
     printSeparator(1, 1);
     return true;
 }
+
 // endregion
-
-void test(IStowageAlgorithm &algorithm) {  // TODO: remove
-
-    std::string input = "../input-examples/Travel_3/AAAAA_17.cargo_data", output = "../input-examples/results";  // Until one works fine..
-    algorithm.getInstructionsForCargo(input, output);
-
-    std::optional<OPS> optionalOps = readPackingOperationsFromFile(output);
-
-    if (!optionalOps.has_value()) {
-        std::cout << "No operations found.";
-    } else {
-        std::cout << "Operations generated:" << std::endl;
-        std::cout << *optionalOps;
-    }
-}
