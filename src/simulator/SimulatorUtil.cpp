@@ -28,6 +28,8 @@ static std::string s_sum = "SUM";
 static std::string s_error = "Error";
 
 
+// region Simulation utils
+
 // region sortTravelCargoData
 
 /// Returns a list of files of a directory
@@ -43,7 +45,6 @@ StringVector getFilesFromDirectory(const std::string &directoryPath) {
     return stringVector;
 }
 
-
 /// Sorts a string vector of .cargo_files by their numbers. Names must be valid, and all belong to each port.
 void sortCargoFilesByNumber(StringVector &stringVector) {
     sort(stringVector.begin(), stringVector.end(),
@@ -53,7 +54,6 @@ void sortCargoFilesByNumber(StringVector &stringVector) {
              return stringToInt(numA) < stringToInt(numB);
          });
 }
-
 
 StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath) {
     StringToStringVectorMap map;
@@ -150,8 +150,7 @@ std::string getCargoPath(const std::string &travel, const std::string &cargoFile
     return travel + "/" + cargoFile;
 }
 
-bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map,
-                             Port &port, bool isLast) {
+bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map, Port &port, bool isLast) {
     if (isLast) {  // the last one only unloads
         algorithm.getInstructionsForCargo(s_unloadOnly + port.getId().getCode(), s_staticOutputFile);
         return true;
@@ -188,6 +187,9 @@ void validateNoCargoFilesLeft(StringToStringVectorMap &map) {
         }
     }
 }
+// endregion
+
+// region Table data manager
 
 void initSimulationTables(StringStringVector &results, StringStringVector &errors, StringVector &travels, std::vector<IStowageAlgorithm *> &algorithms) {
     // init results table
@@ -281,3 +283,4 @@ void printSimulationInfo(const std::string &travel, IStowageAlgorithm *&algorith
     std::cerr << "--------------------------------------\n";
     std::cerr << "Simulating travel " << travelName << ", using " << algorithm->getAlgorithmName() << std::endl << std::endl;  // print to err also to separate
 }
+// endregion

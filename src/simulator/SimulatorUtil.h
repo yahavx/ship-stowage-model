@@ -9,6 +9,7 @@
 #include "../data_objects/ShipRoute.h"
 #include "../algorithms/stowage/IStowageAlgorithm.h"
 
+// region Simulation utils
 
 /**
  * Receives a travel directory and sorts the .cargo_files for each port.
@@ -33,6 +34,9 @@ bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &tr
 
 /// Checks if there are any remaining ports in the map, which still have files. Prints warning if yes.
 void validateNoCargoFilesLeft(StringToStringVectorMap &map);
+// endregion
+
+// region Table data manager
 
 /// Inits results and errors table, results and errors should be empty.
 void initSimulationTables(StringStringVector &results, StringStringVector &errors, StringVector &travels, std::vector<IStowageAlgorithm*> &algorithms);
@@ -48,5 +52,6 @@ void orderSimulationTables(StringStringVector &results, StringStringVector &erro
 
 /// Prints simulation starting messages.
 void printSimulationInfo(const std::string &travel, IStowageAlgorithm *&algorithm);
+// endregion
 
 #endif //SHIP_STOWAGE_MODEL_SIMULATORUTIL_H
