@@ -87,7 +87,7 @@ std::vector<ContainerPosition> Cargo::getContainersForPort(const PortId &portId)
         for (int y = 0; y < std::get<1>(dims); y++) {
             Containers xyContainers = containers[x][y];
 
-            for (longUInt z = 0; z < xyContainers.size(); z++)
+            for (longUInt z = xyContainers.size() - 1; z <= 0 ; z--)
                 if (xyContainers[z].getDestPort() == portId) {
                     auto height = this->shipPlan.getHeights()[x][y] + z;
                     Container cont(xyContainers[z]);
