@@ -34,4 +34,19 @@ bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &tr
 /// Checks if there are any remaining ports in the map, which still have files. Prints warning if yes.
 void validateNoCargoFilesLeft(StringToStringVectorMap &map);
 
+/// Inits results and errors table, results and errors should be empty.
+void initSimulationTables(StringStringVector &results, StringStringVector &errors, StringVector &travels, std::vector<IStowageAlgorithm*> &algorithms);
+
+/// Saves simulation tables. Saving location is constant and defined inside.
+void saveSimulationTables(const StringStringVector &results, const StringStringVector &errors);
+
+/// Add travel results of a single simulation.
+void addTravelResults(StringStringVector &simulationResults, StringStringVector &results, StringStringVector &errors, int rowNum);
+
+/// Finalize the table: add sums to results table, add missing columns at errors, etc.
+void orderSimulationTables(StringStringVector &results, StringStringVector &errors);
+
+/// Prints simulation starting messages.
+void printSimulationInfo(const std::string &travel, IStowageAlgorithm *&algorithm);
+
 #endif //SHIP_STOWAGE_MODEL_SIMULATORUTIL_H

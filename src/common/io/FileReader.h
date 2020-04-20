@@ -19,7 +19,7 @@ StringStringVector readFile(const std::string &path);
  * @param path to write to, overwritten if exists.
  * @return true if completed successfully.
  */
-bool writeFile(const std::string &path, StringStringVector data);
+bool writeFile(const std::string &path, const StringStringVector &data);
 
 /// Checks if a file is in cargo format: ABCDE_<num>.cargo_data.
 bool isCargoDataFileFormat(const std::string &fileName);

@@ -80,7 +80,7 @@ std::optional<ShipRoute> readShipRouteFromFile(const std::string &filePath) {
         std::string token = dataRow[0];  // ignore extra tokens in a row
 
         if (!isEnglishWord(token) || token.length() != 5) {
-            std::cout << "Warning: invalid port format, ignoring : " << token << std::endl;
+            std::cout << "Warning: invalid port format (" << token << "), ignoring" << std::endl;
             continue;
         }
 

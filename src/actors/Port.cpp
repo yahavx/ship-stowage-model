@@ -53,7 +53,7 @@ const PortId &Port::getId() const {
 }
 
 void Port::setId(const PortId &id) {
-    Port::id = id;
+    Port::id = id;  // TODO: convert to upper case here and in the constructors (can user toUpper of UtilFunctions)
 }
 
 const ContainerStorage &Port::getStorage() const {

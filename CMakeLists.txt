@@ -15,11 +15,17 @@ add_executable(ship_stowage_model
         src/actors/Port.cpp src/actors/Port.h
 
         # algorithms
-        src/algorithms/stowage/NaiveStowageAlgorithm.cpp src/algorithms/stowage/NaiveStowageAlgorithm.h
-        src/algorithms/stowage/IStowageAlgorithm.h
-
+            # stowage
+            src/algorithms/stowage/NaiveStowageAlgorithm.cpp src/algorithms/stowage/NaiveStowageAlgorithm.h
+            src/algorithms/stowage/IStowageAlgorithm.h
         src/algorithms/CranesOperation.cpp src/algorithms/CranesOperation.h
         src/algorithms/WeightBalanceCalculator.cpp src/algorithms/WeightBalanceCalculator.h
+
+        # common
+            # io
+            src/common/io/FileReader.cpp src/common/io/FileReader.h
+            src/common/io/ObjectsReader.cpp src/common/io/ObjectsReader.h
+        src/common/constants.cpp src/common/constants.h
 
         # data_objects
         src/data_objects/Container.cpp src/data_objects/Container.h
@@ -33,10 +39,6 @@ add_executable(ship_stowage_model
         # data_structures
         src/data_structures/Cargo.cpp src/data_structures/Cargo.h
         src/data_structures/ContainerStorage.cpp src/data_structures/ContainerStorage.h
-
-        # io
-        src/common/io/FileReader.cpp src/common/io/FileReader.h
-        src/common/io/ObjectsReader.cpp src/common/io/ObjectsReader.h
 
         # simulator
         src/simulator/Simulator.cpp src/simulator/Simulator.h

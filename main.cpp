@@ -16,7 +16,10 @@ using namespace std;  // TODO: remove this and all redundant includes
 
 
 int main(int argc, char **argv) {
-    //    simulationTest("../input-examples\\Travel_4");  // TODO: remove at the end
+//        simulationTest("../input-examples\\Travel_4");  // TODO: remove at the end
+//    return 0;
+//    ShipRoute shipRoute = *readShipRouteFromFile("../input-examples/Travel_1/Route");
+//    cout << shipRoute;
 //    return 0;
 
     if (argc == 1) {
@@ -24,8 +27,8 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    //Direct log prints to log files
-    freopen( "../simulation-output/output.txt", "w", stdout );
+    // Direct log prints to log files
+    freopen( "../simulation-output/output.txt", "w", stdout );  // TODO
     freopen( "../simulation-output/error.txt", "w", stderr );
 
     StringVector travels;

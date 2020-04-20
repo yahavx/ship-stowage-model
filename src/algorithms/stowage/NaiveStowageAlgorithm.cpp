@@ -7,6 +7,7 @@
 #include "../../common/io/ObjectsReader.h"
 #include "../../utils/UtilFunctions.h"
 
+// region Initialization
 
 void NaiveStowageAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &calculator) {
     this->ship.setBalanceCalculator(calculator);
@@ -24,32 +25,10 @@ void NaiveStowageAlgorithm::setShipRouteFromPath(const std::string &shipRoutePat
     this->ship.setShipRoute(route);
 }
 
-void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
-    Port port;
-    initializePort(inputFile, port);
-
-    Containers containersToLoad;
-
-    std::vector<PortId> ids;
-
-    // Collect all containers that needs to be loaded
-    for (longUInt i = 1; i < this->ship.getShipRoute().getPorts().size(); i++) {
-        const PortId &id = ship.getShipRoute().getPorts()[i];
-        auto it = std::find(ids.begin(), ids.end(), id);
-        if (it != ids.end())
-            continue;
-        ids.push_back(id);
-        Containers portContainers = port.getContainersForDestination(id);
-        containersToLoad.insert(containersToLoad.end(), portContainers.begin(), portContainers.end());
-    }
-
-    // Get ops for unloading and loading from ship
-    OPS ops = ship.dock(port, containersToLoad);
-
-    writePackingOperationsToFile(outputFile, ops);
-
-    ship.markCurrentVisitDone(); // pop the current port from the ShipRoute
+std::string NaiveStowageAlgorithm::getAlgorithmName() {
+    return "NaiveStowageAlgorithm";
 }
+
 
 /// Returns true if inputFile is not a file (unloadOnly).
 bool NaiveStowageAlgorithm::initPortId(const std::string &inputFile, Port &port) const {
@@ -81,3 +60,35 @@ void NaiveStowageAlgorithm::initializePort(const std::string &inputFile, Port &p
         port.setStorage(*storage);
     }
 }
+// endregion
+
+// region Functions
+
+void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
+    Port port;
+    initializePort(inputFile, port);
+
+    Containers containersToLoad;
+
+    std::vector<PortId> ids;
+
+    // Collect all containers that needs to be loaded
+    for (longUInt i = 1; i < this->ship.getShipRoute().getPorts().size(); i++) {
+        const PortId &id = ship.getShipRoute().getPorts()[i];
+        auto it = std::find(ids.begin(), ids.end(), id);
+        if (it != ids.end())
+            continue;
+        ids.push_back(id);
+        Containers portContainers = port.getContainersForDestination(id);
+        containersToLoad.insert(containersToLoad.end(), portContainers.begin(), portContainers.end());
+    }
+
+    // Get ops for unloading and loading from ship
+    OPS ops = ship.dock(port, containersToLoad);
+
+    writePackingOperationsToFile(outputFile, ops);
+
+    ship.markCurrentVisitDone(); // pop the current port from the ShipRoute
+}
+
+// endregion

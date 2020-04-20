@@ -25,6 +25,8 @@ public:
 
     void setShipRouteFromPath(const std::string &shipRoutePath) override;
 
+    std::string getAlgorithmName() override;
+
 private:
 
     bool initPortId(const std::string &inputFile, Port &port) const;

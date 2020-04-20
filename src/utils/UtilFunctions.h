@@ -49,5 +49,8 @@ std::string packingTypeFromString(PackingType type);
  */
 std::string extractFilenameFromPath(const std::string &file, bool removeExtension);
 
+/// Returns the string in uppercase letters.
+std::string toUpper(const std::string &str);
+
 
 #endif //SHIP_STOWAGE_MODEL_UTILFUNCTIONS_H

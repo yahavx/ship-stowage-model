@@ -118,3 +118,9 @@ std::string extractFilenameFromPath(const std::string &path, bool removeExtensio
 
     return pathCopy;
 }
+
+std::string toUpper(const std::string &str) {
+    std::string strCopy = str;
+    std::transform(strCopy.begin(), strCopy.end(), strCopy.begin(), ::toupper);
+    return strCopy;
+}

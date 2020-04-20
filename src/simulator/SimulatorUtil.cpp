@@ -17,8 +17,16 @@
 #include "Simulator.h"
 #include "../common/io/ObjectsReader.h"
 
-static std::string staticOutputFile = "../simulation-output/cargo_instructions";  // TODO: take it from the simulator class somehow!
-static std::string unloadOnly = "UnloadOnly:";
+// TODO: move it to a more proper place (maybe a constants module?)
+static std::string s_staticOutputFile = "../simulation-output/cargo_instructions";  // TODO: take it from the simulator class somehow!
+static std::string s_unloadOnly = "UnloadOnly:";
+static std::string s_resultsTableTitle = "RESULTS";
+static std::string s_errorsTableTitle = "ERRORS";
+static std::string s_resultsTablePath = "../simulation-output/simulation.results.csv";
+static std::string s_errorsTablePath = "../simulation-output/simulation.errors.csv";
+static std::string s_sum = "SUM";
+static std::string s_error = "Error";
+
 
 // region sortTravelCargoData
 
@@ -145,19 +153,19 @@ std::string getCargoPath(const std::string &travel, const std::string &cargoFile
 bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map,
                              Port &port, bool isLast) {
     if (isLast) {  // the last one only unloads
-        algorithm.getInstructionsForCargo(unloadOnly + port.getId().getCode(), staticOutputFile);
+        algorithm.getInstructionsForCargo(s_unloadOnly + port.getId().getCode(), s_staticOutputFile);
         return true;
     }
 
     std::optional<std::string> cargoFile = getNextFileForPort(map, port.getId().getCode());  // get cargo file of current port
     if (!cargoFile.has_value()) {  // couldn't find a cargo file
-            std::cout << "Warning: no cargo file for current visit, ship will only unload" << std::endl;
-        algorithm.getInstructionsForCargo(unloadOnly + port.getId().getCode(), staticOutputFile);  // TODO: find a proper way to communicate the unload
+        std::cout << "Warning: no cargo file for current visit, ship will only unload" << std::endl;
+        algorithm.getInstructionsForCargo(s_unloadOnly + port.getId().getCode(), s_staticOutputFile);  // TODO: find a proper way to communicate the unload
         return true;
     }
 
     std::string cargoFilePath = getCargoPath(travel, *cargoFile);
-    algorithm.getInstructionsForCargo(cargoFilePath, staticOutputFile);
+    algorithm.getInstructionsForCargo(cargoFilePath, s_staticOutputFile);
 
     std::optional<ContainerStorage> containers = readCargoToPortFromFile(cargoFilePath);
 
@@ -179,4 +187,97 @@ void validateNoCargoFilesLeft(StringToStringVectorMap &map) {
                       << std::endl;
         }
     }
+}
+
+void initSimulationTables(StringStringVector &results, StringStringVector &errors, StringVector &travels, std::vector<IStowageAlgorithm *> &algorithms) {
+    // init results table
+    results.emplace_back();
+
+    StringVector &resultsFirstRow = results.back();
+    resultsFirstRow.push_back(s_resultsTableTitle);
+    for (auto &travel : travels) {  // first row init
+        auto travelName = extractFilenameFromPath(travel, false);
+        resultsFirstRow.push_back(travelName);
+    }
+    resultsFirstRow.push_back(s_sum);
+
+    for (auto &algorithm : algorithms) {  // rest of rows init
+        results.emplace_back();
+        results.back().push_back(algorithm->getAlgorithmName());
+    }
+
+    // init errors table
+
+    errors.emplace_back();
+
+    StringVector &errorsFirstRow = errors.back();
+    errorsFirstRow.push_back(s_errorsTableTitle);
+
+    // we don't init the rest of the first row, because we can't know in advance the max number of errors
+
+    for (auto &algorithm : algorithms) {
+        errors.emplace_back();
+        errors.back().push_back(algorithm->getAlgorithmName());
+    }
+}
+
+void saveSimulationTables(const StringStringVector &results, const StringStringVector &errors) {
+    writeFile(s_resultsTablePath, results);
+    writeFile(s_errorsTablePath, errors);
+}
+
+void addTravelResults(StringStringVector &simulationResults, StringStringVector &results, StringStringVector &errors, int i) {
+    // extract simulation results and errors
+    StringVector &travelResults = simulationResults[0];
+    StringVector &travelErrors = simulationResults[1];
+
+    // get results and errors row in output table (to append to them)
+    StringVector &resultsRow = results[i];
+    StringVector &errorsRow = errors[i];
+
+    // append results data (now its only one thing: number of steps)
+    resultsRow.push_back(travelResults[0]);
+
+    // append errors data
+    for (auto &error : travelErrors) {
+        errorsRow.push_back(error);
+    }
+}
+
+void orderSimulationTables(StringStringVector &results, StringStringVector &errors) {
+    // add sums to results table
+    for (longUInt i = 1; i < results.size(); i++) {
+        auto &rowEntry = results[i];
+        int totalOps = 0;
+
+        for (longUInt j = 1; j < rowEntry.size(); j++) {
+            auto &currSum = rowEntry[j];
+            if (isInteger(currSum)) {
+                totalOps += stringToInt(currSum);
+            }
+        }
+        rowEntry.push_back(intToString(totalOps));
+    }
+
+    // add error columns
+    int maxErrors = 0;  // check which algorithm has the most errors
+    for (auto &errorRow: errors) {
+        maxErrors = std::max(maxErrors, (int) errorRow.size());
+    }
+
+    auto &firstErrorRow = errors[0];
+
+    for (int k = 1; k < maxErrors; k++) {  // add columns, start from 1 because we already have one (the title)
+        firstErrorRow.push_back(s_error + " " + intToString(k));
+    }
+}
+
+void printSimulationInfo(const std::string &travel, IStowageAlgorithm *&algorithm) {
+    printSeparator(1, 1);
+    std::string travelName = extractFilenameFromPath(travel, true);
+    std::cout << "Simulating travel " << travelName << ", using " << algorithm->getAlgorithmName() << std::endl;
+    printSeparator(1, 1);
+
+    std::cerr << "--------------------------------------\n";
+    std::cerr << "Simulating travel " << travelName << ", using " << algorithm->getAlgorithmName() << std::endl << std::endl;  // print to err also to separate
 }

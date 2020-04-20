@@ -20,7 +20,7 @@ public:
      * Simulates an algorithm on a single travel.
      * @param travel a directory that contains Plan, Route, and list of <portId>_<number>.cargo_data files.
      */
-    void runSimulation(IStowageAlgorithm &algorithm, const std::string &travel);
+    StringStringVector runSimulation(IStowageAlgorithm &algorithm, const std::string &travel);
 
     /// Run a cartesian loop of “travel” X “algorithm”.
     void runSimulations(StringVector travels);
@@ -37,8 +37,11 @@ private:
     void initAlgorithm(IStowageAlgorithm &algorithm, const std::string &shipPlanPath,
                        const std::string &shipRoutePath) const;
 
-    /// Perform packing operations received from algorithm, on simulator's ship. Validates each operation is legal.
-    void performPackingOperations(ContainerShip &ship, Port &port, const OPS &ops) const;
+    /**
+     * Perform packing operations received from algorithm, on simulator's ship. Validates each operation is legal.
+     * @param errors empty vector, to fill with errors, one per each entry
+     */
+    void performPackingOperations(ContainerShip &ship, Port &port, const OPS &ops, StringVector &errors) const;
 };
 
 

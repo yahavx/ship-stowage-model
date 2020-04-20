@@ -27,6 +27,8 @@ public:
     virtual void setShipPlanFromPath(const std::string& shipPlanPath) = 0 ;
 
     virtual void setShipRouteFromPath(const std::string& shipRoutePath) = 0;
+
+    virtual std::string getAlgorithmName() = 0;
 };
 
 

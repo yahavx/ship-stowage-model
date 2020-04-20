@@ -34,7 +34,7 @@ StringStringVector readFile(const std::string &path) {
     SkipBOM(fin);  // we can ignore the return value
 
     while (getline(fin, line)) {  // reads a row
-        if (line[0] == '#' || std::all_of(line.begin(), line.end(), isspace))  // skip lines with # or empty lines
+        if (line[0] == '#' || startsWith(line, "\xEF\xBB\xBF#") || std::all_of(line.begin(), line.end(), isspace))  // skip lines with # or empty lines
             continue;
 
         data.emplace_back();  // adds a new empty vector (data row)
@@ -50,7 +50,7 @@ StringStringVector readFile(const std::string &path) {
     return data;
 }
 
-bool writeFile(const std::string &path, StringStringVector data) {
+bool writeFile(const std::string &path, const StringStringVector &data) {
 
     std::ofstream outputFile(path);
 
