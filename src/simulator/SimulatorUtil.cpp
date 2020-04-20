@@ -144,10 +144,13 @@ std::string getCargoPath(const std::string &travel, const std::string &cargoFile
 
 bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map,
                              Port &port, bool isLast) {
-    std::optional<std::string> cargoFile = getNextFileForPort(map, port.getId().getCode());  // get cargo file of current port
+    if (isLast) {  // the last one only unloads
+        algorithm.getInstructionsForCargo(unloadOnly + port.getId().getCode(), staticOutputFile;
+        return true;
+    }
 
+    std::optional<std::string> cargoFile = getNextFileForPort(map, port.getId().getCode());  // get cargo file of current port
     if (!cargoFile.has_value()) {  // couldn't find a cargo file
-        if (!isLast)  // if its the last, its an expected behaviour
             std::cout << "Warning: no cargo file for current visit, ship will only unload" << std::endl;
         algorithm.getInstructionsForCargo(unloadOnly + port.getId().getCode(), staticOutputFile);  // TODO: find a proper way to communicate the unload
         return true;

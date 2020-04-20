@@ -16,7 +16,8 @@
 Simulator::Simulator() {
     staticOutputFile = "../simulation-output/cargo_instructions";
     NaiveStowageAlgorithm* naiveStowageAlgorithm = new NaiveStowageAlgorithm();
-    algorithms.push_back(naiveStowageAlgorithm);  // TODO: passing by value kills the build so I think we can only pass a pointer, need to check that - if we keep it like this may need a destructor
+    algorithms.push_back(naiveStowageAlgorithm);  // TODO: passing by value kills the build so I think we can only pass a pointer
+                                                  // TODO: if we keep it like this, may need a destructor (default can be fine also maybe)
 }
 // endregion
 
