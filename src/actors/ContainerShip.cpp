@@ -103,7 +103,7 @@ OPS ContainerShip::loadContainerToArbitraryPosition(Port &port, const Container 
                     if (result == CraneOperationResult::SUCCESS) { /// Successfully loaded
                         ops.push_back(op);
                     } else {
-                        std::cout
+                        std::cerr
                                 << "Error loading container, crane operation failed to load container: "
                                 << op << "\n";
                         z = -1;
@@ -150,9 +150,8 @@ OPS ContainerShip::unloadContainer(Port &port, const ContainerPosition &containe
 
         auto containerOptional = this->getCargo().getTopContainer(x, y);
         if (!containerOptional.has_value()) {
-            std::cout
-                    << "Error unloading container, could not remove top container from cargo, one on top of required one ("
-                    << containerPos.x() << ", " << containerPos.y() << ")" << "\n";
+            std::cerr << "Error unloading container, could not get top container from cargo ("
+                      << containerPos.x() << ", " << containerPos.y() << ")" << std::endl;
 
             failed = true;
             break;
@@ -168,8 +167,8 @@ OPS ContainerShip::unloadContainer(Port &port, const ContainerPosition &containe
         auto op = PackingOperation(PackingType::unload, container.getId(), {x, y, z + (numOfContainersOnTop - i)});
         auto result = CranesOperation::preformOperation(op, port, *this);
         if (result != CraneOperationResult::SUCCESS) {
-            std::cout
-                    << "Error unloading container, crane operation failed to unload one on top of required one: "
+            std::cerr
+                    << "Error unloading container, crane operation failed to unload container on top of required one: "
                     << op << "\n";
 
             failed = true;
@@ -182,7 +181,7 @@ OPS ContainerShip::unloadContainer(Port &port, const ContainerPosition &containe
     // Unload the requested container
     auto containerOptional = this->getCargo().getTopContainer(x, y);
     if (!containerOptional.has_value()) {
-        std::cout << "Error unloading container, could not get top container from cargo, the required one ("
+        std::cerr << "Error unloading container, could not get top container from cargo ("
                   << containerPos.x() << ", " << containerPos.y() << ")" << std::endl;
         failed = true;
     } else {
@@ -194,7 +193,7 @@ OPS ContainerShip::unloadContainer(Port &port, const ContainerPosition &containe
             if (result == CraneOperationResult::SUCCESS) {
                 ops.push_back(op);
             } else { // CranesOperation failed
-                std::cout
+                std::cerr
                         << "Error unloading container, crane operation failed to unload requested container: "
                         << op << std::endl;
 
@@ -211,7 +210,6 @@ OPS ContainerShip::unloadContainer(Port &port, const ContainerPosition &containe
         //TODO: check if balance calculator allows to load, if not load to another place
         auto op = PackingOperation(PackingType::load, cont.getId(), {x, y, z + i});
         CranesOperation::preformOperation(op, port, *this);
-//        this->getCargo().loadContainerOnTop(x, y, cont);
         ops.push_back(op);
     }
 

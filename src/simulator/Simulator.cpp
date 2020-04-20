@@ -30,7 +30,7 @@ std::string getShipRoutePath(const std::string &travel) {
 void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &travel) {
     // Validate root folder exists
     if (!isDirectoryExists(travel)) {
-        std::cout << "Simulation failed: the travel path supplied is not a directory" << std::endl;
+        std::cerr << "Simulation failed: the travel path supplied is not a directory" << std::endl;
         return;
     }
 
@@ -68,7 +68,7 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
     printSeparator(1, 1);
 
     auto &ports = ship.getShipRoute().getPorts();
-
+    int totalNumberOfOps = 0;
     for (longUInt i = 0; i < ports.size(); i++) {  // Start the journey
         auto &portId = ports[i];
 
@@ -90,6 +90,7 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
             std::cout << "Warning: no packing operations were read" << std::endl;
         } else {
             performPackingOperations(ship, port, *optOps);
+            totalNumberOfOps = totalNumberOfOps+ optOps.value().size();
         }
 
         if (!isLast) {
@@ -106,7 +107,7 @@ void Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &t
 
     printSeparator(1, 1);
 
-    std::cout << "The ship has completed its journey!" << std::endl;
+    std::cout << "The ship has completed its journey. total number of operations: " << totalNumberOfOps << std::endl;
 
     printSeparator(1, 1);
 }

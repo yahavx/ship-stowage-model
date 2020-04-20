@@ -16,5 +16,8 @@ using namespace std;
 
 
 int main() {
+
+    freopen( "../simulation-output/output.txt", "w", stdout );
+    freopen( "../simulation-output/error.txt", "w", stderr );
     simulationTest("../input-examples\\Travel_4");  // can call with no parameter (travel_3 is default)
 }

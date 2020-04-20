@@ -17,7 +17,7 @@ std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath) {
     StringStringVector data = readFile(filePath);
 
     if (!isDataOnlyIntegers(data)) {  // couldn't convert data to int
-        std::cout << "Error: data contain non-integers" << std::endl;
+        std::cerr << "Error: data contain non-integers" << std::endl;
         return std::nullopt;
     }
 
@@ -26,7 +26,7 @@ std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath) {
     IntIntVector intData = convertDataToInt(data);
     IntVector firstRow = intData[0];
     if (firstRow.size() < 3) {
-        std::cout << "Error: insufficient number of arguments for ship dimensions, exiting" << std::endl;
+        std::cerr << "Error: insufficient number of arguments for ship dimensions, exiting" << std::endl;
         return std::nullopt;
     }
 
@@ -95,7 +95,7 @@ std::optional<ShipRoute> readShipRouteFromFile(const std::string &filePath) {
     }
 
     if (ports.size() == 0) {
-        std::cout << "Error: couldn't read any port from route file" << std::endl;
+        std::cerr << "Error: couldn't read any port from route file" << std::endl;
         return std::nullopt;
     }
 
@@ -112,7 +112,7 @@ std::optional<ContainerStorage> readCargoToPortFromFile(const std::string &fileP
 #endif
     std::string fileName = extractFilenameFromPath(filePath, false);  // false keeps the .cargo_data
     if (!isCargoDataFileFormat(fileName)) {
-        std::cout << "Error: filename is in incorrect format, exiting" << std::endl;
+        std::cerr << "Error: filename is in incorrect format, exiting" << std::endl;
         return std::nullopt;
     }
 
@@ -210,8 +210,8 @@ std::optional<OPS> readPackingOperationsFromFile(const std::string &filePath) {
         operations.push_back(PackingOperation(packingType, containerId, {floor, x, y}, {floor2, x2, y2}));
     }
 
-    if (operations.size() == 0) {
-        std::cout << "Error: failed to read any operation" << std::endl;
+    if (operations.empty()) {
+        std::cerr << "Error: failed to read any operation" << std::endl;
         return std::nullopt;
     }
 
@@ -249,7 +249,7 @@ bool writePackingOperationsToFile(const std::string &filePath, OPS &operations) 
     bool res = writeFile(filePath, data);
 
     if (!res) {
-        std::cout << "Error: couldn't write to file." << std::endl;
+        std::cerr << "Error: couldn't write to file." << std::endl;
         return false;
     }
 #ifdef DEBUG
