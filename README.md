@@ -10,7 +10,7 @@ Compile the program using `make`, and run in terminal `./ex1 {arg1} {arg2} ... {
 
 `Travel` directory: consists of `Plan`, `Route`, and `.cargo_data` files, in the format explained [here](https://docs.google.com/document/d/10dw03hb-mj6zL8O08K5YSm4KYTeIv7eTmckcezrzH_E/edit).
 
-The simulator will run all available algorithms on each directory. The following results will be written to the output directory provided:
+The simulator will run all available algorithms on each `Travel` directory. The following results will be written to the output directory provided:
 * `simulation.results.csv` - number of operations for each algorithm and each travel.  
 * `simulation.errors.csv` - errors the simulator detected in each algorithm.
 * `output.txt` - stdout capture (simulation logging).
@@ -30,7 +30,7 @@ $ ./ex1 output_1 input/Travel_1
 $ ./ex1 output_2 input/Travel_2 input/Travel_3
 ```
 
-The expected results for each run are at `excpected_output/1` `excpected_output/2` (respectively).
+The expected results for each run are at `expected_output/1` `expected_output/2` (respectively).
 
 Compare the results to expected output:
 ```sh
