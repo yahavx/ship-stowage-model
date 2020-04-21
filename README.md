@@ -32,8 +32,8 @@ $ ./ex1 output_2 input/Travel_2 input/Travel_3
 
 The expected results for each run are at `excpected_output/1` `excpected_output/2` (respectively).
 
-Compare to expected output:
+Compare the results to expected output:
 ```sh
-$ diff output_1/simulation.results.csv expected_output/1/simulation.results.csv
-$ diff output_2/simulation.results.csv expected_output/2/simulation.results.csv
+$ cat output_1/simulation.results.csv expected_output/1/simulation.results.csv
+$ cat output_2/simulation.results.csv expected_output/2/simulation.results.csv
 ```
