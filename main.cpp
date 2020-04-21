@@ -6,8 +6,8 @@
 
 
 int main(int argc, char **argv) {
-//    simulationTest("../input-examples\\Travel_5");  // TODO: remove at the end
-    simulationsTest(); // this will run TRAVEL_1 to TRAVEL_5  // TODO: remove at the end
+    simulationTest("../hw1/Travel_3");
+//    simulationsTest(); // this will run TRAVEL_1 to TRAVEL_5
     return 0;
 
     if (argc < 3) {
@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    bool created = createFolder(argv[1]);  // first argument is the path  // TODO: inejct the path to the
+    bool created = createFolder(argv[1]);  // first argument is the path  // TODO: inject the path to the
     if (!created) {
         std::cerr << "Couldn't initialize output directory. Please read the README for usage instructions. Program is terminated." << std::endl;
         return 1;

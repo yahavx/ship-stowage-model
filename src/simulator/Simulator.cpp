@@ -129,7 +129,7 @@ StringStringVector Simulator::runSimulation(IStowageAlgorithm &algorithm, const 
         if (!isLast) {
             std::cout << "The ship is continuing to the next port..." << std::endl;
         } else {
-            std::cout << "The ship finished its work in the final destination..." << std::endl;
+            std::cout << "The ship is going into maintenance..." << std::endl;
         }
 
         printSeparator(1, 1);
@@ -166,6 +166,8 @@ Simulator::performPackingOperations(ContainerShip &ship, Port &port, const OPS &
     // TODO: when loading from port, check that same container ID is not in the ship
     // TODO: check that when leaving the port, all containers are loaded (if possible)
     // TODO: check that any containers that were loaded to the port to unload others, are back in ship
+
+
 
     for (const PackingOperation &op : ops) {
 

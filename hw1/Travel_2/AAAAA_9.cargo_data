@@ -1,0 +1,8 @@
+# Containers awaiting at port
+
+CATJ4838435, 12, CCCCC
+CBTJ4838435, 12, CCCCC
+CCTJ4838435, 12, CCCCC
+
+
+# container id, weight, destination port id
