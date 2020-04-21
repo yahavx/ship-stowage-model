@@ -19,5 +19,16 @@ void inline simulationTest(std::string path = "../input-examples\\Travel_4"){
     simulator.runSimulation(algorithm, path);
 }
 
+void inline simulationsTest(StringVector path = StringVector()){
+    Simulator simulator;
+
+    if (path.size() == 0) {
+        path = {"../input-examples/Travel_1", "../input-examples/Travel_2", "../input-examples/Travel_3", "../input-examples/Travel_4",
+                "../input-examples/Travel_5", "../input-examples/Travel_X"};
+    }
+
+    simulator.runSimulations(path);
+}
+
 
 #endif //SHIP_STOWAGE_MODEL_SIMULATIONTESTS_H

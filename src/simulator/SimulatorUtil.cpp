@@ -228,14 +228,14 @@ void saveSimulationTables(const StringStringVector &results, const StringStringV
     writeFile(s_errorsTablePath, errors);
 }
 
-void addTravelResults(StringStringVector &simulationResults, StringStringVector &results, StringStringVector &errors, int i) {
+void addTravelResultsToTable(StringStringVector &simulationResults, StringStringVector &results, StringStringVector &errors, int rowNum) {
     // extract simulation results and errors
     StringVector &travelResults = simulationResults[0];
     StringVector &travelErrors = simulationResults[1];
 
     // get results and errors row in output table (to append to them)
-    StringVector &resultsRow = results[i];
-    StringVector &errorsRow = errors[i];
+    StringVector &resultsRow = results[rowNum];
+    StringVector &errorsRow = errors[rowNum];
 
     // append results data (now its only one thing: number of steps)
     resultsRow.push_back(travelResults[0]);

@@ -44,8 +44,8 @@ void initSimulationTables(StringStringVector &results, StringStringVector &error
 /// Saves simulation tables. Saving location is constant and defined inside.
 void saveSimulationTables(const StringStringVector &results, const StringStringVector &errors);
 
-/// Add travel results of a single simulation.
-void addTravelResults(StringStringVector &simulationResults, StringStringVector &results, StringStringVector &errors, int rowNum);
+/// Add travel results of a single simulation to a table.
+void addTravelResultsToTable(StringStringVector &simulationResults, StringStringVector &results, StringStringVector &errors, int rowNum);
 
 /// Finalize the table: add sums to results table, add missing columns at errors, etc.
 void orderSimulationTables(StringStringVector &results, StringStringVector &errors);

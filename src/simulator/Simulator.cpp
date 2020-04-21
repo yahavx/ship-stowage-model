@@ -42,7 +42,7 @@ void Simulator::runSimulations(StringVector travels) {
 
             StringStringVector simulationResults = runSimulation(*algorithm, travel);  // run simulation, collect data
 
-            addTravelResults(simulationResults, results, errors, i + 1);  // save collected data from the travel to the tables
+            addTravelResultsToTable(simulationResults, results, errors, i + 1);  // save collected data from the travel to the tables
         }
     }
 
@@ -61,6 +61,7 @@ StringStringVector Simulator::runSimulation(IStowageAlgorithm &algorithm, const 
     // validate root folder exists
     if (!isDirectoryExists(travel)) {
         std::cerr << "Simulation failed: the travel path supplied is not a directory" << std::endl;
+        results.push_back("<SimulationFailed>");
         return report;  // we don't add an error because its not the algorithm fault
     }
 
@@ -75,8 +76,10 @@ StringStringVector Simulator::runSimulation(IStowageAlgorithm &algorithm, const 
     // Init for simulation
     ContainerShip ship;
     bool res = initSimulation(shipPlanPath, shipRoutePath, ship, errors);
-    if (!res)
-        return report;  // failed to init simulation, errors were printed inside TODO: add error
+    if (!res) {
+        results.push_back("<SimulationFailed>");
+        return report;  // failed to init simulation
+    }
 
     // Init for algorithm
     initAlgorithm(algorithm, shipPlanPath, shipRoutePath);
@@ -200,7 +203,6 @@ bool Simulator::initSimulation(const std::string &shipPlanPath, const std::strin
 
     if (!optShipPlan.has_value() || !optShipRoute.has_value()) {
         std::cout << "Simulation failed: couldn't initialize from files" << std::endl;
-        errors.push_back("<SimulationFailed>");
         return false;
     }
 
@@ -212,6 +214,8 @@ bool Simulator::initSimulation(const std::string &shipPlanPath, const std::strin
 
     std::cout << "Success." << std::endl;
     printSeparator(1, 1);
+    return true;
+    std::cout << errors;  // TODO
     return true;
 }
 
