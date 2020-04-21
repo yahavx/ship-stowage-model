@@ -193,7 +193,7 @@ Simulator::performPackingOperations(ContainerShip &ship, Port &port, const OPS &
 
     ship.markCurrentVisitDone();
 
-    //Check if algorithm loaded all required containers if there is space on the ship
+    // Check if algorithm loaded all required containers if there is space on the ship
     bool foundUnloadedContainers = false;
     for (auto portId : ship.getShipRoute().getPorts()) {
         if (portId == port.getId())
@@ -205,7 +205,7 @@ Simulator::performPackingOperations(ContainerShip &ship, Port &port, const OPS &
     }
 
     if (foundUnloadedContainers)
-        errors.push_back("Algorithm didn't load all required containers from port although ship isn't full");
+        errors.push_back("Algorithm didn't load all required containers from port " + port.getId().getCode() + " although ship isn't full");
 
     std::cout << ops;
     return;
