@@ -5,8 +5,8 @@ A stowage model for container ships.
 ### Running a simulation
 
 Compile the program using `make`, and run in terminal `./ex1 {arg1} {arg2} ... {argn}`, where:
-* arg1 is a directory path, which will be the output directory.
-* arg2-argn are paths to directories, each is a `Travel` directory (at least one should be supplied).
+* `arg1` is a directory path, which will be the output directory.
+* `arg2`-`argn` are paths to directories, each is a `Travel` directory (at least one should be supplied).
 
 `Travel` directory: consists of `Plan`, `Route`, and `.cargo_data` files, in the format explained [here](https://docs.google.com/document/d/10dw03hb-mj6zL8O08K5YSm4KYTeIv7eTmckcezrzH_E/edit).
 
