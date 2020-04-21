@@ -21,8 +21,8 @@ The last two are logging files, and can be ignored.
 ### Provided travel examples
 
 Two sets of travels provided: 
-* `Travel_3` 
-* `Travel_4`, `Travel_5`
+* `Travel_1` 
+* `Travel_2`, `Travel_3`
 
 To run:
 ```sh

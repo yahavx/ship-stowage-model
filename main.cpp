@@ -6,8 +6,8 @@
 
 
 int main(int argc, char **argv) {
-    simulationTest("../hw1/Travel_3");
-//    simulationsTest(); // this will run TRAVEL_1 to TRAVEL_5
+//    simulationTest("../hw1/Travel_3");
+    simulationsTest({"../hw1/input/Travel_2", "../hw1/input/Travel_3"});
     return 0;
 
     if (argc < 3) {
