@@ -6,9 +6,11 @@
 #define SHIP_STOWAGE_MODEL_CONSTANTS_H
 
 
+#include <string>
+
 class Constants {
 public:
-
+    static const std::string s_unloadOnly;
 };
 
 

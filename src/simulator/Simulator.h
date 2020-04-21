@@ -11,10 +11,12 @@
 class Simulator {
 
 public:
-    std::string staticOutputFile;
+    std::string outputDir;
     std::vector<IStowageAlgorithm*> algorithms;
 
-    Simulator();
+    Simulator(const std::string &outputDir);
+
+    // region Simulation run
 
     /**
      * Simulates an algorithm on a single travel.
@@ -23,7 +25,10 @@ public:
     StringStringVector runSimulation(IStowageAlgorithm &algorithm, const std::string &travel);
 
     /// Run a cartesian loop of “travel” X “algorithm”.
-    void runSimulations(StringVector travels, const std::string &outputDir);
+    void runSimulations(StringVector travels);
+    // endregion
+
+    // region Simulation init
 
 private:
 
@@ -42,6 +47,18 @@ private:
      * @param errors empty vector, to fill with errors, one per each entry
      */
     void performPackingOperations(ContainerShip &ship, Port &port, const OPS &ops, StringVector &errors) const;
+// endregion
+
+    // region Constants
+
+public:
+    static const std::string s_instructionsFilename;
+
+    static const std::string s_resultsTableTitle;
+    static const std::string s_errorsTableTitle;
+    static const std::string s_sumColumnTitle;
+    static const std::string s_errorToken;
+    // endregion
 };
 
 

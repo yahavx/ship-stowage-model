@@ -5,10 +5,8 @@
 #include "UtilFunctions.h"
 #include <algorithm>
 #include <tuple>
-#include <windows.h>
 #include <stdio.h>
 #include <filesystem>
-#include <direct.h>
 
 
 void trimWhitespaces(std::string &s) {

@@ -3,3 +3,5 @@
 //
 
 #include "Constants.h"
+
+const std::string Constants::s_unloadOnly = "UnloadOnly:";

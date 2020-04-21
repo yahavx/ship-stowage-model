@@ -11,7 +11,7 @@
 
 
 void inline simulationTest(std::string path = "../input-examples\\Travel_4"){
-    Simulator simulator;
+    Simulator simulator("../simulation-output");
 
     NaiveStowageAlgorithm naiveStowageAlgorithm;
     IStowageAlgorithm &algorithm(naiveStowageAlgorithm);
@@ -20,14 +20,14 @@ void inline simulationTest(std::string path = "../input-examples\\Travel_4"){
 }
 
 void inline simulationsTest(StringVector path = StringVector()){
-    Simulator simulator;
+    Simulator simulator("../simulation-output");
 
     if (path.size() == 0) {
         path = {"../input-examples/Travel_1", "../input-examples/Travel_2", "../input-examples/Travel_3", "../input-examples/Travel_4",
                 "../input-examples/Travel_5", "../input-examples/Travel_X"};
     }
 
-    simulator.runSimulations(path, "../simulation-output");
+    simulator.runSimulations(path);
 }
 
 
