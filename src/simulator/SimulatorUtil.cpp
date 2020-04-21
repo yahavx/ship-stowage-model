@@ -223,9 +223,9 @@ void initSimulationTables(StringStringVector &results, StringStringVector &error
     }
 }
 
-void saveSimulationTables(const StringStringVector &results, const StringStringVector &errors) {
-    writeFile(s_resultsTablePath, results);
-    writeFile(s_errorsTablePath, errors);
+void saveSimulationTables(const StringStringVector &results, const StringStringVector &errors, const std::string &outputDir) {
+    writeFile(outputDir + "/simulation.results.csv", results);
+    writeFile(outputDir + "/simulation.errors.csv", errors);
 }
 
 void addTravelResultsToTable(StringStringVector &simulationResults, StringStringVector &results, StringStringVector &errors, int rowNum) {

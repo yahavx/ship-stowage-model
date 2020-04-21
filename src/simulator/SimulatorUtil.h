@@ -42,7 +42,7 @@ void validateNoCargoFilesLeft(StringToStringVectorMap &map);
 void initSimulationTables(StringStringVector &results, StringStringVector &errors, StringVector &travels, std::vector<IStowageAlgorithm*> &algorithms);
 
 /// Saves simulation tables. Saving location is constant and defined inside.
-void saveSimulationTables(const StringStringVector &results, const StringStringVector &errors);
+void saveSimulationTables(const StringStringVector &results, const StringStringVector &errors, const std::string &outputDir);
 
 /// Add travel results of a single simulation to a table.
 void addTravelResultsToTable(StringStringVector &simulationResults, StringStringVector &results, StringStringVector &errors, int rowNum);

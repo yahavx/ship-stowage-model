@@ -9,8 +9,9 @@
 #include <algorithm>
 #include <sstream>
 #include "../../utils/UtilFunctions.h"
-#include <windows.h>
 #include <string>
+#include <filesystem>
+#include <direct.h>
 
 
 bool SkipBOM(std::istream &in)  // some files contains garbage bytes at the start, this will eliminate them if needed
@@ -88,12 +89,10 @@ bool isCargoDataFileFormat(const std::string &fileName) {
 
 bool isDirectoryExists(const std::string& directory)
 {
-    DWORD ftyp = GetFileAttributesA(directory.c_str());
-    if (ftyp == INVALID_FILE_ATTRIBUTES)
-        return false;  //something is wrong with your path!
+    return std::filesystem::is_directory(directory);
+}
 
-    if (ftyp & FILE_ATTRIBUTE_DIRECTORY)
-        return true;   // this is a directory!
-
-    return false;    // this is not a directory!
+bool createFolder(const std::string &path)
+{
+    return !_mkdir(path.c_str());  // mkdir returns 0 if successful
 }

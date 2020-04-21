@@ -1,7 +1,5 @@
 COMP = g++-8.3.0
 
-### Makefile is finished, but we need to make some small adaptions because the nova is shit
-
 # put all your object files here
 OBJS = main.o $\
 $\
@@ -22,7 +20,7 @@ src/simulator/Simulator.o src/simulator/SimulatorUtil.o $\
 $\
 src/utils/Printers.o src/utils/UtilFunctions.o
 
-# The executabel filename DON'T CHANGE
+# The executable filename
 EXEC = ex1
 CPP_COMP_FLAG = -std=c++2a -Wall -Wextra -Werror -pedantic-errors -DNDEBUG -I./src
 CPP_LINK_FLAG = -lstdc++fs

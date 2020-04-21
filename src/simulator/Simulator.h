@@ -23,7 +23,7 @@ public:
     StringStringVector runSimulation(IStowageAlgorithm &algorithm, const std::string &travel);
 
     /// Run a cartesian loop of “travel” X “algorithm”.
-    void runSimulations(StringVector travels);
+    void runSimulations(StringVector travels, const std::string &outputDir);
 
 private:
 

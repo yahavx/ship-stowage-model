@@ -28,7 +28,7 @@ std::string getShipPlanPath(const std::string &travel);
 
 std::string getShipRoutePath(const std::string &travel);
 
-void Simulator::runSimulations(StringVector travels) {
+void Simulator::runSimulations(StringVector travels, const std::string &outputDir) {
     StringStringVector results;  // table for results
     StringStringVector errors;  // table for errors
 
@@ -50,7 +50,7 @@ void Simulator::runSimulations(StringVector travels) {
     orderSimulationTables(results, errors);
 
     // save
-    saveSimulationTables(results, errors);
+    saveSimulationTables(results, errors, outputDir);
 }
 
 StringStringVector Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &travel) {

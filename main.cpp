@@ -7,23 +7,30 @@
 
 int main(int argc, char **argv) {
 //    simulationTest("../hw1/Travel_3");
-    simulationsTest({"../hw1/input/Travel_2", "../hw1/input/Travel_3"});
-    return 0;
+//    simulationsTest({"../hw1/input/Travel_2", "../hw1/input/Travel_3"});
+//    return 0;
+
 
     if (argc < 3) {
         std::cerr << "Insufficient arguments supplied. Please read the README for usage instructions. Program is terminated." << std::endl;
         return 1;
     }
 
-    bool created = createFolder(argv[1]);  // first argument is the path  // TODO: inject the path to the
-    if (!created) {
-        std::cerr << "Couldn't initialize output directory. Please read the README for usage instructions. Program is terminated." << std::endl;
-        return 1;
+    std::string outputDir = argv[1];
+
+    if (!isDirectoryExists(outputDir)) {  // the output directory doesn't exist
+        bool created = createFolder(outputDir);  // try to create it
+        if (!created) {
+            std::cerr << "Couldn't initialize output directory. Please read the README for usage instructions. Program is terminated." << std::endl;
+            return 1;
+        }
     }
 
     // Direct log prints to log files
-    freopen("../simulation-output/output.txt", "w", stdout);  // TODO
-    freopen("../simulation-output/error.txt", "w", stderr);
+    std::string outputLogFile = outputDir + "/output.txt";
+    std::string errorLogFile =  outputDir + "/error.txt";
+    freopen(outputLogFile.c_str(), "w", stdout);  // TODO
+    freopen(errorLogFile.c_str(), "w", stderr);
 
     StringVector travels;
 
@@ -33,7 +40,7 @@ int main(int argc, char **argv) {
 
     Simulator simulator;
 
-    simulator.runSimulations(travels);
+    simulator.runSimulations(travels, outputDir);
 
     return 0;
 }

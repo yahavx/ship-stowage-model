@@ -27,7 +27,7 @@ void inline simulationsTest(StringVector path = StringVector()){
                 "../input-examples/Travel_5", "../input-examples/Travel_X"};
     }
 
-    simulator.runSimulations(path);
+    simulator.runSimulations(path, "../simulation-output");
 }
 
 

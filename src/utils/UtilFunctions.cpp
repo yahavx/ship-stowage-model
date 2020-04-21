@@ -128,14 +128,3 @@ std::string toUpper(const std::string &str) {
     std::transform(strCopy.begin(), strCopy.end(), strCopy.begin(), ::toupper);
     return strCopy;
 }
-
-#include "dirent.h"
-
-bool createFolder(const std::string &path)
-{
-    DWORD ftyp = GetFileAttributesA(path.c_str());
-    if (ftyp & FILE_ATTRIBUTE_DIRECTORY)
-        return true;   // this is already a directory
-
-    return !_mkdir(path.c_str());  // mkdir returns 0 if successful
-}
