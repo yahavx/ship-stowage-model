@@ -6,7 +6,8 @@
 #define SHIP_STOWAGE_MODEL_CONSTANTS_H
 
 
-class constants {
+class Constants {
+public:
 
 };
 

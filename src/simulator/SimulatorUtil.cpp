@@ -196,10 +196,10 @@ void initSimulationTables(StringStringVector &results, StringStringVector &error
     results.emplace_back();
 
     StringVector &resultsFirstRow = results.back();
-    resultsFirstRow.push_back(s_resultsTableTitle);
+    resultsFirstRow.push_back(s_resultsTableTitle);  // set table title
     for (auto &travel : travels) {  // first row init
         auto travelName = extractFilenameFromPath(travel, false);
-        resultsFirstRow.push_back(travelName);
+        resultsFirstRow.push_back(travelName);  // add travel name for each column
     }
     resultsFirstRow.push_back(s_sum);
 

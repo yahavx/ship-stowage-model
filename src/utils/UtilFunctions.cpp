@@ -2,9 +2,13 @@
 // Created by t-yabeny on 4/17/2020.
 //
 
-#include <algorithm>
 #include "UtilFunctions.h"
+#include <algorithm>
 #include <tuple>
+#include <windows.h>
+#include <stdio.h>
+#include <filesystem>
+#include <direct.h>
 
 
 void trimWhitespaces(std::string &s) {
@@ -123,4 +127,15 @@ std::string toUpper(const std::string &str) {
     std::string strCopy = str;
     std::transform(strCopy.begin(), strCopy.end(), strCopy.begin(), ::toupper);
     return strCopy;
+}
+
+#include "dirent.h"
+
+bool createFolder(const std::string &path)
+{
+    DWORD ftyp = GetFileAttributesA(path.c_str());
+    if (ftyp & FILE_ATTRIBUTE_DIRECTORY)
+        return true;   // this is already a directory
+
+    return !_mkdir(path.c_str());  // mkdir returns 0 if successful
 }

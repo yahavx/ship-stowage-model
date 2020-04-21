@@ -52,5 +52,8 @@ std::string extractFilenameFromPath(const std::string &file, bool removeExtensio
 /// Returns the string in uppercase letters.
 std::string toUpper(const std::string &str);
 
+/// Creates a folder, returns true if succeed.
+bool createFolder(const std::string &path);
+
 
 #endif //SHIP_STOWAGE_MODEL_UTILFUNCTIONS_H

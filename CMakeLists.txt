@@ -25,7 +25,7 @@ add_executable(ship_stowage_model
             # io
             src/common/io/FileReader.cpp src/common/io/FileReader.h
             src/common/io/ObjectsReader.cpp src/common/io/ObjectsReader.h
-        src/common/constants.cpp src/common/constants.h
+        src/common/Constants.cpp src/common/Constants.h
 
         # data_objects
         src/data_objects/Container.cpp src/data_objects/Container.h

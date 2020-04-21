@@ -4,6 +4,7 @@
 
 #include "NaiveStowageAlgorithm.h"
 #include "../CranesOperation.h"
+#include <algorithm>
 #include "../../common/io/ObjectsReader.h"
 #include "../../utils/UtilFunctions.h"
 

@@ -1,7 +1,26 @@
 COMP = g++-8.3.0
 
+### Makefile is finished, but we need to make some small adaptions because the nova is shit
+
 # put all your object files here
-OBJS = main.o StowageAlgorithm.o Ship.o Simulation.o WeightBalanceCalculator.o Port.o Utils.o Container.o
+OBJS = main.o $\
+$\
+src/actors/ContainerShip.o src/actors/Port.o $\
+$\
+src/algorithms/stowage/NaiveStowageAlgorithm.o $\
+src/algorithms/CranesOperation.o src/algorithms/WeightBalanceCalculator.o $\
+$\
+src/common/io/FileReader.o common/io/ObjectsReader $\
+src/common/Constants.o $\
+$\
+src/data_objects/Container.o src/data_objects/ContainerPosition.o src/data_objects/PackingOperation.o src/data_objects/PortId.o $\
+src/data_objects/Position.o src/data_objects/ShipPlan.o src/data_objects/ShipRoute.o $\
+$\
+src/data_structures/Cargo.o src/data_structures/ContainerStroage.o $\
+$\
+src/simulator/Simulator.o src/simulator/SimulatorUtil.o $\
+$\
+src/utils/Printers.o src/utils/UtilFunctions.o
 
 # The executabel filename DON'T CHANGE
 EXEC = ex1
