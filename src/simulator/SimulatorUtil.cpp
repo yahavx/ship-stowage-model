@@ -2,30 +2,22 @@
 // Created by t-yabeny on 4/19/2020.
 //
 
+
 #include "SimulatorUtil.h"
-#include "../utils/Definitions.h"
-#include "../utils/UtilFunctions.h"
 #include <fstream>
 #include <iostream>
 #include <cstring>
 #include <algorithm>
 #include <sstream>
 #include <filesystem>
-#include "../utils/Printers.h"
-#include "../common/io/FileReader.h"
-#include "../algorithms/stowage/IStowageAlgorithm.h"
 #include "Simulator.h"
+#include "../algorithms/stowage/IStowageAlgorithm.h"
+#include "../common/Constants.h"
 #include "../common/io/ObjectsReader.h"
-
-// TODO: move it to a more proper place (maybe a constants module?)
-static std::string s_staticOutputFile = "../simulation-output/cargo_instructions";
-static std::string s_unloadOnly = "UnloadOnly:";
-static std::string s_resultsTableTitle = "RESULTS";
-static std::string s_errorsTableTitle = "ERRORS";
-static std::string s_resultsTablePath = "../simulation-output/simulation.results.csv";
-static std::string s_errorsTablePath = "../simulation-output/simulation.errors.csv";
-static std::string s_sum = "SUM";
-static std::string s_error = "Error";
+#include "../common/io/FileReader.h"
+#include "../utils/Definitions.h"
+#include "../utils/UtilFunctions.h"
+#include "../utils/Printers.h"
 
 
 // region Simulation utils
@@ -150,21 +142,21 @@ std::string getCargoPath(const std::string &travel, const std::string &cargoFile
     return travel + "/" + cargoFile;
 }
 
-bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map, Port &port, bool isLast) {
+bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map, Port &port, bool isLast, const std::string &instructionsOutput) {
     if (isLast) {  // the last one only unloads
-        algorithm.getInstructionsForCargo(s_unloadOnly + port.getId().getCode(), s_staticOutputFile);
+        algorithm.getInstructionsForCargo(Constants::s_unloadOnly + port.getId().getCode(), instructionsOutput);
         return true;
     }
 
     std::optional<std::string> cargoFile = getNextFileForPort(map, port.getId().getCode());  // get cargo file of current port
     if (!cargoFile.has_value()) {  // couldn't find a cargo file
         std::cout << "Warning: no cargo file for current visit, ship will only unload" << std::endl;
-        algorithm.getInstructionsForCargo(s_unloadOnly + port.getId().getCode(), s_staticOutputFile);
+        algorithm.getInstructionsForCargo(Constants::s_unloadOnly + port.getId().getCode(), instructionsOutput);
         return true;
     }
 
     std::string cargoFilePath = getCargoPath(travel, *cargoFile);
-    algorithm.getInstructionsForCargo(cargoFilePath, s_staticOutputFile);
+    algorithm.getInstructionsForCargo(cargoFilePath, instructionsOutput);
 
     std::optional<ContainerStorage> containers = readCargoToPortFromFile(cargoFilePath);
 
@@ -196,12 +188,12 @@ void initSimulationTables(StringStringVector &results, StringStringVector &error
     results.emplace_back();
 
     StringVector &resultsFirstRow = results.back();
-    resultsFirstRow.push_back(s_resultsTableTitle);  // set table title
+    resultsFirstRow.push_back(Simulator::s_resultsTableTitle);  // set table title
     for (auto &travel : travels) {  // first row init
         auto travelName = extractFilenameFromPath(travel, false);
         resultsFirstRow.push_back(travelName);  // add travel name for each column
     }
-    resultsFirstRow.push_back(s_sum);
+    resultsFirstRow.push_back(Simulator::s_sumColumnTitle);
 
     for (auto &algorithm : algorithms) {  // rest of rows init
         results.emplace_back();
@@ -213,7 +205,7 @@ void initSimulationTables(StringStringVector &results, StringStringVector &error
     errors.emplace_back();
 
     StringVector &errorsFirstRow = errors.back();
-    errorsFirstRow.push_back(s_errorsTableTitle);
+    errorsFirstRow.push_back(Simulator::s_errorsTableTitle);
 
     // we don't init the rest of the first row, because we can't know in advance the max number of errors
 
@@ -270,7 +262,7 @@ void orderSimulationTables(StringStringVector &results, StringStringVector &erro
     auto &firstErrorRow = errors[0];
 
     for (int k = 1; k < maxErrors; k++) {  // add columns, start from 1 because we already have one (the title)
-        firstErrorRow.push_back(s_error + " " + intToString(k));
+        firstErrorRow.push_back(Simulator::s_errorToken + " " + intToString(k));
     }
 }
 

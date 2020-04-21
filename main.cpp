@@ -2,14 +2,14 @@
 #include "src/common/io/FileReader.h"
 #include "src/common/io/ObjectsReader.h"
 #include "src/utils/UtilFunctions.h"
-#include "tests/SimulationTests.h"
+#include "src/simulator/Simulator.h"
+//#include "tests/SimulationTests.h"
 
 
 int main(int argc, char **argv) {
 //    simulationTest("../hw1/Travel_3");
 //    simulationsTest({"../hw1/input/Travel_2", "../hw1/input/Travel_3"});
 //    return 0;
-
 
     if (argc < 3) {
         std::cerr << "Insufficient arguments supplied. Please read the README for usage instructions. Program is terminated." << std::endl;
@@ -38,9 +38,9 @@ int main(int argc, char **argv) {
         travels.push_back(argv[i]);
     }
 
-    Simulator simulator;
+    Simulator simulator(outputDir);
 
-    simulator.runSimulations(travels, outputDir);
+    simulator.runSimulations(travels);
 
     return 0;
 }

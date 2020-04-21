@@ -8,13 +8,13 @@ $\
 src/algorithms/stowage/NaiveStowageAlgorithm.o $\
 src/algorithms/CranesOperation.o src/algorithms/WeightBalanceCalculator.o $\
 $\
-src/common/io/FileReader.o common/io/ObjectsReader $\
+src/common/io/FileReader.o src/common/io/ObjectsReader.o $\
 src/common/Constants.o $\
 $\
 src/data_objects/Container.o src/data_objects/ContainerPosition.o src/data_objects/PackingOperation.o src/data_objects/PortId.o $\
 src/data_objects/Position.o src/data_objects/ShipPlan.o src/data_objects/ShipRoute.o $\
 $\
-src/data_structures/Cargo.o src/data_structures/ContainerStroage.o $\
+src/data_structures/Cargo.o src/data_structures/ContainerStorage.o $\
 $\
 src/simulator/Simulator.o src/simulator/SimulatorUtil.o $\
 $\
@@ -28,7 +28,7 @@ CPP_LINK_FLAG = -lstdc++fs
 $(EXEC): $(OBJS)
 	$(COMP) $(OBJS) $(CPP_LINK_FLAG) -o $@
 $(OBJS):
-	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
+	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp -o $@
 # a rule for building a simple c++ source file
 
 clean:

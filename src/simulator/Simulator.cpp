@@ -11,10 +11,20 @@
 #include "../common/io/FileReader.h"
 #include "../utils/UtilFunctions.h"
 
+// region Constants
+
+const std::string Simulator::s_instructionsFilename = "cargo_instructions";
+
+const std::string Simulator::s_resultsTableTitle = "RESULTS";
+const std::string Simulator::s_errorsTableTitle = "ERRORS";
+const std::string Simulator::s_sumColumnTitle = "SUM";
+const std::string Simulator::s_errorToken = "Error";
+// endregion
+
+
 // region Constructors
 
-Simulator::Simulator() {
-    staticOutputFile = "../simulation-output/cargo_instructions";
+Simulator::Simulator(const std::string &outputDir) : outputDir(outputDir) {
     NaiveStowageAlgorithm *naiveStowageAlgorithm = new NaiveStowageAlgorithm();
     NaiveStowageAlgorithm *naiveStowageAlgorithm2 = new NaiveStowageAlgorithm();
     algorithms.push_back(naiveStowageAlgorithm);
@@ -28,7 +38,7 @@ std::string getShipPlanPath(const std::string &travel);
 
 std::string getShipRoutePath(const std::string &travel);
 
-void Simulator::runSimulations(StringVector travels, const std::string &outputDir) {
+void Simulator::runSimulations(StringVector travels) {
     StringStringVector results;  // table for results
     StringStringVector errors;  // table for errors
 
@@ -111,13 +121,14 @@ StringStringVector Simulator::runSimulation(IStowageAlgorithm &algorithm, const 
 
         bool isLast = (i == ports.size() - 1);  // our last port is treated a bit different
 
-        res = getInstructionsForCargo(algorithm, travel, map, port, isLast);
+        std::string instructionsPath = outputDir + "/" + s_instructionsFilename;
+        res = getInstructionsForCargo(algorithm, travel, map, port, isLast, instructionsPath);
         // triggers algorithm getInstructions(), sets port ContainerStorage if needed
 
         if (!res)
             continue; // failed to read current dock file, errors were printed inside
 
-        auto optOps = readPackingOperationsFromFile(staticOutputFile);  // read the operations to perform, written by the algorithm
+        auto optOps = readPackingOperationsFromFile(instructionsPath);  // read the operations to perform, written by the algorithm
 
         if (!optOps.has_value()) {
             std::cout << "Warning: no packing operations were read" << std::endl;

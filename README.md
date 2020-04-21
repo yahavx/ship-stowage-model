@@ -26,8 +26,14 @@ Two sets of travels provided:
 
 To run:
 ```sh
-$ ./ex1 ./output_1 ./input/Travel_1
-$ ./ex1 ./output_2 ./input/Travel_2 ./input_Travel_3
+$ ./ex1 output_1 input/Travel_1
+$ ./ex1 output_2 input/Travel_2 input/Travel_3
 ```
 
-The expected results for each run are at `./excpected_output/1` `./excpected_output/2` (respectively).
+The expected results for each run are at `excpected_output/1` `excpected_output/2` (respectively).
+
+Compare to expected output:
+```sh
+$ diff output_1/simulation.results.csv expected_output/1/simulation.results.csv
+$ diff output_2/simulation.results.csv expected_output/2/simulation.results.csv
+```

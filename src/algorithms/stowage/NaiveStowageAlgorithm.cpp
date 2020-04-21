@@ -3,8 +3,9 @@
 //
 
 #include "NaiveStowageAlgorithm.h"
-#include "../CranesOperation.h"
 #include <algorithm>
+#include "../CranesOperation.h"
+#include "../../common/Constants.h"
 #include "../../common/io/ObjectsReader.h"
 #include "../../utils/UtilFunctions.h"
 
@@ -33,7 +34,7 @@ std::string NaiveStowageAlgorithm::getAlgorithmName() {
 
 /// Returns true if inputFile is not a file (unloadOnly).
 bool NaiveStowageAlgorithm::initPortId(const std::string &inputFile, Port &port) const {
-    if (startsWith(inputFile, unloadOnly)) {
+    if (startsWith(inputFile, Constants::s_unloadOnly)) {
         std::string portCode = inputFile.substr(11, 5);
         port.setId(PortId(portCode));
         return true;

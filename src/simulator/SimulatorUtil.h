@@ -30,7 +30,7 @@ void filterTwiceInARowPorts(ShipRoute &shipRoute);
  * Triggers the getInstructionsForCargo of the algorithm, adds storage to the port (of simulator) if needed.
  * @return true if succeed.
  */
-bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map, Port &port, bool isLast);
+bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map, Port &port, bool isLast, const std::string &instructionsOutput);
 
 /// Checks if there are any remaining ports in the map, which still have files. Prints warning if yes.
 void validateNoCargoFilesLeft(StringToStringVectorMap &map);
