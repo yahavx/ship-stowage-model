@@ -87,7 +87,7 @@ std::vector<ContainerPosition> Cargo::getContainersForPort(const PortId &portId)
         for (int y = 0; y < std::get<1>(dims); y++) {
             Containers xyContainers = containers[x][y];
 
-            for (int z = xyContainers.size() - 1; z >= 0 ; z--)
+            for (int z = xyContainers.size() - 1; z >= 0; z--)
                 if (xyContainers[z].getDestPort() == portId) {
                     auto height = this->shipPlan.getHeights()[x][y] + z;
                     Container cont(xyContainers[z]);
@@ -113,4 +113,30 @@ std::ostream &operator<<(std::ostream &os, const Cargo &cargo) {
     os << "CargoPrintNotImplemented: " << std::endl;
     return os;
     os << *cargo.getTopContainer(1, 1);
+}
+
+bool Cargo::hasContainer(std::string containerId) {
+    POS dims = shipPlan.getDimensions();
+    for (int x = 0; x < std::get<0>(dims); x++)
+        for (int y = 0; y < std::get<1>(dims); y++) {
+            Containers xyContainers = containers[x][y];
+
+            for (longUInt z = 0; z < xyContainers.size(); z--)
+                if (xyContainers[z].getId() == containerId)
+                    return true;
+        }
+
+    return false;
+}
+
+bool Cargo::isFull() {
+    POS dims = shipPlan.getDimensions();
+    for (int x = 0; x < std::get<0>(dims); x++)
+        for (int y = 0; y < std::get<1>(dims); y++) {
+            Containers xyContainers = containers[x][y];
+            if ((int) xyContainers.size() < std::get<2>(dims) - shipPlan.getHeights()[x][y])
+                return false;
+        }
+
+    return true;
 }

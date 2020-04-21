@@ -128,3 +128,13 @@ std::string toUpper(const std::string &str) {
     std::transform(strCopy.begin(), strCopy.end(), strCopy.begin(), ::toupper);
     return strCopy;
 }
+
+std::string craneOperationToString(const PackingOperation &op) {
+    std::string x = std::to_string(std::get<0>(op.getFromPosition()));
+    std::string y = std::to_string(std::get<1>(op.getFromPosition()));
+    std::string z = std::to_string(std::get<2>(op.getFromPosition()));
+    auto opString = "Op('" + packingTypeFromString(op.getType())  + "', ContainerID=" + op.getContainerId() +
+                    ", Position=[" + x + ", " + y + ", " + z +"]";
+
+    return opString;
+}

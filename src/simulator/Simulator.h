@@ -42,6 +42,8 @@ private:
      * @param errors empty vector, to fill with errors, one per each entry
      */
     void performPackingOperations(ContainerShip &ship, Port &port, const OPS &ops, StringVector &errors) const;
+
+    void validatePackingOperation(ContainerShip &ship, Port &port, const PackingOperation &op, StringVector &errors) const;
 };
 
 

@@ -65,6 +65,16 @@ public:
      * @return - if operation succeeded returns the height te container was loaded to, else returns negative integer
      */
     int loadContainerOnTop(int x, int y, const Container &container);
+
+    /**
+     * Returns true if the container with the given id exists
+     */
+    bool hasContainer(std::string containerId);
+
+    /**
+     * Returns true if this cargo is completely full
+     */
+    bool isFull();
     // endregion
 
     friend std::ostream &operator<<(std::ostream &os, const Cargo &cargo);

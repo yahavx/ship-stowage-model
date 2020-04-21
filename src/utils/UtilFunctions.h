@@ -55,5 +55,6 @@ std::string toUpper(const std::string &str);
 /// Creates a folder, returns true if succeed.
 bool createFolder(const std::string &path);
 
+std::string craneOperationToString(const PackingOperation &op);
 
 #endif //SHIP_STOWAGE_MODEL_UTILFUNCTIONS_H

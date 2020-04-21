@@ -34,7 +34,7 @@ void Simulator::runSimulations(StringVector travels, const std::string &outputDi
 
     initSimulationTables(results, errors, travels, algorithms);  // add columns names and set table structure
 
-    for (longUInt i = 0; i < algorithms.size(); i ++) {
+    for (longUInt i = 0; i < algorithms.size(); i++) {
         auto &algorithm = algorithms[i];
 
         for (auto &travel: travels) {
@@ -100,7 +100,7 @@ StringStringVector Simulator::runSimulation(IStowageAlgorithm &algorithm, const 
 
     printSeparator(1, 1);
 
-    auto &ports = ship.getShipRoute().getPorts();
+    std::vector<PortId> ports = ship.getShipRoute().getPorts();
     int totalNumberOfOps = 0;
     for (longUInt i = 0; i < ports.size(); i++) {  // Start the journey
         auto &portId = ports[i];
@@ -162,22 +162,39 @@ std::string getShipRoutePath(const std::string &travel) {
 void
 Simulator::performPackingOperations(ContainerShip &ship, Port &port, const OPS &ops, StringVector &errors) const {// Perform operations on local ship and port
 
-    // TODO: when loading from port, check that container exists on port, and that x,y,z is a legal position
-    // TODO: when loading from port, check that same container ID is not in the ship
-    // TODO: check that when leaving the port, all containers are loaded (if possible)
     // TODO: check that any containers that were loaded to the port to unload others, are back in ship
-
-
 
     for (const PackingOperation &op : ops) {
 
+        validatePackingOperation(ship, port, op, errors);
 
         auto opResult = CranesOperation::preformOperation(op, port, ship);
-        if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND)
+        if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND) {
             std::cerr << "Crane received illegal operation, didn't find container with ID:" << op.getContainerId() << std::endl;
-        if (opResult == CraneOperationResult::FAIL_ILLEGAL_OP)
-            std::cerr << "Crane received illegal operation: " << op << std::endl;
+            errors.push_back("didn't find container: " + op.getContainerId() + " while at port: " + port.getId().getCode() + ", executing crane operation: " +
+                             craneOperationToString(op));
+        }
+        if (opResult == CraneOperationResult::FAIL_ILLEGAL_OP) {
+            std::cerr << "Illegal crane operation: " << op << std::endl;
+            errors.push_back("Illegal crane operation: " + craneOperationToString(op));
+        }
     }
+
+    ship.markCurrentVisitDone();
+
+    //Check if algorithm loaded all required containers if there is space on the ship
+    bool foundUnloadedContainers = false;
+    for (auto portId : ship.getShipRoute().getPorts()) {
+        if (portId == port.getId())
+            continue;
+        if (!port.getContainersForDestination(portId).empty() && !ship.getCargo().isFull()) {
+            foundUnloadedContainers = true;
+            break;
+        }
+    }
+
+    if (foundUnloadedContainers)
+        errors.push_back("Algorithm didn't load all required containers from port although ship isn't full");
 
     std::cout << ops;
     return;
@@ -220,5 +237,29 @@ bool Simulator::initSimulation(const std::string &shipPlanPath, const std::strin
     std::cout << errors;  // TODO
     return true;
 }
+
+void validateLoadOperation(ContainerShip &ship, Port &port, const PackingOperation &op, StringVector &errors) {
+    const auto &containerId = op.getContainerId();
+    if (ship.getCargo().hasContainer(containerId)) {
+        errors.push_back("Duplicate container id: " + op.getContainerId() + " while loading to ship");
+    }
+    return;
+    std::cout << port;
+}
+
+void Simulator::validatePackingOperation(ContainerShip &ship, Port &port, const PackingOperation &op, StringVector &errors) const {
+
+    switch (op.getType()) {
+        case PackingType::load:
+            validateLoadOperation(ship, port, op, errors);
+            break;
+        case PackingType::unload:
+        case PackingType::reject:
+        case PackingType::move:
+            break;
+    }
+}
+
+
 
 // endregion
