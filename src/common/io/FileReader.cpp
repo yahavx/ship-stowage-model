@@ -11,7 +11,6 @@
 #include "../../utils/UtilFunctions.h"
 #include <string>
 #include <filesystem>
-#include <direct.h>
 
 
 bool SkipBOM(std::istream &in)  // some files contains garbage bytes at the start, this will eliminate them if needed
@@ -93,6 +92,11 @@ bool isDirectoryExists(const std::string& directory)
 }
 
 bool createFolder(const std::string &path)
-{
-    return !_mkdir(path.c_str());  // mkdir returns 0 if successful
+{   try {
+        std::filesystem::create_directory(path);
+        return true;
+    }
+    catch (...) {  // failed
+        return false;
+    }
 }
