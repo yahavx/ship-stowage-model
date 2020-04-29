@@ -53,7 +53,7 @@ StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath) {
 
     StringVector files = getFilesFromDirectory(directoryPath);
 
-    for (std::string file : files) {
+    for (std::string& file : files) {
         std::string fileName = extractFilenameFromPath(file, false);
 
         if (!isCargoDataFileFormat(fileName)) {

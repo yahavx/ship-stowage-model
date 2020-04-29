@@ -15,7 +15,10 @@ public:
     std::string outputDir;
     std::vector<AbstractAlgorithm*> algorithms;
 
-    Simulator(const std::string &outputDir);
+    // region Constructors
+
+    explicit Simulator(const std::string &outputDir);
+    // endregion
 
     // region Simulation run
 
