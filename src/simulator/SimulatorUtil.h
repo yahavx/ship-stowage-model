@@ -57,4 +57,17 @@ void printSimulationInfo(const std::string &travel, IStowageAlgorithm *&algorith
 void addGeneralError(StringStringVector &errors, const std::string &error);
 // endregion
 
+// region Path generation
+
+std::string getShipPlanPath(const std::string &travel);
+
+std::string getShipRoutePath(const std::string &travel);
+
+std::string getCraneInstructionsRootFolder(const std::string &travel);
+
+std::string getCraneInstructionsSimulationFolder(const std::string &outputDir, const std::string &algorithmName, const std::string &travelName);
+
+std::string getCraneInstructionsFilePath(const std::string &craneOutputDir, const PortId &portId, int i);
+// endregion
+
 #endif //SHIP_STOWAGE_MODEL_SIMULATORUTIL_H

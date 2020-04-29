@@ -275,3 +275,25 @@ void addGeneralError(StringStringVector &errors, const std::string &error) {
     generalErrorsRow.push_back(error);
 }
 // endregion
+
+// region Path generation
+
+std::string getShipPlanPath(const std::string &travel) {
+    return travel + "/Plan";
+}
+
+std::string getShipRoutePath(const std::string &travel) {
+    return travel + "/Route";
+}
+
+std::string getCraneInstructionsRootFolder(const std::string &outputDir) {
+    return outputDir + "/crane_instructions";
+}
+
+std::string getCraneInstructionsSimulationFolder(const std::string &outputDir, const std::string &algorithmName, const std::string &travelName) {
+    return getCraneInstructionsRootFolder(outputDir) + "/" + algorithmName + "_" + travelName + "_crane_instructions";
+}
+std::string getCraneInstructionsFilePath(const std::string &craneOutputDir, const PortId &portId, int i) {
+    return craneOutputDir + "/" + portId.getCode() + "_" + intToString(i) + ".crane_instructions";
+}
+// endregion

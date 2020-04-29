@@ -39,19 +39,6 @@ Simulator::Simulator(const std::string &outputDir) : outputDir(outputDir) {
 
 // region Simulation run
 
-// region Declarations
-
-std::string getShipPlanPath(const std::string &travel);
-
-std::string getShipRoutePath(const std::string &travel);
-
-std::string getCraneInstructionsRootFolder(const std::string &travel);
-
-std::string getCraneInstructionsSimulationFolder(const std::string &outputDir, const std::string &algorithmName, const std::string &travelName);
-
-std::string getCraneInstructionsFilePath(const std::string &craneOutputDir, const PortId &portId, int i);
-// endregion
-
 void Simulator::runSimulations(const std::string &travelPath) {
     StringStringVector results;  // table for results
     StringStringVector errors;  // table for errors
@@ -183,25 +170,6 @@ StringStringVector Simulator::runSimulation(IStowageAlgorithm &algorithm, const 
 // endregion
 
 // region Simulation core
-
-std::string getShipPlanPath(const std::string &travel) {
-    return travel + "/Plan";
-}
-
-std::string getShipRoutePath(const std::string &travel) {
-    return travel + "/Route";
-}
-
-std::string getCraneInstructionsRootFolder(const std::string &outputDir) {
-    return outputDir + "/crane_instructions";
-}
-
-std::string getCraneInstructionsSimulationFolder(const std::string &outputDir, const std::string &algorithmName, const std::string &travelName) {
-    return getCraneInstructionsRootFolder(outputDir) + "/" + algorithmName + "_" + travelName + "_crane_instructions";
-}
-std::string getCraneInstructionsFilePath(const std::string &craneOutputDir, const PortId &portId, int i) {
-    return craneOutputDir + "/" + portId.getCode() + "_" + intToString(i) + ".crane_instructions";
-}
 
 void
 Simulator::performPackingOperations(ContainerShip &ship, Port &port, const OPS &ops, StringVector &errors) const {// Perform operations on local ship and port
