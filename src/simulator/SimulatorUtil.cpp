@@ -198,6 +198,7 @@ void initSimulationTables(StringStringVector &results, StringStringVector &error
         resultsFirstRow.push_back(travelName);  // add travel name for each column
     }
     resultsFirstRow.push_back(Simulator::s_sumColumnTitle);
+    resultsFirstRow.push_back(Simulator::s_errorsColumnTitle);
 
     for (auto &algorithm : algorithms) {  // rest of rows init
         results.emplace_back();
@@ -206,14 +207,14 @@ void initSimulationTables(StringStringVector &results, StringStringVector &error
 
     // init errors table
 
-    errors.emplace_back();
+    errors.emplace_back();  // first row: table title
+    errors.back().push_back(Simulator::s_errorsTableTitle);
 
-    StringVector &errorsFirstRow = errors.back();
-    errorsFirstRow.push_back(Simulator::s_errorsTableTitle);
+    errors.emplace_back();  // second row: general errors
+    errors.back().push_back(Simulator::s_generalErrorsRowTitle);
 
-    // we don't init the rest of the first row, because we can't know in advance the max number of errors
 
-    for (auto &algorithm : algorithms) {
+    for (auto &algorithm : algorithms) {  // rows 3 - n: algorithm errors
         errors.emplace_back();
         errors.back().push_back(algorithm->getAlgorithmName());
     }
@@ -231,10 +232,10 @@ void addTravelResultsToTable(StringStringVector &simulationResults, StringString
 
     // get results and errors row in output table (to append to them)
     StringVector &resultsRow = results[rowNum];
-    StringVector &errorsRow = errors[rowNum];
+    StringVector &errorsRow = errors[rowNum + 1];  // in the errors, second row is reserved for general errors
 
-    // append results data (now its only one thing: number of steps)
-    resultsRow.push_back(travelResults[0]);
+    // append results data
+    resultsRow.push_back(travelResults[0]);  // number of steps
 
     // append errors data
     for (auto &error : travelErrors) {
@@ -244,17 +245,18 @@ void addTravelResultsToTable(StringStringVector &simulationResults, StringString
 
 void orderSimulationTables(StringStringVector &results, StringStringVector &errors) {
     // add sums to results table
-    for (longUInt i = 1; i < results.size(); i++) {
+    for (longUInt i = 1; i < results.size(); i++) {  // for each algorithm
         auto &rowEntry = results[i];
         int totalOps = 0;
 
-        for (longUInt j = 1; j < rowEntry.size(); j++) {
+        for (longUInt j = 1; j < rowEntry.size(); j++) {  // sum his operations from all the travels
             auto &currSum = rowEntry[j];
             if (isInteger(currSum)) {
                 totalOps += stringToInt(currSum);
             }
         }
-        rowEntry.push_back(intToString(totalOps));
+        rowEntry.push_back(intToString(totalOps));  // push the sum
+        rowEntry.push_back("0");  // push number of errors TODO: actual number of errors
     }
 
     // add error columns
@@ -278,5 +280,12 @@ void printSimulationInfo(const std::string &travel, IStowageAlgorithm *&algorith
 
     std::cerr << "--------------------------------------\n";
     std::cerr << "Simulating travel " << travelName << ", using " << algorithm->getAlgorithmName() << std::endl << std::endl;  // print to err also to separate
+
+
+}
+
+void addGeneralError(StringStringVector &errors, const std::string &error) {
+    auto& generalErrorsRow = errors[1];  // assuming the general errors are the second row
+    generalErrorsRow.push_back(error);
 }
 // endregion

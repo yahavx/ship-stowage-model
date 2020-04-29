@@ -62,8 +62,14 @@ public:
 
     static const std::string s_resultsTableTitle;
     static const std::string s_errorsTableTitle;
+
+    static const std::string s_generalErrorsRowTitle;
     static const std::string s_sumColumnTitle;
+    static const std::string s_errorsColumnTitle;
+
     static const std::string s_errorToken;
+
+    static const std::string s_noTravelPathSuppliedError;
     // endregion
 };
 

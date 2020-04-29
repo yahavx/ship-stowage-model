@@ -17,8 +17,14 @@ const std::string Simulator::s_instructionsFilename = "cargo_instructions";
 
 const std::string Simulator::s_resultsTableTitle = "RESULTS";
 const std::string Simulator::s_errorsTableTitle = "ERRORS";
-const std::string Simulator::s_sumColumnTitle = "SUM";
+
+const std::string Simulator::s_generalErrorsRowTitle = "General Errors";
+const std::string Simulator::s_sumColumnTitle = "Sum";
+const std::string Simulator::s_errorsColumnTitle = "Num Errors";
+
 const std::string Simulator::s_errorToken = "Error";
+
+const std::string Simulator::s_noTravelPathSuppliedError = "Travel path was not supplied";
 // endregion
 
 
@@ -43,10 +49,11 @@ void Simulator::runSimulations(const std::string &travelPath) {
     StringStringVector errors;  // table for errors
 
     if (travelPath == "") {
-        // TODO: report to simulation.errors and kill simulation
+        addGeneralError(errors, s_noTravelPathSuppliedError);
+        return;  // TODO: save tables (like in the end of this function, but we need to know what to save exactly in each)
     }
 
-    StringVector travels = collectTravels(travelPath);  // collect all sub-directories
+    StringVector travels = collectTravels(travelPath);  // collect all sub-directories (travels) inside the travel path supplied
 
     initSimulationTables(results, errors, travels, algorithms);  // add columns names and set table structure
 

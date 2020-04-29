@@ -55,6 +55,9 @@ void orderSimulationTables(StringStringVector &results, StringStringVector &erro
 
 /// Prints simulation starting messages.
 void printSimulationInfo(const std::string &travel, IStowageAlgorithm *&algorithm);
+
+/// Add a general error to the errors table (must be initialized).
+void addGeneralError(StringStringVector &errors, const std::string &error);
 // endregion
 
 #endif //SHIP_STOWAGE_MODEL_SIMULATORUTIL_H
