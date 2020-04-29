@@ -22,7 +22,7 @@ public:
      * Simulates an algorithm on a single travel.
      * @param travel a directory that contains Plan, Route, and list of <portId>_<number>.cargo_data files.
      */
-    StringStringVector runSimulation(IStowageAlgorithm &algorithm, const std::string &travel);
+    StringStringVector runSimulation(IStowageAlgorithm &algorithm, const std::string &travel, const std::string &craneOutputDir);
 
     /** Run a cartesian loop of “travel” X “algorithm”.
      *

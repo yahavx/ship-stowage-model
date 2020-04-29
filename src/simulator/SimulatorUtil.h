@@ -23,9 +23,6 @@ std::optional<std::string> getNextFileForPort(StringToStringVectorMap &map, cons
 /// Removes from map ports that doesn't appear in the route.
 void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute);
 
-/// Removes from route ports that appears twice in a row.
-void filterTwiceInARowPorts(ShipRoute &shipRoute);
-
 /**
  * Triggers the getInstructionsForCargo of the algorithm, adds storage to the port (of simulator) if needed.
  * @return true if succeed.

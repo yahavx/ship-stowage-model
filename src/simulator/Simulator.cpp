@@ -27,7 +27,6 @@ const std::string Simulator::s_errorToken = "Error";
 const std::string Simulator::s_noTravelPathSuppliedError = "Travel path was not supplied";
 // endregion
 
-
 // region Constructors
 
 Simulator::Simulator(const std::string &outputDir) : outputDir(outputDir) {
@@ -40,9 +39,18 @@ Simulator::Simulator(const std::string &outputDir) : outputDir(outputDir) {
 
 // region Simulation run
 
+// region Declarations
+
 std::string getShipPlanPath(const std::string &travel);
 
 std::string getShipRoutePath(const std::string &travel);
+
+std::string getCraneInstructionsRootFolder(const std::string &travel);
+
+std::string getCraneInstructionsSimulationFolder(const std::string &outputDir, const std::string &algorithmName, const std::string &travelName);
+
+std::string getCraneInstructionsFilePath(const std::string &craneOutputDir, const PortId &portId, int i);
+// endregion
 
 void Simulator::runSimulations(const std::string &travelPath) {
     StringStringVector results;  // table for results
@@ -54,8 +62,8 @@ void Simulator::runSimulations(const std::string &travelPath) {
     }
 
     StringVector travels = collectTravels(travelPath);  // collect all sub-directories (travels) inside the travel path supplied
-
     initSimulationTables(results, errors, travels, algorithms);  // add columns names and set table structure
+    createFolder(getCraneInstructionsRootFolder(outputDir));  // create the crane instructions root folder
 
     for (longUInt i = 0; i < algorithms.size(); i++) {
         auto &algorithm = algorithms[i];
@@ -63,7 +71,9 @@ void Simulator::runSimulations(const std::string &travelPath) {
         for (auto &travel: travels) {
             printSimulationInfo(travel, algorithm);  // prints starting messages
 
-            StringStringVector simulationResults = runSimulation(*algorithm, travel);  // run simulation, collect data
+            auto craneOutputDir = getCraneInstructionsSimulationFolder(outputDir, intToString(i), extractFilenameFromPath(travel, false));  // crane instructions directory for the current run  // TODO: change i to algorithm name
+            createFolder(craneOutputDir);
+            StringStringVector simulationResults = runSimulation(*algorithm, travel, craneOutputDir);  // run simulation, collect data
 
             addTravelResultsToTable(simulationResults, results, errors, i + 1);  // save collected data from the travel to the tables
         }
@@ -76,13 +86,13 @@ void Simulator::runSimulations(const std::string &travelPath) {
     saveSimulationTables(results, errors, outputDir);
 }
 
-StringStringVector Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &travel) {
-    StringStringVector report(2, StringVector());  // 2 rows, first is a single entry (number of steps), second is zero or more entries (number of errors)
+StringStringVector Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &travel, const std::string &craneOutputDir) {
+    StringStringVector report(2, StringVector());  // 2 rows, first for steps or -1 (if error occurred), second is zero or more entries (number of errors)
     StringVector &results = report[0];
     StringVector &errors = report[1];
 
     // validate root folder exists
-    if (!isDirectoryExists(travel)) {
+    if (!isDirectoryExists(travel)) {  // TODO: runSimulations should call this function (runSimulation) only with valid directories
         std::cerr << "Simulation failed: the travel path supplied is not a directory" << std::endl;
         results.push_back("<SimulationFailed>");
         return report;  // we don't add an error because its not the algorithm fault
@@ -134,7 +144,7 @@ StringStringVector Simulator::runSimulation(IStowageAlgorithm &algorithm, const 
 
         bool isLast = (i == ports.size() - 1);  // our last port is treated a bit different
 
-        std::string instructionsPath = outputDir + "/" + s_instructionsFilename;
+        std::string instructionsPath = getCraneInstructionsFilePath(craneOutputDir, portId, i);  // TODO: i should be the visit number at this port - current i is the index in the route
         res = getInstructionsForCargo(algorithm, travel, map, port, isLast, instructionsPath);
         // triggers algorithm getInstructions(), sets port ContainerStorage if needed
 
@@ -180,6 +190,17 @@ std::string getShipPlanPath(const std::string &travel) {
 
 std::string getShipRoutePath(const std::string &travel) {
     return travel + "/Route";
+}
+
+std::string getCraneInstructionsRootFolder(const std::string &outputDir) {
+    return outputDir + "/crane_instructions";
+}
+
+std::string getCraneInstructionsSimulationFolder(const std::string &outputDir, const std::string &algorithmName, const std::string &travelName) {
+    return getCraneInstructionsRootFolder(outputDir) + "/" + algorithmName + "_" + travelName + "_crane_instructions";
+}
+std::string getCraneInstructionsFilePath(const std::string &craneOutputDir, const PortId &portId, int i) {
+    return craneOutputDir + "/" + portId.getCode() + "_" + intToString(i) + ".crane_instructions";
 }
 
 void

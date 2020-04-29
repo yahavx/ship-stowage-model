@@ -124,20 +124,6 @@ void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute) {
     }
 }
 
-void filterTwiceInARowPorts(ShipRoute &shipRoute) {
-    StringVector toErase;
-    std::string last = "";
-    std::vector<PortId> newPorts;
-
-    for (PortId portId : shipRoute.getPorts()) {
-        if (portId.getCode() == last)
-            continue;
-        last = portId.getCode();
-        newPorts.push_back(PortId(portId));
-    }
-    shipRoute.setPorts(newPorts);  // we don't if we didn't change anything also, but whatever
-}
-
 std::string getCargoPath(const std::string &travel, const std::string &cargoFile) {
     return travel + "/" + cargoFile;
 }
