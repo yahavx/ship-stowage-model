@@ -73,7 +73,7 @@ void Simulator::runSimulations(const std::string &travelPath) {
     saveSimulationTables(results, errors, outputDir);
 }
 
-StringStringVector Simulator::runSimulation(IStowageAlgorithm &algorithm, const std::string &travel, const std::string &craneOutputDir) {
+StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm, const std::string &travel, const std::string &craneOutputDir) {
     StringStringVector report(2, StringVector());  // 2 rows, first for steps or -1 (if error occurred), second is zero or more entries (number of errors)
     StringVector &results = report[0];
     StringVector &errors = report[1];
@@ -213,12 +213,12 @@ Simulator::performPackingOperations(ContainerShip &ship, Port &port, const OPS &
     std::cout << errors;
 }
 
-void Simulator::initAlgorithm(IStowageAlgorithm &algorithm, const std::string &shipPlanPath,
+void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, const std::string &shipPlanPath,
                               const std::string &shipRoutePath) const {
     std::cout << "Initializing algorithm..." << std::endl;
 
-    algorithm.setShipPlanFromPath(shipPlanPath);  // set plan
-    algorithm.setShipRouteFromPath(shipRoutePath);  // set route
+    algorithm.readShipPlan(shipPlanPath);  // set plan
+    algorithm.readShipRoute(shipRoutePath);  // set route
     WeightBalanceCalculator algoWeightBalanceCalculator;
     algorithm.setWeightBalanceCalculator(algoWeightBalanceCalculator);
 

@@ -6,12 +6,16 @@
 #define SHIP_STOWAGE_MODEL_NAIVESTOWAGEALGORITHM_H
 
 
-#include "IStowageAlgorithm.h"
+#include "AbstractAlgorithm.h"
+#include "../../actors/ContainerShip.h"
+
 
 /**
  * A naive implementation.
  */
-class NaiveStowageAlgorithm : public IStowageAlgorithm {
+class NaiveStowageAlgorithm : public AbstractAlgorithm {
+protected:
+    ContainerShip ship;
 
 public:
 
@@ -20,9 +24,9 @@ public:
     void getInstructionsForCargo(const std::string &inputFile,
                                  const std::string &outputFile) override;
 
-    void setShipPlanFromPath(const std::string &shipPlanPath) override;
+    void readShipPlan(const std::string &shipPlanPath) override;
 
-    void setShipRouteFromPath(const std::string &shipRoutePath) override;
+    void readShipRoute(const std::string &shipRoutePath) override;
 
     std::string getAlgorithmName() override;
 

@@ -11,7 +11,7 @@
 #include <sstream>
 #include <filesystem>
 #include "Simulator.h"
-#include "../algorithms/stowage/IStowageAlgorithm.h"
+#include "../algorithms/stowage/AbstractAlgorithm.h"
 #include "../common/Constants.h"
 #include "../common/io/ObjectsReader.h"
 #include "../common/io/FileReader.h"
@@ -128,7 +128,7 @@ std::string getCargoPath(const std::string &travel, const std::string &cargoFile
     return travel + "/" + cargoFile;
 }
 
-bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map, Port &port, bool isLast, const std::string &instructionsOutput) {
+bool getInstructionsForCargo(AbstractAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map, Port &port, bool isLast, const std::string &instructionsOutput) {
     if (isLast) {  // the last one only unloads
         algorithm.getInstructionsForCargo(Constants::s_unloadOnly + port.getId().getCode(), instructionsOutput);
         return true;
@@ -173,7 +173,7 @@ StringVector collectTravels(const std::string &travelPath) {
 
 // region Table data manager
 
-void initSimulationTables(StringStringVector &results, StringStringVector &errors, StringVector &travels, std::vector<IStowageAlgorithm *> &algorithms) {
+void initSimulationTables(StringStringVector &results, StringStringVector &errors, StringVector &travels, std::vector<AbstractAlgorithm *> &algorithms) {
     // init results table
     results.emplace_back();
 
@@ -258,7 +258,7 @@ void orderSimulationTables(StringStringVector &results, StringStringVector &erro
     }
 }
 
-void printSimulationInfo(const std::string &travel, IStowageAlgorithm *&algorithm) {
+void printSimulationInfo(const std::string &travel, AbstractAlgorithm *&algorithm) {
     printSeparator(1, 1);
     std::string travelName = extractFilenameFromPath(travel, true);
     std::cout << "Simulating travel " << travelName << ", using " << algorithm->getAlgorithmName() << std::endl;

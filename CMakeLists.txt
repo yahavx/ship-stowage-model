@@ -17,7 +17,7 @@ add_executable(ship_stowage_model
         # algorithms
             # stowage
             src/algorithms/stowage/NaiveStowageAlgorithm.cpp src/algorithms/stowage/NaiveStowageAlgorithm.h
-            src/algorithms/stowage/IStowageAlgorithm.h
+        src/algorithms/stowage/AbstractAlgorithm.h
         src/algorithms/CranesOperation.cpp src/algorithms/CranesOperation.h
         src/algorithms/WeightBalanceCalculator.cpp src/algorithms/WeightBalanceCalculator.h
 

@@ -5,14 +5,15 @@
 #ifndef SHIP_STOWAGE_MODEL_SIMULATOR_H
 #define SHIP_STOWAGE_MODEL_SIMULATOR_H
 
-#include "../algorithms/stowage/IStowageAlgorithm.h"
+#include "../algorithms/stowage/AbstractAlgorithm.h"
+#include "../actors/ContainerShip.h"
 
 
 class Simulator {
 
 public:
     std::string outputDir;
-    std::vector<IStowageAlgorithm*> algorithms;
+    std::vector<AbstractAlgorithm*> algorithms;
 
     Simulator(const std::string &outputDir);
 
@@ -22,7 +23,7 @@ public:
      * Simulates an algorithm on a single travel.
      * @param travel a directory that contains Plan, Route, and list of <portId>_<number>.cargo_data files.
      */
-    StringStringVector runSimulation(IStowageAlgorithm &algorithm, const std::string &travel, const std::string &craneOutputDir);
+    StringStringVector runSimulation(AbstractAlgorithm &algorithm, const std::string &travel, const std::string &craneOutputDir);
 
     /** Run a cartesian loop of “travel” X “algorithm”.
      *
@@ -43,7 +44,7 @@ private:
     bool initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath, ContainerShip &ship, StringVector &errors) const;
 
     /// Inits the algorithm in a single simulation.
-    void initAlgorithm(IStowageAlgorithm &algorithm, const std::string &shipPlanPath,
+    void initAlgorithm(AbstractAlgorithm &algorithm, const std::string &shipPlanPath,
                        const std::string &shipRoutePath) const;
 
     /**

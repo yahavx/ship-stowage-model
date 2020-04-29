@@ -7,7 +7,7 @@
 
 #include "../utils/Definitions.h"
 #include "../data_objects/ShipRoute.h"
-#include "../algorithms/stowage/IStowageAlgorithm.h"
+#include "../algorithms/stowage/AbstractAlgorithm.h"
 
 // region Simulation utils
 
@@ -27,7 +27,7 @@ void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute);
  * Triggers the getInstructionsForCargo of the algorithm, adds storage to the port (of simulator) if needed.
  * @return true if succeed.
  */
-bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map, Port &port, bool isLast, const std::string &instructionsOutput);
+bool getInstructionsForCargo(AbstractAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map, Port &port, bool isLast, const std::string &instructionsOutput);
 
 /// Checks if there are any remaining ports in the map, which still have files. Prints warning if yes.
 void validateNoCargoFilesLeft(StringToStringVectorMap &map);
@@ -39,7 +39,7 @@ StringVector collectTravels(const std::string &travelPath);
 // region Table data manager
 
 /// Inits results and errors table, results and errors should be empty.
-void initSimulationTables(StringStringVector &results, StringStringVector &errors, StringVector &travels, std::vector<IStowageAlgorithm*> &algorithms);
+void initSimulationTables(StringStringVector &results, StringStringVector &errors, StringVector &travels, std::vector<AbstractAlgorithm*> &algorithms);
 
 /// Saves simulation tables. Saving location is constant and defined inside.
 void saveSimulationTables(const StringStringVector &results, const StringStringVector &errors, const std::string &outputDir);
@@ -51,7 +51,7 @@ void addTravelResultsToTable(StringStringVector &simulationResults, StringString
 void orderSimulationTables(StringStringVector &results, StringStringVector &errors);
 
 /// Prints simulation starting messages.
-void printSimulationInfo(const std::string &travel, IStowageAlgorithm *&algorithm);
+void printSimulationInfo(const std::string &travel, AbstractAlgorithm *&algorithm);
 
 /// Add a general error to the errors table (must be initialized).
 void addGeneralError(StringStringVector &errors, const std::string &error);

@@ -14,7 +14,7 @@ void inline simulationTest(std::string path = "../input-examples\\Travel_4"){
     Simulator simulator("../simulation-output");
 
     NaiveStowageAlgorithm naiveStowageAlgorithm;
-    IStowageAlgorithm &algorithm(naiveStowageAlgorithm);
+    AbstractAlgorithm &algorithm(naiveStowageAlgorithm);
 
     simulator.runSimulation(algorithm, path);
 }

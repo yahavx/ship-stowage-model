@@ -16,13 +16,13 @@ void NaiveStowageAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &
     this->ship.getBalanceCalculator().setPlan(this->ship.getShipPlan());
 }
 
-void NaiveStowageAlgorithm::setShipPlanFromPath(
+void NaiveStowageAlgorithm::readShipPlan(
         const std::string &shipPlanPath) {
     auto shipPlan = *readShipPlanFromFile(shipPlanPath);
     this->ship.setShipPlan(shipPlan);
 }
 
-void NaiveStowageAlgorithm::setShipRouteFromPath(const std::string &shipRoutePath) {
+void NaiveStowageAlgorithm::readShipRoute(const std::string &shipRoutePath) {
     auto route = *readShipRouteFromFile(shipRoutePath);
     this->ship.setShipRoute(route);
 }
