@@ -31,7 +31,8 @@ StringVector getFilesFromDirectory(const std::string &directoryPath) {
     for (auto &tmp_directory : std::filesystem::directory_iterator(directoryPath)) {
         std::ostringstream myObjectStream; // a stream is built
         myObjectStream << tmp_directory;  // write file to stream
-        stringVector.push_back(myObjectStream.str());  // pull result from stream
+        auto path = myObjectStream.str();
+        stringVector.push_back(path.substr(1, path.size() - 2));  // pull result from stream, trim the "" from both sides
     }
 
     return stringVector;
@@ -54,7 +55,6 @@ StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath) {
 
     for (std::string file : files) {
         std::string fileName = extractFilenameFromPath(file, false);
-        fileName.pop_back();  // trim " from the end
 
         if (!isCargoDataFileFormat(fileName)) {
             if (fileName == "Route" || fileName == "Plan") {
@@ -178,6 +178,10 @@ void validateNoCargoFilesLeft(StringToStringVectorMap &map) {
                       << std::endl;
         }
     }
+}
+
+StringVector collectTravels(const std::string &travelPath) {
+    return getFilesFromDirectory(travelPath);
 }
 // endregion
 

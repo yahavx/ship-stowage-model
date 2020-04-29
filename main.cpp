@@ -30,15 +30,9 @@ int main(int argc, char **argv) {
     freopen(outputLogFile.c_str(), "w", stdout);  // TODO
     freopen(errorLogFile.c_str(), "w", stderr);
 
-    StringVector travels;
-
-    for (int i = 2; i < argc; i++) {
-        travels.push_back(argv[i]);
-    }
-
     Simulator simulator(outputPath);
 
-    simulator.runSimulations(travels);
+    simulator.runSimulations(travelPath);
 
     return 0;
 }

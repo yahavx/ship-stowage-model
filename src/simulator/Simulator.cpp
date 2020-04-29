@@ -38,9 +38,15 @@ std::string getShipPlanPath(const std::string &travel);
 
 std::string getShipRoutePath(const std::string &travel);
 
-void Simulator::runSimulations(StringVector travels) {
+void Simulator::runSimulations(const std::string &travelPath) {
     StringStringVector results;  // table for results
     StringStringVector errors;  // table for errors
+
+    if (travelPath == "") {
+        // TODO: report to simulation.errors and kill simulation
+    }
+
+    StringVector travels = collectTravels(travelPath);  // collect all sub-directories
 
     initSimulationTables(results, errors, travels, algorithms);  // add columns names and set table structure
 
@@ -133,7 +139,7 @@ StringStringVector Simulator::runSimulation(IStowageAlgorithm &algorithm, const 
         if (!optOps.has_value()) {
             std::cout << "Warning: no packing operations were read" << std::endl;
         } else {
-            performPackingOperations(ship, port, *optOps, errors); // TODO: validate the operations are safe (inside the function call)
+            performPackingOperations(ship, port, *optOps, errors);   // TODO: validate the operations are safe (inside the function call)
             totalNumberOfOps = totalNumberOfOps + optOps.value().size();
         }
 
@@ -157,7 +163,6 @@ StringStringVector Simulator::runSimulation(IStowageAlgorithm &algorithm, const 
 
     return report;
 }
-
 // endregion
 
 // region Simulation core

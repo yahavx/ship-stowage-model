@@ -24,8 +24,12 @@ public:
      */
     StringStringVector runSimulation(IStowageAlgorithm &algorithm, const std::string &travel);
 
-    /// Run a cartesian loop of “travel” X “algorithm”.
-    void runSimulations(StringVector travels);
+    /** Run a cartesian loop of “travel” X “algorithm”.
+     *
+     * @param travels directory that contains sub-directories, each one is a travel
+     */
+    void runSimulations(const std::string &travelPath);
+
     // endregion
 
     // region Simulation init

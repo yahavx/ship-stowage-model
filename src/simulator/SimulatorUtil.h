@@ -34,6 +34,9 @@ bool getInstructionsForCargo(IStowageAlgorithm &algorithm, const std::string &tr
 
 /// Checks if there are any remaining ports in the map, which still have files. Prints warning if yes.
 void validateNoCargoFilesLeft(StringToStringVectorMap &map);
+
+/// Returns a list of travels (i.e. directories) inside travelPath.
+StringVector collectTravels(const std::string &travelPath);
 // endregion
 
 // region Table data manager
