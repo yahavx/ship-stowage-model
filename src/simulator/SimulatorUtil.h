@@ -17,6 +17,9 @@
  */
 StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath);
 
+/// Inits a map from each port id to zero (will be incremented each time we visit this port)  TODO: move it to another place
+StringToIntMap initPortsVisits(ShipRoute &shipRoute);
+
 /// Returns the next .cargo_data file of the port with portId. Returns null if this port hasn't any cargo_data file remaining.
 std::optional<std::string> getNextFileForPort(StringToStringVectorMap &map, const std::string &portId);
 

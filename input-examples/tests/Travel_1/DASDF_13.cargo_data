@@ -1,0 +1,25 @@
+L, ABCU1234569, 2, 3, 4
+L, EGHU1242269, 5, 8, 9
+L, FGHR1234123, 10, 20, 30
+# Op, ContainerID, floor, x, y
+
+L, ABCU12345692, 2, 3, 4
+# invalid id
+
+L, ABCU1234569
+# insufficient parameters
+
+LD, ABCU1234569, 2, 3, 4
+P, ABCU1234569, 2, 3, 4
+# invalid op
+
+L, ABCU1234569, 2, 3, f
+L, ABCU1234569, 2, 3, f
+L, ABCU1234569, 2f, 3, 4
+# invalid numbers
+
+M, ABCU1234569, 4, 9, 3, 2, 3, 1
+L, EKCB5123569, 3, 8, 4
+L, ACPU1512569, 0, 2, 0
+M, ABCU5213369, 0, 0, 0
+L, RTUF2345629, 4, 8, 10

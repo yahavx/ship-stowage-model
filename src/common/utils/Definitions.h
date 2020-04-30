@@ -30,6 +30,8 @@ typedef std::vector<PackingOperation> OPS;
 
 typedef std::map<std::string, std::vector<std::string>> StringToStringVectorMap;
 
+typedef std::map<std::string, int> StringToIntMap;
+
 typedef std::vector<Container> Containers;
 
 typedef std::optional<Container> OptionalContainer;

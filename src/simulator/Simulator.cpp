@@ -104,10 +104,11 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm, const 
     // Init for algorithm
     initAlgorithm(algorithm, shipPlanPath, shipRoutePath);
 
-    StringToStringVectorMap map = sortTravelCargoData(travel);  // get list of .cargo_data files, ordered for each port
+    StringToIntMap portsVisits = initPortsVisits(ship.getShipRoute());  // map from each port, to number of times we have encountered him so far
+    StringToStringVectorMap cargoData = sortTravelCargoData(travel);  // get list of .cargo_data files, ordered for each port
 
     std::cout << "Validating route..." << std::endl;
-    filterUnusedPorts(map, ship.getShipRoute());  // remove the port files which are not on the ship route
+    filterUnusedPorts(cargoData, ship.getShipRoute());  // remove the port files which are not on the ship route
     std::cout << "Finished." << std::endl;
 
     printSeparator(1, 1);
@@ -132,7 +133,7 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm, const 
         bool isLast = (i == ports.size() - 1);  // our last port is treated a bit different
 
         std::string instructionsPath = getCraneInstructionsFilePath(craneOutputDir, portId, i);  // TODO: i should be the visit number at this port - current i is the index in the route
-        res = getInstructionsForCargo(algorithm, travel, map, port, isLast, instructionsPath);
+        res = getInstructionsForCargo(algorithm, travel, cargoData, port, isLast, instructionsPath);
         // triggers algorithm getInstructions(), sets port ContainerStorage if needed
 
         if (!res)
@@ -156,7 +157,7 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm, const 
         printSeparator(1, 1);
     }
 
-    validateNoCargoFilesLeft(map);  // if there are remaining cargo files in the map, we need to print a warning because we couldn't use them
+    validateNoCargoFilesLeft(cargoData);  // if there are remaining cargo files in the map, we need to print a warning because we couldn't use them
 
     printSeparator(1, 1);
 
@@ -171,8 +172,7 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm, const 
 
 // region Simulation core
 
-void
-Simulator::performPackingOperations(ContainerShip &ship, Port &port, const OPS &ops, StringVector &errors) const {// Perform operations on local ship and port
+void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const OPS &ops, StringVector &errors) const {// Perform operations on local ship and port
 
     // TODO: check that any containers that were loaded to the port to unload others, are back in ship
 
@@ -249,6 +249,7 @@ bool Simulator::initSimulation(const std::string &shipPlanPath, const std::strin
     std::cout << errors;  // TODO
     return true;
 }
+
 
 void validateLoadOperation(ContainerShip &ship, Port &port, const PackingOperation &op, StringVector &errors) {
     const auto &containerId = op.getContainerId();

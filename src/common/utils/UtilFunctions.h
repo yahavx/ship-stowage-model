@@ -57,4 +57,7 @@ bool createFolder(const std::string &path);
 
 std::string craneOperationToString(const PackingOperation &op);
 
+/// Returns a list of files of a directory
+StringVector getFilesFromDirectory(const std::string &directoryPath);
+
 #endif //SHIP_STOWAGE_MODEL_UTILFUNCTIONS_H
