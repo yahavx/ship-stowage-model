@@ -1,19 +1,2 @@
-﻿# Containers awaiting at port
-
-ABCU1234569, 7, ABCDE
-ABCU1234562, 7, ABCDJ
-RFIJ4838435, 12, ABCDE
-# container id, weight, destination port id
-
-RFIJ48384D5, 12, ABCDE
-RFIJ48384255, 12, ABCDE
-# should raise an error (invalid container id)
-
-RFIJ4838425, 12f, ABCDE
-# should raise an error (invalid weight)
-
-GKSD4838425, 12, ABCDEF
-# should raise an error (invalid port)
-
-SADG4838425, 12f
-# should raise an error (not enough data)
+﻿BBBB1234567, 5, BBBBB
+BBBB1234568, 5, BBBBB

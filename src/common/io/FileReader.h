@@ -27,7 +27,4 @@ bool isCargoDataFileFormat(const std::string &fileName);
 /// Returns true if the the path given is a directory.
 bool isDirectoryExists(const std::string& directory);
 
-/// Creates folder, returns true if succeed.
-bool createFolder(const std::string &path);
-
 #endif //SHIP_STOWAGE_MODEL_FILEREADER_H

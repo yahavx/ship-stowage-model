@@ -31,9 +31,9 @@ const std::string Simulator::s_noTravelPathSuppliedError = "Travel path was not 
 
 Simulator::Simulator(const std::string &outputDir) : outputDir(outputDir) {
     NaiveStowageAlgorithm *naiveStowageAlgorithm = new NaiveStowageAlgorithm();
-    NaiveStowageAlgorithm *naiveStowageAlgorithm2 = new NaiveStowageAlgorithm();
+//    NaiveStowageAlgorithm *naiveStowageAlgorithm2 = new NaiveStowageAlgorithm();
     algorithms.push_back(naiveStowageAlgorithm);
-    algorithms.push_back(naiveStowageAlgorithm2);
+//    algorithms.push_back(naiveStowageAlgorithm2);
 }
 // endregion
 
@@ -48,9 +48,12 @@ void Simulator::runSimulations(const std::string &travelPath) {
         return;  // TODO: save tables (like in the end of this function, but we need to know what to save exactly in each)
     }
 
-    StringVector travels = collectTravels(travelPath);  // collect all sub-directories (travels) inside the travel path supplied
+    StringVector travels = collectTravels(travelPath);
     initSimulationTables(results, errors, travels, algorithms);  // add columns names and set table structure
-    createFolder(getCraneInstructionsRootFolder(outputDir));  // create the crane instructions root folder
+
+    // create crane instructions and temp folder
+    createFolder(getCraneInstructionsRootFolder(outputDir));
+    createFolder(getTempFolderPath(outputDir));
 
     for (longUInt i = 0; i < algorithms.size(); i++) {
         auto &algorithm = algorithms[i];
@@ -104,8 +107,8 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm, const 
     // Init for algorithm
     initAlgorithm(algorithm, shipPlanPath, shipRoutePath);
 
-    StringToIntMap portsVisits = initPortsVisits(ship.getShipRoute());  // map from each port, to number of times we have encountered him so far
     StringToStringVectorMap cargoData = sortTravelCargoData(travel);  // get list of .cargo_data files, ordered for each port
+    StringToIntMap portsVisits = initPortsVisits(ship.getShipRoute());  // map from each port, to number of times we have encountered him so far
 
     std::cout << "Validating route..." << std::endl;
     filterUnusedPorts(cargoData, ship.getShipRoute());  // remove the port files which are not on the ship route
@@ -125,21 +128,21 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm, const 
     int totalNumberOfOps = 0;
     for (longUInt i = 0; i < ports.size(); i++) {  // Start the journey
         auto &portId = ports[i];
+        int visitNum = getVisitNum(portsVisits, portId);  // visit number at this port right now
 
         std::cout << "The ship has docked at port " << portId.getCode() << "." << std::endl;
 
-        Port port(portId);
-
         bool isLast = (i == ports.size() - 1);  // our last port is treated a bit different
 
-        std::string instructionsPath = getCraneInstructionsFilePath(craneOutputDir, portId, i);  // TODO: i should be the visit number at this port - current i is the index in the route
-        res = getInstructionsForCargo(algorithm, travel, cargoData, port, isLast, instructionsPath);
-        // triggers algorithm getInstructions(), sets port ContainerStorage if needed
+        std::string cargoFileName = getNextFileForPort(cargoData, portsVisits, portId, outputDir, isLast);
+        std::string cargoFilePath = getCargoPath(travel, cargoFileName);
+        std::string instructionsOutputPath = getCraneInstructionsOutputFilePath(craneOutputDir, portId, visitNum);
 
-        if (!res)
-            continue; // failed to read current dock file, errors were printed inside
+        algorithm.getInstructionsForCargo(cargoFilePath, instructionsOutputPath);
 
-        auto optOps = readPackingOperationsFromFile(instructionsPath);  // read the operations to perform, written by the algorithm
+        Port port(portId, readPortCargoFromFile(cargoFilePath));
+
+        auto optOps = readPackingOperationsFromFile(instructionsOutputPath);  // read the operations to perform, written by the algorithm
 
         if (!optOps.has_value()) {
             std::cout << "Warning: no packing operations were read" << std::endl;
@@ -226,8 +229,7 @@ void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, const std::string &s
     printSeparator(1, 1);
 }
 
-bool Simulator::initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath,
-                               ContainerShip &ship, StringVector &errors) const {
+bool Simulator::initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath, ContainerShip &ship, StringVector &errors) const {
     std::cout << "Initializing simulation..." << std::endl;
     std::optional<ShipPlan> optShipPlan = readShipPlanFromFile(shipPlanPath);
     std::optional<ShipRoute> optShipRoute = readShipRouteFromFile(shipRoutePath);
@@ -249,7 +251,6 @@ bool Simulator::initSimulation(const std::string &shipPlanPath, const std::strin
     std::cout << errors;  // TODO
     return true;
 }
-
 
 void validateLoadOperation(ContainerShip &ship, Port &port, const PackingOperation &op, StringVector &errors) {
     const auto &containerId = op.getContainerId();

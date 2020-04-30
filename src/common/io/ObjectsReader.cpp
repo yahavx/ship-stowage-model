@@ -106,15 +106,15 @@ std::optional<ShipRoute> readShipRouteFromFile(const std::string &filePath) {
     return shipRoute;
 }
 
-std::optional<ContainerStorage> readCargoToPortFromFile(const std::string &filePath) {
+ContainerStorage readPortCargoFromFile(const std::string &filePath) {
 #ifdef DEBUG
     std::cout << "Attempting to read cargo data..." << std::endl;
 #endif
-    std::string fileName = extractFilenameFromPath(filePath, false);  // false keeps the .cargo_data
-    if (!isCargoDataFileFormat(fileName)) {
-        std::cerr << "Error: filename is in incorrect format, exiting" << std::endl;
-        return std::nullopt;
-    }
+//    std::string fileName = extractFilenameFromPath(filePath, false);  // false keeps the .cargo_data  // TODO: we assume this can't happen now (we will send only valid files), remove this when we are sure
+//    if (!isCargoDataFileFormat(fileName)) {
+//        std::cerr << "Error: filename is in incorrect format, exiting" << std::endl;
+//        return std::nullopt;
+//    }
 
     Containers containers;
 

@@ -90,13 +90,3 @@ bool isDirectoryExists(const std::string& directory)
 {
     return std::filesystem::is_directory(directory);
 }
-
-bool createFolder(const std::string &path)
-{   try {
-        std::filesystem::create_directory(path);
-        return true;
-    }
-    catch (...) {  // failed
-        return false;
-    }
-}

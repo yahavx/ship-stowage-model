@@ -16,7 +16,7 @@ std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath);
 std::optional<ShipRoute> readShipRouteFromFile(const std::string &filePath);
 
 /// Returns a port with the cargo loaded from file. Port id is as in the file (assuming path is ID_<num>.cargo_data).
-std::optional<ContainerStorage> readCargoToPortFromFile(const std::string &filePath);
+ContainerStorage readPortCargoFromFile(const std::string &filePath);
 
 /// Reads operations from a file.
 std::optional<OPS> readPackingOperationsFromFile(const std::string &filePath);

@@ -21,8 +21,7 @@ public:
 
     void setWeightBalanceCalculator(WeightBalanceCalculator &calculator) override;
 
-    void getInstructionsForCargo(const std::string &inputFile,
-                                 const std::string &outputFile) override;
+    void getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) override;
 
     void readShipPlan(const std::string &shipPlanPath) override;
 

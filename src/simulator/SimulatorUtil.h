@@ -17,20 +17,17 @@
  */
 StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath);
 
-/// Inits a map from each port id to zero (will be incremented each time we visit this port)  TODO: move it to another place
+/// Inits a map from each port id to zero (will be incremented each time we visit this port)
 StringToIntMap initPortsVisits(ShipRoute &shipRoute);
 
-/// Returns the next .cargo_data file of the port with portId. Returns null if this port hasn't any cargo_data file remaining.
-std::optional<std::string> getNextFileForPort(StringToStringVectorMap &map, const std::string &portId);
+/// Returns the visit number at the specified port. Port must exist in portsVisits - otherwise might throw an exception.
+int getVisitNum(StringToIntMap &portsVisits, const PortId &portId);
+
+/// Returns the next .cargo_data file of the port with portId. Generates one if needed (inside tempDir).
+std::string getNextFileForPort(StringToStringVectorMap &cargoData, StringToIntMap &portVisits, const PortId &portId, const std::string &tempDir, int isLast);
 
 /// Removes from map ports that doesn't appear in the route.
 void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute);
-
-/**
- * Triggers the getInstructionsForCargo of the algorithm, adds storage to the port (of simulator) if needed.
- * @return true if succeed.
- */
-bool getInstructionsForCargo(AbstractAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map, Port &port, bool isLast, const std::string &instructionsOutput);
 
 /// Checks if there are any remaining ports in the map, which still have files. Prints warning if yes.
 void validateNoCargoFilesLeft(StringToStringVectorMap &map);
@@ -70,7 +67,19 @@ std::string getCraneInstructionsRootFolder(const std::string &travel);
 
 std::string getCraneInstructionsSimulationFolder(const std::string &outputDir, const std::string &algorithmName, const std::string &travelName);
 
-std::string getCraneInstructionsFilePath(const std::string &craneOutputDir, const PortId &portId, int i);
+std::string getCraneInstructionsOutputFilePath(const std::string &craneOutputDir, const PortId &portId, int i);
+
+std::string getTempFolderPath(const std::string &outputDir);
+
+std::string getCargoDataTempFilePath(const std::string &outputDir, const std::string &portId);
+
+std::string getCargoPath(const std::string &travel, const std::string &cargoFile);
 // endregion
+
+/**
+ * Extract the number from a cargo_data file (AAAAA_5.cargo_data -> 5)
+ * @param filePath full path to a cargo data file
+ */
+int extractNumberFromCargoFile(const std::string filePath);
 
 #endif //SHIP_STOWAGE_MODEL_SIMULATORUTIL_H

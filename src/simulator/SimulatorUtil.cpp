@@ -22,20 +22,27 @@
 
 // region Simulation utils
 
-std::optional<std::string> getNextFileForPort(StringToStringVectorMap &map, const std::string &portId) {
-    if (map.find(portId) == map.end()) {  // this port does not exist
-        return std::nullopt;
+std::string getNextFileForPort(StringToStringVectorMap &cargoData, StringToIntMap &portVisits, const PortId &portId, const std::string &outputDir, int isLast) {
+    std::string portCOde = portId.getCode();
+    StringVector &filesForPort = cargoData[portCOde];
+
+    if (filesForPort.size() > 0) {
+
+        std::string portCargoFile = filesForPort[0];  // retrieve cargo_data with smallest index
+
+        if (extractNumberFromCargoFile(portCargoFile) == portVisits[portCOde]) {  // it matches the port visit number, pop it and return
+            filesForPort.erase(filesForPort.begin());
+            return portCargoFile;
+        }
     }
 
-    StringVector &filesForPort = map[portId];
+    if (!isLast)  // TODO: no file for current visit. maybe need to generate an error.
+        std::cout << "";
 
-    if (filesForPort.size() == 0) {  // no files remaining
-        return std::nullopt;
-    }
-
-    std::string first = filesForPort[0];  // retrieve first element
-    filesForPort.erase(filesForPort.begin());  // pop first element
-    return first;
+    // there is no matching cargo_data file, so we will generate an empty one
+    std::string filePath = getCargoDataTempFilePath(outputDir, portCOde);
+    createEmptyFile(filePath);
+    return filePath;
 }
 
 void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute) {
@@ -63,38 +70,6 @@ void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute) {
     }
 }
 
-std::string getCargoPath(const std::string &travel, const std::string &cargoFile) {
-    return travel + "/" + cargoFile;
-}
-
-bool getInstructionsForCargo(AbstractAlgorithm &algorithm, const std::string &travel, StringToStringVectorMap &map, Port &port, bool isLast, const std::string &instructionsOutput) {
-    if (isLast) {  // the last one only unloads
-        algorithm.getInstructionsForCargo(Constants::s_unloadOnly + port.getId().getCode(), instructionsOutput);
-        return true;
-    }
-
-    std::optional<std::string> cargoFile = getNextFileForPort(map, port.getId().getCode());  // get cargo file of current port
-    if (!cargoFile.has_value()) {  // couldn't find a cargo file
-        std::cout << "Warning: no cargo file for current visit, ship will only unload" << std::endl;
-        algorithm.getInstructionsForCargo(Constants::s_unloadOnly + port.getId().getCode(), instructionsOutput);
-        return true;
-    }
-
-    std::string cargoFilePath = getCargoPath(travel, *cargoFile);
-    algorithm.getInstructionsForCargo(cargoFilePath, instructionsOutput);
-
-    std::optional<ContainerStorage> containers = readCargoToPortFromFile(cargoFilePath);
-
-    if (!containers.has_value()) {
-        std::cout << "Critical warning: couldn't load port information" << std::endl;
-        std::cout << "The ship is continuing to the next port..." << std::endl;
-        return false;
-    }
-    port.setStorage(*containers);
-
-    return true;
-}
-
 void validateNoCargoFilesLeft(StringToStringVectorMap &map) {
     for (auto &entry: map) {
         std::string portId = entry.first;
@@ -110,7 +85,7 @@ StringVector collectTravels(const std::string &travelPath) {
 }
 // endregion
 
-// region Cargo data manager
+// region Cargo data manager  // TODO: move some functions from above to this region maybe
 
 /// Sorts a string vector of .cargo_files by their numbers. Names must be valid, and all belong to each port.
 void sortCargoFilesByNumber(StringVector &stringVector) {
@@ -164,6 +139,10 @@ StringToIntMap initPortsVisits(ShipRoute &shipRoute) {
     }
 
     return map;
+}
+
+int getVisitNum(StringToIntMap &portsVisits, const PortId &portId) {
+    return ++portsVisits[portId.getCode()];
 }
 // endregion
 
@@ -289,7 +268,26 @@ std::string getCraneInstructionsRootFolder(const std::string &outputDir) {
 std::string getCraneInstructionsSimulationFolder(const std::string &outputDir, const std::string &algorithmName, const std::string &travelName) {
     return getCraneInstructionsRootFolder(outputDir) + "/" + algorithmName + "_" + travelName + "_crane_instructions";
 }
-std::string getCraneInstructionsFilePath(const std::string &craneOutputDir, const PortId &portId, int i) {
+
+std::string getCraneInstructionsOutputFilePath(const std::string &craneOutputDir, const PortId &portId, int i) {
     return craneOutputDir + "/" + portId.getCode() + "_" + intToString(i) + ".crane_instructions";
 }
+
+std::string getTempFolderPath(const std::string &outputDir) {
+    return outputDir + "/" + "temp";
+}
+
+std::string getCargoDataTempFilePath(const std::string &outputDir, const std::string &portId) {
+    return getTempFolderPath(outputDir) + "/" + portId + "_0.cargo_data";
+}
+
+std::string getCargoPath(const std::string &travel, const std::string &cargoFile) {
+    return travel + "/" + cargoFile;
+}
 // endregion
+
+int extractNumberFromCargoFile(const std::string filePath) {
+    std::string file = extractFilenameFromPath(filePath, true);
+    file = file.substr(6, file.size() - 6);
+    return stringToInt(file);
+}

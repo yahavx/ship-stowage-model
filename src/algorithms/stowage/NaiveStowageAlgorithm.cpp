@@ -53,7 +53,7 @@ void NaiveStowageAlgorithm::initializePort(const std::string &inputFile, Port &p
         return;
     }
 
-    std::optional<ContainerStorage> storage = readCargoToPortFromFile(inputFile);
+    std::optional<ContainerStorage> storage = readPortCargoFromFile(inputFile);
 
     if (!storage.has_value()) {
         std::cout << "Error in getting instructions for cargo: couldn't load port" << std::endl;

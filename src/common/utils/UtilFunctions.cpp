@@ -7,6 +7,7 @@
 #include <tuple>
 #include <stdio.h>
 #include <filesystem>
+#include <fstream>
 
 // region Type Conversions
 
@@ -69,7 +70,7 @@ std::string packingTypeFromString(PackingType type) {
 }
 // endregion
 
-// region Conditions
+// region Condition checks
 
 bool isInteger(const std::string &str) {
     if (str == "-1") {
@@ -98,23 +99,10 @@ bool isEnglishWord(const std::string &str) {
 
     return true;
 }
-
-bool endsWith(const std::string &str, const std::string &suffix) {
-    return str.size() >= suffix.size() && 0 == str.compare(str.size() - suffix.size(), suffix.size(), suffix);
-}
-
-bool startsWith(const std::string &str, const std::string &prefix) {
-    return str.rfind(prefix, 0) == 0;
-}
 // endregion
 
 // region Files
 
-/**
- * Returns a file name.
- * @param path a full path to a file.
- * @param removeExtension remove the file extension, if exists (.txt for example)
- */
 std::string extractFilenameFromPath(const std::string &path, bool removeExtension) {
     std::string pathCopy = path;  // it works inplace so we create a copy
     // Remove directory if present.
@@ -135,7 +123,6 @@ std::string extractFilenameFromPath(const std::string &path, bool removeExtensio
     return pathCopy;
 }
 
-/// Returns list of files (and folders) in a directory (full path to each).
 StringVector getFilesFromDirectory(const std::string &directoryPath) {
     StringVector stringVector;
 
@@ -149,6 +136,22 @@ StringVector getFilesFromDirectory(const std::string &directoryPath) {
 
     return stringVector;
 }
+
+bool createFolder(const std::string &path)
+{   try {
+        std::filesystem::create_directory(path);
+        return true;
+    }
+    catch (...) {  // failed
+        return false;
+    }
+}
+
+bool createEmptyFile(const std::string &filePath) {
+    std::ofstream outputFile(filePath);
+    outputFile << "";
+    return true;
+}
 // endregion
 
 // region Strings
@@ -159,11 +162,18 @@ std::string toUpper(const std::string &str) {
     return strCopy;
 }
 
-/// Trim whitespaces from both sides.
 void trimWhitespaces(std::string &s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(),
                                     std::not1(std::ptr_fun<int, int>(std::isspace))));
     s.erase(std::find_if(s.rbegin(), s.rend(),
                          std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+}
+
+bool endsWith(const std::string &str, const std::string &suffix) {
+    return str.size() >= suffix.size() && 0 == str.compare(str.size() - suffix.size(), suffix.size(), suffix);
+}
+
+bool startsWith(const std::string &str, const std::string &prefix) {
+    return str.rfind(prefix, 0) == 0;
 }
 // endregion

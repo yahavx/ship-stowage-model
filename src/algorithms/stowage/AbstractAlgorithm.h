@@ -15,8 +15,7 @@ public:
 
     virtual void setWeightBalanceCalculator(WeightBalanceCalculator& calculator) = 0;
 
-    virtual void getInstructionsForCargo(const std::string& inputFileName,
-                                         const std::string& outputFileName) = 0;
+    virtual void getInstructionsForCargo(const std::string& inputFileName, const std::string& outputFileName) = 0;
 
     virtual void readShipPlan(const std::string& shipPlanPath) = 0 ;
 
