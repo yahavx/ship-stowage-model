@@ -7,8 +7,8 @@
 
 #include <string>
 #include <vector>
-#include "../../data_objects/ShipPlan.h"
-#include "../../utils/Definitions.h"
+#include "../data_objects/ShipPlan.h"
+#include "../utils/Definitions.h"
 
 
 /// Reads a file to a 2-dimension matrix, ignores lines that start with '#' and empty lines.

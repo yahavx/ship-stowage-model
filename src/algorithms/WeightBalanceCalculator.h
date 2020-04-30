@@ -5,7 +5,7 @@
 #ifndef SHIP_STOWAGE_MODEL_WEIGHTBALANCECALCULATOR_H
 #define SHIP_STOWAGE_MODEL_WEIGHTBALANCECALCULATOR_H
 
-#include "../data_structures/Cargo.h"
+#include "../common/data_structures/Cargo.h"
 
 //class ContainerShip;  // pre declare
 

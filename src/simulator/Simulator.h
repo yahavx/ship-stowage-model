@@ -6,7 +6,7 @@
 #define SHIP_STOWAGE_MODEL_SIMULATOR_H
 
 #include "../algorithms/stowage/AbstractAlgorithm.h"
-#include "../actors/ContainerShip.h"
+#include "../common/actors/ContainerShip.h"
 
 
 class Simulator {

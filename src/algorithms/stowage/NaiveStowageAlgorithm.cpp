@@ -5,9 +5,9 @@
 #include "NaiveStowageAlgorithm.h"
 #include <algorithm>
 #include "../CranesOperation.h"
-#include "../../common/Constants.h"
+#include "../../common/utils/Constants.h"
 #include "../../common/io/ObjectsReader.h"
-#include "../../utils/UtilFunctions.h"
+#include "../../common/utils/UtilFunctions.h"
 
 // region Initialization
 

@@ -5,8 +5,8 @@
 #ifndef SHIP_STOWAGE_MODEL_SIMULATORUTIL_H
 #define SHIP_STOWAGE_MODEL_SIMULATORUTIL_H
 
-#include "../utils/Definitions.h"
-#include "../data_objects/ShipRoute.h"
+#include "../common/utils/Definitions.h"
+#include "../common/data_objects/ShipRoute.h"
 #include "../algorithms/stowage/AbstractAlgorithm.h"
 
 // region Simulation utils

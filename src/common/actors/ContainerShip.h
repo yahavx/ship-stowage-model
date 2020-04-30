@@ -10,7 +10,7 @@
 #include "../data_objects/Container.h"
 #include "../data_objects/PackingOperation.h"
 #include "../data_objects/ShipRoute.h"
-#include "../algorithms/WeightBalanceCalculator.h"
+#include "../../algorithms/WeightBalanceCalculator.h"
 #include "../data_structures/Cargo.h"
 
 class ContainerShip {

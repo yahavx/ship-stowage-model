@@ -4,8 +4,8 @@
 
 #include "ObjectsReader.h"
 #include "FileReader.h"
-#include "../../utils/UtilFunctions.h"
-#include "../../utils/Printers.h"
+#include "../utils/UtilFunctions.h"
+#include "../utils/Printers.h"
 #include <tuple>
 
 //#define DEBUG

@@ -5,8 +5,8 @@
 #ifndef SHIP_STOWAGE_MODEL_OBJECTSREADER_H
 #define SHIP_STOWAGE_MODEL_OBJECTSREADER_H
 
-#include "../../data_objects/ShipPlan.h"
-#include "../../data_objects/ShipRoute.h"
+#include "../data_objects/ShipPlan.h"
+#include "../data_objects/ShipRoute.h"
 
 
 /// Reads the ship plan from a file.

@@ -1,7 +1,7 @@
 #include <iostream>
 #include "src/common/io/FileReader.h"
 #include "src/common/io/ObjectsReader.h"
-#include "src/utils/UtilFunctions.h"
+#include "src/common/utils/UtilFunctions.h"
 #include "src/simulator/Simulator.h"
 
 void parseCmdArguments(int argc, char **argv, std::string &travelPath, std::string &algorithmPath, std::string &outputPath);

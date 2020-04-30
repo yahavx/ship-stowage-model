@@ -9,11 +9,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}" )
 
 add_executable(ship_stowage_model
         main.cpp
-
-        # actors
-        src/actors/ContainerShip.cpp src/actors/ContainerShip.h
-        src/actors/Port.cpp src/actors/Port.h
-
+    # src
         # algorithms
             # stowage
             src/algorithms/stowage/NaiveStowageAlgorithm.cpp src/algorithms/stowage/NaiveStowageAlgorithm.h
@@ -22,33 +18,37 @@ add_executable(ship_stowage_model
         src/algorithms/WeightBalanceCalculator.cpp src/algorithms/WeightBalanceCalculator.h
 
         # common
+            # actors
+            src/common/actors/ContainerShip.cpp src/common/actors/ContainerShip.h
+            src/common/actors/Port.cpp src/common/actors/Port.h
+
+            # data_objects
+            src/common/data_objects/Container.cpp src/common/data_objects/Container.h
+            src/common/data_objects/ContainerPosition.cpp src/common/data_objects/ContainerPosition.h
+            src/common/data_objects/PackingOperation.cpp src/common/data_objects/PackingOperation.h
+            src/common/data_objects/PortId.cpp src/common/data_objects/PortId.h
+            src/common/data_objects/Position.cpp src/common/data_objects/Position.h
+            src/common/data_objects/ShipPlan.cpp src/common/data_objects/ShipPlan.h
+            src/common/data_objects/ShipRoute.cpp src/common/data_objects/ShipRoute.h
+
+            # data_structures
+            src/common/data_structures/Cargo.cpp src/common/data_structures/Cargo.h
+            src/common/data_structures/ContainerStorage.cpp src/common/data_structures/ContainerStorage.h
+
             # io
             src/common/io/FileReader.cpp src/common/io/FileReader.h
             src/common/io/ObjectsReader.cpp src/common/io/ObjectsReader.h
-        src/common/Constants.cpp src/common/Constants.h
+            src/common/utils/Constants.cpp src/common/utils/Constants.h
 
-        # data_objects
-        src/data_objects/Container.cpp src/data_objects/Container.h
-        src/data_objects/ContainerPosition.cpp src/data_objects/ContainerPosition.h
-        src/data_objects/PackingOperation.cpp src/data_objects/PackingOperation.h
-        src/data_objects/PortId.cpp src/data_objects/PortId.h
-        src/data_objects/Position.cpp src/data_objects/Position.h
-        src/data_objects/ShipPlan.cpp src/data_objects/ShipPlan.h
-        src/data_objects/ShipRoute.cpp src/data_objects/ShipRoute.h
-
-        # data_structures
-        src/data_structures/Cargo.cpp src/data_structures/Cargo.h
-        src/data_structures/ContainerStorage.cpp src/data_structures/ContainerStorage.h
+            # utils
+            src/common/utils/Definitions.h
+            src/common/utils/Printers.cpp src/common/utils/Printers.h
+            src/common/utils/UtilFunctions.cpp src/common/utils/UtilFunctions.h
 
         # simulator
         src/simulator/Simulator.cpp src/simulator/Simulator.h
         src/simulator/SimulatorUtil.cpp src/simulator/SimulatorUtil.h
 
-        # utils
-        src/utils/Definitions.h
-        src/utils/Printers.cpp src/utils/Printers.h
-        src/utils/UtilFunctions.cpp src/utils/UtilFunctions.h
-
-        # tests
-        tests/IOTests.h
-        tests/SimulationTests.h)
+    # tests
+    tests/IOTests.h
+    tests/SimulationTests.h)

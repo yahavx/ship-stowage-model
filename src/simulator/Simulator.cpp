@@ -6,10 +6,10 @@
 #include "SimulatorUtil.h"
 #include "../algorithms/stowage/NaiveStowageAlgorithm.h"
 #include "../common/io/ObjectsReader.h"
-#include "../utils/Printers.h"
+#include "../common/utils/Printers.h"
 #include "../algorithms/CranesOperation.h"
 #include "../common/io/FileReader.h"
-#include "../utils/UtilFunctions.h"
+#include "../common/utils/UtilFunctions.h"
 
 // region Constants
 

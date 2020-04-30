@@ -7,7 +7,7 @@
 
 
 #include "AbstractAlgorithm.h"
-#include "../../actors/ContainerShip.h"
+#include "../../common/actors/ContainerShip.h"
 
 
 /**

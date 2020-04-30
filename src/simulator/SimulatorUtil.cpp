@@ -12,12 +12,12 @@
 #include <filesystem>
 #include "Simulator.h"
 #include "../algorithms/stowage/AbstractAlgorithm.h"
-#include "../common/Constants.h"
+#include "../common/utils/Constants.h"
 #include "../common/io/ObjectsReader.h"
 #include "../common/io/FileReader.h"
-#include "../utils/Definitions.h"
-#include "../utils/UtilFunctions.h"
-#include "../utils/Printers.h"
+#include "../common/utils/Definitions.h"
+#include "../common/utils/UtilFunctions.h"
+#include "../common/utils/Printers.h"
 
 
 // region Simulation utils
