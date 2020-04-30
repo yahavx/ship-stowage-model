@@ -10,7 +10,7 @@
 
 
 /// Reads the ship plan from a file.
-std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath);
+ShipPlan readShipPlanFromFile(const std::string &filePath, int &errorsFlag);
 
 /// Reads a route file (list of ports).
 std::optional<ShipRoute> readShipRouteFromFile(const std::string &filePath);

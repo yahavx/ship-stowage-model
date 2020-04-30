@@ -10,15 +10,16 @@
 
 //#define DEBUG
 
-std::optional<ShipPlan> readShipPlanFromFile(const std::string &filePath) {
+ShipPlan readShipPlanFromFile(const std::string &filePath, int &errorsFlag) {
 #ifdef DEBUG
     std::cout << "Attempting to read ship plan..." << std::endl;
 #endif
     StringStringVector data = readFile(filePath);
+    errorsFlag = 0;
 
     if (!isDataOnlyIntegers(data)) {  // couldn't convert data to int
         std::cerr << "Error: data contain non-integers" << std::endl;
-        return std::nullopt;
+        return ShipPlan();
     }
 
     ShipPlan shipPlan;
