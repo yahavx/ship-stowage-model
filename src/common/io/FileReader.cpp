@@ -51,8 +51,7 @@ StringStringVector readFile(const std::string &path) {
 }
 
 bool writeFile(const std::string &path, const StringStringVector &data) {
-
-    std::ofstream outputFile(path);
+    std::ofstream outputFile(path);  // TODO: check it didn't fail
 
     for (StringVector dataRow : data) {
         for (longUInt i = 0; i < dataRow.size() - 1; i++) {
@@ -63,6 +62,17 @@ bool writeFile(const std::string &path, const StringStringVector &data) {
 
     return true;
 }
+
+bool writeFile(const std::string &path, const StringVector &data) {
+    std::ofstream outputFile(path);
+
+    for (std::string row : data) {
+        outputFile << row << std::endl;
+    }
+
+    return true;
+}
+
 
 bool isCargoDataFileFormat(const std::string &fileName) {
     if (!endsWith(fileName, ".cargo_data")) {

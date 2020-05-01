@@ -27,12 +27,13 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, std::vector<ErrorFlag
 
     if (data.size() == 0) {
         errors.push_back(ErrorFlag::ShipPlan_FatalError);  // no data read, or couldn't open file
+        return shipPlan;
     }
 
     StringVector &firstRow = data[0];
     if (firstRow.size() < 3 || !isRowOnlyIntegers(firstRow)) {
         errors.push_back(ErrorFlag::ShipPlan_FatalError);
-        std::cerr << "Error: insufficient number of arguments for ship dimensions, exiting" << std::endl;
+//        std::cerr << "Error: insufficient number of arguments for ship dimensions, exiting" << std::endl;
         return shipPlan;
     }
 
@@ -48,7 +49,7 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, std::vector<ErrorFlag
 
         if (dataRow.size() < 3) {
             errors.push_back(ErrorFlag::ShipPlan_BadLineFormat);
-            std::cout << "Warning: data row contains less than 3 arguments, ignoring" << std::endl;
+//            std::cout << "Warning: data row contains less than 3 arguments, ignoring" << std::endl;
             continue;
         }
 
@@ -65,13 +66,13 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, std::vector<ErrorFlag
 
         if (n < 0 || n >= x || m < 0 || m >= y) {
             errors.push_back(ErrorFlag::ShipPlan_InvalidXYCoordinates);
-            std::cout << "Warning: data row exceeds the ship dimensions, ignoring" << std::endl;
+//            std::cout << "Warning: data row exceeds the ship dimensions, ignoring" << std::endl;
             continue;
         }
 
         if (availableContainers >= z) {
             errors.push_back(ErrorFlag::ShipPlan_InvalidFloorHeight);
-            std::cout << "Warning: data row exceeds the maximum available containers, ignoring" << std::endl;
+//            std::cout << "Warning: data row exceeds the maximum available containers, ignoring" << std::endl;
             continue;
         }
 
@@ -101,13 +102,13 @@ ShipRoute readShipRouteFromFile(const std::string &filePath, std::vector<ErrorFl
 
         if (!isEnglishWord(token) || token.length() != 5) {
             errors.push_back(ErrorFlag::ShipRoute_BadPortSymbol);
-            std::cout << "Warning: invalid port format (" << token << "), ignoring" << std::endl;
+//            std::cout << "Warning: invalid port format (" << token << "), ignoring" << std::endl;
             continue;
         }
 
         if (token.compare(previousPort) == 0) {
             errors.push_back(ErrorFlag::ShipRoute_TwoConsecutiveSamePort);
-            std::cout << "Warning: same port appears twice in a row, ignoring" << std::endl;
+//            std::cout << "Warning: same port appears twice in a row, ignoring" << std::endl;
             continue;
         }
 
@@ -118,13 +119,13 @@ ShipRoute readShipRouteFromFile(const std::string &filePath, std::vector<ErrorFl
 
     if (ports.size() == 1) {
         errors.push_back(ErrorFlag::ShipRoute_FatalError_SinglePort);
-        std::cerr << "Error: read only one port" << std::endl;
+//        std::cerr << "Error: read only one port" << std::endl;
         return shipRoute;
     }
 
     if (ports.size() == 0) {
         errors.push_back(ErrorFlag::ShipRoute_FatalError);
-        std::cerr << "Error: couldn't read any port from route file" << std::endl;
+//        std::cerr << "Error: couldn't read any port from route file" << std::endl;
         return shipRoute;
     }
 
@@ -151,24 +152,24 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath) {
 
     for (StringVector dataRow : data) {
         if (dataRow.size() < 3) {
-            std::cout << "Warning: data row contains less than 3 arguments, ignoring" << std::endl;
+//            std::cout << "Warning: data row contains less than 3 arguments, ignoring" << std::endl;
             continue;
         }
 
         std::string id = dataRow[0], weight = dataRow[1], destPort = dataRow[2];
 
         if (!Port::isIdInIsoFormat(id)) {
-            std::cout << "Warning: container id not in ISO format, ignoring" << std::endl;
+//            std::cout << "Warning: container id not in ISO format, ignoring" << std::endl;
             continue;
         }
 
         if (!isInteger(weight)) {
-            std::cout << "Warning: container weight is not an integer, ignoring" << std::endl;
+//            std::cout << "Warning: container weight is not an integer, ignoring" << std::endl;
             continue;
         }
 
         if (!isEnglishWord(destPort) || destPort.length() != 5) {
-            std::cout << "Warning: port symbol is invalid, ignoring" << std::endl;
+//            std::cout << "Warning: port symbol is invalid, ignoring" << std::endl;
             continue;
         }
 

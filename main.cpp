@@ -5,9 +5,11 @@
 #include "src/simulator/Simulator.h"
 #include "tests/IOTests.h"
 
+
 void parseCmdArguments(int argc, char **argv, std::string &travelPath, std::string &algorithmPath, std::string &outputPath);
 
 int main(int argc, char **argv) {
+
     runIOTests();
     return 0;
 
