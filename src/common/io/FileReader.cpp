@@ -26,7 +26,7 @@ bool SkipBOM(std::istream &in)  // some files contains garbage bytes at the star
 StringStringVector readFile(const std::string &path) {
     std::fstream fin;
 
-    fin.open(path, std::ios::in);
+    fin.open(path, std::ios::in);  // TODO: validate the path
     StringStringVector data;  // the data from the file will be saved as a matrix
 
     std::string line, word;

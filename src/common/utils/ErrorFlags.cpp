@@ -5,9 +5,20 @@
 #include "ErrorFlags.h"
 
 
+std::string flagToString(ErrorFlags flag);
+
 StringVector errorsFlagsToString(int errorFlags) {
-    return StringVector(); // TODO
-    std::cout << errorFlags;
+    StringVector errors;
+    for (int i = 0; i < MAX_ERROR_BIT; i++) {
+        int isBitEnabled = errorFlags & (1 << i);
+
+        if (isBitEnabled) {
+            std::string errorMsg = flagToString(static_cast<ErrorFlags>(isBitEnabled));
+            errors.push_back(errorMsg);
+        }
+    }
+
+    return errors;
 }
 
 /// Converts a single flag to a string.

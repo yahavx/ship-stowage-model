@@ -26,13 +26,13 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, int &errorsFlag) {
     errorsFlag = 0;
 
     if (data.size() == 0) {
-        errorsFlag |= ErrorFlags::ShipPlan_FatalError;  // no data read
+        errorsFlag |= ErrorFlags::ShipPlan_FatalError;  // no data read, or couldn't open file
     }
 
     StringVector &firstRow = data[0];
     if (firstRow.size() < 3 || !isRowOnlyIntegers(firstRow)) {
         errorsFlag |= ErrorFlags::ShipPlan_FatalError;
-//        std::cerr << "Error: insufficient number of arguments for ship dimensions, exiting" << std::endl;
+        std::cerr << "Error: insufficient number of arguments for ship dimensions, exiting" << std::endl;
         return shipPlan;
     }
 
@@ -48,7 +48,7 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, int &errorsFlag) {
 
         if (dataRow.size() < 3) {
             errorsFlag |= ErrorFlags::ShipPlan_BadLineFormat;
-//            std::cout << "Warning: data row contains less than 3 arguments, ignoring" << std::endl;
+            std::cout << "Warning: data row contains less than 3 arguments, ignoring" << std::endl;
             continue;
         }
 
@@ -101,13 +101,13 @@ ShipRoute readShipRouteFromFile(const std::string &filePath, int &errorsFlag) {
 
         if (!isEnglishWord(token) || token.length() != 5) {
             errorsFlag |= ErrorFlags::ShipRoute_BadPortSymbol;
-//            std::cout << "Warning: invalid port format (" << token << "), ignoring" << std::endl;
+            std::cout << "Warning: invalid port format (" << token << "), ignoring" << std::endl;
             continue;
         }
 
         if (token.compare(previousPort) == 0) {
             errorsFlag |= ErrorFlags::ShipRoute_TwoConsecutiveSamePort;
-//            std::cout << "Warning: same port appears twice in a row, ignoring" << std::endl;
+            std::cout << "Warning: same port appears twice in a row, ignoring" << std::endl;
             continue;
         }
 
@@ -118,6 +118,7 @@ ShipRoute readShipRouteFromFile(const std::string &filePath, int &errorsFlag) {
 
     if (ports.size() == 1) {
         errorsFlag |= ErrorFlags::ShipRoute_FatalError_SinglePort;
+        std::cerr << "Error: read only one port" << std::endl;
         return shipRoute;
     }
 

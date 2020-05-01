@@ -40,5 +40,7 @@ void printSeparator(int linesBefore, int linesAfter);
 /// Prints empty lines.
 void printEmptyLines(int amount);
 
+/// Prints list of errors represented by the flag.
+void printErrorsFromFlag(int errorsFlag);
 
 #endif //SHIP_STOWAGE_MODEL_PRINTERS_H

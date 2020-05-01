@@ -6,10 +6,10 @@
 #define SHIP_STOWAGE_MODEL_IOTESTS_H
 
 #include <assert.h>
-#include "../src/data_objects/ShipPlan.h"
+#include "../src/common/data_objects/ShipPlan.h"
 #include "../src/common/io/ObjectsReader.h"
-#include "../src/utils/Printers.h"
-
+#include "../src/common/utils/Printers.h"
+#include "../src/common/utils/ErrorFlags.h"
 
 void inline readShipPlanTest();
 
@@ -23,56 +23,62 @@ using namespace std;
 
 void inline runIOTests() {
     readShipPlanTest();
-    printSeparator(1, 1);
 
+    printSeparator(1, 1);
     readShipRouteTest();
-    printSeparator(1, 1);
 
-    readCargoToPortFromFileTest();
-    printSeparator(1, 1);
+//    printSeparator(1, 1);
+//    readCargoToPortFromFileTest();
 
-    readPackingOperationsTest();
+//    printSeparator(1, 1);
+//    readPackingOperationsTest();
 }
 
 void inline readShipPlanTest() {
-    string path = "../input-examples/tests/Plan";
-    optional<ShipPlan> shipPlan = readShipPlanFromFile(path);
-    assert(shipPlan.has_value());
-    if (shipPlan.has_value()) {
-        cout << *shipPlan;
-    }
+    int errors;
+    string path = "../input-examples/test-files/Plan";
+    ShipPlan shipPlan = readShipPlanFromFile(path, errors);
+    assert(!containsFatalError(errors));
+
+    cout << "Ship plan" << endl;
+    cout << shipPlan;
+    cout << "Errors:" << endl;
+    printErrorsFromFlag(errors);
+
 }
 
 void inline readShipRouteTest() {
-    string path = "../input-examples/tests/Route";
-    optional<ShipRoute> shipRoute = readShipRouteFromFile(path);
-    assert(shipRoute.has_value());
-    assert(shipRoute->getPorts().size() == 4);
-    if (shipRoute.has_value()) {
-        cout << *shipRoute;
-    }
+    int errors;
+    string path = "../input-examples/test-files/Route";
+    ShipRoute shipRoute = readShipRouteFromFile(path, errors);
+    assert(!containsFatalError(shipRoute));
+    cout << "Ship route" << endl;
+    cout << shipRoute;
+    cout << "Errors:" << endl;
+    printErrorsFromFlag(errors);
+
 }
 
-void inline readCargoToPortFromFileTest() {
-    string path = "../input-examples/tests/AGHCS_17.cargo_data";
-    optional<ContainerStorage> storage = readPortCargoFromFile(path);
-    assert(storage.has_value());
-    if (storage.has_value()) {
-        cout << endl << "Port after loading cargo: " << endl << *storage;
-    }
-}
+//void inline readCargoToPortFromFileTest() {
+//    string path = "../input-examples/test-files/AAAAA_1.cargo_data";
+//    optional<ContainerStorage> storage = readPortCargoFromFile(path);
+//    assert(storage.has_value());
+//    if (storage.has_value()) {
+//        cout << endl << "Port after loading cargo: " << endl << *storage;
+//    }
+//}
 
-void inline readPackingOperationsTest() {
-    string path = "../input-examples/tests/DASDF_13.cargo_data";
-    optional<OPS> operations;
-    cout << "Operations before: " << endl << *operations << endl;
-    operations = readPackingOperationsFromFile(path);
-    assert(operations.has_value());
-    assert(operations->size() == 8);
-    if (operations.has_value()) {
-        cout << "Operations after: " << endl << *operations;
-    }
-}
+//void inline readPackingOperationsTest() {
+//    string path = "../input-examples/test-files/BBBBB_2.cargo_data";
+//    optional<OPS> operations;
+//    cout << "Operations before: " << endl << *operations << endl;
+//    operations = readPackingOperationsFromFile(path);
+//    assert(operations.has_value());
+//    assert(operations->size() == 8);
+//    if (operations.has_value()) {
+//        cout << "Operations after: " << endl << *operations;
+//    }
+//}
 
 
 #endif //SHIP_STOWAGE_MODEL_IOTESTS_H

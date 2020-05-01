@@ -8,6 +8,8 @@
 
 #include "Definitions.h"
 
+#define MAX_ERROR_BIT 30
+
 enum ErrorFlags : int {
     ShipPlan_InvalidFloorHeight = 1 << 0,
     ShipPlan_InvalidXYCoordinates = 1 << 1,

@@ -3,6 +3,7 @@
 //
 
 #include "Printers.h"
+#include "ErrorFlags.h"
 #include <tuple>
 
 
@@ -87,4 +88,13 @@ void printEmptyLines(int amount) {
     for (int i = 0; i < amount; i++) {
         std::cout << std::endl;
     }
+}
+
+void printErrorsFromFlag(int errorsFlag) {
+    StringVector errors = errorsFlagsToString(errorsFlag);
+    std::cout << "Errors {" << std::endl;
+    for (longUInt i = 0 ; i < errors.size(); i++) {
+        std::cout << "\t" << errors[i] << std::endl;
+    }
+    std::cout << "}" << std::endl;
 }
