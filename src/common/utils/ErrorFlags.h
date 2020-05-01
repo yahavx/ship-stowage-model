@@ -19,19 +19,25 @@ enum ErrorFlags : int {
     ShipRoute_FatalError = 1 << 7,
     ShipRoute_FatalError_SinglePort = 1 << 8,
 
-    Containers_DuplicateID = 1 << 10,
-    Containers_IDAlreadyOnShip = 1 << 11,
-    Containers_MissingOrBadWeight = 1 << 12,  // TODO: this is another section (cargo data) - change prefix (Containers to Cargo data or something)
-    Containers_MissingOrBadPortDest = 1 << 13,
-    Containers_MissingContainerID = 1 << 14,
-    Containers_BadContainerID = 1 << 15,
-    Containers_InvalidFile = 1 << 16,
-    Containers_LastPortHasContainers = 1 << 17,
-    Containers_ContainersExceedsShipCapacity = 1 << 18
+    ContainersAtPort_DuplicateID = 1 << 10,
+    ContainersAtPort_IDAlreadyOnShip = 1 << 11,
+
+    CargoData_MissingOrBadWeight = 1 << 12,
+    CargoData_MissingOrBadPortDest = 1 << 13,
+    CargoData_MissingContainerID = 1 << 14,
+    CargoData_BadContainerID = 1 << 15,
+    CargoData_InvalidFile = 1 << 16,
+    CargoData_LastPortHasContainers = 1 << 17,
+
+    ContainersAtPort_ContainersExceedsShipCapacity = 1 << 18
 };
 
 
-/// Converts a int that represents a error flags vector, to a string vector, which each entry representing one error.
+/// Converts a int that represents a error flags vector, to a string vector, in which each entry represents one error.
 StringVector errorsFlagsToString(int errorFlags);
+
+/// Returns true if the error flags contains a fatal error.
+bool containsFatalError(int errorFlags);
+
 
 #endif //SHIP_STOWAGE_MODEL_ERRORFLAGS_H

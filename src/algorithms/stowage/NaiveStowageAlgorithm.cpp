@@ -11,20 +11,24 @@
 
 // region Initialization
 
-void NaiveStowageAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &calculator) {
+int NaiveStowageAlgorithm::readShipPlan(const std::string &shipPlanPath) {
+    int errorsFlag;
+    auto shipPlan = readShipPlanFromFile(shipPlanPath, errorsFlag);
+    this->ship.setShipPlan(shipPlan);
+    return errorsFlag;
+}
+
+int NaiveStowageAlgorithm::readShipRoute(const std::string &shipRoutePath) {
+    int errorsFlag;
+    ShipRoute route = readShipRouteFromFile(shipRoutePath, errorsFlag);
+    this->ship.setShipRoute(route);
+    return errorsFlag;
+}
+
+int NaiveStowageAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &calculator) {
     this->ship.setBalanceCalculator(calculator);
     this->ship.getBalanceCalculator().setPlan(this->ship.getShipPlan());
-}
-
-void NaiveStowageAlgorithm::readShipPlan(
-        const std::string &shipPlanPath) {
-    auto shipPlan = *readShipPlanFromFile(shipPlanPath);
-    this->ship.setShipPlan(shipPlan);
-}
-
-void NaiveStowageAlgorithm::readShipRoute(const std::string &shipRoutePath) {
-    auto route = *readShipRouteFromFile(shipRoutePath);
-    this->ship.setShipRoute(route);
+    return 0;
 }
 
 std::string NaiveStowageAlgorithm::getAlgorithmName() {
@@ -66,9 +70,10 @@ void NaiveStowageAlgorithm::initializePort(const std::string &inputFile, Port &p
 
 // region Functions
 
-void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
+int NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
     Port port;
     initializePort(inputFile, port);
+    int errorsFlag = 0;
 
     Containers containersToLoad;
 
@@ -91,6 +96,8 @@ void NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile
     writePackingOperationsToFile(outputFile, ops);
 
     ship.markCurrentVisitDone(); // pop the current port from the ShipRoute
+
+    return errorsFlag;  // TODO: collect all errors
 }
 
 // endregion

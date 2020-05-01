@@ -5,8 +5,10 @@
 #include "ErrorFlags.h"
 
 
-StringVector errorsFlagsToString(int errorsFlag);
-
+StringVector errorsFlagsToString(int errorFlags) {
+    return StringVector(); // TODO
+    std::cout << errorFlags;
+}
 
 /// Converts a single flag to a string.
 std::string flagToString(ErrorFlags flag) {
@@ -29,23 +31,32 @@ std::string flagToString(ErrorFlags flag) {
         case ShipRoute_FatalError_SinglePort:
             return "Ship route fatal error: only one port appears in the route, terminating the travel";
 
-        case Containers_DuplicateID:
+        case ContainersAtPort_DuplicateID:
             return "Containers at port warning: duplicate container ID found, rejecting";
-        case Containers_IDAlreadyOnShip:
+        case ContainersAtPort_IDAlreadyOnShip:
             return "Containers at port warning: container with the same ID already on the ship, rejecting";
-        case Containers_MissingOrBadWeight:
+
+        case CargoData_MissingOrBadWeight:
             return "Cargo data warning: missing or bad weight, ignoring";
-        case Containers_MissingOrBadPortDest:
+        case CargoData_MissingOrBadPortDest:
             return "Cargo data warning: missing or bad destination port, ignoring";
-        case Containers_MissingContainerID:
+        case CargoData_MissingContainerID:
             return "Cargo data warning: missing container ID, ignoring";
-        case Containers_BadContainerID:
+        case CargoData_BadContainerID:
             return "Cargo data warning: container ID is not in ISO 6346 format, ignoring";
-        case Containers_InvalidFile:
+        case CargoData_InvalidFile:
             return "Cargo data warning: couldn't read any container from file, cargo will only be loaded";
-        case Containers_LastPortHasContainers:
+        case CargoData_LastPortHasContainers:
             return "Containers at port warning: last port has waiting containers, ignored";
-        case Containers_ContainersExceedsShipCapacity:
-            return "Containers at port warning: ship is at full capacity, far containers will not be loaded";`
+
+        case ContainersAtPort_ContainersExceedsShipCapacity:
+            return "Containers at port warning: ship is at full capacity, far containers will not be loaded";
+
+        default:
+            return "INVALID ERROR";
     }
+}
+
+bool containsFatalError(int errorFlags) {  // TODO: check that the & and | return the desired boolean value
+    return (errorFlags & ShipPlan_FatalError) | (errorFlags & ShipRoute_FatalError) | (errorFlags & ShipRoute_FatalError_SinglePort);
 }

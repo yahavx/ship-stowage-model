@@ -23,10 +23,20 @@ std::string craneOperationToString(const PackingOperation &op) {
     std::string x = std::to_string(std::get<0>(op.getFromPosition()));
     std::string y = std::to_string(std::get<1>(op.getFromPosition()));
     std::string z = std::to_string(std::get<2>(op.getFromPosition()));
-    auto opString = "Op('" + packingTypeFromString(op.getType())  + "', ContainerID=" + op.getContainerId() +
-                    ", Position=[" + x + ", " + y + ", " + z +"]";
+    auto opString = "Op('" + packingTypeFromString(op.getType()) + "', ContainerID=" + op.getContainerId() +
+                    ", Position=[" + x + ", " + y + ", " + z + "]";
 
     return opString;
+}
+
+IntVector convertRowToInt(const StringVector &row) {
+    IntVector intRow;
+
+    for (auto &token : row) {
+        intRow.push_back(stringToInt(token));  // add tokens to row
+    }
+
+    return intRow;
 }
 
 IntIntVector convertDataToInt(const StringStringVector &data) {
@@ -78,6 +88,14 @@ bool isInteger(const std::string &str) {
     }
     return !str.empty() && std::find_if(str.begin(),
                                         str.end(), [](unsigned char c) { return !std::isdigit(c); }) == str.end();
+}
+
+bool isRowOnlyIntegers(const StringVector &row) {
+    for (auto &token : row) {
+        if (!isInteger(token))
+            return false;
+    }
+    return true;
 }
 
 bool isDataOnlyIntegers(const StringStringVector &data) {
@@ -137,8 +155,8 @@ StringVector getFilesFromDirectory(const std::string &directoryPath) {
     return stringVector;
 }
 
-bool createFolder(const std::string &path)
-{   try {
+bool createFolder(const std::string &path) {
+    try {
         std::filesystem::create_directory(path);
         return true;
     }

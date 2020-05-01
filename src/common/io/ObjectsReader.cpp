@@ -6,54 +6,71 @@
 #include "FileReader.h"
 #include "../utils/UtilFunctions.h"
 #include "../utils/Printers.h"
+#include "../utils/ErrorFlags.h"
 #include <tuple>
 
 //#define DEBUG
+
+// general for this module:
+// TODO: remove all prints when we are sure we don't need them
+// TODO: check if we need to have in each data row exactly X tokens, or we can have extra and ignore them
+// TODO: match the correctness checks accordingly
+// TODO: for each error, we just say yes or no, maybe we want to count them instead
 
 ShipPlan readShipPlanFromFile(const std::string &filePath, int &errorsFlag) {
 #ifdef DEBUG
     std::cout << "Attempting to read ship plan..." << std::endl;
 #endif
     StringStringVector data = readFile(filePath);
+    ShipPlan shipPlan;
     errorsFlag = 0;
 
-    if (!isDataOnlyIntegers(data)) {  // couldn't convert data to int
-        std::cerr << "Error: data contain non-integers" << std::endl;
-        return ShipPlan();
+    if (data.size() == 0) {
+        errorsFlag |= ErrorFlags::ShipPlan_FatalError;  // no data read
     }
 
-    ShipPlan shipPlan;
-
-    IntIntVector intData = convertDataToInt(data);
-    IntVector firstRow = intData[0];
-    if (firstRow.size() < 3) {
-        std::cerr << "Error: insufficient number of arguments for ship dimensions, exiting" << std::endl;
-        return std::nullopt;
+    StringVector &firstRow = data[0];
+    if (firstRow.size() < 3 || !isRowOnlyIntegers(firstRow)) {
+        errorsFlag |= ErrorFlags::ShipPlan_FatalError;
+//        std::cerr << "Error: insufficient number of arguments for ship dimensions, exiting" << std::endl;
+        return shipPlan;
     }
 
-    int z = firstRow[0], x = firstRow[1], y = firstRow[2];
-    std::tuple<int, int, int> dimensions(x, y, z);
-    shipPlan.setDimensions(dimensions);
+    IntVector firstIntRow = convertRowToInt(firstRow);
+
+    int z = firstIntRow[0], x = firstIntRow[1], y = firstIntRow[2];
+    shipPlan.setDimensions({x, y, z});
 
     IntIntVector heights(x, IntVector(y, 0));  // init matrix of size (x,y) with zeroes
 
-    for (longUInt i = 1; i < intData.size(); i++) {  // iterate on rows
-        IntVector &intDataRow = intData[i];
-        if (intDataRow.size() < 3) {
-            std::cout << "Warning: data row contains less than 3 arguments, ignoring" << std::endl;
+    for (longUInt i = 1; i < data.size(); i++) {  // iterate on rows
+        StringVector &dataRow = data[i];
+
+        if (dataRow.size() < 3) {
+            errorsFlag |= ErrorFlags::ShipPlan_BadLineFormat;
+//            std::cout << "Warning: data row contains less than 3 arguments, ignoring" << std::endl;
             continue;
         }
+
+        if (!isRowOnlyIntegers(dataRow)) {
+            errorsFlag |= ErrorFlags::ShipPlan_BadLineFormat;
+            continue;
+        }
+
+        IntVector intDataRow = convertRowToInt(dataRow);
 
         int n = intDataRow[0];
         int m = intDataRow[1];
         int availableContainers = intDataRow[2];
 
         if (n < 0 || n >= x || m < 0 || m >= y) {
+            errorsFlag |= ErrorFlags::ShipPlan_InvalidXYCoordinates;
             std::cout << "Warning: data row exceeds the ship dimensions, ignoring" << std::endl;
             continue;
         }
 
         if (availableContainers >= z) {
+            errorsFlag |= ErrorFlags::ShipPlan_InvalidFloorHeight;
             std::cout << "Warning: data row exceeds the maximum available containers, ignoring" << std::endl;
             continue;
         }
@@ -68,25 +85,29 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, int &errorsFlag) {
     return shipPlan;
 }
 
-std::optional<ShipRoute> readShipRouteFromFile(const std::string &filePath) {
+ShipRoute readShipRouteFromFile(const std::string &filePath, int &errorsFlag) {
 #ifdef DEBUG
     std::cout << "Attempting to read ship route..." << std::endl;
 #endif
     StringStringVector data = readFile(filePath);
-
+    ShipRoute shipRoute;
     std::vector<PortId> ports;
+    errorsFlag = 0;
+
     std::string previousPort;  // to check that the same port doesn't appear twice
 
     for (StringVector dataRow : data) {
         std::string token = dataRow[0];  // ignore extra tokens in a row
 
         if (!isEnglishWord(token) || token.length() != 5) {
-            std::cout << "Warning: invalid port format (" << token << "), ignoring" << std::endl;
+            errorsFlag |= ErrorFlags::ShipRoute_BadPortSymbol;
+//            std::cout << "Warning: invalid port format (" << token << "), ignoring" << std::endl;
             continue;
         }
 
         if (token.compare(previousPort) == 0) {
-            std::cout << "Warning: same port appears twice in a row, ignoring" << std::endl;
+            errorsFlag |= ErrorFlags::ShipRoute_TwoConsecutiveSamePort;
+//            std::cout << "Warning: same port appears twice in a row, ignoring" << std::endl;
             continue;
         }
 
@@ -95,15 +116,21 @@ std::optional<ShipRoute> readShipRouteFromFile(const std::string &filePath) {
         ports.push_back(PortId(token));
     }
 
+    if (ports.size() == 1) {
+        errorsFlag |= ErrorFlags::ShipRoute_FatalError_SinglePort;
+        return shipRoute;
+    }
+
     if (ports.size() == 0) {
+        errorsFlag |= ErrorFlags::ShipRoute_FatalError;
         std::cerr << "Error: couldn't read any port from route file" << std::endl;
-        return std::nullopt;
+        return shipRoute;
     }
 
 #ifdef DEBUG
     std::cout << "Read ship route successfully." << std::endl;
 #endif
-    ShipRoute shipRoute(ports);
+    shipRoute.setPorts(ports);
     return shipRoute;
 }
 

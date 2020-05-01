@@ -10,6 +10,7 @@
 #include "../algorithms/CranesOperation.h"
 #include "../common/io/FileReader.h"
 #include "../common/utils/UtilFunctions.h"
+#include "../common/utils/ErrorFlags.h"
 
 // region Constants
 
@@ -231,16 +232,15 @@ void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, const std::string &s
 
 bool Simulator::initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath, ContainerShip &ship, StringVector &errors) const {
     std::cout << "Initializing simulation..." << std::endl;
-    std::optional<ShipPlan> optShipPlan = readShipPlanFromFile(shipPlanPath);
-    std::optional<ShipRoute> optShipRoute = readShipRouteFromFile(shipRoutePath);
+    int shipPlanErrors, shipRouteErrors;
 
-    if (!optShipPlan.has_value() || !optShipRoute.has_value()) {
+    ShipPlan shipPlan = readShipPlanFromFile(shipPlanPath, shipPlanErrors);
+    ShipRoute shipRoute = readShipRouteFromFile(shipRoutePath, shipRouteErrors);
+
+    if (containsFatalError(shipPlanErrors) || containsFatalError(shipRouteErrors)) {  // TODO: we should verify this before calling runSimulation
         std::cout << "Simulation failed: couldn't initialize from files" << std::endl;
         return false;
     }
-
-    ShipPlan &shipPlan = *optShipPlan;
-    ShipRoute &shipRoute = *optShipRoute;
 
     WeightBalanceCalculator weightBalanceCalculator(shipPlan);
     ship = ContainerShip(shipPlan, shipRoute, weightBalanceCalculator);

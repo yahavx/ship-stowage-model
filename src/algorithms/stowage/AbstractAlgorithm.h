@@ -6,20 +6,25 @@
 #define SHIP_STOWAGE_MODEL_ABSTRACTALGORITHM_H
 
 #pragma once
+#include <string>
 
-#include "../WeightBalanceCalculator.h"
+// forward declaration
+class WeightBalanceCalculator;
 
 class AbstractAlgorithm {
 
 public:
+    virtual ~AbstractAlgorithm(){}
 
-    virtual void setWeightBalanceCalculator(WeightBalanceCalculator& calculator) = 0;
+    enum class Action { LOAD = 'L', UNLOAD = 'U', MOVE = 'M', REJECT = 'R'};
 
-    virtual void getInstructionsForCargo(const std::string& inputFileName, const std::string& outputFileName) = 0;
+    virtual int readShipPlan(const std::string& full_path_and_file_name) = 0 ;
 
-    virtual void readShipPlan(const std::string& shipPlanPath) = 0 ;
+    virtual int readShipRoute(const std::string& full_path_and_file_name) = 0;  // TODO: change shipRoutePath (and shipPlanPath) to full_path_and_file_name?
 
-    virtual void readShipRoute(const std::string& shipRoutePath) = 0;  // TODO: change shipRoutePath (and shipPlanPath) to full_path_and_file_name?
+    virtual int setWeightBalanceCalculator(WeightBalanceCalculator& calculator) = 0;
+
+    virtual int getInstructionsForCargo(const std::string& input_full_path_and_file_name, const std::string& output_full_path_and_file_name) = 0;
 
     virtual std::string getAlgorithmName() = 0;  // TODO: remove
 };

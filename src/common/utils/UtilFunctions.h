@@ -19,7 +19,10 @@ std::string intToString(int num);
 
 std::string craneOperationToString(const PackingOperation &op);
 
-/// Converts strings vector to ints vector. Doesn't validate the strings are actual numbers.
+/// Converts a string vector to an int vector. Doesn't validate the strings are actual numbers.
+IntVector convertRowToInt(const StringVector &row);
+
+/// Converts 2-dim string vector to 2-dim ints vector. Doesn't validate the strings are actual numbers.
 IntIntVector convertDataToInt(const StringStringVector &data);
 
 /// Converts string representation of packing type to a packing type. Doesn't validate input.
@@ -33,6 +36,9 @@ std::string packingTypeFromString(PackingType type);
 
 /// Checks if string is an integer.
 bool isInteger(const std::string &str);
+
+/// Checks if a string vector contains only integers.
+bool isRowOnlyIntegers(const StringVector &row);
 
 /// Checks if 2-dimensional vector string contains only integers.
 bool isDataOnlyIntegers(const StringStringVector &data);

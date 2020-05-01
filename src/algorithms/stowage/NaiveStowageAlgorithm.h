@@ -16,16 +16,17 @@
 class NaiveStowageAlgorithm : public AbstractAlgorithm {
 protected:
     ContainerShip ship;
+    bool fatalError = false;  // indicates that we couldn't initialize (fatal error in ship plan or route)
 
 public:
 
-    void setWeightBalanceCalculator(WeightBalanceCalculator &calculator) override;
+    int readShipPlan(const std::string &shipPlanPath) override;
 
-    void getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) override;
+    int readShipRoute(const std::string &shipRoutePath) override;
 
-    void readShipPlan(const std::string &shipPlanPath) override;
+    int setWeightBalanceCalculator(WeightBalanceCalculator &calculator) override;
 
-    void readShipRoute(const std::string &shipRoutePath) override;
+    int getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) override;
 
     std::string getAlgorithmName() override;
 

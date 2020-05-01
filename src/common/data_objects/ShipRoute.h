@@ -17,7 +17,7 @@ public:
     // Constructors
     ShipRoute();
 
-    ShipRoute(const std::vector<PortId> &ports);
+    explicit ShipRoute(const std::vector<PortId> &ports);
 
 
     // Getters and setters
