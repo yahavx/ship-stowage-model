@@ -12,23 +12,23 @@
 // region Initialization
 
 int NaiveStowageAlgorithm::readShipPlan(const std::string &shipPlanPath) {
-    int errorsFlag;
-    auto shipPlan = readShipPlanFromFile(shipPlanPath, errorsFlag);
+    std::vector<ErrorFlag> errors;
+    auto shipPlan = readShipPlanFromFile(shipPlanPath, errors);
     this->ship.setShipPlan(shipPlan);
-    return errorsFlag;
+    return errorsVectorToErrorsFlag(errors);
 }
 
 int NaiveStowageAlgorithm::readShipRoute(const std::string &shipRoutePath) {
-    int errorsFlag;
-    ShipRoute route = readShipRouteFromFile(shipRoutePath, errorsFlag);
+    std::vector<ErrorFlag> errors;
+    ShipRoute route = readShipRouteFromFile(shipRoutePath, errors);
     this->ship.setShipRoute(route);
-    return errorsFlag;
+    return errorsVectorToErrorsFlag(errors);
 }
 
 int NaiveStowageAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &calculator) {
     this->ship.setBalanceCalculator(calculator);
     this->ship.getBalanceCalculator().setPlan(this->ship.getShipPlan());
-    return 0;
+    return 0;  // TODO: this can fail?
 }
 
 std::string NaiveStowageAlgorithm::getAlgorithmName() {

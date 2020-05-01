@@ -7,16 +7,17 @@
 
 #include "../data_objects/ShipPlan.h"
 #include "../data_objects/ShipRoute.h"
+#include "../utils/ErrorFlags.h"
 
 
 /**
  * Reads a ship plan from a file.
- * @param errorsFlag will be set with all the errors that are found in the file
+ * @param errors each error found will be added to the vector (the same error can be added multiple times).
  */
-ShipPlan readShipPlanFromFile(const std::string &filePath, int &errorsFlag);
+ShipPlan readShipPlanFromFile(const std::string &filePath, std::vector<ErrorFlag> &errors);
 
 /// Reads a route file (list of ports).
-ShipRoute readShipRouteFromFile(const std::string &filePath, int &errorsFlag);
+ShipRoute readShipRouteFromFile(const std::string &filePath, std::vector<ErrorFlag> &errors);
 
 /// Returns a port with the cargo loaded from file. Port id is as in the file (assuming path is ID_<num>.cargo_data).
 ContainerStorage readPortCargoFromFile(const std::string &filePath);

@@ -98,3 +98,12 @@ void printErrorsFromFlag(int errorsFlag) {
     }
     std::cout << "}" << std::endl;
 }
+
+void printErrorsFromFlagVector(std::vector<ErrorFlag> errorsVector) {
+    StringVector errors = errorsVectorToString(errorsVector);
+    std::cout << "Errors {" << std::endl;
+    for (longUInt i = 0 ; i < errorsVector.size(); i++) {
+        std::cout << "\t" << errors[i] << std::endl;
+    }
+    std::cout << "}" << std::endl;
+}

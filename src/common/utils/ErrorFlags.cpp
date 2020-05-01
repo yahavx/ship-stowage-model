@@ -5,7 +5,7 @@
 #include "ErrorFlags.h"
 
 
-std::string flagToString(ErrorFlags flag);
+std::string flagToString(ErrorFlag flag);
 
 StringVector errorsFlagsToString(int errorFlags) {
     StringVector errors;
@@ -13,7 +13,7 @@ StringVector errorsFlagsToString(int errorFlags) {
         int isBitEnabled = errorFlags & (1 << i);
 
         if (isBitEnabled) {
-            std::string errorMsg = flagToString(static_cast<ErrorFlags>(isBitEnabled));
+            std::string errorMsg = flagToString(static_cast<ErrorFlag>(isBitEnabled));
             errors.push_back(errorMsg);
         }
     }
@@ -21,8 +21,27 @@ StringVector errorsFlagsToString(int errorFlags) {
     return errors;
 }
 
+StringVector errorsVectorToString(std::vector<ErrorFlag> errorFlagsVector) {
+    StringVector errors;
+    for (ErrorFlag flag : errorFlagsVector) {
+        std::string errorMsg = flagToString(flag);
+        errors.push_back(errorMsg);
+    }
+
+    return errors;
+}
+
+int errorsVectorToErrorsFlag(std::vector<ErrorFlag> errorFlagsVector) {
+    int errors;
+    for (ErrorFlag flag : errorFlagsVector) {
+        errors |= flag;
+    }
+
+    return errors;
+}
+
 /// Converts a single flag to a string.
-std::string flagToString(ErrorFlags flag) {
+std::string flagToString(ErrorFlag flag) {
     switch (flag) {
         case ShipPlan_InvalidFloorHeight:
             return "Ship plan warning: data row exceeds the maximum available containers, ignored";
@@ -70,4 +89,13 @@ std::string flagToString(ErrorFlags flag) {
 
 bool containsFatalError(int errorFlags) {  // TODO: check that the & and | return the desired boolean value
     return (errorFlags & ShipPlan_FatalError) | (errorFlags & ShipRoute_FatalError) | (errorFlags & ShipRoute_FatalError_SinglePort);
+}
+
+bool containsFatalError(std::vector<ErrorFlag> errorFlagsVector) {
+    for (ErrorFlag flag : errorFlagsVector) {
+        if (containsFatalError(flag))
+            return true;
+    }
+
+    return false;
 }

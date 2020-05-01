@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include "Definitions.h"
+#include "ErrorFlags.h"
 
 
 /// Prints a string vector.
@@ -42,5 +43,9 @@ void printEmptyLines(int amount);
 
 /// Prints list of errors represented by the flag.
 void printErrorsFromFlag(int errorsFlag);
+
+/// Prints list of errors that are in the vector.
+void printErrorsFromFlagVector(std::vector<ErrorFlag> errorsVector);
+
 
 #endif //SHIP_STOWAGE_MODEL_PRINTERS_H

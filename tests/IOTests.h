@@ -35,7 +35,7 @@ void inline runIOTests() {
 }
 
 void inline readShipPlanTest() {
-    int errors;
+    vector<ErrorFlag> errors;
     string path = "../input-examples/test-files/Plan";
     ShipPlan shipPlan = readShipPlanFromFile(path, errors);
     assert(!containsFatalError(errors));
@@ -43,20 +43,23 @@ void inline readShipPlanTest() {
     cout << "Ship plan" << endl;
     cout << shipPlan;
     cout << "Errors:" << endl;
-    printErrorsFromFlag(errors);
-
+    printErrorsFromFlagVector(errors);
+    cout << "Error flag list:" << endl;
+    printErrorsFromFlag(errorsVectorToErrorsFlag(errors));
 }
 
 void inline readShipRouteTest() {
-    int errors;
+    vector<ErrorFlag> errors;
     string path = "../input-examples/test-files/Route";
     ShipRoute shipRoute = readShipRouteFromFile(path, errors);
     assert(!containsFatalError(shipRoute));
+
     cout << "Ship route" << endl;
     cout << shipRoute;
-    cout << "Errors:" << endl;
-    printErrorsFromFlag(errors);
-
+    cout << "Errors list:" << endl;
+    printErrorsFromFlagVector(errors);
+    cout << "Error flag list:" << endl;
+    printErrorsFromFlag(errorsVectorToErrorsFlag(errors));
 }
 
 //void inline readCargoToPortFromFileTest() {

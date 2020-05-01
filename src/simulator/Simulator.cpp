@@ -232,7 +232,7 @@ void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, const std::string &s
 
 bool Simulator::initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath, ContainerShip &ship, StringVector &errors) const {
     std::cout << "Initializing simulation..." << std::endl;
-    int shipPlanErrors, shipRouteErrors;
+    std::vector<ErrorFlag> shipPlanErrors, shipRouteErrors;
 
     ShipPlan shipPlan = readShipPlanFromFile(shipPlanPath, shipPlanErrors);
     ShipRoute shipRoute = readShipRouteFromFile(shipRoutePath, shipRouteErrors);

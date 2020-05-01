@@ -10,7 +10,7 @@
 
 #define MAX_ERROR_BIT 30
 
-enum ErrorFlags : int {
+enum ErrorFlag {
     ShipPlan_InvalidFloorHeight = 1 << 0,
     ShipPlan_InvalidXYCoordinates = 1 << 1,
     ShipPlan_BadLineFormat = 1 << 2,
@@ -38,8 +38,17 @@ enum ErrorFlags : int {
 /// Converts a int that represents a error flags vector, to a string vector, in which each entry represents one error.
 StringVector errorsFlagsToString(int errorFlags);
 
+/// Converts an error flags vector to a string vector, in which each entry represents one error.
+StringVector errorsVectorToString(std::vector<ErrorFlag> errorFlagsVector);
+
+/// Converts an errors vector to a errors flag (int). If an error appears multiple times, it is treated as once.
+int errorsVectorToErrorsFlag(std::vector<ErrorFlag> errorFlagsVector);
+
 /// Returns true if the error flags contains a fatal error.
 bool containsFatalError(int errorFlags);
+
+/// Returns true if the error flags vector contains a fatal error.
+bool containsFatalError(std::vector<ErrorFlag> errorFlagsVector);
 
 
 #endif //SHIP_STOWAGE_MODEL_ERRORFLAGS_H
