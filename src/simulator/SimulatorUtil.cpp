@@ -21,14 +21,14 @@
 
 // region Simulation utils
 
-std::string getNextFileForPort(StringToStringVectorMap &cargoData, StringToIntMap &portVisits, const PortId &portId, const std::string &outputDir, int isLast) {
-    std::string portCOde = portId.getCode();
-    StringVector &filesForPort = cargoData[portCOde];
+std::string getNextFileForPort(StringToStringVectorMap &cargoData, StringToIntMap &portVisits, const PortId &portId, SimulatorDataManager &manager, int isLast) {
+    std::string portCode = portId.getCode();
+    StringVector &filesForPort = cargoData[portCode];
 
     if (!filesForPort.empty()) {
         std::string portCargoFile = filesForPort[0];  // retrieve cargo_data with smallest index
 
-        if (extractNumberFromCargoFile(portCargoFile) == portVisits[portCOde]) {  // it matches the port visit number, pop it and return
+        if (extractNumberFromCargoFile(portCargoFile) == portVisits[portCode]) {  // it matches the port visit number, pop it and return
             filesForPort.erase(filesForPort.begin());
             return portCargoFile;
         }
@@ -38,7 +38,7 @@ std::string getNextFileForPort(StringToStringVectorMap &cargoData, StringToIntMa
         std::cout << "";
 
     // there is no matching cargo_data file, so we will generate an empty one
-    std::string filePath = getCargoDataTempFilePath(outputDir, portCOde);
+    std::string filePath = manager.cargoDataTempFilePath(portCode);
     createEmptyFile(filePath);
     return filePath;
 }
@@ -78,37 +78,23 @@ void validateNoCargoFilesLeft(StringToStringVectorMap &map) {
     }
 }
 
-StringVector collectTravels(const std::string &travelPath, Errors &errors) {
-    if (travelPath == "") {  // no travel path supplied
-        errors.addError(ErrorFlag::SimulationInit_InvalidTravelPath);
-    }
-    StringVector files = getFilesFromDirectory(travelPath);
-    if (files.empty()) {
-        errors.addError(ErrorFlag::SimulationInit_InvalidTravelPath);
-    }
-
-    return files;
-}
-
-bool isTravelValid(const std::string &travelDirectory, Errors &errors) {
-    std::string travelName = extractFilenameFromPath(travelDirectory);
-
-    if (!isDirectoryExists(travelDirectory)) {
-        errors.addError("[Travel Error] travel " + travelName + " is not a directory, skipping");
+bool isTravelValid(SimulatorDataManager &manager, Errors &errors) {
+    if (!isDirectoryExists(manager.travelFolder())) {
+        errors.addError("[Travel Error] travel " + manager.travelName + " is not a directory, skipping");
         return false;
     }
 
     Errors tempErrors;
 
-    readShipPlanFromFile(getShipPlanPath(travelDirectory), tempErrors);
+    readShipPlanFromFile(manager.shipPlanPath(), tempErrors);
     if (tempErrors.hasFatalError()) {
-        errors.addError("[Travel Error] travel " + travelName + " has an invalid ship plan, or it doesn't exists, skipping");
+        errors.addError("[Travel Error] travel " + manager.travelName + " has an invalid ship plan, or it doesn't exists, skipping");
         return false;
     }
 
-    readShipRouteFromFile(getShipRoutePath(travelDirectory), tempErrors);
+    readShipRouteFromFile(manager.shipRoutePath(), tempErrors);
     if (tempErrors.hasFatalError()) {
-        errors.addError("[Travel Error] travel " + travelName + " has an invalid ship route, or it doesn't exists, skipping");
+        errors.addError("[Travel Error] travel " + manager.travelName + " has an invalid ship route, or it doesn't exists, skipping");
         return false;
     }
 
@@ -175,11 +161,12 @@ StringToIntMap initPortsVisits(ShipRoute &shipRoute) {
 int getVisitNum(StringToIntMap &portsVisits, const PortId &portId) {
     return ++portsVisits[portId.getCode()];
 }
+
 // endregion
 
 // region Table data manager
 
-void initResultsTable(StringStringVector &results, StringVector &travels, std::vector<AbstractAlgorithm *> &algorithms) {
+void initResultsTable(StringStringVector &results, StringVector &travels, std::vector<std::shared_ptr<AbstractAlgorithm>> &algorithms) {
     // init results table
     StringVector &resultsFirstRow = results.emplace_back();
 
@@ -196,20 +183,6 @@ void initResultsTable(StringStringVector &results, StringVector &travels, std::v
         results.emplace_back();
         results.back().push_back(algorithm->getAlgorithmName());
     }
-}
-
-void saveSimulationTables(const std::string &outputDir, const StringStringVector &results, const Errors &errors) {
-    writeFile(outputDir + "/simulation.results.csv", results);
-    if (errors.hasErrors()) {
-        saveErrorFile(outputDir, Simulator::s_generalErrorsTableName, errors);
-    }
-}
-
-void saveErrorFile(const std::string outputDir, const std::string &fileName, const Errors &errors) {
-    StringVector errorMessages = errors.toString();
-
-    std::string filePath = getErrorsFolderPath(outputDir) + "/" + fileName;
-    writeFile(filePath, errorMessages);
 }
 
 void addSimulationResultToTable(StringStringVector &simulationResults, StringStringVector &results, int rowNum) {
@@ -241,80 +214,6 @@ void finalizeResultsTable(StringStringVector &results) {
     }
 }
 
-void printSimulationInfo(const std::string &travel, AbstractAlgorithm *&algorithm) {
-    printSeparator(1, 1);
-    std::string travelName = extractFilenameFromPath(travel, true);
-    std::cout << "Simulating travel " << travelName << ", using " << algorithm->getAlgorithmName() << std::endl;
-    printSeparator(1, 1);
-
-    std::cerr << "--------------------------------------\n";
-    std::cerr << "Simulating travel " << travelName << ", using " << algorithm->getAlgorithmName() << std::endl << std::endl;  // print to err also to separate
-
-
-}
-
-void initOutputFolders(const std::string &outputDir, Errors &errors) {
-    bool res = createFolder(getCraneInstructionsRootFolder(outputDir));
-    bool res2 = createFolder(getTempFolderPath(outputDir));
-    bool res3 = createFolder(getErrorsFolderPath(outputDir));
-    if (!(res && res2 && res3)) {
-        errors.addError(ErrorFlag::SimulationInit_OutputDirectoriesCreationFailed);
-    }
-}
-
-void cleanOutputFolders(const std::string &outputDir, Errors &errors) {
-    bool res = removeFolder(getTempFolderPath(outputDir));
-
-    std::string errorsFolder = getErrorsFolderPath(outputDir);
-
-    bool res2;
-    if (isFolderEmpty(errorsFolder)) {
-        res2 = removeFolder(getErrorsFolderPath(outputDir));
-    }
-
-    if (!(res && res2)) {
-        errors.addError(ErrorFlag::SimulationInit_OutputDirectoriesCreationFailed);
-    }
-}
-// endregion
-
-// region Path generation
-
-std::string getShipPlanPath(const std::string &travel) {
-    return travel + "/Plan";
-}
-
-std::string getShipRoutePath(const std::string &travel) {
-    return travel + "/Route";
-}
-
-std::string getCraneInstructionsRootFolder(const std::string &outputDir) {
-    return outputDir + "/crane_instructions";
-}
-
-std::string getCraneInstructionsSimulationFolder(const std::string &outputDir, const std::string &algorithmName, const std::string &travelName) {
-    return getCraneInstructionsRootFolder(outputDir) + "/" + algorithmName + "_" + travelName + "_crane_instructions";
-}
-
-std::string getCraneInstructionsOutputFilePath(const std::string &craneOutputDir, const PortId &portId, int i) {
-    return craneOutputDir + "/" + portId.getCode() + "_" + intToStr(i) + ".crane_instructions";
-}
-
-std::string getTempFolderPath(const std::string &outputDir) {
-    return outputDir + "/" + "temp";
-}
-
-std::string getErrorsFolderPath(const std::string &outputDir) {
-    return outputDir + "/" + "errors";
-}
-
-std::string getCargoDataTempFilePath(const std::string &outputDir, const std::string &portId) {
-    return getTempFolderPath(outputDir) + "/" + portId + "_0.cargo_data";
-}
-
-std::string getCargoPath(const std::string &travel, const std::string &cargoFile) {
-    return travel + "/" + cargoFile;
-}
 // endregion
 
 int extractNumberFromCargoFile(const std::string filePath) {

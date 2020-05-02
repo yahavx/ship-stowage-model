@@ -28,14 +28,14 @@ int main(int argc, char **argv) {
     }
 
     // Direct log prints to log files
-    std::string outputLogFile = outputPath + "/output.txt";
-    std::string errorLogFile =  outputPath + "/error.txt";
-    freopen(outputLogFile.c_str(), "w", stdout);  // TODO
-    freopen(errorLogFile.c_str(), "w", stderr);
+//    std::string outputLogFile = outputPath + "/output.txt";
+//    std::string errorLogFile =  outputPath + "/error.txt";
+//    freopen(outputLogFile.c_str(), "w", stdout);
+//    freopen(errorLogFile.c_str(), "w", stderr);
 
-    Simulator simulator(outputPath);
+    Simulator simulator(outputPath, travelPath);
 
-    simulator.runSimulations(travelPath);
+    simulator.runSimulations();
 
     return 0;
 }

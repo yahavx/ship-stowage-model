@@ -8,32 +8,32 @@
 #include "../algorithms/stowage/AbstractAlgorithm.h"
 #include "../common/actors/ContainerShip.h"
 #include "../common/utils/Errors.h"
+#include "SimulatorDataManager.h"
+#include <memory>
 
 
 class Simulator {
 
 public:
     std::string outputDir;
-    std::vector<AbstractAlgorithm*> algorithms;
+    std::string travelRootDir;
+    SimulatorDataManager dataManager;
+    std::vector<std::shared_ptr<AbstractAlgorithm>> algorithms;
 
     // region Constructors
 
-    explicit Simulator(const std::string &outputDir);
+    Simulator(const std::string &outputDir, const std::string &travelRootDir);
     // endregion
 
     // region Simulation run
 
-    /**
-     * Simulates an algorithm on a single travel.
-     * @param travel a directory that contains Plan, Route, and list of <portId>_<number>.cargo_data files.
-     */
-    StringStringVector runSimulation(AbstractAlgorithm &algorithm, const std::string &travel, const std::string &craneOutputDir);
+private:
+    /// Simulates an algorithm on a single travel.
+    StringStringVector runSimulation(AbstractAlgorithm &algorithm);
 
-    /** Run a cartesian loop of “travel” X “algorithm”.
-     *
-     * @param travels directory that contains sub-directories, each one is a travel
-     */
-    void runSimulations(const std::string &travelPath);
+public:
+    /// Run a cartesian loop of “travel” X “algorithm”.
+    void runSimulations();
 
     // endregion
 
