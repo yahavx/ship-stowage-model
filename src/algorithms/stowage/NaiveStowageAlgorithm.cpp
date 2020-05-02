@@ -11,26 +11,6 @@
 
 // region Initialization
 
-int NaiveStowageAlgorithm::readShipPlan(const std::string &shipPlanPath) {
-    std::vector<ErrorFlag> errors;
-    auto shipPlan = readShipPlanFromFile(shipPlanPath, errors);
-    this->ship.setShipPlan(shipPlan);
-    return errorsVectorToErrorsFlag(errors);
-}
-
-int NaiveStowageAlgorithm::readShipRoute(const std::string &shipRoutePath) {
-    std::vector<ErrorFlag> errors;
-    ShipRoute route = readShipRouteFromFile(shipRoutePath, errors);
-    this->ship.setShipRoute(route);
-    return errorsVectorToErrorsFlag(errors);
-}
-
-int NaiveStowageAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &calculator) {
-    this->ship.setBalanceCalculator(calculator);
-    this->ship.getBalanceCalculator().setPlan(this->ship.getShipPlan());
-    return 0;  // TODO: this can fail?
-}
-
 std::string NaiveStowageAlgorithm::getAlgorithmName() {
     return "NaiveStowageAlgorithm";
 }
@@ -67,6 +47,10 @@ void NaiveStowageAlgorithm::initializePort(const std::string &inputFile, Port &p
 // region Functions
 
 int NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
+    if (this->fatalError) {
+        return this->fatalError;
+    }
+
     Port port;
     initializePort(inputFile, port);
     int errorsFlag = 0;
@@ -95,5 +79,4 @@ int NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile,
 
     return errorsFlag;  // TODO: collect all errors
 }
-
 // endregion

@@ -8,24 +8,15 @@
 
 #include "AbstractAlgorithm.h"
 #include "../../common/actors/ContainerShip.h"
+#include "SemiAbstractAlgorithm.h"
 
 
 /**
  * A naive implementation.
  */
-class NaiveStowageAlgorithm : public AbstractAlgorithm {
-protected:
-    ContainerShip ship;
-    bool fatalError = false;  // indicates that we couldn't initialize (fatal error in ship plan or route)
+class NaiveStowageAlgorithm : public SemiAbstractAlgorithm {
 
 public:
-
-    int readShipPlan(const std::string &shipPlanPath) override;
-
-    int readShipRoute(const std::string &shipRoutePath) override;
-
-    int setWeightBalanceCalculator(WeightBalanceCalculator &calculator) override;
-
     int getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) override;
 
     std::string getAlgorithmName() override;
