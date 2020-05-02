@@ -5,14 +5,9 @@
 #include "src/simulator/Simulator.h"
 #include "tests/IOTests.h"
 
-
 void parseCmdArguments(int argc, char **argv, std::string &travelPath, std::string &algorithmPath, std::string &outputPath);
 
 int main(int argc, char **argv) {
-
-    runIOTests();
-    return 0;
-
     if (argc != 3 && argc != 5 && argc != 7) {
         std::cerr << "Insufficient arguments supplied. Please read the README for usage instructions. Program is terminated." << std::endl;
         return 1;

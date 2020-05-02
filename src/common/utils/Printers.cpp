@@ -8,6 +8,11 @@
 
 
 std::ostream &operator<<(std::ostream &os, const StringVector &stringVector) {
+    if (stringVector.size() == 0) {
+        std::cout << "[]" << std::endl;
+        return os;
+    }
+
     std::cout << '[';
     for (longUInt i = 0; i < stringVector.size() - 1; i++) {
         std::cout << stringVector[i] << ", \t\t";
@@ -91,7 +96,7 @@ void printEmptyLines(int amount) {
 }
 
 void printErrorsFromFlag(int errorsFlag) {
-    StringVector errors = errorsFlagsToString(errorsFlag);
+    StringVector errors = errorFlagsToString(errorsFlag);
     std::cout << "Errors {" << std::endl;
     for (longUInt i = 0 ; i < errors.size(); i++) {
         std::cout << "\t" << errors[i] << std::endl;

@@ -23,7 +23,6 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, std::vector<ErrorFlag
 #endif
     StringStringVector data = readFile(filePath);
     ShipPlan shipPlan;
-    errors.clear();
 
     if (data.size() == 0) {
         errors.push_back(ErrorFlag::ShipPlan_FatalError);  // no data read, or couldn't open file
@@ -92,10 +91,15 @@ ShipRoute readShipRouteFromFile(const std::string &filePath, std::vector<ErrorFl
 #endif
     StringStringVector data = readFile(filePath);
     ShipRoute shipRoute;
-    std::vector<PortId> ports;
-    errors.clear();
 
-    std::string previousPort;  // to check that the same port doesn't appear twice
+    if (data.size() == 0) {
+        errors.push_back(ErrorFlag::ShipRoute_FatalError);  // no data read, or couldn't open file
+        return shipRoute;
+    }
+
+    std::vector<PortId> ports;
+
+    std::string previousPort;
 
     for (StringVector dataRow : data) {
         std::string token = dataRow[0];  // ignore extra tokens in a row
@@ -106,7 +110,7 @@ ShipRoute readShipRouteFromFile(const std::string &filePath, std::vector<ErrorFl
             continue;
         }
 
-        if (token.compare(previousPort) == 0) {
+        if (token == previousPort) {
             errors.push_back(ErrorFlag::ShipRoute_TwoConsecutiveSamePort);
 //            std::cout << "Warning: same port appears twice in a row, ignoring" << std::endl;
             continue;
@@ -136,7 +140,7 @@ ShipRoute readShipRouteFromFile(const std::string &filePath, std::vector<ErrorFl
     return shipRoute;
 }
 
-ContainerStorage readPortCargoFromFile(const std::string &filePath) {
+ContainerStorage readPortCargoFromFile(const std::string &filePath, std::vector<ErrorFlag> &errors) {
 #ifdef DEBUG
     std::cout << "Attempting to read cargo data..." << std::endl;
 #endif
@@ -146,12 +150,17 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath) {
 //        return std::nullopt;
 //    }
 
+    StringStringVector data = readFile(filePath);
     Containers containers;
 
-    StringStringVector data = readFile(filePath);
+    if (data.size() == 0) {
+        errors.push_back(ErrorFlag::CargoData_InvalidFile);
+        return containers;
+    }
 
     for (StringVector dataRow : data) {
         if (dataRow.size() < 3) {
+            errors.push_back(ErrorFlag::CargoData_MissingOrBadPortDest);  // the port dest is last - so he must be missing
 //            std::cout << "Warning: data row contains less than 3 arguments, ignoring" << std::endl;
             continue;
         }
@@ -159,16 +168,19 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath) {
         std::string id = dataRow[0], weight = dataRow[1], destPort = dataRow[2];
 
         if (!Port::isIdInIsoFormat(id)) {
+            errors.push_back(ErrorFlag::CargoData_BadContainerID);
 //            std::cout << "Warning: container id not in ISO format, ignoring" << std::endl;
             continue;
         }
 
         if (!isInteger(weight)) {
+            errors.push_back(ErrorFlag::CargoData_MissingOrBadWeight);
 //            std::cout << "Warning: container weight is not an integer, ignoring" << std::endl;
             continue;
         }
 
         if (!isEnglishWord(destPort) || destPort.length() != 5) {
+            errors.push_back(ErrorFlag::CargoData_MissingOrBadPortDest);
 //            std::cout << "Warning: port symbol is invalid, ignoring" << std::endl;
             continue;
         }

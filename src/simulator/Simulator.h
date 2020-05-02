@@ -65,7 +65,7 @@ public:
     static const std::string s_instructionsFilename;
 
     static const std::string s_resultsTableTitle;
-    static const std::string s_errorsTableTitle;
+    static const std::string s_generalErrorsTableName;
 
     static const std::string s_generalErrorsRowTitle;
     static const std::string s_sumColumnTitle;

@@ -27,7 +27,5 @@ bool writeFile(const std::string &path, const StringVector &data);
 /// Checks if a file is in cargo format: ABCDE_<num>.cargo_data.
 bool isCargoDataFileFormat(const std::string &fileName);
 
-/// Returns true if the the path given is a directory.
-bool isDirectoryExists(const std::string& directory);
 
 #endif //SHIP_STOWAGE_MODEL_FILEREADER_H

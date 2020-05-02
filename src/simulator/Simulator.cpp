@@ -17,7 +17,7 @@
 const std::string Simulator::s_instructionsFilename = "cargo_instructions";
 
 const std::string Simulator::s_resultsTableTitle = "RESULTS";
-const std::string Simulator::s_errorsTableTitle = "ERRORS";
+const std::string Simulator::s_generalErrorsTableName = "ERRORS";
 
 const std::string Simulator::s_generalErrorsRowTitle = "General Errors";
 const std::string Simulator::s_sumColumnTitle = "Sum";
@@ -42,19 +42,17 @@ Simulator::Simulator(const std::string &outputDir) : outputDir(outputDir) {
 
 void Simulator::runSimulations(const std::string &travelPath) {
     StringStringVector results;  // table for results
-    StringStringVector errors;  // table for errors
+    std::vector<ErrorFlag> generalErrors;
 
-    if (travelPath == "") {
-        addGeneralError(errors, s_noTravelPathSuppliedError);
-        return;  // TODO: save tables (like in the end of this function, but we need to know what to save exactly in each)
+    initOutputFolders(outputDir, generalErrors);
+    StringVector travels = collectTravels(travelPath, generalErrors);
+
+    if (generalErrors.size() > 0) {  // any init error is fatal so we have to terminate
+        saveErrorFile(outputDir, s_generalErrorsTableName, generalErrors);
+        cleanOutputFolders(outputDir, generalErrors);
     }
 
-    StringVector travels = collectTravels(travelPath);
-    initSimulationTables(results, errors, travels, algorithms);  // add columns names and set table structure
-
-    // create crane instructions and temp folder
-    createFolder(getCraneInstructionsRootFolder(outputDir));
-    createFolder(getTempFolderPath(outputDir));
+    initResultsTable(results, travels, algorithms);  // add columns names and set table structure
 
     for (longUInt i = 0; i < algorithms.size(); i++) {
         auto &algorithm = algorithms[i];
@@ -66,15 +64,15 @@ void Simulator::runSimulations(const std::string &travelPath) {
             createFolder(craneOutputDir);
             StringStringVector simulationResults = runSimulation(*algorithm, travel, craneOutputDir);  // run simulation, collect data
 
-            addTravelResultsToTable(simulationResults, results, errors, i + 1);  // save collected data from the travel to the tables
+            addSimulationResultToTable(simulationResults, results, i + 1);  // save collected data from the travel to the tables
         }
     }
 
-    // add all missing data that can now be collected (sums, errors)
-    orderSimulationTables(results, errors);
+    finalizeResultsTable(results);
 
-    // save
-    saveSimulationTables(results, errors, outputDir);
+    saveSimulationTables(outputDir, results, generalErrors);
+
+    cleanOutputFolders(outputDir, generalErrors);
 }
 
 StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm, const std::string &travel, const std::string &craneOutputDir) {
@@ -141,7 +139,8 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm, const 
 
         algorithm.getInstructionsForCargo(cargoFilePath, instructionsOutputPath);
 
-        Port port(portId, readPortCargoFromFile(cargoFilePath));
+        std::vector<ErrorFlag> cargoErrors;
+        Port port(portId, readPortCargoFromFile(cargoFilePath, cargoErrors));
 
         auto optOps = readPackingOperationsFromFile(instructionsOutputPath);  // read the operations to perform, written by the algorithm
 

@@ -8,6 +8,7 @@
 #include "../common/utils/Definitions.h"
 #include "../common/data_objects/ShipRoute.h"
 #include "../algorithms/stowage/AbstractAlgorithm.h"
+#include "../common/utils/ErrorFlags.h"
 
 // region Simulation utils
 
@@ -33,28 +34,34 @@ void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute);
 void validateNoCargoFilesLeft(StringToStringVectorMap &map);
 
 /// Returns a list of travels (i.e. directories) inside travelPath.
-StringVector collectTravels(const std::string &travelPath);
+StringVector collectTravels(const std::string &travelPath, std::vector<ErrorFlag> &errors);
 // endregion
 
 // region Table data manager
 
 /// Inits results and errors table, results and errors should be empty.
-void initSimulationTables(StringStringVector &results, StringStringVector &errors, StringVector &travels, std::vector<AbstractAlgorithm*> &algorithms);
+void initResultsTable(StringStringVector &results, StringVector &travels, std::vector<AbstractAlgorithm*> &algorithms);
 
-/// Saves simulation tables. Saving location is constant and defined inside.
-void saveSimulationTables(const StringStringVector &results, const StringStringVector &errors, const std::string &outputDir);
+/// Saves simulation tables.
+void saveSimulationTables(const std::string &outputDir, const StringStringVector &results, const std::vector<ErrorFlag> &errors);
+
+/// Saves an error file. Only filename should be supplied (not full path), it will be saved under the errors directory.
+void saveErrorFile(const std::string outputDir, const std::string &fileName, std::vector<ErrorFlag> errors);
 
 /// Add travel results of a single simulation to a table.
-void addTravelResultsToTable(StringStringVector &simulationResults, StringStringVector &results, StringStringVector &errors, int rowNum);
+void addSimulationResultToTable(StringStringVector &simulationResults, StringStringVector &results, int rowNum);
 
-/// Finalize the table: add sums to results table, add missing columns at errors, etc.
-void orderSimulationTables(StringStringVector &results, StringStringVector &errors);
+/// Finalize the results table: add all sums, and sort as needed.
+void finalizeResultsTable(StringStringVector &results);
 
 /// Prints simulation starting messages.
 void printSimulationInfo(const std::string &travel, AbstractAlgorithm *&algorithm);
 
-/// Add a general error to the errors table (must be initialized).
-void addGeneralError(StringStringVector &errors, const std::string &error);
+/// Create all output folders needed for runSimulations. Adds error to errors if failed (for at least 1 folder).
+void initOutputFolders(const std::string &outputDir, std::vector<ErrorFlag> &errors);
+
+/// Remove unneeded output folders (temporaries, errors if not generated).
+void cleanOutputFolders(const std::string &outputDir, std::vector<ErrorFlag> &errors);
 // endregion
 
 // region Path generation
@@ -70,6 +77,8 @@ std::string getCraneInstructionsSimulationFolder(const std::string &outputDir, c
 std::string getCraneInstructionsOutputFilePath(const std::string &craneOutputDir, const PortId &portId, int i);
 
 std::string getTempFolderPath(const std::string &outputDir);
+
+std::string getErrorsFolderPath(const std::string &outputDir);
 
 std::string getCargoDataTempFilePath(const std::string &outputDir, const std::string &portId);
 

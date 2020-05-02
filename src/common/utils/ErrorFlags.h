@@ -31,18 +31,25 @@ enum ErrorFlag {
     CargoData_InvalidFile = 1 << 16,
     CargoData_LastPortHasContainers = 1 << 17,
 
-    ContainersAtPort_ContainersExceedsShipCapacity = 1 << 18
+    ContainersAtPort_ContainersExceedsShipCapacity = 1 << 18,
+
+    SimulationInit_OutputDirectoriesCreationFailed = 1 << 20,
+    SimulationInit_InvalidTravelPath = 1 << 21,
+    SimulationCleanup_OutputDirectoriesCleaningFailed = 1 << 22
 };
 
 
 /// Converts a int that represents a error flags vector, to a string vector, in which each entry represents one error.
-StringVector errorsFlagsToString(int errorFlags);
+StringVector errorFlagsToString(int errorFlags);
 
 /// Converts an error flags vector to a string vector, in which each entry represents one error.
 StringVector errorsVectorToString(std::vector<ErrorFlag> errorFlagsVector);
 
 /// Converts an errors vector to a errors flag (int). If an error appears multiple times, it is treated as once.
 int errorsVectorToErrorsFlag(std::vector<ErrorFlag> errorFlagsVector);
+
+/// Checks if an errors flag contains a specific flag.
+bool hasFlag(int errorsFlag, ErrorFlag flag);
 
 /// Returns true if the error flags contains a fatal error.
 bool containsFatalError(int errorFlags);

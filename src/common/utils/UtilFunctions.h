@@ -55,14 +55,26 @@ bool isEnglishWord(const std::string &str);
  */
 std::string extractFilenameFromPath(const std::string &file, bool removeExtension);
 
-/// Returns a list of files of a directory.
+/// Returns a list of files of a directory. If can't open directory, returns empty vector.
 StringVector getFilesFromDirectory(const std::string &directoryPath);
 
 /// Creates a folder, returns true if succeed.
 bool createFolder(const std::string &path);
 
+/// Removes a folder, folder must be empty.
+bool removeFolder(const std::string &path);
+
+/// Returns true if folder is empty.
+bool folderIsEmpty(const std::string &path);
+
 /// Creates empty file (assuming filePath is a file that doesn't exist, only its directory).
 bool createEmptyFile(const std::string &filePath);
+
+/// Return true if the path supplied is a directory.
+bool isDirectoryExists(const std::string &directoryPath);
+
+/// Return true if the path supplied is a file.
+bool isFileExist(const std::string &filePath);
 // endregion
 
 // region Strings

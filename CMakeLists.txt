@@ -52,5 +52,6 @@ add_executable(ship_stowage_model
         src/simulator/SimulatorUtil.cpp src/simulator/SimulatorUtil.h
 
     # tests
+    tests/FileTests.h
     tests/IOTests.h
-    tests/SimulationTests.h)
+    tests/SimulationTests.h )

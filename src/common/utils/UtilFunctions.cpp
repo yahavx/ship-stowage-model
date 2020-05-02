@@ -142,17 +142,21 @@ std::string extractFilenameFromPath(const std::string &path, bool removeExtensio
 }
 
 StringVector getFilesFromDirectory(const std::string &directoryPath) {
-    StringVector stringVector;
+    StringVector files;
+
+    if (!isDirectoryExists(directoryPath)) {
+        return files;
+    }
 
     for (auto &tmp_directory : std::filesystem::directory_iterator(directoryPath)) {
         std::ostringstream myObjectStream; // build a stream
         myObjectStream << tmp_directory;  // write current file to a stream
         auto path = myObjectStream.str();  // pull the result from the stream
         path = path.substr(1, path.size() - 2);  // trim the "" from both sides
-        stringVector.push_back(path);
+        files.push_back(path);
     }
 
-    return stringVector;
+    return files;
 }
 
 bool createFolder(const std::string &path) {
@@ -165,10 +169,32 @@ bool createFolder(const std::string &path) {
     }
 }
 
+bool removeFolder(const std::string &path) {
+    // TODO
+    return false;
+    std::cout << path;
+}
+
+bool folderIsEmpty(const std::string &path) {
+    StringVector files = getFilesFromDirectory(path);
+    return files.size() == 0;
+}
+
 bool createEmptyFile(const std::string &filePath) {
     std::ofstream outputFile(filePath);
     outputFile << "";
     return true;
+}
+
+bool isDirectoryExists(const std::string& directory)
+{
+    return std::filesystem::is_directory(directory);
+}
+
+bool isFileExist(const std::string &filePath)
+{
+    std::ifstream infile(filePath);
+    return infile.good();
 }
 // endregion
 

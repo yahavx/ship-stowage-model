@@ -20,7 +20,7 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, std::vector<ErrorFlag
 ShipRoute readShipRouteFromFile(const std::string &filePath, std::vector<ErrorFlag> &errors);
 
 /// Returns a port with the cargo loaded from file. Port id is as in the file (assuming path is ID_<num>.cargo_data).
-ContainerStorage readPortCargoFromFile(const std::string &filePath);
+ContainerStorage readPortCargoFromFile(const std::string &filePath, std::vector<ErrorFlag> &errors);
 
 /// Reads operations from a file.
 std::optional<OPS> readPackingOperationsFromFile(const std::string &filePath);

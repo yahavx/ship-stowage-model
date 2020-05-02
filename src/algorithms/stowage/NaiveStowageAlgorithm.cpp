@@ -36,7 +36,7 @@ std::string NaiveStowageAlgorithm::getAlgorithmName() {
 }
 
 
-/// Returns true if inputFile is not a file (unloadOnly).
+/// Returns true if inputFile is not a file (unloadOnly).  // TODO: remove this (we don't get s_unloadOnly anymore)
 bool NaiveStowageAlgorithm::initPortId(const std::string &inputFile, Port &port) const {
     if (startsWith(inputFile, Constants::s_unloadOnly)) {
         std::string portCode = inputFile.substr(11, 5);
@@ -57,14 +57,10 @@ void NaiveStowageAlgorithm::initializePort(const std::string &inputFile, Port &p
         return;
     }
 
-    std::optional<ContainerStorage> storage = readPortCargoFromFile(inputFile);
+    std::vector<ErrorFlag> cargoErrors;
+    ContainerStorage storage = readPortCargoFromFile(inputFile, cargoErrors);
 
-    if (!storage.has_value()) {
-        std::cout << "Error in getting instructions for cargo: couldn't load port" << std::endl;
-
-    } else {
-        port.setStorage(*storage);
-    }
+    port.setStorage(storage);
 }
 // endregion
 

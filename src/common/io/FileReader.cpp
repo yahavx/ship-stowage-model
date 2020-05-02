@@ -25,9 +25,12 @@ bool SkipBOM(std::istream &in)  // some files contains garbage bytes at the star
 
 StringStringVector readFile(const std::string &path) {
     std::fstream fin;
-
-    fin.open(path, std::ios::in);  // TODO: validate the path
     StringStringVector data;  // the data from the file will be saved as a matrix
+
+    fin.open(path, std::ios::in);
+    if (!fin) {  // couldn't open file
+        return data;
+    }
 
     std::string line, word;
 
@@ -39,7 +42,7 @@ StringStringVector readFile(const std::string &path) {
 
         data.emplace_back();  // adds a new empty vector (data row)
 
-        std::stringstream s(line);  // used to split string to tokens
+        std::stringstream s(line);  // used to split line to tokens
 
         while (getline(s, word, ',')) {  // get tokens one by one with ', ' delimiter
             trimWhitespaces(word);
@@ -51,7 +54,11 @@ StringStringVector readFile(const std::string &path) {
 }
 
 bool writeFile(const std::string &path, const StringStringVector &data) {
-    std::ofstream outputFile(path);  // TODO: check it didn't fail
+    std::ofstream outputFile(path);
+
+    if (!outputFile) {
+        return false;
+    }
 
     for (StringVector dataRow : data) {
         for (longUInt i = 0; i < dataRow.size() - 1; i++) {
@@ -65,6 +72,10 @@ bool writeFile(const std::string &path, const StringStringVector &data) {
 
 bool writeFile(const std::string &path, const StringVector &data) {
     std::ofstream outputFile(path);
+
+    if (!outputFile) {
+        return false;
+    }
 
     for (std::string row : data) {
         outputFile << row << std::endl;
@@ -96,7 +107,3 @@ bool isCargoDataFileFormat(const std::string &fileName) {
     return true;
 }
 
-bool isDirectoryExists(const std::string& directory)
-{
-    return std::filesystem::is_directory(directory);
-}

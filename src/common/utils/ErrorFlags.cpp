@@ -7,7 +7,7 @@
 
 std::string flagToString(ErrorFlag flag);
 
-StringVector errorsFlagsToString(int errorFlags) {
+StringVector errorFlagsToString(int errorFlags) {
     StringVector errors;
     for (int i = 0; i < MAX_ERROR_BIT; i++) {
         int isBitEnabled = errorFlags & (1 << i);
@@ -29,6 +29,10 @@ StringVector errorsVectorToString(std::vector<ErrorFlag> errorFlagsVector) {
     }
 
     return errors;
+}
+
+bool hasFlag(int errorsFlag, ErrorFlag flag) {
+    return errorsFlag & flag;
 }
 
 int errorsVectorToErrorsFlag(std::vector<ErrorFlag> errorFlagsVector) {
@@ -81,6 +85,13 @@ std::string flagToString(ErrorFlag flag) {
 
         case ContainersAtPort_ContainersExceedsShipCapacity:
             return "Containers at port warning: ship is at full capacity, far containers will not be loaded";
+
+        case SimulationInit_OutputDirectoriesCreationFailed:
+            return "Simulation initialization fatal error: couldn't initialize output folders";
+        case SimulationInit_InvalidTravelPath:
+            return "Simulation initialization fatal error: couldn't find any travel directory";
+        case SimulationCleanup_OutputDirectoriesCleaningFailed:
+            return "Simulation cleanup error: couldn't remove temporary directories";
 
         default:
             return "INVALID ERROR";
