@@ -7,6 +7,7 @@
 
 #include "../algorithms/stowage/AbstractAlgorithm.h"
 #include "../common/actors/ContainerShip.h"
+#include "../common/utils/ErrorFlags.h"
 
 
 class Simulator {
@@ -40,15 +41,11 @@ public:
 
 private:
 
-    /**
-     * Inits the ship of a single simulation. Returns true if succeed.
-     * @return true if succeed.
-     */
-    bool initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath, ContainerShip &ship, StringVector &errors) const;
+     /// Inits the ship of a single simulation. Assume no fatal errors are in the plan and route.
+    ContainerShip initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath, std::vector<ErrorFlag> &errors) const;
 
     /// Inits the algorithm in a single simulation.
-    void initAlgorithm(AbstractAlgorithm &algorithm, const std::string &shipPlanPath,
-                       const std::string &shipRoutePath) const;
+    void initAlgorithm(AbstractAlgorithm &algorithm, const std::string &shipPlanPath, const std::string &shipRoutePath) const;
 
     /**
      * Perform packing operations received from algorithm, on simulator's ship. Validates each operation is legal.

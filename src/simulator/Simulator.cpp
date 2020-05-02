@@ -17,9 +17,8 @@
 const std::string Simulator::s_instructionsFilename = "cargo_instructions";
 
 const std::string Simulator::s_resultsTableTitle = "RESULTS";
-const std::string Simulator::s_generalErrorsTableName = "ERRORS";
+const std::string Simulator::s_generalErrorsTableName = "GeneralErrors";
 
-const std::string Simulator::s_generalErrorsRowTitle = "General Errors";
 const std::string Simulator::s_sumColumnTitle = "Sum";
 const std::string Simulator::s_errorsColumnTitle = "Num Errors";
 
@@ -42,14 +41,15 @@ Simulator::Simulator(const std::string &outputDir) : outputDir(outputDir) {
 
 void Simulator::runSimulations(const std::string &travelPath) {
     StringStringVector results;  // table for results
-    std::vector<ErrorFlag> generalErrors;
+    ErrorVector generalErrors;
 
     initOutputFolders(outputDir, generalErrors);
     StringVector travels = collectTravels(travelPath, generalErrors);
 
-    if (generalErrors.size() > 0) {  // any init error is fatal so we have to terminate
+    if (!generalErrors.empty()) {  // any init error is fatal so we have to terminate
         saveErrorFile(outputDir, s_generalErrorsTableName, generalErrors);
         cleanOutputFolders(outputDir, generalErrors);
+        return;
     }
 
     initResultsTable(results, travels, algorithms);  // add columns names and set table structure
@@ -77,19 +77,19 @@ void Simulator::runSimulations(const std::string &travelPath) {
 
     saveSimulationTables(outputDir, results, generalErrors);
 
-    cleanOutputFolders(outputDir, generalErrors);
+    cleanOutputFolders(outputDir);  // remove temp and errors (if empty), can disable it to debug
 }
 
 StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm, const std::string &travel, const std::string &craneOutputDir) {
-    StringStringVector report(2, StringVector());  // 2 rows, first for steps or -1 (if error occurred), second is zero or more entries (number of errors)
+    StringStringVector report = StringStringVector(2, StringVector());
     StringVector &results = report[0];
-    StringVector &errors = report[1];
+    StringVector &errors = report[1];  // TODO: remove error or errorFlags (keep one)
+    std::vector<ErrorFlag> errorFlags;
 
-    // validate root folder exists
-    if (!isDirectoryExists(travel)) {  // TODO: runSimulations should call this function (runSimulation) only with valid directories
-        std::cerr << "Simulation failed: the travel path supplied is not a directory" << std::endl;
-        results.push_back("<SimulationFailed>");
-        return report;  // we don't add an error because its not the algorithm fault
+    // the travel is validated before the simulation starts, but we do this for extra safety
+    if (!isTravelValid(travel)) {
+        results.push_back("-2");  // it shouldn't happen
+        return report;
     }
 
     ////////////////////////
@@ -101,12 +101,7 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm, const 
     std::string shipRoutePath = getShipRoutePath(travel);
 
     // Init for simulation
-    ContainerShip ship;
-    bool res = initSimulation(shipPlanPath, shipRoutePath, ship, errors);
-    if (!res) {
-        results.push_back("<SimulationFailed>");
-        return report;  // failed to init simulation
-    }
+    ContainerShip ship = initSimulation(shipPlanPath, shipRoutePath, errorFlags);
 
     // Init for algorithm
     initAlgorithm(algorithm, shipPlanPath, shipRoutePath);
@@ -226,7 +221,7 @@ void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, const std::string &s
                               const std::string &shipRoutePath) const {
     std::cout << "Initializing algorithm..." << std::endl;
 
-    algorithm.readShipPlan(shipPlanPath);  // set plan
+    algorithm.readShipPlan(shipPlanPath);  // set plan  // TODO: get the return value and document it (if there are errors)
     algorithm.readShipRoute(shipRoutePath);  // set route
     WeightBalanceCalculator algoWeightBalanceCalculator;
     algorithm.setWeightBalanceCalculator(algoWeightBalanceCalculator);
@@ -235,26 +230,14 @@ void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, const std::string &s
     printSeparator(1, 1);
 }
 
-bool Simulator::initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath, ContainerShip &ship, StringVector &errors) const {
+ContainerShip Simulator::initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath, std::vector<ErrorFlag> &errors) const {
     std::cout << "Initializing simulation..." << std::endl;
-    std::vector<ErrorFlag> shipPlanErrors, shipRouteErrors;
 
-    ShipPlan shipPlan = readShipPlanFromFile(shipPlanPath, shipPlanErrors);
-    ShipRoute shipRoute = readShipRouteFromFile(shipRoutePath, shipRouteErrors);
-
-    if (containsFatalError(shipPlanErrors) || containsFatalError(shipRouteErrors)) {  // TODO: we should verify this before calling runSimulation
-        std::cout << "Simulation failed: couldn't initialize from files" << std::endl;
-        return false;
-    }
-
+    ShipPlan shipPlan = readShipPlanFromFile(shipPlanPath, errors);
+    ShipRoute shipRoute = readShipRouteFromFile(shipRoutePath, errors);
     WeightBalanceCalculator weightBalanceCalculator(shipPlan);
-    ship = ContainerShip(shipPlan, shipRoute, weightBalanceCalculator);
 
-    std::cout << "Success." << std::endl;
-    printSeparator(1, 1);
-    return true;
-    std::cout << errors;  // TODO
-    return true;
+    return ContainerShip(shipPlan, shipRoute, weightBalanceCalculator);
 }
 
 void validateLoadOperation(ContainerShip &ship, Port &port, const PackingOperation &op, StringVector &errors) {

@@ -19,6 +19,8 @@
 #include "../common/utils/UtilFunctions.h"
 #include "../common/utils/Printers.h"
 
+std::vector<ErrorFlag> SU_errorGarbageCollector;
+ErrorVector SU_errorGarbageCollector2;
 
 // region Simulation utils
 
@@ -26,8 +28,7 @@ std::string getNextFileForPort(StringToStringVectorMap &cargoData, StringToIntMa
     std::string portCOde = portId.getCode();
     StringVector &filesForPort = cargoData[portCOde];
 
-    if (filesForPort.size() > 0) {
-
+    if (!filesForPort.empty()) {
         std::string portCargoFile = filesForPort[0];  // retrieve cargo_data with smallest index
 
         if (extractNumberFromCargoFile(portCargoFile) == portVisits[portCOde]) {  // it matches the port visit number, pop it and return
@@ -80,21 +81,23 @@ void validateNoCargoFilesLeft(StringToStringVectorMap &map) {
     }
 }
 
-StringVector collectTravels(const std::string &travelPath, std::vector<ErrorFlag> &errors) {
-    if (travelPath == "") {  // no travel path supplied
-        errors.push_back(ErrorFlag::SimulationInit_InvalidTravelPath);
+StringVector collectTravels(const std::string &travelPath, ErrorVector &errors) {
+    if (travelPath.empty()) {  // no travel path supplied
+        errors.push_back({"Initialization", ErrorFlag::SimulationInit_InvalidTravelPath});
     }
     StringVector files = getFilesFromDirectory(travelPath);
-    if (files.size() == 0) {
-        errors.push_back(ErrorFlag::SimulationInit_InvalidTravelPath);
+    if (files.empty()) {
+        errors.push_back({"Initialization", ErrorFlag::SimulationInit_InvalidTravelPath});
     }
 
     return files;
 }
 
-bool isTravelValid(const std::string &travelDirectory, std::vector<ErrorFlag> &errors) {
+bool isTravelValid(const std::string &travelDirectory, ErrorVector &errors) {
+    std::string travelName = extractFilenameFromPath(travelDirectory);
+
     if (!isDirectoryExists(travelDirectory)) {
-        errors.push_back(ErrorFlag::Travel_InvalidDirectory);
+        errors.push_back({travelName, ErrorFlag::Travel_InvalidDirectory});
         return false;
     }
 
@@ -104,7 +107,7 @@ bool isTravelValid(const std::string &travelDirectory, std::vector<ErrorFlag> &e
     readShipRouteFromFile(getShipRoutePath(travelDirectory), routeErrors);
 
     if (containsFatalError(planErrors) || containsFatalError(routeErrors)) {
-        errors.push_back(ErrorFlag::Travel_InvalidInput);
+        errors.push_back({travelName, ErrorFlag::Travel_InvalidInput});
         return false;
     }
 
@@ -195,14 +198,14 @@ void initResultsTable(StringStringVector &results, StringVector &travels, std::v
     }
 }
 
-void saveSimulationTables(const std::string &outputDir, const StringStringVector &results, const std::vector<ErrorFlag> &errors) {
+void saveSimulationTables(const std::string &outputDir, const StringStringVector &results, const ErrorVector &errors) {
     writeFile(outputDir + "/simulation.results.csv", results);
     if (errors.size() > 0) {
-        saveErrorFile(getErrorsFolderPath(outputDir), Simulator::s_generalErrorsTableName, errors);
+        saveErrorFile(outputDir, Simulator::s_generalErrorsTableName, errors);
     }
 }
 
-void saveErrorFile(const std::string outputDir, const std::string &fileName, std::vector<ErrorFlag> errors) {
+void saveErrorFile(const std::string outputDir, const std::string &fileName, const ErrorVector &errors) {
     StringVector errorMessages = errorsVectorToString(errors);
 
     std::string filePath = getErrorsFolderPath(outputDir) + "/" + fileName;
@@ -250,27 +253,27 @@ void printSimulationInfo(const std::string &travel, AbstractAlgorithm *&algorith
 
 }
 
-void initOutputFolders(const std::string &outputDir, std::vector<ErrorFlag> &errors) {
+void initOutputFolders(const std::string &outputDir, ErrorVector &errors) {
     bool res = createFolder(getCraneInstructionsRootFolder(outputDir));
     bool res2 = createFolder(getTempFolderPath(outputDir));
     bool res3 = createFolder(getErrorsFolderPath(outputDir));
     if (!(res && res2 && res3)) {
-        errors.push_back(ErrorFlag::SimulationInit_OutputDirectoriesCreationFailed);
+        errors.push_back({"Initialization", ErrorFlag::SimulationInit_OutputDirectoriesCreationFailed});
     }
 }
 
-void cleanOutputFolders(const std::string &outputDir, std::vector<ErrorFlag> &errors) {
+void cleanOutputFolders(const std::string &outputDir, ErrorVector &errors) {
     bool res = removeFolder(getTempFolderPath(outputDir));
 
     std::string errorsFolder = getErrorsFolderPath(outputDir);
 
-
+    bool res2;
     if (isFolderEmpty(errorsFolder)) {
+        res2 = removeFolder(getErrorsFolderPath(outputDir));
     }
 
-    bool res2 = removeFolder(getErrorsFolderPath(outputDir));
     if (!(res && res2)) {
-        errors.push_back(ErrorFlag::SimulationInit_OutputDirectoriesCreationFailed);
+        errors.push_back({"Cleanup", ErrorFlag::SimulationInit_OutputDirectoriesCreationFailed});
     }
 }
 // endregion

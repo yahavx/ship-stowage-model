@@ -9,6 +9,8 @@
 #include "../utils/ErrorFlags.h"
 #include <tuple>
 
+std::vector<ErrorFlag> OR_errorGarbageCollector;
+
 //#define DEBUG
 
 // general for this module:

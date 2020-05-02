@@ -5,7 +5,6 @@
 #ifndef SHIP_STOWAGE_MODEL_ERRORFLAGS_H
 #define SHIP_STOWAGE_MODEL_ERRORFLAGS_H
 
-
 #include "Definitions.h"
 
 #define MAX_ERROR_BIT 30
@@ -33,6 +32,7 @@ enum ErrorFlag {
 
     ContainersAtPort_ContainersExceedsShipCapacity = 1 << 18,
 
+    // our errors
     SimulationInit_OutputDirectoriesCreationFailed = 1 << 20,
     SimulationInit_InvalidTravelPath = 1 << 21,
     SimulationCleanup_OutputDirectoriesCleaningFailed = 1 << 22,
@@ -40,12 +40,14 @@ enum ErrorFlag {
     Travel_InvalidInput = 1 << 24
 };
 
+typedef std::vector<std::pair<std::string, ErrorFlag>> ErrorVector;  // first entry is entity (travel name, etc), second is the error
 
 /// Converts a int that represents a error flags vector, to a string vector, in which each entry represents one error.
 StringVector errorFlagsToString(int errorFlags);
 
 /// Converts an error flags vector to a string vector, in which each entry represents one error.
 StringVector errorsVectorToString(std::vector<ErrorFlag> errorFlagsVector);
+StringVector errorsVectorToString(ErrorVector errorFlagsVector);
 
 /// Converts an errors vector to a errors flag (int). If an error appears multiple times, it is treated as once.
 int errorsVectorToErrorsFlag(std::vector<ErrorFlag> errorFlagsVector);

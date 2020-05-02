@@ -53,7 +53,7 @@ bool isEnglishWord(const std::string &str);
  * Extracts file name from a path (C:/A/B/C/d.txt -> d.txt).
  * @param removeExtension removes the file extension if exists (.txt for example).
  */
-std::string extractFilenameFromPath(const std::string &file, bool removeExtension);
+std::string extractFilenameFromPath(const std::string &file, bool removeExtension = false);
 
 /// Returns a list of files of a directory. If can't open directory, returns empty vector.
 StringVector getFilesFromDirectory(const std::string &directoryPath);

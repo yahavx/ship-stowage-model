@@ -31,6 +31,17 @@ StringVector errorsVectorToString(std::vector<ErrorFlag> errorFlagsVector) {
     return errors;
 }
 
+StringVector errorsVectorToString(ErrorVector errorFlagsVector) {
+    StringVector errors;
+    for (auto& pair : errorFlagsVector) {
+        std::string entity = !pair.first.empty() ? "[" + pair.first + "] " : "";
+        std::string errorMsg = flagToString(pair.second);
+        errors.push_back(entity + errorMsg);
+    }
+
+    return errors;
+}
+
 bool hasFlag(int errorsFlag, ErrorFlag flag) {
     return errorsFlag & flag;
 }

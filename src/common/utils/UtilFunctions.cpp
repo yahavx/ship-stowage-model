@@ -83,9 +83,9 @@ std::string packingTypeFromString(PackingType type) {
 // region Condition checks
 
 bool isInteger(const std::string &str) {
-    if (str == "-1") {
-        return true;
-    }
+//    if (str == "-1") {  // TODO: do we need this?
+//        return true;
+//    }
     return !str.empty() && std::find_if(str.begin(),
                                         str.end(), [](unsigned char c) { return !std::isdigit(c); }) == str.end();
 }

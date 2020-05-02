@@ -8,12 +8,13 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}" )
 # Keep this order when you add a file
 
 add_executable(ship_stowage_model
-        main.cpp
+    main.cpp
     # src
         # algorithms
             # stowage
+            src/algorithms/stowage/AbstractAlgorithm.h
             src/algorithms/stowage/NaiveStowageAlgorithm.cpp src/algorithms/stowage/NaiveStowageAlgorithm.h
-        src/algorithms/stowage/AbstractAlgorithm.h
+            src/algorithms/stowage/SemiAbstractAlgorithm.cpp src/algorithms/stowage/SemiAbstractAlgorithm.h
         src/algorithms/CranesOperation.cpp src/algorithms/CranesOperation.h
         src/algorithms/WeightBalanceCalculator.cpp src/algorithms/WeightBalanceCalculator.h
 
@@ -54,4 +55,4 @@ add_executable(ship_stowage_model
     # tests
     tests/FileTests.h
     tests/IOTests.h
-    tests/SimulationTests.h )
+    tests/SimulationTests.h)
