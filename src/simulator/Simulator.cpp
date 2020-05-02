@@ -10,7 +10,7 @@
 #include "../algorithms/CranesOperation.h"
 #include "../common/io/FileReader.h"
 #include "../common/utils/UtilFunctions.h"
-#include "../common/utils/ErrorFlags.h"
+#include "../common/utils/Errors.h"
 #include "../algorithms/stowage/BadAlgorithm.h"
 
 // region Constants
@@ -45,12 +45,12 @@ Simulator::Simulator(const std::string &outputDir) : outputDir(outputDir) {
 
 void Simulator::runSimulations(const std::string &travelPath) {
     StringStringVector results;  // table for results
-    ErrorVector generalErrors;
+    Errors generalErrors;
 
     initOutputFolders(outputDir, generalErrors);
     StringVector travels = collectTravels(travelPath, generalErrors);
 
-    if (!generalErrors.empty()) {  // any init error is fatal so we have to terminate
+    if (!generalErrors.hasNoErrors()) {  // any init error is fatal so we have to terminate
         saveErrorFile(outputDir, s_generalErrorsTableName, generalErrors);
         cleanOutputFolders(outputDir, generalErrors);
         return;
@@ -68,8 +68,7 @@ void Simulator::runSimulations(const std::string &travelPath) {
 
             printSimulationInfo(travel, algorithm);  // prints starting messages
 
-            auto craneOutputDir = getCraneInstructionsSimulationFolder(outputDir, intToString(i), extractFilenameFromPath(travel,
-                                                                                                                          false));  // crane instructions directory for the current run  // TODO: change i to algorithm name
+            auto craneOutputDir = getCraneInstructionsSimulationFolder(outputDir, intToStr(i), extractFilenameFromPath(travel)); // crane instructions directory for the current run  // TODO: change i to algorithm name
             createFolder(craneOutputDir);
             StringStringVector simulationResults = runSimulation(*algorithm, travel, craneOutputDir);  // run simulation, collect data
 
@@ -87,8 +86,7 @@ void Simulator::runSimulations(const std::string &travelPath) {
 StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm, const std::string &travel, const std::string &craneOutputDir) {
     StringStringVector report = StringStringVector(2, StringVector());
     StringVector &results = report[0];
-    StringVector &errors = report[1];  // TODO: remove error or errorFlags (keep one)
-    std::vector<ErrorFlag> errorFlags;
+    Errors errors;
 
     // the travel is validated before the simulation starts, but we do this for extra safety
     if (!isTravelValid(travel)) {
@@ -105,7 +103,7 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm, const 
     std::string shipRoutePath = getShipRoutePath(travel);
 
     // Init for simulation
-    ContainerShip ship = initSimulation(shipPlanPath, shipRoutePath, errorFlags);
+    ContainerShip ship = initSimulation(shipPlanPath, shipRoutePath, errors);
 
     // Init for algorithm
     initAlgorithm(algorithm, shipPlanPath, shipRoutePath);
@@ -144,7 +142,7 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm, const 
         algorithm.getInstructionsForCargo(cargoFilePath, instructionsOutputPath);
 
         std::vector<ErrorFlag> cargoErrors;
-        Port port(portId, readPortCargoFromFile(cargoFilePath, cargoErrors));
+        Port port(portId, readPortCargoFromFile(cargoFilePath, errors));
 
         auto optOps = readPackingOperationsFromFile(instructionsOutputPath);  // read the operations to perform, written by the algorithm
 
@@ -169,7 +167,7 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm, const 
     printSeparator(1, 1);
 
     std::cout << "The ship has completed its journey. Total number of operations: " << totalNumberOfOps << std::endl;
-    results.push_back(intToString(totalNumberOfOps));  // add number of steps to the table
+    results.push_back(intToStr(totalNumberOfOps));  // add number of steps to the table
 
     printSeparator(1, 5);
 
@@ -179,8 +177,7 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm, const 
 
 // region Simulation core
 
-void
-Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, StringVector &errors) const {// Perform operations on local ship and port
+void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const {// Perform operations on local ship and port
 
     // TODO: check that any containers that were loaded to the port to unload others, are back in ship
 
@@ -190,13 +187,13 @@ Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Opera
 
         auto opResult = CranesOperation::preformOperation(op, port, ship);
         if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND) {
-            std::cerr << "Crane received illegal operation, didn't find container with ID:" << op.getContainerId() << std::endl;
-            errors.push_back("didn't find container: " + op.getContainerId() + " while at port: " + port.getId().getCode() + ", executing crane operation: " +
+            std::cerr << "crane received illegal operation, didn't find container with ID: " << op.getContainerId() << std::endl;
+            errors.addError("[Algorithm Instruction Error] Didn't find container " + op.getContainerId() + " while at port " + port.getId().getCode() + ", and executing crane operation " +
                              craneOperationToString(op));
         }
         if (opResult == CraneOperationResult::FAIL_ILLEGAL_OP) {
             std::cerr << "Illegal crane operation: " << op << std::endl;
-            errors.push_back("Illegal crane operation: " + craneOperationToString(op));
+            errors.addError("[Algorithm Instruction Error] Illegal crane operation: " + craneOperationToString(op));
         }
     }
 
@@ -214,11 +211,10 @@ Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Opera
     }
 
     if (foundUnloadedContainers)
-        errors.push_back("Algorithm didn't load all required containers from port " + port.getId().getCode() + " although ship isn't full");
+        errors.addError("[Algorithm Instruction Error] Algorithm didn't load all required containers from port " + port.getId().getCode() + " although ship isn't full");
 
     std::cout << ops;
     return;
-    std::cout << errors;
 }
 
 void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, const std::string &shipPlanPath,
@@ -234,7 +230,7 @@ void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, const std::string &s
     printSeparator(1, 1);
 }
 
-ContainerShip Simulator::initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath, std::vector<ErrorFlag> &errors) const {
+ContainerShip Simulator::initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath, Errors &errors) const {
     std::cout << "Initializing simulation..." << std::endl;
 
     ShipPlan shipPlan = readShipPlanFromFile(shipPlanPath, errors);
@@ -244,16 +240,16 @@ ContainerShip Simulator::initSimulation(const std::string &shipPlanPath, const s
     return ContainerShip(shipPlan, shipRoute, weightBalanceCalculator);
 }
 
-void validateLoadOperation(ContainerShip &ship, Port &port, const PackingOperation &op, StringVector &errors) {
+void validateLoadOperation(ContainerShip &ship, Port &port, const PackingOperation &op, Errors &errors) {
     const auto &containerId = op.getContainerId();
     if (ship.getCargo().hasContainer(containerId)) {
-        errors.push_back("Duplicate container id: " + op.getContainerId() + " while loading to ship");
+        errors.addError("[Containers At Port Warning] Duplicate container id (" + op.getContainerId() + ") while loading to ship, ignoring");
     }
     return;
     std::cout << port;
 }
 
-void Simulator::validatePackingOperation(ContainerShip &ship, Port &port, const PackingOperation &op, StringVector &errors) const {
+void Simulator::validatePackingOperation(ContainerShip &ship, Port &port, const PackingOperation &op, Errors &errors) const {
 
     switch (op.getType()) {
         case PackingType::load:

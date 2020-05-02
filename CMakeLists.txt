@@ -45,7 +45,7 @@ add_executable(ship_stowage_model
             # utils
             src/common/utils/Constants.cpp src/common/utils/Constants.h
             src/common/utils/Definitions.h
-            src/common/utils/ErrorFlags.cpp src/common/utils/ErrorFlags.h
+            src/common/utils/Errors.cpp src/common/utils/Errors.h
             src/common/utils/Printers.cpp src/common/utils/Printers.h
             src/common/utils/UtilFunctions.cpp src/common/utils/UtilFunctions.h
 

@@ -3,33 +3,31 @@
 //
 
 #include "SemiAbstractAlgorithm.h"
-#include "../../common/utils/ErrorFlags.h"
+#include "../../common/utils/Errors.h"
 #include "../../common/io/ObjectsReader.h"
 
 int SemiAbstractAlgorithm::readShipPlan(const std::string &shipPlanPath) {
-    std::vector<ErrorFlag> errors;
+    Errors errors;
     auto shipPlan = readShipPlanFromFile(shipPlanPath, errors);
     this->ship.setShipPlan(shipPlan);
-    int flags = errorsVectorToErrorsFlag(errors);
 
-    if (containsFatalError(flags)) {
-        this->fatalError = flags;
+    if (errors.hasFatalError()) {
+        this->fatalError = errors.toErrorFlag();
     }
 
-    return flags;
+    return errors.toErrorFlag();
 }
 
 int SemiAbstractAlgorithm::readShipRoute(const std::string &shipRoutePath) {
-    std::vector<ErrorFlag> errors;
+    Errors errors;
     ShipRoute route = readShipRouteFromFile(shipRoutePath, errors);
     this->ship.setShipRoute(route);
-    int flags = errorsVectorToErrorsFlag(errors);
 
-    if (containsFatalError(flags)) {
-        this->fatalError = flags;
+    if (errors.hasFatalError()) {
+        this->fatalError = errors.toErrorFlag();
     }
 
-    return flags;
+    return errors.toErrorFlag();
 }
 
 int SemiAbstractAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &calculator) {

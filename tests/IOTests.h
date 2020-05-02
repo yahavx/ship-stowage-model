@@ -12,7 +12,7 @@
 #include "../src/common/data_objects/ShipPlan.h"
 #include "../src/common/io/ObjectsReader.h"
 #include "../src/common/utils/Printers.h"
-#include "../src/common/utils/ErrorFlags.h"
+#include "../src/common/utils/Errors.h"
 
 void inline readShipPlanTest();
 
@@ -54,61 +54,58 @@ void inline runIOTests() {
 
 void inline readShipPlanTest() {
     cout << "readShipPlanTest()" << endl << endl;
-    vector<ErrorFlag> errors;
+    Errors errors;
     string path = "../input-examples/test-files/Plan";
     ShipPlan shipPlan = readShipPlanFromFile(path, errors);
-    assert(!containsFatalError(errors));
+    assert(!errors.hasFatalError());
 
     cout << "Ship plan" << endl;
     cout << shipPlan;
-    cout << "Errors:" << endl;
-    printErrorsFromFlagVector(errors);
-    cout << "Error flag list:" << endl;
-    printErrorsFromFlag(errorsVectorToErrorsFlag(errors));
+    cout << errors;
+    printErrorsFromFlag(errors.toErrorFlag());
 }
 
 void inline readFatalShipPlan() {
     cout << "readFatalShipPlan()" << endl << endl;
-    vector<ErrorFlag> errors;
+
     StringVector paths = {"../input-examples/test-files/FatalPlan", "../input-examples/test-files/FatalPlan2", "../input-examples/test-files/FatalPlan_NoFile"};
 
     for (auto &path: paths) {
-        errors.clear();
+        Errors errors;
         cout << extractFilenameFromPath(path, false) << endl;
         ShipPlan shipPlan = readShipPlanFromFile(path, errors);
-        printErrorsFromFlagVector(errors);
-        assert(containsFatalError(errors));
+        cout << errors;
+        assert(!errors.hasFatalError());
         printSeparator(0, 0);
     }
 }
 
 void inline readShipRouteTest() {
     cout << "readShipRouteTest()" << endl << endl;
-    vector<ErrorFlag> errors;
+    Errors errors;
+
     string path = "../input-examples/test-files/Route";
+
     ShipRoute shipRoute = readShipRouteFromFile(path, errors);
     assert(!containsFatalError(errors));
 
     cout << "Ship route" << endl;
     cout << shipRoute;
-    cout << "Errors list:" << endl;
-    printErrorsFromFlagVector(errors);
-    cout << "Error flag list:" << endl;
-    printErrorsFromFlag(errorsVectorToErrorsFlag(errors));
+    cout << errors;
+    printErrorsFromFlag(errors.toErrorFlag());
 }
 
 void inline readFatalShipRoute() {
     cout << "readFatalShipRoute()" << endl << endl;
-    vector<ErrorFlag> errors;
     StringVector paths = {"../input-examples/test-files/FatalRoute", "../input-examples/test-files/FatalRoute2",
                           "../input-examples/test-files/FatalRoute_NoFile"};
 
     for (auto &path: paths) {
-        errors.clear();
-        cout << extractFilenameFromPath(path, false) << endl;
+        Errors errors;
+        cout << extractFilenameFromPath(path) << endl;
         ShipRoute shipRoute = readShipRouteFromFile(path, errors);
-        printErrorsFromFlagVector(errors);
-        assert(containsFatalError(errors));
+        cout << errors;
+        assert(errors.hasFatalError());
         printSeparator(0,0);
     }
 }
@@ -116,20 +113,17 @@ void inline readFatalShipRoute() {
 
 void inline readCargoToPortFromFileTest() {
     cout << "readCargoToPortFromFileTest()" << endl << endl;
-    vector<ErrorFlag> errors;
 
     StringVector paths = {"../input-examples/test-files/AAAAA_1.cargo_data", "../input-examples/test-files/NOFIL_23.cargo_data"};
 
     for (auto &path: paths) {
-        errors.clear();
-        cout << extractFilenameFromPath(path, false) << endl;
+        Errors errors;
+        cout << extractFilenameFromPath(path) << endl;
         ContainerStorage storage = readPortCargoFromFile(path, errors);
         cout << "Container Storage:" << endl;
         cout << storage;
-        cout << "Errors:" << endl;
-        printErrorsFromFlagVector(errors);
-        cout << "Error flag list:" << endl;
-        printErrorsFromFlag(errorsVectorToErrorsFlag(errors));
+        cout << errors;
+        printErrorsFromFlag(errors.toErrorFlag());
         printSeparator(0,0);
     }
 }

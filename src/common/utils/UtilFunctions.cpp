@@ -11,11 +11,11 @@
 
 // region Type Conversions
 
-int stringToInt(const std::string &str) {
+int strToInt(const std::string &str) {
     return std::stoi(str);
 }
 
-std::string intToString(int num) {
+std::string intToStr(int num) {
     return std::to_string(num);
 }
 
@@ -33,7 +33,7 @@ IntVector convertRowToInt(const StringVector &row) {
     IntVector intRow;
 
     for (auto &token : row) {
-        intRow.push_back(stringToInt(token));  // add tokens to row
+        intRow.push_back(strToInt(token));  // add tokens to row
     }
 
     return intRow;
@@ -46,7 +46,7 @@ IntIntVector convertDataToInt(const StringStringVector &data) {
     for (auto &currentRow : data) {
         intData.emplace_back();  // add new row entry
         for (auto &token : currentRow) {
-            intData.back().push_back(stringToInt(token));  // add tokens to row
+            intData.back().push_back(strToInt(token));  // add tokens to row
         }
     }
 

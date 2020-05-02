@@ -7,21 +7,19 @@
 
 #include "../data_objects/ShipPlan.h"
 #include "../data_objects/ShipRoute.h"
-#include "../utils/ErrorFlags.h"
-
-extern std::vector<ErrorFlag> OR_errorGarbageCollector;
+#include "../utils/Errors.h"
 
 /**
  * Reads a ship plan from a file.
- * @param errors each error found will be added to the vector (the same error can be added multiple times).
+ * @param errors each error found will be added to this,
  */
-ShipPlan readShipPlanFromFile(const std::string &filePath, std::vector<ErrorFlag> &errors = OR_errorGarbageCollector);
+ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors = Errors::garbageCollector);
 
 /// Reads a route file (list of ports).
-ShipRoute readShipRouteFromFile(const std::string &filePath, std::vector<ErrorFlag> &errors = OR_errorGarbageCollector);
+ShipRoute readShipRouteFromFile(const std::string &filePath, Errors &errors = Errors::garbageCollector);
 
 /// Returns a port with the cargo loaded from file. Port id is as in the file (assuming path is ID_<num>.cargo_data).
-ContainerStorage readPortCargoFromFile(const std::string &filePath, std::vector<ErrorFlag> &errors = OR_errorGarbageCollector);
+ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &errors = Errors::garbageCollector);
 
 /// Reads operations from a file.
 std::optional<Operations> readPackingOperationsFromFile(const std::string &filePath);

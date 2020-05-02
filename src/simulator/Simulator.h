@@ -7,7 +7,7 @@
 
 #include "../algorithms/stowage/AbstractAlgorithm.h"
 #include "../common/actors/ContainerShip.h"
-#include "../common/utils/ErrorFlags.h"
+#include "../common/utils/Errors.h"
 
 
 class Simulator {
@@ -42,7 +42,7 @@ public:
 private:
 
      /// Inits the ship of a single simulation. Assume no fatal errors are in the plan and route.
-    ContainerShip initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath, std::vector<ErrorFlag> &errors) const;
+    ContainerShip initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath, Errors &errors) const;
 
     /// Inits the algorithm in a single simulation.
     void initAlgorithm(AbstractAlgorithm &algorithm, const std::string &shipPlanPath, const std::string &shipRoutePath) const;
@@ -51,9 +51,9 @@ private:
      * Perform packing operations received from algorithm, on simulator's ship. Validates each operation is legal.
      * @param errors empty vector, to fill with errors, one per each entry
      */
-    void performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, StringVector &errors) const;
+    void performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const;
 
-    void validatePackingOperation(ContainerShip &ship, Port &port, const PackingOperation &op, StringVector &errors) const;
+    void validatePackingOperation(ContainerShip &ship, Port &port, const PackingOperation &op, Errors &errors) const;
 // endregion
 
     // region Constants

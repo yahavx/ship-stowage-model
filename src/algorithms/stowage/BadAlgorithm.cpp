@@ -12,12 +12,12 @@ std::string BadAlgorithm::getAlgorithmName() {
 }
 // endregion
 
-int BadAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {  // this is currently the same as NaiveStowage
+int BadAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
     if (this->fatalError) {
         return this->fatalError;
     }
 
-    std::vector<ErrorFlag> errors;
+    Errors errors;
 
     PortId id = this->ship.getShipRoute().getFirstPort();
     ContainerStorage storage = readPortCargoFromFile(inputFile, errors);
@@ -38,12 +38,12 @@ int BadAlgorithm::getInstructionsForCargo(const std::string &inputFile, const st
         containersToLoad.insert(containersToLoad.end(), portContainers.begin(), portContainers.end());
     }
 
-    // Get ops for unloading and loading from ship
-    Operations ops = ship.dock(port, containersToLoad);
+//    Operations ops = ship.dock(port, containersToLoad);
+    Operations ops = Operations();  // intentional bug
 
     writePackingOperationsToFile(outputFile, ops);
 
     ship.markCurrentVisitDone(); // pop the current port from the ShipRoute
 
-    return errorsVectorToErrorsFlag(errors);
+    return errors.toErrorFlag();
 }

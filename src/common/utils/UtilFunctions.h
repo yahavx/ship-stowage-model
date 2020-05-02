@@ -12,10 +12,10 @@
 // region Type Conversions
 
 /// Converts string to int. Doesn't validate its legal.
-int stringToInt(const std::string &str);
+int strToInt(const std::string &str);
 
 /// Converts int to string.
-std::string intToString(int num);
+std::string intToStr(int num);
 
 std::string craneOperationToString(const PackingOperation &op);
 

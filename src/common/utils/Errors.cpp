@@ -2,62 +2,30 @@
 // Created by t-yabeny on 5/1/2020.
 //
 
-#include "ErrorFlags.h"
+#include "Errors.h"
+#include "UtilFunctions.h"
 
 
-std::string flagToString(ErrorFlag flag);
+// region Error class
 
-StringVector errorFlagsToString(int errorFlags) {
-    StringVector errors;
-    for (int i = 0; i < MAX_ERROR_BIT; i++) {
-        int isBitEnabled = errorFlags & (1 << i);
+Errors Errors::garbageCollector;
 
-        if (isBitEnabled) {
-            std::string errorMsg = flagToString(static_cast<ErrorFlag>(isBitEnabled));
-            errors.push_back(errorMsg);
-        }
-    }
+// region Constructors
 
-    return errors;
-}
+Error::Error(ErrorFlag flag) : errorFlag(flag) {}
 
-StringVector errorsVectorToString(std::vector<ErrorFlag> errorFlagsVector) {
-    StringVector errors;
-    for (ErrorFlag flag : errorFlagsVector) {
-        std::string errorMsg = flagToString(flag);
-        errors.push_back(errorMsg);
-    }
+Error::Error(ErrorFlag flag, const std::string &errorMsg) : errorFlag(flag), errorMsg(errorMsg) {}
 
-    return errors;
-}
+Error::Error(const std::string &errorMsg) : errorMsg(errorMsg) {}
+// endregion
 
-StringVector errorsVectorToString(ErrorVector errorFlagsVector) {
-    StringVector errors;
-    for (auto& pair : errorFlagsVector) {
-        std::string entity = !pair.first.empty() ? "[" + pair.first + "] " : "";
-        std::string errorMsg = flagToString(pair.second);
-        errors.push_back(entity + errorMsg);
-    }
+// region Functions
 
-    return errors;
-}
+std::string Error::toString() {
+    if (errorMsg != "")
+        return errorMsg;
 
-bool hasFlag(int errorsFlag, ErrorFlag flag) {
-    return errorsFlag & flag;
-}
-
-int errorsVectorToErrorsFlag(std::vector<ErrorFlag> errorFlagsVector) {
-    int errors;
-    for (ErrorFlag flag : errorFlagsVector) {
-        errors |= flag;
-    }
-
-    return errors;
-}
-
-/// Converts a single flag to a string.
-std::string flagToString(ErrorFlag flag) {
-    switch (flag) {
+    switch (errorFlag) {
         case ShipPlan_InvalidFloorHeight:
             return "Ship plan warning: data row exceeds the maximum available containers, ignored";
         case ShipPlan_InvalidXYCoordinates:
@@ -97,12 +65,15 @@ std::string flagToString(ErrorFlag flag) {
         case ContainersAtPort_ContainersExceedsShipCapacity:
             return "Containers at port warning: ship is at full capacity, far containers will not be loaded";
 
+            // Our errors
+
         case SimulationInit_OutputDirectoriesCreationFailed:
-            return "Simulation initialization fatal error: couldn't initialize output folders";
+            return "[Simulator Fatal Error] Couldn't initialize output folders";
         case SimulationInit_InvalidTravelPath:
-            return "Simulation initialization fatal error: couldn't find any travel directory";
+            return "[Simulator Fatal Error] Travel path not supplied, or couldn't find any travel directories";
         case SimulationCleanup_OutputDirectoriesCleaningFailed:
-            return "Simulation cleanup error: couldn't remove temporary directories";
+            return "[Simulator Warning] Couldn't remove temporary directories";
+
         case Travel_InvalidDirectory:
             return "Simulation travel error: travel directory doesn't exist, skipping travel";
         case Travel_InvalidInput:
@@ -113,15 +84,102 @@ std::string flagToString(ErrorFlag flag) {
     }
 }
 
-bool containsFatalError(int errorFlags) {  // TODO: check that the & and | return the desired boolean value
-    return (errorFlags & ShipPlan_FatalError) | (errorFlags & ShipRoute_FatalError) | (errorFlags & ShipRoute_FatalError_SinglePort);
+bool Error::isFlag(ErrorFlag flag) {
+    return errorFlag & flag;
 }
 
-bool containsFatalError(std::vector<ErrorFlag> errorFlagsVector) {
-    for (ErrorFlag flag : errorFlagsVector) {
-        if (containsFatalError(flag))
+bool Error::isFatalError() {
+    return (errorFlag & ShipPlan_FatalError) | (errorFlag & ShipRoute_FatalError) | (errorFlag & ShipRoute_FatalError_SinglePort);
+}
+// endregion
+// endregion
+
+// region Errors class
+
+// region Functions
+
+void Errors::addError(const Error &error) {
+    errorsList.push_back(error);
+}
+
+StringVector Errors::toString() const {
+    StringVector errors;
+    for (Error error : errorsList) {
+        errors.push_back(error.toString());
+    }
+
+    return errors;
+}
+
+bool Errors::hasFatalError() {
+    for (Error error : errorsList) {
+        if (error.isFatalError())
             return true;
     }
 
     return false;
+}
+
+int Errors::toErrorFlag() {
+    int errors;
+    for (Error error : errorsList) {
+        errors |= error.errorFlag;
+    }
+
+    return errors;
+}
+
+bool Errors::hasNoErrors() const {
+    return errorsList.empty();
+}
+
+bool Errors::hasErrors() const {
+    return !errorsList.empty();
+}
+// endregion
+
+// region Printer
+
+std::ostream &operator<<(std::ostream &os, const Errors &errors) {
+    StringVector errorsStr = errors.toString();
+    std::cout << "Errors {" << std::endl;
+    for (longUInt i = 0 ; i < errorsStr.size(); i++) {
+        std::cout << "\t" << errorsStr[i] << std::endl;
+    }
+    std::cout << "}" << std::endl;
+    return os;
+}
+// endregion
+// endregion
+
+std::string errorFlagsToString(int errorFlags) {
+    IntVector errorNumbers;
+    for (int i = 0; i < MAX_ERROR_BIT; i++) {
+        int isBitEnabled = errorFlags & (1 << i);
+
+        if (isBitEnabled) {
+            errorNumbers.push_back(i);
+        }
+    }
+
+    if (errorNumbers.empty()) {
+        return "The algorithm reported no errors";
+    }
+
+    std::string errorMsg = "The algorithm reported the following errors: " + intToStr(errorNumbers[0]);
+
+    for (longUInt i = 1; i < errorNumbers.size(); i++) {
+        errorMsg += ", " + intToStr(errorNumbers[i]);
+    }
+
+    return errorMsg;
+}
+
+int errorsVectorToErrorsFlag(std::vector<ErrorFlag> errorFlagsVector) {
+    int errors;
+    for (ErrorFlag flag : errorFlagsVector) {
+        errors |= flag;
+    }
+
+    return errors;
 }

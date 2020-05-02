@@ -23,7 +23,7 @@ int NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile,
         return this->fatalError;
     }
 
-    std::vector<ErrorFlag> errors;
+    Errors errors;
 
     PortId id = this->ship.getShipRoute().getFirstPort();
     ContainerStorage storage = readPortCargoFromFile(inputFile, errors);
@@ -51,6 +51,6 @@ int NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile,
 
     ship.markCurrentVisitDone();  // pop the current port from the ShipRoute
 
-    return errorsVectorToErrorsFlag(errors);  // TODO: collect all errors
+    return errors.toErrorFlag();  // TODO: collect all errors
 }
 // endregion
