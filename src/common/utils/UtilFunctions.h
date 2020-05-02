@@ -61,11 +61,11 @@ StringVector getFilesFromDirectory(const std::string &directoryPath);
 /// Creates a folder, returns true if succeed.
 bool createFolder(const std::string &path);
 
-/// Removes a folder, folder must be empty.
+/// Removes a folder (and all its content).
 bool removeFolder(const std::string &path);
 
 /// Returns true if folder is empty.
-bool folderIsEmpty(const std::string &path);
+bool isFolderEmpty(const std::string &path);
 
 /// Creates empty file (assuming filePath is a file that doesn't exist, only its directory).
 bool createEmptyFile(const std::string &filePath);

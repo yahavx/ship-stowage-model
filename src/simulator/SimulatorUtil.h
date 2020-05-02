@@ -35,6 +35,9 @@ void validateNoCargoFilesLeft(StringToStringVectorMap &map);
 
 /// Returns a list of travels (i.e. directories) inside travelPath.
 StringVector collectTravels(const std::string &travelPath, std::vector<ErrorFlag> &errors);
+
+/// Returns true if travel can be used (i.e. ShipRoute and ShipPlan doesn't contain a fatal error).
+bool isTravelValid(const std::string &travelDirectory, std::vector<ErrorFlag> &errors);
 // endregion
 
 // region Table data manager

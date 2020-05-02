@@ -170,14 +170,12 @@ bool createFolder(const std::string &path) {
 }
 
 bool removeFolder(const std::string &path) {
-    // TODO
-    return false;
-    std::cout << path;
+    return std::filesystem::remove_all(path);
 }
 
-bool folderIsEmpty(const std::string &path) {
+bool isFolderEmpty(const std::string &path) {
     StringVector files = getFilesFromDirectory(path);
-    return files.size() == 0;
+    return files.empty();
 }
 
 bool createEmptyFile(const std::string &filePath) {

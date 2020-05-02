@@ -81,7 +81,7 @@ std::string flagToString(ErrorFlag flag) {
         case CargoData_InvalidFile:
             return "Cargo data warning: couldn't read any container from file, cargo will only be loaded";
         case CargoData_LastPortHasContainers:
-            return "Containers at port warning: last port has waiting containers, ignored";
+            return "Containers at port warning: last port has waiting containers, ignoring";
 
         case ContainersAtPort_ContainersExceedsShipCapacity:
             return "Containers at port warning: ship is at full capacity, far containers will not be loaded";
@@ -92,6 +92,10 @@ std::string flagToString(ErrorFlag flag) {
             return "Simulation initialization fatal error: couldn't find any travel directory";
         case SimulationCleanup_OutputDirectoriesCleaningFailed:
             return "Simulation cleanup error: couldn't remove temporary directories";
+        case Travel_InvalidDirectory:
+            return "Simulation travel error: travel directory doesn't exist, skipping travel";
+        case Travel_InvalidInput:
+            return "Simulation travel error: travel contains input that causes a fatal error, skipping travel";
 
         default:
             return "INVALID ERROR";

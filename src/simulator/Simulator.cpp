@@ -53,14 +53,19 @@ void Simulator::runSimulations(const std::string &travelPath) {
     }
 
     initResultsTable(results, travels, algorithms);  // add columns names and set table structure
+    for (auto &travel: travels) {
 
-    for (longUInt i = 0; i < algorithms.size(); i++) {
-        auto &algorithm = algorithms[i];
+        if (!isTravelValid(travel, generalErrors)) {
+            continue;
+        }
 
-        for (auto &travel: travels) {
+        for (longUInt i = 0; i < algorithms.size(); i++) {
+            auto &algorithm = algorithms[i];
+
             printSimulationInfo(travel, algorithm);  // prints starting messages
 
-            auto craneOutputDir = getCraneInstructionsSimulationFolder(outputDir, intToString(i), extractFilenameFromPath(travel, false));  // crane instructions directory for the current run  // TODO: change i to algorithm name
+            auto craneOutputDir = getCraneInstructionsSimulationFolder(outputDir, intToString(i), extractFilenameFromPath(travel,
+                                                                                                                          false));  // crane instructions directory for the current run  // TODO: change i to algorithm name
             createFolder(craneOutputDir);
             StringStringVector simulationResults = runSimulation(*algorithm, travel, craneOutputDir);  // run simulation, collect data
 
@@ -175,7 +180,8 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm, const 
 
 // region Simulation core
 
-void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const OPS &ops, StringVector &errors) const {// Perform operations on local ship and port
+void
+Simulator::performPackingOperations(ContainerShip &ship, Port &port, const OPS &ops, StringVector &errors) const {// Perform operations on local ship and port
 
     // TODO: check that any containers that were loaded to the port to unload others, are back in ship
 

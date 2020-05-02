@@ -35,7 +35,9 @@ enum ErrorFlag {
 
     SimulationInit_OutputDirectoriesCreationFailed = 1 << 20,
     SimulationInit_InvalidTravelPath = 1 << 21,
-    SimulationCleanup_OutputDirectoriesCleaningFailed = 1 << 22
+    SimulationCleanup_OutputDirectoriesCleaningFailed = 1 << 22,
+    Travel_InvalidDirectory = 1 << 23,
+    Travel_InvalidInput = 1 << 24
 };
 
 

@@ -91,6 +91,25 @@ StringVector collectTravels(const std::string &travelPath, std::vector<ErrorFlag
 
     return files;
 }
+
+bool isTravelValid(const std::string &travelDirectory, std::vector<ErrorFlag> &errors) {
+    if (!isDirectoryExists(travelDirectory)) {
+        errors.push_back(ErrorFlag::Travel_InvalidDirectory);
+        return false;
+    }
+
+    std::vector<ErrorFlag> planErrors, routeErrors;
+
+    readShipPlanFromFile(getShipPlanPath(travelDirectory), planErrors);
+    readShipRouteFromFile(getShipRoutePath(travelDirectory), routeErrors);
+
+    if (containsFatalError(planErrors) || containsFatalError(routeErrors)) {
+        errors.push_back(ErrorFlag::Travel_InvalidInput);
+        return false;
+    }
+
+    return true;
+}
 // endregion
 
 // region Cargo data manager  // TODO: move some functions from above to this region maybe
@@ -110,7 +129,7 @@ StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath) {
 
     StringVector files = getFilesFromDirectory(directoryPath);
 
-    for (std::string& file : files) {
+    for (std::string &file : files) {
         std::string fileName = extractFilenameFromPath(file, false);
 
         if (!isCargoDataFileFormat(fileName)) {
@@ -142,7 +161,7 @@ StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath) {
 StringToIntMap initPortsVisits(ShipRoute &shipRoute) {
     StringToIntMap map;
 
-    for (PortId& port: shipRoute.getPorts()) {
+    for (PortId &port: shipRoute.getPorts()) {
         map[port.getCode()] = 0;  // we may do it for the same port twice - no problem with that (one copy will be overwritten)
     }
 
@@ -246,8 +265,7 @@ void cleanOutputFolders(const std::string &outputDir, std::vector<ErrorFlag> &er
     std::string errorsFolder = getErrorsFolderPath(outputDir);
 
 
-
-    if (folderIsEmpty(errorsFolder)) {
+    if (isFolderEmpty(errorsFolder)) {
     }
 
     bool res2 = removeFolder(getErrorsFolderPath(outputDir));
