@@ -1,24 +1,18 @@
 //
-// Created by Orr on 4/16/2020.
+// Created by t-yabeny on 5/2/2020.
 //
 
-#include "NaiveStowageAlgorithm.h"
-#include <algorithm>
-#include "../CranesOperation.h"
-#include "../../common/utils/Constants.h"
+#include "BadAlgorithm.h"
 #include "../../common/io/ObjectsReader.h"
-#include "../../common/utils/UtilFunctions.h"
 
 // region Initialization
 
-std::string NaiveStowageAlgorithm::getAlgorithmName() {
-    return "NaiveStowageAlgorithm";
+std::string BadAlgorithm::getAlgorithmName() {
+    return "BadAlgorithm";
 }
 // endregion
 
-// region Functions
-
-int NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
+int BadAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {  // this is currently the same as NaiveStowage
     if (this->fatalError) {
         return this->fatalError;
     }
@@ -49,8 +43,7 @@ int NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile,
 
     writePackingOperationsToFile(outputFile, ops);
 
-    ship.markCurrentVisitDone();  // pop the current port from the ShipRoute
+    ship.markCurrentVisitDone(); // pop the current port from the ShipRoute
 
-    return errorsVectorToErrorsFlag(errors);  // TODO: collect all errors
+    return errorsVectorToErrorsFlag(errors);
 }
-// endregion

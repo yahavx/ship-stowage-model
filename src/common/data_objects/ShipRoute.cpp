@@ -20,7 +20,9 @@ void ShipRoute::setPorts(std::vector<PortId> &ports) {
     ShipRoute::ports = ports;
 }
 
-
+PortId& ShipRoute::getFirstPort() {
+    return this->ports[0];
+}
 // Printer
 std::ostream &operator<<(std::ostream &os, const ShipRoute &route) {
     std::cout << "ShipRoute {" << std::endl;

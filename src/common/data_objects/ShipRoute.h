@@ -14,20 +14,26 @@ class ShipRoute {
     std::vector<PortId> ports;
 
 public:
-    // Constructors
+    // region Constructors
+
     ShipRoute();
 
     explicit ShipRoute(const std::vector<PortId> &ports);
+    // endregion
 
+    // region Getters and setters
 
-    // Getters and setters
     std::vector<PortId> &getPorts();
 
     void setPorts(std::vector<PortId> &ports);
 
+    PortId& getFirstPort();
+    // endregion
 
-    // Printer
+    // region Printer
+
     friend std::ostream &operator<<(std::ostream &os, const ShipRoute &route);
+    // endregion
 };
 
 

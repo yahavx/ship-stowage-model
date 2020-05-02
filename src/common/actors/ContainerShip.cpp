@@ -59,16 +59,15 @@ void ContainerShip::setBalanceCalculator(WeightBalanceCalculator &balanceCalcula
 
 // region Functions
 
-OPS
-ContainerShip::dock(Port &port, const Containers &containersToLoad) {
-    OPS operations;
+Operations ContainerShip::dock(Port &port, const Containers &containersToLoad) {
+    Operations operations;
 
     std::vector<ContainerPosition> containersToUnload = this->getCargo().getContainersForPort(port.getId());
 
     // Unload all required containers
     for (const ContainerPosition &containerPos: containersToUnload) {
         // Get instructions for removing the container
-        OPS unloadOps = this->unloadContainer(port, containerPos);
+        Operations unloadOps = this->unloadContainer(port, containerPos);
 
         // Add unload operations  to set of all instructions
         operations.insert(operations.end(), unloadOps.begin(), unloadOps.end());
@@ -77,7 +76,7 @@ ContainerShip::dock(Port &port, const Containers &containersToLoad) {
     // Load all required containers
     for (const Container &container: containersToLoad) {
         // Get instructions for adding the container
-        OPS loadOps = this->loadContainerToArbitraryPosition(port, container);
+        Operations loadOps = this->loadContainerToArbitraryPosition(port, container);
 
         // Add load operations to set of all instructions
         operations.insert(operations.end(), loadOps.begin(), loadOps.end());
@@ -86,8 +85,8 @@ ContainerShip::dock(Port &port, const Containers &containersToLoad) {
     return operations;
 }
 
-OPS ContainerShip::loadContainerToArbitraryPosition(Port &port, const Container &container) {
-    OPS ops = OPS();
+Operations ContainerShip::loadContainerToArbitraryPosition(Port &port, const Container &container) {
+    Operations ops = Operations();
     POS dims = this->shipPlan.getDimensions();
     int z = -1;
 
@@ -115,7 +114,7 @@ OPS ContainerShip::loadContainerToArbitraryPosition(Port &port, const Container 
     }
 
     if (z < 0) {
-        ops = OPS();
+        ops = Operations();
         ops.push_back(PackingOperation(PackingType::reject, container.getId(), {-1, -1, -1})
         );
         return ops;
@@ -124,8 +123,8 @@ OPS ContainerShip::loadContainerToArbitraryPosition(Port &port, const Container 
     return ops;
 }
 
-OPS ContainerShip::unloadContainer(Port &port, const ContainerPosition &containerPos) {
-    OPS ops;
+Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &containerPos) {
+    Operations ops;
     auto x = containerPos.x();
     auto y = containerPos.y();
     auto z = containerPos.z();
@@ -211,7 +210,7 @@ OPS ContainerShip::unloadContainer(Port &port, const ContainerPosition &containe
 
     // If failed return reject packing operation
     if (failed) {
-        ops = OPS();
+        ops = Operations();
         ops.push_back(PackingOperation(PackingType::reject, containerPos.getContainer().getId(), {-1, -1, -1}));
         return ops;
     }

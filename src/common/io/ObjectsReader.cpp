@@ -197,13 +197,13 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath, std::vector<
     return ContainerStorage(containers);
 }
 
-std::optional<OPS> readPackingOperationsFromFile(const std::string &filePath) {
+std::optional<Operations> readPackingOperationsFromFile(const std::string &filePath) {
 #ifdef DEBUG
     std::cout << "Attempting to read operations..." << std::endl;
 #endif
     StringStringVector data = readFile(filePath);
 
-    OPS operations;
+    Operations operations;
 
     for (StringVector dataRow : data) {
         if (dataRow.size() < 5) {
@@ -265,7 +265,7 @@ std::optional<OPS> readPackingOperationsFromFile(const std::string &filePath) {
     return operations;
 }
 
-bool writePackingOperationsToFile(const std::string &filePath, OPS &operations) {
+bool writePackingOperationsToFile(const std::string &filePath, Operations &operations) {
     StringStringVector data;
 #ifdef DEBUG
     std::cout << "Attempting to write operations..." << std::endl;

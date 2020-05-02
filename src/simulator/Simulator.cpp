@@ -11,6 +11,7 @@
 #include "../common/io/FileReader.h"
 #include "../common/utils/UtilFunctions.h"
 #include "../common/utils/ErrorFlags.h"
+#include "../algorithms/stowage/BadAlgorithm.h"
 
 // region Constants
 
@@ -32,8 +33,11 @@ const std::string Simulator::s_noTravelPathSuppliedError = "Travel path was not 
 Simulator::Simulator(const std::string &outputDir) : outputDir(outputDir) {
     NaiveStowageAlgorithm *naiveStowageAlgorithm = new NaiveStowageAlgorithm();
 //    NaiveStowageAlgorithm *naiveStowageAlgorithm2 = new NaiveStowageAlgorithm();
+    BadAlgorithm *badAlgorithm = new BadAlgorithm();
+
     algorithms.push_back(naiveStowageAlgorithm);
 //    algorithms.push_back(naiveStowageAlgorithm2);
+    algorithms.push_back(badAlgorithm);
 }
 // endregion
 
@@ -176,7 +180,7 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm, const 
 // region Simulation core
 
 void
-Simulator::performPackingOperations(ContainerShip &ship, Port &port, const OPS &ops, StringVector &errors) const {// Perform operations on local ship and port
+Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, StringVector &errors) const {// Perform operations on local ship and port
 
     // TODO: check that any containers that were loaded to the port to unload others, are back in ship
 

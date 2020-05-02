@@ -26,7 +26,7 @@ std::ostream &operator<<(std::ostream &os, const IntIntVector &intIntVector);
 std::ostream &operator<<(std::ostream &os, const std::tuple<int, int, int> &tup);
 
 /// Prints an operations vector.
-std::ostream &operator<<(std::ostream &os, const OPS &ops);
+std::ostream &operator<<(std::ostream &os, const Operations &ops);
 
 /// Prints a map from string to StringStringVector.
 std::ostream &operator<<(std::ostream &os, const StringToStringVectorMap &map);

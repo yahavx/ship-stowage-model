@@ -51,7 +51,7 @@ private:
      * Perform packing operations received from algorithm, on simulator's ship. Validates each operation is legal.
      * @param errors empty vector, to fill with errors, one per each entry
      */
-    void performPackingOperations(ContainerShip &ship, Port &port, const OPS &ops, StringVector &errors) const;
+    void performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, StringVector &errors) const;
 
     void validatePackingOperation(ContainerShip &ship, Port &port, const PackingOperation &op, StringVector &errors) const;
 // endregion

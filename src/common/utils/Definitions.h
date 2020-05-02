@@ -26,7 +26,7 @@ typedef std::vector<std::vector<std::string>> StringStringVector;
 
 typedef std::tuple<int, int, int> POS;
 
-typedef std::vector<PackingOperation> OPS;
+typedef std::vector<PackingOperation> Operations;
 
 typedef std::map<std::string, std::vector<std::string>> StringToStringVectorMap;
 

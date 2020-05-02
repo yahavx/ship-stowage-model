@@ -24,10 +24,10 @@ ShipRoute readShipRouteFromFile(const std::string &filePath, std::vector<ErrorFl
 ContainerStorage readPortCargoFromFile(const std::string &filePath, std::vector<ErrorFlag> &errors = OR_errorGarbageCollector);
 
 /// Reads operations from a file.
-std::optional<OPS> readPackingOperationsFromFile(const std::string &filePath);
+std::optional<Operations> readPackingOperationsFromFile(const std::string &filePath);
 
 /// Write operations to a file.
-bool writePackingOperationsToFile(const std::string &filePath, OPS &operations);
+bool writePackingOperationsToFile(const std::string &filePath, Operations &operations);
 
 
 #endif //SHIP_STOWAGE_MODEL_OBJECTSREADER_H

@@ -59,7 +59,6 @@ public:
     */
     std::vector<PackingOperation> dock(Port &port, const Containers &containersToLoad);
 
-
 private:
     /**
      * returns legal PackingOperation for loading the container to an arbitrary position.

@@ -51,7 +51,7 @@ std::ostream &operator<<(std::ostream &os, const std::tuple<int, int, int> &tup)
     return os << "]";
 }
 
-std::ostream &operator<<(std::ostream &os, const OPS &ops) {
+std::ostream &operator<<(std::ostream &os, const Operations &ops) {
     if (ops.size() == 0) {
         std::cout << "<NoOperations>" << std::endl;
         return os;

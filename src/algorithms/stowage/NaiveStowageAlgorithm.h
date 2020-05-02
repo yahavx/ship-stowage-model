@@ -20,12 +20,6 @@ public:
     int getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) override;
 
     std::string getAlgorithmName() override;
-
-private:
-
-    bool initPortId(const std::string &inputFile, Port &port) const;
-
-    void initializePort(const std::string &inputFile, Port &port) const;
 };
 
 
