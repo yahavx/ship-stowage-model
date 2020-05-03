@@ -45,7 +45,7 @@ enum ErrorFlag : long {
     AlgorithmError_CraneOperationWithInvalidId = 1 << 24,
     AlgorithmError_InvalidCraneOperation = 1 << 25,
     AlgorithmError_LeftContainersAtPort = 1 << 26,
-    AlgorithmError_reserved1 = 1 << 27,
+    AlgorithmError_ContainerIdAlreadyOnShip = 1 << 27,
     AlgorithmError_reserved2 = 1 << 28,
     AlgorithmError_reserved3 = 1 << 29,
     AlgorithmError_reserved4 = 1 << 30,
@@ -61,9 +61,9 @@ class Error {
 public:
     ErrorFlag errorFlag = ErrorFlag::Success;
     std::string errorMsg;
-    std::string param1;
-    std::string param2;
-    std::string param3;
+    std::string param1 = "<>";
+    std::string param2 = "<>";
+    std::string param3 = "<>";
 
     // region Constructors
 
@@ -78,7 +78,6 @@ public:
     Error(const std::string &errorMsg);
 
     Error(int errorFlags);
-
 
     // endregion
 

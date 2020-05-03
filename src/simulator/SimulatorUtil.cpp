@@ -210,6 +210,24 @@ void finalizeResultsTable(StringStringVector &results) {
         rowEntry.push_back(intToStr(totalOps));
         rowEntry.push_back(intToStr(errors));
     }
+
+    sortResultsTable(results);
+}
+
+void sortResultsTable(StringStringVector &results) {
+    if (results.size() <= 2)  // nothing to sort
+        return;
+
+    std::sort(results.begin() + 1, results.end(), [](StringVector& row1, StringVector& row2) -> bool {
+        int n = row1.size();  // should be same size for both
+        int errors1 = strToInt(row1[n - 1]), steps1 = strToInt(row1[n - 2]);
+        int errors2 = strToInt(row2[n - 1]), steps2 = strToInt(row2[n - 2]);
+
+        if (errors1 == errors2) {
+            return steps1 < steps2;
+        }
+        return errors1 < errors2;
+    });
 }
 
 // endregion

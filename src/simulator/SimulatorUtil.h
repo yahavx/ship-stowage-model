@@ -47,8 +47,11 @@ void initResultsTable(StringStringVector &results, StringVector &travels, std::v
 /// Add travel results of a single simulation to a table.
 void addSimulationResultToTable(StringStringVector &simulationResults, int totalCraneInstructions, int rowNum);
 
-/// Finalize the results table: add all sums, and sort as needed.
+/// Finalize the results table: add all sums
 void finalizeResultsTable(StringStringVector &results);
+
+/// Sorts the results table by the needed order. Assuming it is finished.
+void sortResultsTable(StringStringVector &results);
 
 // endregion
 

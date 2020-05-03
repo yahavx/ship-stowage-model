@@ -8,26 +8,28 @@
 
 #include "../src/simulator/Simulator.h"
 #include "../src/algorithms/stowage/NaiveStowageAlgorithm.h"
+#include "IOTests.h"
+#include "../src/simulator/SimulatorUtil.h"
 
 
-void inline simulationTest(std::string path = "../input-examples\\Travel_4"){
-    Simulator simulator("../simulation-output");
+void inline tableResultSortTest(){
 
-    NaiveStowageAlgorithm naiveStowageAlgorithm;
-    AbstractAlgorithm &algorithm(naiveStowageAlgorithm);
+    StringStringVector d = {
+            {"title", "row1", "row2", "row3", "sum", "errors"},
+            {"algo1", "2", "-1", "15", "17", "1"},
+            {"algo2", "10", "2", "18", "30", "0"},
+            {"algo3", "2", "12", "-1", "14", "1"}
+    };
 
-    simulator.runSimulation(algorithm, path);
-}
+    cout << d;
 
-void inline simulationsTest(StringVector path = StringVector()){
-    Simulator simulator("../simulation-output");
+    sortResultsTable(d);
 
-    if (path.size() == 0) {
-        path = {"../input-examples/Travel_1", "../input-examples/Travel_2", "../input-examples/Travel_3", "../input-examples/Travel_4",
-                "../input-examples/Travel_5", "../input-examples/Travel_X"};
-    }
+    cout << "Sorting..." << endl;
 
-    simulator.runSimulations(path);
+    cout << d;
+
+
 }
 
 

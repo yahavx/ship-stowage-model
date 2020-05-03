@@ -219,6 +219,8 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
 }
 
 void ContainerShip::markCurrentVisitDone() {
-    this->shipRoute.getPorts().erase(this->shipRoute.getPorts().begin());
+    if (!shipRoute.getPorts().empty())
+        this->shipRoute.getPorts().erase(this->shipRoute.getPorts().begin());
 }
+
 // endregion

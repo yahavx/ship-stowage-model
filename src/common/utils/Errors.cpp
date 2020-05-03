@@ -111,7 +111,9 @@ std::string Error::toString() {
         case AlgorithmError_InvalidCraneOperation:
             return "[Algorithm Error] Received illegal crane operation: " + param1;
         case AlgorithmError_LeftContainersAtPort:
-            return "[Algorithm Error] Algorithm didn't load all required containers from port " + param1 + ", although ship isn't full";
+            return "[Algorithm Error] Didn't load all required containers from port " + param1 + ", although ship isn't full";
+        case AlgorithmError_ContainerIdAlreadyOnShip:
+            return "[Algorithm Error] Tried to load container with ID '" + param1 + "', which is already on the ship";
 
         default:
             return "ERROR NOT SUPPORTED YET";
@@ -158,7 +160,8 @@ bool Errors::hasFatalError() {
 }
 
 bool Errors::hasAlgorithmErrors() {
-    int algorithmErrors = AlgorithmError_CraneOperationWithInvalidId | AlgorithmError_InvalidCraneOperation | AlgorithmError_LeftContainersAtPort;
+    int algorithmErrors = AlgorithmError_CraneOperationWithInvalidId | AlgorithmError_InvalidCraneOperation | AlgorithmError_LeftContainersAtPort
+            | AlgorithmError_ContainerIdAlreadyOnShip;
 
     for (Error &error : errorsList) {
         if (error.errorFlag & algorithmErrors) {

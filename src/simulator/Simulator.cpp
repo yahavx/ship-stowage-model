@@ -230,7 +230,7 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
 void validateLoadOperation(ContainerShip &ship, Port &port, const PackingOperation &op, Errors &errors) {
     const auto &containerId = op.getContainerId();
     if (ship.getCargo().hasContainer(containerId)) {
-        errors.addError("[Containers At Port Warning] Duplicate container id (" + op.getContainerId() + ") while loading to ship, ignoring");
+        errors.addError({AlgorithmError_ContainerIdAlreadyOnShip, op.getContainerId()});
     }
     return;
     std::cout << port;
