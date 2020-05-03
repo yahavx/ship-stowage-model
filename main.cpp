@@ -22,16 +22,10 @@ int main(int argc, char **argv) {
     if (!isDirectoryExists(outputPath)) {  // the output directory doesn't exist
         bool created = createFolder(outputPath);  // try to create it
         if (!created) {
-            std::cerr << "Couldn't initialize output directory. Please read the README for usage instructions. Program is terminated." << std::endl;
+            std::cerr << "Couldn't initialize output directory. Program is terminated." << std::endl;
             return 1;
         }
     }
-
-    // Direct log prints to log files
-//    std::string outputLogFile = outputPath + "/output.txt";
-//    std::string errorLogFile =  outputPath + "/error.txt";
-//    freopen(outputLogFile.c_str(), "w", stdout);
-//    freopen(errorLogFile.c_str(), "w", stderr);
 
     Simulator simulator(outputPath, travelPath);
 

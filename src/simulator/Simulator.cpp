@@ -63,7 +63,7 @@ void Simulator::runSimulations() {
 
         dataManager.setTravelName(extractFilenameFromPath(travel));
 
-        if (!isTravelValid(dataManager)) {
+        if (!isTravelValid(dataManager, generalErrors)) {
             continue;
         }
 
@@ -91,6 +91,8 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm) {
     StringVector &results = report[0];
     Errors errors;
 
+    // region Init
+
     ////////////////////////
     ///     Init         ///
     ////////////////////////
@@ -100,10 +102,10 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm) {
     std::string shipRoutePath = dataManager.shipRoutePath();
 
     // Init for simulation
-    ContainerShip ship = initSimulation(shipPlanPath, shipRoutePath, errors);
+    ContainerShip ship = initSimulation(errors);
 
     // Init for algorithm
-    initAlgorithm(algorithm, shipPlanPath, shipRoutePath);
+    initAlgorithm(algorithm, errors);
 
     StringToStringVectorMap cargoData = sortTravelCargoData(dataManager.travelFolder());  // get list of .cargo_data files, ordered for each port
     StringToIntMap portsVisits = initPortsVisits(ship.getShipRoute());  // map from each port, to number of times we have encountered him so far
@@ -113,6 +115,8 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm) {
     std::cout << "Finished." << std::endl;
 
     printSeparator(1, 1);
+
+    // endregion
 
     ////////////////////////
     /// Start simulation ///
@@ -174,8 +178,7 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm) {
 
 // region Simulation core
 
-void
-Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const {// Perform operations on local ship and port
+void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const {// Perform operations on local ship and port
 
     // TODO: check that any containers that were loaded to the port to unload others, are back in ship
 
@@ -217,24 +220,27 @@ Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Opera
     return;
 }
 
-void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, const std::string &shipPlanPath,
-                              const std::string &shipRoutePath) const {
-    std::cout << "Initializing algorithm..." << std::endl;
+void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, Errors &errors) {
+//    std::cout << "Initializing algorithm..." << std::endl;
 
-    algorithm.readShipPlan(shipPlanPath);  // set plan  // TODO: get the return value and document it (if there are errors)
-    algorithm.readShipRoute(shipRoutePath);  // set route
+    int ret = algorithm.readShipPlan(dataManager.shipPlanPath());
+    errors.addError(ret);  // if its not an error, addError will ignore it
+    ret = algorithm.readShipRoute(dataManager.shipRoutePath());
+    errors.addError(ret);
+
     WeightBalanceCalculator algoWeightBalanceCalculator;
-    algorithm.setWeightBalanceCalculator(algoWeightBalanceCalculator);
+    ret = algorithm.setWeightBalanceCalculator(algoWeightBalanceCalculator);
+    errors.addError(ret);
 
-    std::cout << "Success." << std::endl;
+//    std::cout << "Success." << std::endl;
     printSeparator(1, 1);
 }
 
-ContainerShip Simulator::initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath, Errors &errors) const {
-    std::cout << "Initializing simulation..." << std::endl;
+ContainerShip Simulator::initSimulation(Errors &errors) {
+    std::cout << "Initializing simulation... (Algorithm = " << dataManager.algorithmName << ", Travel = " << dataManager.travelName << std::endl;
 
-    ShipPlan shipPlan = readShipPlanFromFile(shipPlanPath, errors);
-    ShipRoute shipRoute = readShipRouteFromFile(shipRoutePath, errors);
+    ShipPlan shipPlan = readShipPlanFromFile(dataManager.shipPlanPath(), errors);
+    ShipRoute shipRoute = readShipRouteFromFile(dataManager.shipRoutePath(), errors);
     WeightBalanceCalculator weightBalanceCalculator(shipPlan);
 
     return ContainerShip(shipPlan, shipRoute, weightBalanceCalculator);

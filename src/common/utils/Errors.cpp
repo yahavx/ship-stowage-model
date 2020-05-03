@@ -17,6 +17,25 @@ Error::Error(ErrorFlag flag) : errorFlag(flag) {}
 Error::Error(ErrorFlag flag, const std::string &errorMsg) : errorFlag(flag), errorMsg(errorMsg) {}
 
 Error::Error(const std::string &errorMsg) : errorMsg(errorMsg) {}
+
+Error::Error(int errorFlags) {
+    IntVector errorNumbers;
+    for (int i = 0; i < MAX_ERROR_BIT; i++) {
+        int isBitEnabled = errorFlags & (1 << i);
+
+        if (isBitEnabled) {
+            errorNumbers.push_back(i);
+        }
+    }
+
+    if (!errorNumbers.empty()) {
+        errorMsg = "The algorithm reported the following errors: " + intToStr(errorNumbers[0]);
+
+        for (longUInt i = 1; i < errorNumbers.size(); i++) {
+            errorMsg += ", " + intToStr(errorNumbers[i]);
+        }
+    }
+}
 // endregion
 
 // region Functions
@@ -26,6 +45,9 @@ std::string Error::toString() {
         return errorMsg;
 
     switch (errorFlag) {
+        case Success:
+            return "Success (this shouldn't appear)";
+
         case ShipPlan_InvalidFloorHeight:
             return "Ship plan warning: data row exceeds the maximum available containers, ignored";
         case ShipPlan_InvalidXYCoordinates:
@@ -99,7 +121,9 @@ bool Error::isFatalError() {
 // region Functions
 
 void Errors::addError(const Error &error) {
-    errorsList.push_back(error);
+    if (error.errorFlag != ErrorFlag::Success || error.errorMsg != "") {  // actual error
+        errorsList.push_back(error);
+    }
 }
 
 StringVector Errors::toString() const {
@@ -143,7 +167,7 @@ bool Errors::hasErrors() const {
 std::ostream &operator<<(std::ostream &os, const Errors &errors) {
     StringVector errorsStr = errors.toString();
     std::cout << "Errors {" << std::endl;
-    for (longUInt i = 0 ; i < errorsStr.size(); i++) {
+    for (longUInt i = 0; i < errorsStr.size(); i++) {
         std::cout << "\t" << errorsStr[i] << std::endl;
     }
     std::cout << "}" << std::endl;
@@ -151,35 +175,3 @@ std::ostream &operator<<(std::ostream &os, const Errors &errors) {
 }
 // endregion
 // endregion
-
-std::string errorFlagsToString(int errorFlags) {
-    IntVector errorNumbers;
-    for (int i = 0; i < MAX_ERROR_BIT; i++) {
-        int isBitEnabled = errorFlags & (1 << i);
-
-        if (isBitEnabled) {
-            errorNumbers.push_back(i);
-        }
-    }
-
-    if (errorNumbers.empty()) {
-        return "The algorithm reported no errors";
-    }
-
-    std::string errorMsg = "The algorithm reported the following errors: " + intToStr(errorNumbers[0]);
-
-    for (longUInt i = 1; i < errorNumbers.size(); i++) {
-        errorMsg += ", " + intToStr(errorNumbers[i]);
-    }
-
-    return errorMsg;
-}
-
-int errorsVectorToErrorsFlag(std::vector<ErrorFlag> errorFlagsVector) {
-    int errors;
-    for (ErrorFlag flag : errorFlagsVector) {
-        errors |= flag;
-    }
-
-    return errors;
-}

@@ -110,7 +110,7 @@ int Cargo::currentTopHeight(int x, int y) const {
 // endregion
 
 std::ostream &operator<<(std::ostream &os, const Cargo &cargo) {
-    os << "CargoPrintNotImplemented: " << std::endl;
+    os << "<CargoPrintNotImplemented>" << std::endl;
     return os;
     os << *cargo.getTopContainer(1, 1);
 }

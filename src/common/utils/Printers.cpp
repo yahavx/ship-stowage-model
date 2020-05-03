@@ -96,6 +96,6 @@ void printEmptyLines(int amount) {
 }
 
 void printErrorsFromFlag(int errorsFlag) {
-    std::string errors = errorFlagsToString(errorsFlag);
+    std::string errors = Error(errorsFlag).toString();
     std::cout << errors << std::endl;
 }

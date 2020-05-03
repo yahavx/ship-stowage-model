@@ -42,10 +42,10 @@ public:
 private:
 
      /// Inits the ship of a single simulation. Assume no fatal errors are in the plan and route.
-    ContainerShip initSimulation(const std::string &shipPlanPath, const std::string &shipRoutePath, Errors &errors) const;
+    ContainerShip initSimulation(Errors &errors);
 
     /// Inits the algorithm in a single simulation.
-    void initAlgorithm(AbstractAlgorithm &algorithm, const std::string &shipPlanPath, const std::string &shipRoutePath) const;
+    void initAlgorithm(AbstractAlgorithm &algorithm, Errors &errors);
 
     /**
      * Perform packing operations received from algorithm, on simulator's ship. Validates each operation is legal.

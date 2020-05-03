@@ -11,6 +11,8 @@
 #define MAX_ERROR_BIT 30
 
 enum ErrorFlag {
+    Success = 0,
+
     ShipPlan_InvalidFloorHeight = 1 << 0,
     ShipPlan_InvalidXYCoordinates = 1 << 1,
     ShipPlan_BadLineFormat = 1 << 2,
@@ -43,7 +45,7 @@ enum ErrorFlag {
 
 class Error {
 public:
-    ErrorFlag errorFlag;
+    ErrorFlag errorFlag = ErrorFlag::Success;
     std::string errorMsg;
 
     // region Constructors
@@ -51,6 +53,8 @@ public:
     Error(ErrorFlag flag);
 
     Error(const std::string &errorMsg);
+
+    Error(int errorFlags);
 
     Error(ErrorFlag flag, const std::string &errorMsg);
     // endregion
@@ -72,6 +76,7 @@ public:
 
     // region Functions
 
+    /// Adds an error to the list, only if its an actual error (i.e. contains message, or flag is not Success).
     void addError(const Error &error);
 
     StringVector toString() const;
@@ -93,12 +98,6 @@ public:
 
     static Errors garbageCollector;  // functions can use this as default parameter to ignore errors
 };
-
-/// Converts an errors vector to a errors flag (int). If an error appears multiple times, it is treated as once.
-int errorsVectorToErrorsFlag(std::vector<ErrorFlag> errorFlagsVector);  // TODO: move this to algorithm?
-
-/// Converts error to a string.
-std::string errorFlagsToString(int errorFlags);  // TODO: move this to simulator?
 
 
 #endif //SHIP_STOWAGE_MODEL_ERRORS_H
