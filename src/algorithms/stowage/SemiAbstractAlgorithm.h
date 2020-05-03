@@ -8,11 +8,12 @@
 
 #include "AbstractAlgorithm.h"
 #include "../../common/actors/ContainerShip.h"
+#include "../../common/utils/Errors.h"
 
 class SemiAbstractAlgorithm : public AbstractAlgorithm {  // implements the basics that each algorithm use
 protected:
     ContainerShip ship;
-    int fatalError = 0;  // indicates that we couldn't initialize (fatal error in ship plan or route)
+    int algoErrors = ShipPlan_FatalError | ShipRoute_FatalError;  // we remove the flags after they are set
 
 public:
 

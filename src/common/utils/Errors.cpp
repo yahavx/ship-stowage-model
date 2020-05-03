@@ -25,7 +25,7 @@ Error::Error(const std::string &errorMsg) : errorMsg(errorMsg) {}
 
 Error::Error(int errorFlags) {
     IntVector errorNumbers;
-    for (int i = 0; i < MAX_ERROR_BIT; i++) {
+    for (int i = 0; i <= MAX_ERROR_BIT; i++) {
         int isBitEnabled = errorFlags & (1 << i);
 
         if (isBitEnabled) {
@@ -102,19 +102,19 @@ std::string Error::toString() {
             return "[Simulator Warning] Couldn't remove temporary directories";
 
         case Travel_InvalidDirectory:
-            return "Simulation travel error: travel directory doesn't exist, skipping travel";
+            return "[Travel Error] Travel '" + param1 + "' is not a directory, skipping";
         case Travel_InvalidInput:
-            return "Simulation travel error: travel contains input that causes a fatal error, skipping travel";
+            return "[Travel Error] Travel '" + param1 + "' has an invalid " + param2 +", or it doesn't exists, skipping";
 
         case AlgorithmError_CraneOperationWithInvalidId:
             return "[Algorithm Error] Didn't find container " + param1 + " while at port " + param2 + ", and executing crane operation " + param3;
         case AlgorithmError_InvalidCraneOperation:
-            return "[Algorithm Error] Illegal crane operation: " + param1;
+            return "[Algorithm Error] Received illegal crane operation: " + param1;
         case AlgorithmError_LeftContainersAtPort:
             return "[Algorithm Error] Algorithm didn't load all required containers from port " + param1 + ", although ship isn't full";
 
         default:
-            return "INVALID ERROR";
+            return "ERROR NOT SUPPORTED YET";
     }
 }
 

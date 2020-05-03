@@ -13,21 +13,35 @@ class PortId {
     std::string code;
 
 public:
-    // Constructors
+    // region Constructors
+
     explicit PortId(const std::string &code);
 
+    // endregion
 
-    // Getters and setters
+    // region Getters and setters
+
     const std::string &getCode() const;
 
     void setCode(const std::string &code);
+
+    // endregion
+
+    // region Operators
 
     bool operator==(const PortId &rhs) const;
 
     bool operator!=(const PortId &rhs) const;
 
-    // Printer
+    operator std::string() const;
+
+    // endregion
+
+    // region Printer
+
     friend std::ostream &operator<<(std::ostream &os, const PortId &id);
+
+    // endregion
 };
 
 

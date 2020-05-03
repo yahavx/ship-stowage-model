@@ -19,8 +19,8 @@ std::string NaiveStowageAlgorithm::getAlgorithmName() {
 // region Functions
 
 int NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
-    if (this->fatalError) {
-        return this->fatalError;
+    if (this->algoErrors) {
+        return this->algoErrors;
     }
 
     Errors errors;

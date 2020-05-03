@@ -18,9 +18,9 @@ class PackingOperation {
 
     std::string containerId;
 
-    std::tuple<int, int, int> fromPosition;
+    std::tuple<int, int, int> pos1;
 
-    std::tuple<int, int, int> toPosition;
+    std::tuple<int, int, int> pos2;  // in case of a 'move'
 
 public:
     // region Constructors
@@ -45,6 +45,9 @@ public:
     // region Printer
 
     friend std::ostream &operator<<(std::ostream &os, const PackingOperation &operation);
+
+    std::string toString() const;
+
     // endregion
 };
 

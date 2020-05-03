@@ -8,9 +8,9 @@
 #include <ostream>
 #include "Definitions.h"
 
-#define MAX_ERROR_BIT 30
+#define MAX_ERROR_BIT 18  // max that is used by the algorithm (rest are for us)
 
-enum ErrorFlag : int {
+enum ErrorFlag : long {
     Success = 0,
 
     ShipPlan_InvalidFloorHeight = 1 << 0,
@@ -36,15 +36,25 @@ enum ErrorFlag : int {
     ContainersAtPort_ContainersExceedsShipCapacity = 1 << 18,
 
     // our errors
-    SimulationInit_OutputDirectoriesCreationFailed = 1 << 20,
-    SimulationInit_InvalidTravelPath = 1 << 21,
-    SimulationCleanup_OutputDirectoriesCleaningFailed = 1 << 22,
-    Travel_InvalidDirectory = 1 << 23,
-    Travel_InvalidInput = 1 << 24,
+    SimulationInit_OutputDirectoriesCreationFailed = 1 << 19,
+    SimulationInit_InvalidTravelPath = 1 << 20,
+    SimulationCleanup_OutputDirectoriesCleaningFailed = 1 << 21,
+    Travel_InvalidDirectory = 1 << 22,
+    Travel_InvalidInput = 1 << 23,
 
-    AlgorithmError_CraneOperationWithInvalidId = 1 << 25,
-    AlgorithmError_InvalidCraneOperation = 1 << 26,
-    AlgorithmError_LeftContainersAtPort = 1 << 27
+    AlgorithmError_CraneOperationWithInvalidId = 1 << 24,
+    AlgorithmError_InvalidCraneOperation = 1 << 25,
+    AlgorithmError_LeftContainersAtPort = 1 << 26,
+    AlgorithmError_reserved1 = 1 << 27,
+    AlgorithmError_reserved2 = 1 << 28,
+    AlgorithmError_reserved3 = 1 << 29,
+    AlgorithmError_reserved4 = 1 << 30,
+    AlgorithmError_reserved5 = 1 << 31,
+
+    ReadOperations_InsufficientRowData = 1 << 29,
+    ReadOperations_i = 1 << 29,
+
+
 };
 
 class Error {

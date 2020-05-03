@@ -13,21 +13,6 @@
 #include "../common/utils/Errors.h"
 #include "../algorithms/stowage/BadAlgorithm.h"
 
-// region Constants
-
-const std::string Simulator::s_instructionsFilename = "cargo_instructions";
-
-const std::string Simulator::s_resultsTableTitle = "RESULTS";
-const std::string Simulator::s_generalErrorsTableName = "GeneralErrors";
-
-const std::string Simulator::s_sumColumnTitle = "Sum";
-const std::string Simulator::s_errorsColumnTitle = "Num Errors";
-
-const std::string Simulator::s_errorToken = "Error";
-
-const std::string Simulator::s_noTravelPathSuppliedError = "Travel path was not supplied";
-// endregion
-
 // region Constructors
 
 Simulator::Simulator(const std::string &outputDir, const std::string &travelRootDir) : outputDir(outputDir), travelRootDir(travelRootDir),
@@ -52,8 +37,8 @@ void Simulator::runSimulations() {
     dataManager.createOutputFolders(generalErrors);
     StringVector travels = dataManager.collectTravels(generalErrors);
 
-    if (!generalErrors.hasNoErrors()) {  // any init error is fatal so we have to terminate
-        dataManager.saveGeneralErrorsFile(generalErrors);
+    if (generalErrors.hasErrors()) {  // any init error is fatal so we have to terminate
+        dataManager.saveGeneralErrors(generalErrors);
         dataManager.cleanOutputFolders();
         return;
     }
@@ -81,7 +66,7 @@ void Simulator::runSimulations() {
 
     finalizeResultsTable(resultsTable);
 
-    dataManager.saveSimulationTables(resultsTable, generalErrors);
+    dataManager.saveSimulationFinalResults(resultsTable, generalErrors);
 
     dataManager.cleanOutputFolders();  // remove temp and errors (if empty), can disable it to debug
 }
@@ -164,14 +149,45 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
     printSeparator(1, 5);
 
     if (errors.hasErrors()) {
-        dataManager.saveSimulationErrorFile(errors);
+        dataManager.saveSimulationErrors(errors);
     }
 
     return errors.hasAlgorithmErrors() ? -1 : totalNumberOfOps;
 }
+
 // endregion
 
-// region Simulation core
+// region Simulation Init
+
+void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, Errors &errors) {
+//    std::cout << "Initializing algorithm..." << std::endl;
+
+    int ret = algorithm.readShipPlan(dataManager.shipPlanPath());
+    errors.addError(ret);  // if its not an error, addError will ignore it
+    ret = algorithm.readShipRoute(dataManager.shipRoutePath());
+    errors.addError(ret);
+
+    WeightBalanceCalculator algoWeightBalanceCalculator;
+    ret = algorithm.setWeightBalanceCalculator(algoWeightBalanceCalculator);
+    errors.addError(ret);
+
+//    std::cout << "Success." << std::endl;
+//    printSeparator(1, 1);
+}
+
+ContainerShip Simulator::initSimulation(Errors &errors) {
+    std::cout << "Starting simulation (Algorithm = " << dataManager.algorithmName << ", Travel = " << dataManager.travelName << ")" << std::endl;
+
+    ShipPlan shipPlan = readShipPlanFromFile(dataManager.shipPlanPath(), errors);
+    ShipRoute shipRoute = readShipRouteFromFile(dataManager.shipRoutePath(), errors);
+    WeightBalanceCalculator weightBalanceCalculator(shipPlan);
+
+    return ContainerShip(shipPlan, shipRoute, weightBalanceCalculator);
+}
+
+// endregion
+
+// region Perform operations
 
 void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const { // Perform operations on local ship and port
 
@@ -211,32 +227,6 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
     std::cout << ops;
 }
 
-void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, Errors &errors) {
-//    std::cout << "Initializing algorithm..." << std::endl;
-
-    int ret = algorithm.readShipPlan(dataManager.shipPlanPath());
-    errors.addError(ret);  // if its not an error, addError will ignore it
-    ret = algorithm.readShipRoute(dataManager.shipRoutePath());
-    errors.addError(ret);
-
-    WeightBalanceCalculator algoWeightBalanceCalculator;
-    ret = algorithm.setWeightBalanceCalculator(algoWeightBalanceCalculator);
-    errors.addError(ret);
-
-//    std::cout << "Success." << std::endl;
-//    printSeparator(1, 1);
-}
-
-ContainerShip Simulator::initSimulation(Errors &errors) {
-    std::cout << "Starting simulation (Algorithm = " << dataManager.algorithmName << ", Travel = " << dataManager.travelName << ")" << std::endl;
-
-    ShipPlan shipPlan = readShipPlanFromFile(dataManager.shipPlanPath(), errors);
-    ShipRoute shipRoute = readShipRouteFromFile(dataManager.shipRoutePath(), errors);
-    WeightBalanceCalculator weightBalanceCalculator(shipPlan);
-
-    return ContainerShip(shipPlan, shipRoute, weightBalanceCalculator);
-}
-
 void validateLoadOperation(ContainerShip &ship, Port &port, const PackingOperation &op, Errors &errors) {
     const auto &containerId = op.getContainerId();
     if (ship.getCargo().hasContainer(containerId)) {
@@ -259,6 +249,12 @@ void Simulator::validatePackingOperation(ContainerShip &ship, Port &port, const 
     }
 }
 
+// endregion
 
+// region Constants
+
+const std::string Simulator::s_resultsTableTitle = "RESULTS";
+const std::string Simulator::s_sumColumnTitle = "Sum";
+const std::string Simulator::s_errorsColumnTitle = "Num Errors";
 
 // endregion

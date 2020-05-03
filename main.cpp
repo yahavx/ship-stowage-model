@@ -19,12 +19,10 @@ int main(int argc, char **argv) {
 
     parseCmdArguments(argc, argv, travelPath, algorithmPath, outputPath);
 
-    if (!isDirectoryExists(outputPath)) {  // the output directory doesn't exist
-        bool created = createFolder(outputPath);  // try to create it
-        if (!created) {
-            std::cerr << "Couldn't initialize output directory. Program is terminated." << std::endl;
-            return 1;
-        }
+    bool created = createFolder(outputPath);
+    if (!created) {
+        std::cerr << "Couldn't initialize output directory. Program is terminated." << std::endl;
+        return 1;
     }
 
     Simulator simulator(outputPath, travelPath);
@@ -39,15 +37,15 @@ void parseCmdArguments(int argc, char **argv, std::string &travelPath, std::stri
         std::string flag = argv[i];
 
         if (flag == "-travel_path") {
-            travelPath = argv[i+1];
+            travelPath = argv[i + 1];
         }
 
         if (flag == "-algorithm_path") {
-            algorithmPath = argv[i+1];
+            algorithmPath = argv[i + 1];
         }
 
         if (flag == "-output") {
-            outputPath = argv[i+1];
+            outputPath = argv[i + 1];
         }
 
     }

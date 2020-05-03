@@ -157,6 +157,10 @@ StringVector getFilesFromDirectory(const std::string &directoryPath) {
 }
 
 bool createFolder(const std::string &path) {
+    if (isDirectoryExists(path)) {  // if its already created, its also okay
+        return true;
+    }
+
     try {
         std::filesystem::create_directory(path);
         return true;
@@ -177,6 +181,10 @@ bool isFolderEmpty(const std::string &path) {
 
 bool createEmptyFile(const std::string &filePath) {
     std::ofstream outputFile(filePath);
+    if (!outputFile) { // couldn't open
+        return false;
+    }
+
     outputFile << "";
     return true;
 }

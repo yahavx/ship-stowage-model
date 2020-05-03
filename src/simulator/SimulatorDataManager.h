@@ -66,11 +66,11 @@ public:
 private:
     void saveErrorsFile(const std::string &fileName, const Errors &errors);
 public:
-    void saveGeneralErrorsFile(const Errors &errors);  // errors to be saved - not to be collected
+    void saveGeneralErrors(const Errors &errors);  // errors to be saved - not to be collected
 
-    void saveSimulationErrorFile(const Errors &errors);
+    void saveSimulationErrors(const Errors &errors);
 
-    void saveSimulationTables(const StringStringVector &results, const Errors &errors = Errors::garbageCollector);
+    void saveSimulationFinalResults(const StringStringVector &results, const Errors &errors = Errors::garbageCollector);
 
     /// Creates a crane folder for a single simulation run (must call setTravelInfo before).
     void createTravelCraneFolder();

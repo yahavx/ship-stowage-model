@@ -23,6 +23,7 @@ public:
     // region Constructors
 
     Simulator(const std::string &outputDir, const std::string &travelRootDir);
+
     // endregion
 
     // region Simulation run
@@ -54,26 +55,25 @@ private:
      * Perform packing operations received from algorithm, on simulator's ship. Validates each operation is legal.
      * @param errors empty vector, to fill with errors, one per each entry
      */
+
+    // endregion
+
+    // region Perform operations
+
     void performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const;
 
     void validatePackingOperation(ContainerShip &ship, Port &port, const PackingOperation &op, Errors &errors) const;
-// endregion
+
+    // endregion
 
     // region Constants
 
 public:
-    static const std::string s_instructionsFilename;
 
     static const std::string s_resultsTableTitle;
-    static const std::string s_generalErrorsTableName;
-
-    static const std::string s_generalErrorsRowTitle;
     static const std::string s_sumColumnTitle;
     static const std::string s_errorsColumnTitle;
 
-    static const std::string s_errorToken;
-
-    static const std::string s_noTravelPathSuppliedError;
     // endregion
 };
 

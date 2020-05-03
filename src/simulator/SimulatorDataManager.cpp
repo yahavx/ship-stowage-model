@@ -89,19 +89,19 @@ void SimulatorDataManager::saveErrorsFile(const std::string &fileName, const Err
     writeFile(filePath, errorMessages);
 }
 
-void SimulatorDataManager::saveGeneralErrorsFile(const Errors &errors) {
+void SimulatorDataManager::saveGeneralErrors(const Errors &errors) {
     saveErrorsFile("GeneralErrors", errors);
 }
 
-void SimulatorDataManager::saveSimulationErrorFile(const Errors &errors) {
+void SimulatorDataManager::saveSimulationErrors(const Errors &errors) {
     std::string fileName = algorithmName + "_" + travelName + "_errors";
     saveErrorsFile(fileName, errors);
 }
 
-void SimulatorDataManager::saveSimulationTables(const StringStringVector &results, const Errors &errors) {
+void SimulatorDataManager::saveSimulationFinalResults(const StringStringVector &results, const Errors &errors) {
     writeFile(outputDir + "/simulation.results.csv", results);
     if (errors.hasErrors()) {
-        saveGeneralErrorsFile(errors);
+        saveGeneralErrors(errors);
     }
 }
 

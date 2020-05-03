@@ -253,7 +253,7 @@ Operations readPackingOperationsFromFile(const std::string &filePath) {
     }
 
     if (operations.empty()) {
-        std::cerr << "Warning: failed to read any operation" << std::endl;
+        std::cout << "Warning: failed to read any operation" << std::endl;
     }
 
 #ifdef DEBUG

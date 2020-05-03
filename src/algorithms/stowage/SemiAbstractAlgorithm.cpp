@@ -12,7 +12,11 @@ int SemiAbstractAlgorithm::readShipPlan(const std::string &shipPlanPath) {
     this->ship.setShipPlan(shipPlan);
 
     if (errors.hasFatalError()) {
-        this->fatalError = errors.toErrorFlag();
+        this->algoErrors = errors.toErrorFlag();
+    }
+
+    else {
+        this->algoErrors &= (~ErrorFlag::ShipPlan_FatalError);  // turn off the flag
     }
 
     return errors.toErrorFlag();
@@ -24,7 +28,11 @@ int SemiAbstractAlgorithm::readShipRoute(const std::string &shipRoutePath) {
     this->ship.setShipRoute(route);
 
     if (errors.hasFatalError()) {
-        this->fatalError = errors.toErrorFlag();
+        this->algoErrors = errors.toErrorFlag();
+    }
+
+    else {
+        this->algoErrors &= (~ErrorFlag::ShipRoute_FatalError);  // turn off the flag
     }
 
     return errors.toErrorFlag();

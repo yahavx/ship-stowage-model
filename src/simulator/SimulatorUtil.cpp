@@ -80,7 +80,7 @@ void validateNoCargoFilesLeft(StringToStringVectorMap &map) {
 
 bool isTravelValid(SimulatorDataManager &manager, Errors &errors) {
     if (!isDirectoryExists(manager.travelFolder())) {
-        errors.addError("[Travel Error] travel " + manager.travelName + " is not a directory, skipping");
+        errors.addError({ErrorFlag::Travel_InvalidDirectory, manager.travelName});
         return false;
     }
 
@@ -88,13 +88,13 @@ bool isTravelValid(SimulatorDataManager &manager, Errors &errors) {
 
     readShipPlanFromFile(manager.shipPlanPath(), tempErrors);
     if (tempErrors.hasFatalError()) {
-        errors.addError("[Travel Error] travel " + manager.travelName + " has an invalid ship plan, or it doesn't exists, skipping");
+        errors.addError({ErrorFlag::Travel_InvalidInput, manager.travelName, "Ship Plan"});
         return false;
     }
 
     readShipRouteFromFile(manager.shipRoutePath(), tempErrors);
     if (tempErrors.hasFatalError()) {
-        errors.addError("[Travel Error] travel " + manager.travelName + " has an invalid ship route, or it doesn't exists, skipping");
+        errors.addError({ErrorFlag::Travel_InvalidInput, manager.travelName, "Ship Route"});
         return false;
     }
 
