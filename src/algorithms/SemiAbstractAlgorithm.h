@@ -6,11 +6,11 @@
 #define SHIP_STOWAGE_MODEL_SEMIABSTRACTALGORITHM_H
 
 
-#include "AbstractAlgorithm.h"
-#include "../../common/actors/ContainerShip.h"
-#include "../../common/utils/Errors.h"
+#include "../interfaces/AbstractAlgorithm.h"
+#include "../common/actors/ContainerShip.h"
+#include "../common/utils/Errors.h"
 
-class SemiAbstractAlgorithm : public AbstractAlgorithm {  // implements the basics that each algorithm use
+class SemiAbstractAlgorithm : public AbstractAlgorithm {  // implements the basics that each algorithm use - all will inherit from this
 protected:
     ContainerShip ship;
     int algoErrors = ShipPlan_FatalError | ShipRoute_FatalError;  // we remove the flags after they are set
@@ -21,7 +21,8 @@ public:
 
     int readShipRoute(const std::string &shipRoutePath) override;
 
-    int setWeightBalanceCalculator(WeightBalanceCalculator &calculator) override;
+    int setWeightBalanceCalculator(NaiveWeightBalancer &calculator) override;
+
 };
 
 

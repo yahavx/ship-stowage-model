@@ -4,14 +4,14 @@
 
 #include "Simulator.h"
 #include "SimulatorUtil.h"
-#include "../algorithms/stowage/NaiveStowageAlgorithm.h"
+#include "../algorithms/NaiveStowageAlgorithm.h"
 #include "../common/io/ObjectsReader.h"
 #include "../common/utils/Printers.h"
-#include "../algorithms/CranesOperation.h"
+#include "../common/actors/CranesOperation.h"
 #include "../common/io/FileReader.h"
 #include "../common/utils/UtilFunctions.h"
 #include "../common/utils/Errors.h"
-#include "../algorithms/stowage/BadAlgorithm.h"
+#include "../algorithms/BadAlgorithm.h"
 
 // region Constructors
 
@@ -167,7 +167,7 @@ void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, Errors &errors) {
     ret = algorithm.readShipRoute(dataManager.shipRoutePath());
     errors.addError(ret);
 
-    WeightBalanceCalculator algoWeightBalanceCalculator;
+    NaiveWeightBalancer algoWeightBalanceCalculator;
     ret = algorithm.setWeightBalanceCalculator(algoWeightBalanceCalculator);
     errors.addError(ret);
 
@@ -180,7 +180,7 @@ ContainerShip Simulator::initSimulation(Errors &errors) {
 
     ShipPlan shipPlan = readShipPlanFromFile(dataManager.shipPlanPath(), errors);
     ShipRoute shipRoute = readShipRouteFromFile(dataManager.shipRoutePath(), errors);
-    WeightBalanceCalculator weightBalanceCalculator(shipPlan);
+    NaiveWeightBalancer weightBalanceCalculator(shipPlan);
 
     return ContainerShip(shipPlan, shipRoute, weightBalanceCalculator);
 }

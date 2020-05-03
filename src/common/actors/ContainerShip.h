@@ -10,14 +10,14 @@
 #include "../data_objects/Container.h"
 #include "../data_objects/PackingOperation.h"
 #include "../data_objects/ShipRoute.h"
-#include "../../algorithms/WeightBalanceCalculator.h"
+#include "NaiveWeightBalancer.h"
 #include "../data_structures/Cargo.h"
 
 class ContainerShip {
     ShipPlan shipPlan;
     ShipRoute shipRoute;
     Cargo cargo;
-    WeightBalanceCalculator *balanceCalculator;
+    NaiveWeightBalancer *balanceCalculator;
 
 public:
     // region Constructors
@@ -25,7 +25,7 @@ public:
     ContainerShip();
 
     ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRoute,
-                  WeightBalanceCalculator &balanceCalculator);
+                  NaiveWeightBalancer &balanceCalculator);
 
     ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRoute);
     // endregion
@@ -46,9 +46,9 @@ public:
 
     void setCargo(const Cargo &cargo);
 
-    WeightBalanceCalculator &getBalanceCalculator() const;
+    NaiveWeightBalancer &getBalanceCalculator() const;
 
-    void setBalanceCalculator(WeightBalanceCalculator &balanceCalculator);
+    void setBalanceCalculator(NaiveWeightBalancer &balanceCalculator);
     // endregion
 
     // region Functions

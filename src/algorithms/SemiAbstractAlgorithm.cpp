@@ -3,8 +3,8 @@
 //
 
 #include "SemiAbstractAlgorithm.h"
-#include "../../common/utils/Errors.h"
-#include "../../common/io/ObjectsReader.h"
+#include "../common/utils/Errors.h"
+#include "../common/io/ObjectsReader.h"
 
 int SemiAbstractAlgorithm::readShipPlan(const std::string &shipPlanPath) {
     Errors errors;
@@ -38,7 +38,7 @@ int SemiAbstractAlgorithm::readShipRoute(const std::string &shipRoutePath) {
     return errors.toErrorFlag();
 }
 
-int SemiAbstractAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &calculator) {
+int SemiAbstractAlgorithm::setWeightBalanceCalculator(NaiveWeightBalancer &calculator) {
     this->ship.setBalanceCalculator(calculator);
     this->ship.getBalanceCalculator().setPlan(this->ship.getShipPlan());
     return 0;  // TODO: this can fail?

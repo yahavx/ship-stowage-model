@@ -11,20 +11,18 @@ add_executable(ship_stowage_model
     main.cpp
     # src
         # algorithms
-            # stowage
-            src/algorithms/stowage/AbstractAlgorithm.h
-            src/algorithms/stowage/BadAlgorithm.cpp src/algorithms/stowage/BadAlgorithm.h
-            src/algorithms/stowage/NaiveStowageAlgorithm.cpp src/algorithms/stowage/NaiveStowageAlgorithm.h
-            src/algorithms/stowage/SemiAbstractAlgorithm.cpp src/algorithms/stowage/SemiAbstractAlgorithm.h
-        src/algorithms/CranesOperation.cpp src/algorithms/CranesOperation.h
-        src/algorithms/WeightBalanceCalculator.cpp src/algorithms/WeightBalanceCalculator.h
+        src/algorithms/BadAlgorithm.cpp src/algorithms/BadAlgorithm.h
+        src/algorithms/NaiveStowageAlgorithm.cpp src/algorithms/NaiveStowageAlgorithm.h
+        src/algorithms/SemiAbstractAlgorithm.cpp src/algorithms/SemiAbstractAlgorithm.h
 
         # common
             # actors
             src/common/actors/ContainerShip.cpp src/common/actors/ContainerShip.h
+            src/common/actors/CranesOperation.cpp src/common/actors/CranesOperation.h
+            src/common/actors/NaiveWeightBalancer.h src/common/actors/NaiveWeightBalancer.cpp
             src/common/actors/Port.cpp src/common/actors/Port.h
 
-            # data_objects
+        # data_objects
             src/common/data_objects/Container.cpp src/common/data_objects/Container.h
             src/common/data_objects/ContainerPosition.cpp src/common/data_objects/ContainerPosition.h
             src/common/data_objects/PackingOperation.cpp src/common/data_objects/PackingOperation.h
@@ -41,13 +39,16 @@ add_executable(ship_stowage_model
             src/common/io/FileReader.cpp src/common/io/FileReader.h
             src/common/io/ObjectsReader.cpp src/common/io/ObjectsReader.h
 
-
             # utils
             src/common/utils/Constants.cpp src/common/utils/Constants.h
             src/common/utils/Definitions.h
             src/common/utils/Errors.cpp src/common/utils/Errors.h
             src/common/utils/Printers.cpp src/common/utils/Printers.h
             src/common/utils/UtilFunctions.cpp src/common/utils/UtilFunctions.h
+
+        # interfaces
+        src/interfaces/AbstractAlgorithm.h
+        src/interfaces/WeightBalanceCalculator.h
 
         # simulator
         src/simulator/Simulator.cpp src/simulator/Simulator.h
@@ -57,4 +58,4 @@ add_executable(ship_stowage_model
     # tests
     tests/FileTests.h
     tests/IOTests.h
-    tests/SimulationTests.h)
+    tests/SimulationTests.h src/interfaces/AlgorithmRegistration.h)

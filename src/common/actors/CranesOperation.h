@@ -6,9 +6,9 @@
 #define SHIP_STOWAGE_MODEL_CRANESOPERATION_H
 
 
-#include "../common/data_objects/PackingOperation.h"
-#include "../common/actors/Port.h"
-#include "../common/actors/ContainerShip.h"
+#include "../data_objects/PackingOperation.h"
+#include "Port.h"
+#include "ContainerShip.h"
 
 enum class CraneOperationResult{
     SUCCESS, FAIL_ILLEGAL_OP, FAIL_CONTAINER_NOT_FOUND

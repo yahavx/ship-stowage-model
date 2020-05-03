@@ -5,7 +5,7 @@
 #ifndef SHIP_STOWAGE_MODEL_SIMULATOR_H
 #define SHIP_STOWAGE_MODEL_SIMULATOR_H
 
-#include "../algorithms/stowage/AbstractAlgorithm.h"
+#include "../interfaces/AbstractAlgorithm.h"
 #include "../common/actors/ContainerShip.h"
 #include "../common/utils/Errors.h"
 #include "SimulatorDataManager.h"

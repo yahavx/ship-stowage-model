@@ -7,7 +7,7 @@
 
 
 #include "../src/simulator/Simulator.h"
-#include "../src/algorithms/stowage/NaiveStowageAlgorithm.h"
+#include "../src/algorithms/NaiveStowageAlgorithm.h"
 #include "IOTests.h"
 #include "../src/simulator/SimulatorUtil.h"
 

@@ -6,13 +6,13 @@
 #define SHIP_STOWAGE_MODEL_ABSTRACTALGORITHM_H
 
 #pragma once
+
 #include <string>
 
 // forward declaration
-class WeightBalanceCalculator;
+class NaiveWeightBalancer;
 
 class AbstractAlgorithm {
-
 public:
     virtual ~AbstractAlgorithm(){}
 
@@ -22,7 +22,7 @@ public:
 
     virtual int readShipRoute(const std::string& full_path_and_file_name) = 0;  // TODO: change shipRoutePath (and shipPlanPath) to full_path_and_file_name?
 
-    virtual int setWeightBalanceCalculator(WeightBalanceCalculator& calculator) = 0;
+    virtual int setWeightBalanceCalculator(NaiveWeightBalancer& calculator) = 0;
 
     virtual int getInstructionsForCargo(const std::string& input_full_path_and_file_name, const std::string& output_full_path_and_file_name) = 0;
 

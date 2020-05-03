@@ -6,8 +6,8 @@
 #define SHIP_STOWAGE_MODEL_NAIVESTOWAGEALGORITHM_H
 
 
-#include "AbstractAlgorithm.h"
-#include "../../common/actors/ContainerShip.h"
+#include "../interfaces/AbstractAlgorithm.h"
+#include "../common/actors/ContainerShip.h"
 #include "SemiAbstractAlgorithm.h"
 
 

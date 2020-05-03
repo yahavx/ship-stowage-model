@@ -11,9 +11,8 @@ void parseCmdArguments(int argc, char **argv, std::string &travelPath, std::stri
 
 int main(int argc, char **argv) {
 //    runIOTests();
+//    tableResultSortTest();
 //    return 0;
-    tableResultSortTest();
-    return 0;
 
     if (argc != 3 && argc != 5 && argc != 7) {
         std::cerr << "Insufficient arguments supplied. Please read the README for usage instructions. Program is terminated." << std::endl;

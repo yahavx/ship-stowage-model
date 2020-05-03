@@ -3,7 +3,7 @@
 //
 
 #include "ContainerShip.h"
-#include "../../algorithms/CranesOperation.h"
+#include "CranesOperation.h"
 #include "../utils/Definitions.h"
 
 // region Constructors
@@ -15,9 +15,9 @@ ContainerShip::ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRout
                                                                                      cargo(shipPlan) {}
 
 ContainerShip::ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRoute,
-                             WeightBalanceCalculator &balanceCalculator) : shipPlan(shipPlan), shipRoute(shipRoute),
-                                                                           cargo(shipPlan),
-                                                                           balanceCalculator(&balanceCalculator) {}
+                             NaiveWeightBalancer &balanceCalculator) : shipPlan(shipPlan), shipRoute(shipRoute),
+                                                                       cargo(shipPlan),
+                                                                       balanceCalculator(&balanceCalculator) {}
 // endregion
 
 // region Getters and setters
@@ -47,14 +47,15 @@ void ContainerShip::setCargo(const Cargo &cargo) {
     ContainerShip::cargo = cargo;
 }
 
-WeightBalanceCalculator &ContainerShip::getBalanceCalculator() const {
+NaiveWeightBalancer &ContainerShip::getBalanceCalculator() const {
     return *balanceCalculator;
 }
 
-void ContainerShip::setBalanceCalculator(WeightBalanceCalculator &balanceCalculator) {
+void ContainerShip::setBalanceCalculator(NaiveWeightBalancer &balanceCalculator) {
     ContainerShip::balanceCalculator = &balanceCalculator;
     balanceCalculator.setCargo(cargo);
 }
+
 // endregion
 
 // region Functions

@@ -8,7 +8,7 @@
 #include <memory>
 #include "../common/utils/Definitions.h"
 #include "../common/data_objects/ShipRoute.h"
-#include "../algorithms/stowage/AbstractAlgorithm.h"
+#include "../interfaces/AbstractAlgorithm.h"
 #include "../common/utils/Errors.h"
 #include "SimulatorDataManager.h"
 

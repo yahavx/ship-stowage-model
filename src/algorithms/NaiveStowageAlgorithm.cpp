@@ -1,18 +1,24 @@
 //
-// Created by t-yabeny on 5/2/2020.
+// Created by Orr on 4/16/2020.
 //
 
-#include "BadAlgorithm.h"
-#include "../../common/io/ObjectsReader.h"
+#include "NaiveStowageAlgorithm.h"
+#include <algorithm>
+#include "../common/actors/CranesOperation.h"
+#include "../common/utils/Constants.h"
+#include "../common/io/ObjectsReader.h"
+#include "../common/utils/UtilFunctions.h"
 
 // region Initialization
 
-std::string BadAlgorithm::getAlgorithmName() {
-    return "BadAlgorithm";
+std::string NaiveStowageAlgorithm::getAlgorithmName() {
+    return "NaiveStowageAlgorithm";
 }
 // endregion
 
-int BadAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
+// region Functions
+
+int NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
     if (this->algoErrors) {
         return this->algoErrors;
     }
@@ -38,12 +44,13 @@ int BadAlgorithm::getInstructionsForCargo(const std::string &inputFile, const st
         containersToLoad.insert(containersToLoad.end(), portContainers.begin(), portContainers.end());
     }
 
-//    Operations ops = ship.dock(port, containersToLoad);
-    Operations ops = Operations();  // intentional bug
+    // Get ops for unloading and loading from ship
+    Operations ops = ship.dock(port, containersToLoad);
 
     writePackingOperationsToFile(outputFile, ops);
 
-    ship.markCurrentVisitDone(); // pop the current port from the ShipRoute
+    ship.markCurrentVisitDone();  // pop the current port from the ShipRoute
 
-    return errors.toErrorFlag();
+    return errors.toErrorFlag();  // TODO: collect all errors
 }
+// endregion
