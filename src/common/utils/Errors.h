@@ -10,7 +10,7 @@
 
 #define MAX_ERROR_BIT 30
 
-enum ErrorFlag {
+enum ErrorFlag : int {
     Success = 0,
 
     ShipPlan_InvalidFloorHeight = 1 << 0,
@@ -40,23 +40,36 @@ enum ErrorFlag {
     SimulationInit_InvalidTravelPath = 1 << 21,
     SimulationCleanup_OutputDirectoriesCleaningFailed = 1 << 22,
     Travel_InvalidDirectory = 1 << 23,
-    Travel_InvalidInput = 1 << 24
+    Travel_InvalidInput = 1 << 24,
+
+    AlgorithmError_CraneOperationWithInvalidId = 1 << 25,
+    AlgorithmError_InvalidCraneOperation = 1 << 26,
+    AlgorithmError_LeftContainersAtPort = 1 << 27
 };
 
 class Error {
 public:
     ErrorFlag errorFlag = ErrorFlag::Success;
     std::string errorMsg;
+    std::string param1;
+    std::string param2;
+    std::string param3;
 
     // region Constructors
 
     Error(ErrorFlag flag);
 
+    Error(ErrorFlag errorFlag, const std::string &param1);
+
+    Error(ErrorFlag errorFlag, const std::string &param1, const std::string &param2);
+
+    Error(ErrorFlag errorFlag, const std::string &param1, const std::string &param2, const std::string &param3);
+
     Error(const std::string &errorMsg);
 
     Error(int errorFlags);
 
-    Error(ErrorFlag flag, const std::string &errorMsg);
+
     // endregion
 
     // region Functions
@@ -82,6 +95,8 @@ public:
     StringVector toString() const;
 
     bool hasFatalError();
+
+    bool hasAlgorithmErrors();
 
     /// Returns an int that represents all the errors in the list. If an error appears multiple times, it is treated as once.
     int toErrorFlag();

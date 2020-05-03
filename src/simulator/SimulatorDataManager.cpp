@@ -82,18 +82,26 @@ StringVector SimulatorDataManager::collectTravels(Errors &errors) {
 // endregion
 
 // region Files
-
-void SimulatorDataManager::saveErrorFile(const std::string &fileName, const Errors &errors) {
+void SimulatorDataManager::saveErrorsFile(const std::string &fileName, const Errors &errors) {
     StringVector errorMessages = errors.toString();
 
     std::string filePath = errorsFolder() + "/" + fileName;
     writeFile(filePath, errorMessages);
 }
 
+void SimulatorDataManager::saveGeneralErrorsFile(const Errors &errors) {
+    saveErrorsFile("GeneralErrors", errors);
+}
+
+void SimulatorDataManager::saveSimulationErrorFile(const Errors &errors) {
+    std::string fileName = algorithmName + "_" + travelName + "_errors";
+    saveErrorsFile(fileName, errors);
+}
+
 void SimulatorDataManager::saveSimulationTables(const StringStringVector &results, const Errors &errors) {
     writeFile(outputDir + "/simulation.results.csv", results);
     if (errors.hasErrors()) {
-        saveErrorFile("GeneralErrors", errors);
+        saveGeneralErrorsFile(errors);
     }
 }
 

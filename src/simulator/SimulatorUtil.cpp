@@ -185,32 +185,30 @@ void initResultsTable(StringStringVector &results, StringVector &travels, std::v
     }
 }
 
-void addSimulationResultToTable(StringStringVector &simulationResults, StringStringVector &results, int rowNum) {
-    // extract simulation results and errors
-    StringVector &travelResults = simulationResults[0];
-
-    // get results and errors row in output table (to append to them)
-    StringVector &resultsRow = results[rowNum];
-
-    // append results data
-    resultsRow.push_back(travelResults[0]);  // number of steps
-
+void addSimulationResultToTable(StringStringVector &simulationResults, int totalCraneInstructions, int rowNum) {
+    simulationResults[rowNum].push_back(intToStr(totalCraneInstructions));
 }
 
 void finalizeResultsTable(StringStringVector &results) {
-    // add sums to results table
     for (longUInt i = 1; i < results.size(); i++) {  // for each algorithm
         auto &rowEntry = results[i];
         int totalOps = 0;
+        int errors = 0;
 
-        for (longUInt j = 1; j < rowEntry.size(); j++) {  // sum his operations from all the travels
-            auto &currSum = rowEntry[j];
-            if (isInteger(currSum)) {
-                totalOps += strToInt(currSum);
+        for (longUInt j = 1; j < rowEntry.size(); j++) {  // sum his operations/errors from all the travels
+            int ops = strToInt(rowEntry[j]);
+
+            if (ops == -1) {
+                errors++;
+            }
+            else {
+                totalOps += ops;
             }
         }
-        rowEntry.push_back(intToStr(totalOps));  // push the sum
-        rowEntry.push_back("0");  // push number of errors TODO: actual number of errors
+
+        // push result
+        rowEntry.push_back(intToStr(totalOps));
+        rowEntry.push_back(intToStr(errors));
     }
 }
 

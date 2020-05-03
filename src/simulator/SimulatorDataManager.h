@@ -63,8 +63,12 @@ public:
     // endregion
 
     // region Files IO
+private:
+    void saveErrorsFile(const std::string &fileName, const Errors &errors);
+public:
+    void saveGeneralErrorsFile(const Errors &errors);  // errors to be saved - not to be collected
 
-    void saveErrorFile(const std::string &fileName, const Errors &errors = Errors::garbageCollector);
+    void saveSimulationErrorFile(const Errors &errors);
 
     void saveSimulationTables(const StringStringVector &results, const Errors &errors = Errors::garbageCollector);
 

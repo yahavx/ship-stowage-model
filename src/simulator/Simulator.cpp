@@ -46,19 +46,19 @@ Simulator::Simulator(const std::string &outputDir, const std::string &travelRoot
 // region Simulation run
 
 void Simulator::runSimulations() {
-    StringStringVector results;  // table for results
+    StringStringVector resultsTable;  // table for results
     Errors generalErrors;
 
     dataManager.createOutputFolders(generalErrors);
     StringVector travels = dataManager.collectTravels(generalErrors);
 
     if (!generalErrors.hasNoErrors()) {  // any init error is fatal so we have to terminate
-        dataManager.saveErrorFile("GeneralErrors", generalErrors);
+        dataManager.saveGeneralErrorsFile(generalErrors);
         dataManager.cleanOutputFolders();
         return;
     }
 
-    initResultsTable(results, travels, algorithms);  // add columns names and set table structure
+    initResultsTable(resultsTable, travels, algorithms);  // add columns names and set table structure
     for (auto &travel: travels) {
 
         dataManager.setTravelName(extractFilenameFromPath(travel));
@@ -73,22 +73,20 @@ void Simulator::runSimulations() {
             dataManager.setAlgorithmName(algorithm->getAlgorithmName());
             dataManager.createTravelCraneFolder();
 
-            StringStringVector simulationResults = runSimulation(*algorithm);  // run simulation, collect data
+            int totalCraneInstructions = runSimulation(*algorithm);
 
-            addSimulationResultToTable(simulationResults, results, i + 1);  // save collected data from the travel to the tables
+            addSimulationResultToTable(resultsTable, totalCraneInstructions, i + 1);
         }
     }
 
-    finalizeResultsTable(results);
+    finalizeResultsTable(resultsTable);
 
-    dataManager.saveSimulationTables(results, generalErrors);
+    dataManager.saveSimulationTables(resultsTable, generalErrors);
 
     dataManager.cleanOutputFolders();  // remove temp and errors (if empty), can disable it to debug
 }
 
-StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm) {
-    StringStringVector report = StringStringVector(2, StringVector());
-    StringVector &results = report[0];
+int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
     Errors errors;
 
     // region Init
@@ -97,24 +95,18 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm) {
     ///     Init         ///
     ////////////////////////
 
-    // Get plan and route paths
-    std::string shipPlanPath = dataManager.shipPlanPath();
-    std::string shipRoutePath = dataManager.shipRoutePath();
-
-    // Init for simulation
     ContainerShip ship = initSimulation(errors);
 
-    // Init for algorithm
     initAlgorithm(algorithm, errors);
 
     StringToStringVectorMap cargoData = sortTravelCargoData(dataManager.travelFolder());  // get list of .cargo_data files, ordered for each port
     StringToIntMap portsVisits = initPortsVisits(ship.getShipRoute());  // map from each port, to number of times we have encountered him so far
 
-    std::cout << "Validating route..." << std::endl;
+//    std::cout << "Validating route..." << std::endl;
     filterUnusedPorts(cargoData, ship.getShipRoute());  // remove the port files which are not on the ship route
-    std::cout << "Finished." << std::endl;
+//    std::cout << "Finished." << std::endl;
 
-    printSeparator(1, 1);
+//    printSeparator(1, 1);
 
     // endregion
 
@@ -145,14 +137,14 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm) {
         Errors cargoErrors;
         Port port(portId, readPortCargoFromFile(cargoFilePath, errors));
 
-        auto optOps = readPackingOperationsFromFile(instructionsOutputPath);  // read the operations to perform, written by the algorithm
+        Operations ops = readPackingOperationsFromFile(instructionsOutputPath);  // read the operations to perform, written by the algorithm
 
-        if (!optOps.has_value()) {
+        if (ops.empty()) {
             std::cout << "Warning: no packing operations were read" << std::endl;
-        } else {
-            performPackingOperations(ship, port, *optOps, errors);   // TODO: validate the operations are safe (inside the function call)
-            totalNumberOfOps = totalNumberOfOps + optOps.value().size();
         }
+
+        performPackingOperations(ship, port, ops, errors);   // TODO: validate the operations are safe (inside the function call)
+        totalNumberOfOps = totalNumberOfOps + ops.size();
 
         if (!isLast) {
             std::cout << "The ship is continuing to the next port..." << std::endl;
@@ -165,20 +157,23 @@ StringStringVector Simulator::runSimulation(AbstractAlgorithm &algorithm) {
 
     validateNoCargoFilesLeft(cargoData);  // if there are remaining cargo files in the map, we need to print a warning because we couldn't use them
 
-    printSeparator(1, 1);
+//    printSeparator(1, 1);
 
     std::cout << "The ship has completed its journey. Total number of operations: " << totalNumberOfOps << std::endl;
-    results.push_back(intToStr(totalNumberOfOps));  // add number of steps to the table
 
     printSeparator(1, 5);
 
-    return report;
+    if (errors.hasErrors()) {
+        dataManager.saveSimulationErrorFile(errors);
+    }
+
+    return errors.hasAlgorithmErrors() ? -1 : totalNumberOfOps;
 }
 // endregion
 
 // region Simulation core
 
-void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const {// Perform operations on local ship and port
+void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const { // Perform operations on local ship and port
 
     // TODO: check that any containers that were loaded to the port to unload others, are back in ship
 
@@ -189,13 +184,11 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
         auto opResult = CranesOperation::preformOperation(op, port, ship);
         if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND) {
             std::cerr << "crane received illegal operation, didn't find container with ID: " << op.getContainerId() << std::endl;
-            errors.addError("[Algorithm Instruction Error] Didn't find container " + op.getContainerId() + " while at port " + port.getId().getCode() +
-                            ", and executing crane operation " +
-                            craneOperationToString(op));
+            errors.addError({ErrorFlag::AlgorithmError_CraneOperationWithInvalidId, op.getContainerId(), port.getId().getCode(), craneOperationToString(op)});
         }
         if (opResult == CraneOperationResult::FAIL_ILLEGAL_OP) {
             std::cerr << "Illegal crane operation: " << op << std::endl;
-            errors.addError("[Algorithm Instruction Error] Illegal crane operation: " + craneOperationToString(op));
+            errors.addError({ErrorFlag::AlgorithmError_InvalidCraneOperation, craneOperationToString(op)});
         }
     }
 
@@ -213,11 +206,9 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
     }
 
     if (foundUnloadedContainers)
-        errors.addError("[Algorithm Instruction Error] Algorithm didn't load all required containers from port " + port.getId().getCode() +
-                        " although ship isn't full");
+        errors.addError({ErrorFlag::AlgorithmError_LeftContainersAtPort, port.getId().getCode()});
 
     std::cout << ops;
-    return;
 }
 
 void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, Errors &errors) {
@@ -233,11 +224,11 @@ void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, Errors &errors) {
     errors.addError(ret);
 
 //    std::cout << "Success." << std::endl;
-    printSeparator(1, 1);
+//    printSeparator(1, 1);
 }
 
 ContainerShip Simulator::initSimulation(Errors &errors) {
-    std::cout << "Initializing simulation... (Algorithm = " << dataManager.algorithmName << ", Travel = " << dataManager.travelName << std::endl;
+    std::cout << "Starting simulation (Algorithm = " << dataManager.algorithmName << ", Travel = " << dataManager.travelName << ")" << std::endl;
 
     ShipPlan shipPlan = readShipPlanFromFile(dataManager.shipPlanPath(), errors);
     ShipRoute shipRoute = readShipRouteFromFile(dataManager.shipRoutePath(), errors);

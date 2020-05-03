@@ -22,7 +22,7 @@ ShipRoute readShipRouteFromFile(const std::string &filePath, Errors &errors = Er
 ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &errors = Errors::garbageCollector);
 
 /// Reads operations from a file.
-std::optional<Operations> readPackingOperationsFromFile(const std::string &filePath);
+Operations readPackingOperationsFromFile(const std::string &filePath);
 
 /// Write operations to a file.
 bool writePackingOperationsToFile(const std::string &filePath, Operations &operations);

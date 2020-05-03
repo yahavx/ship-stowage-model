@@ -28,8 +28,11 @@ public:
     // region Simulation run
 
 private:
-    /// Simulates an algorithm on a single travel.
-    StringStringVector runSimulation(AbstractAlgorithm &algorithm);
+    /**
+     * Simulates an algorithm on a single travel.
+     * @return number of steps took to simulate, or -1 if the algorithm made at least 1 error.
+     */
+    int runSimulation(AbstractAlgorithm &algorithm);
 
 public:
     /// Run a cartesian loop of “travel” X “algorithm”.

@@ -14,7 +14,12 @@ Errors Errors::garbageCollector;
 
 Error::Error(ErrorFlag flag) : errorFlag(flag) {}
 
-Error::Error(ErrorFlag flag, const std::string &errorMsg) : errorFlag(flag), errorMsg(errorMsg) {}
+Error::Error(ErrorFlag errorFlag, const std::string &param1) : errorFlag(errorFlag), param1(param1) {}
+
+Error::Error(ErrorFlag errorFlag, const std::string &param1, const std::string &param2) : errorFlag(errorFlag), param1(param1), param2(param2) {}
+
+Error::Error(ErrorFlag errorFlag, const std::string &param1, const std::string &param2, const std::string &param3) : errorFlag(errorFlag), param1(param1),
+                                                                                                                     param2(param2), param3(param3) {}
 
 Error::Error(const std::string &errorMsg) : errorMsg(errorMsg) {}
 
@@ -101,6 +106,13 @@ std::string Error::toString() {
         case Travel_InvalidInput:
             return "Simulation travel error: travel contains input that causes a fatal error, skipping travel";
 
+        case AlgorithmError_CraneOperationWithInvalidId:
+            return "[Algorithm Error] Didn't find container " + param1 + " while at port " + param2 + ", and executing crane operation " + param3;
+        case AlgorithmError_InvalidCraneOperation:
+            return "[Algorithm Error] Illegal crane operation: " + param1;
+        case AlgorithmError_LeftContainersAtPort:
+            return "[Algorithm Error] Algorithm didn't load all required containers from port " + param1 + ", although ship isn't full";
+
         default:
             return "INVALID ERROR";
     }
@@ -113,6 +125,7 @@ bool Error::isFlag(ErrorFlag flag) {
 bool Error::isFatalError() {
     return (errorFlag & ShipPlan_FatalError) | (errorFlag & ShipRoute_FatalError) | (errorFlag & ShipRoute_FatalError_SinglePort);
 }
+
 // endregion
 // endregion
 
@@ -139,6 +152,18 @@ bool Errors::hasFatalError() {
     for (Error error : errorsList) {
         if (error.isFatalError())
             return true;
+    }
+
+    return false;
+}
+
+bool Errors::hasAlgorithmErrors() {
+    int algorithmErrors = AlgorithmError_CraneOperationWithInvalidId | AlgorithmError_InvalidCraneOperation | AlgorithmError_LeftContainersAtPort;
+
+    for (Error &error : errorsList) {
+        if (error.errorFlag & algorithmErrors) {
+            return true;
+        }
     }
 
     return false;

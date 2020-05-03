@@ -195,7 +195,7 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &erro
     return ContainerStorage(containers);
 }
 
-std::optional<Operations> readPackingOperationsFromFile(const std::string &filePath) {
+Operations readPackingOperationsFromFile(const std::string &filePath) {
 #ifdef DEBUG
     std::cout << "Attempting to read operations..." << std::endl;
 #endif
@@ -254,7 +254,6 @@ std::optional<Operations> readPackingOperationsFromFile(const std::string &fileP
 
     if (operations.empty()) {
         std::cerr << "Warning: failed to read any operation" << std::endl;
-        return std::nullopt;
     }
 
 #ifdef DEBUG

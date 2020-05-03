@@ -45,7 +45,7 @@ bool isTravelValid(SimulatorDataManager &manager, Errors &errors = Errors::garba
 void initResultsTable(StringStringVector &results, StringVector &travels, std::vector<std::shared_ptr<AbstractAlgorithm>> &algorithms);
 
 /// Add travel results of a single simulation to a table.
-void addSimulationResultToTable(StringStringVector &simulationResults, StringStringVector &results, int rowNum);
+void addSimulationResultToTable(StringStringVector &simulationResults, int totalCraneInstructions, int rowNum);
 
 /// Finalize the results table: add all sums, and sort as needed.
 void finalizeResultsTable(StringStringVector &results);
