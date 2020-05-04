@@ -15,7 +15,7 @@ ContainerShip::ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRout
                                                                                      cargo(shipPlan) {}
 
 ContainerShip::ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRoute,
-                             NaiveWeightBalancer &balanceCalculator) : shipPlan(shipPlan), shipRoute(shipRoute),
+                             AbstractWeightBalancer &balanceCalculator) : shipPlan(shipPlan), shipRoute(shipRoute),
                                                                        cargo(shipPlan),
                                                                        balanceCalculator(&balanceCalculator) {}
 // endregion
@@ -47,13 +47,13 @@ void ContainerShip::setCargo(const Cargo &cargo) {
     ContainerShip::cargo = cargo;
 }
 
-NaiveWeightBalancer &ContainerShip::getBalanceCalculator() const {
+WeightBalanceCalculator &ContainerShip::getBalanceCalculator() const {
     return *balanceCalculator;
 }
 
-void ContainerShip::setBalanceCalculator(NaiveWeightBalancer &balanceCalculator) {
+void ContainerShip::setBalanceCalculator(WeightBalanceCalculator &balanceCalculator) {
     ContainerShip::balanceCalculator = &balanceCalculator;
-    balanceCalculator.setCargo(cargo);
+//    balanceCalculator.setCargo(cargo);  // TODO: need to find a way to pass the cargo using the interface
 }
 
 // endregion
@@ -94,8 +94,8 @@ Operations ContainerShip::loadContainerToArbitraryPosition(Port &port, const Con
     // Loop over all possible ship matrix cells and try to load the container on top, until success
     for (int x = 0; (x < std::get<0>(dims)) && (z < 0); x++) {
         for (int y = 0; (y < std::get<1>(dims)) && (z < 0); y++) {
-            BalanceStatus status = this->balanceCalculator->tryOperation('L', container.getWeight(), x, y);
-            if (status == BalanceStatus::APPROVED) {
+            AbstractWeightBalancer::BalanceStatus status = this->balanceCalculator->tryOperation('L', container.getWeight(), x, y);
+            if (status == AbstractWeightBalancer::BalanceStatus::APPROVED) {
                 z = this->getCargo().canLoadContainerOnTop(x, y);
                 if (z >= 0) {
                     auto op = PackingOperation(PackingType::load, container.getId(), {x, y, z});
@@ -141,8 +141,8 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
     // Unload all containers on top, later we will load them back
     for (int i = 0; i < numOfContainersOnTop; i++) {
         auto topCont = this->getCargo().getTopContainer(x, y);
-        BalanceStatus status = this->balanceCalculator->tryOperation('U', topCont->getWeight(), x, y);
-        if (status != BalanceStatus::APPROVED) {
+        WeightBalanceCalculator::BalanceStatus status = this->balanceCalculator->tryOperation('U', topCont->getWeight(), x, y);
+        if (status != WeightBalanceCalculator::BalanceStatus::APPROVED) {
             failed = true;
             break;
         }
@@ -182,8 +182,8 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
         failed = true;
     } else {
         auto container = containerOptional.value();
-        BalanceStatus status = this->balanceCalculator->tryOperation('U', container.getWeight(), x, y);
-        if (status == BalanceStatus::APPROVED) {
+        WeightBalanceCalculator::BalanceStatus status = this->balanceCalculator->tryOperation('U', container.getWeight(), x, y);
+        if (status == WeightBalanceCalculator::BalanceStatus::APPROVED) {
             auto op = PackingOperation(PackingType::unload, container.getId(), {x, y, z});
             auto result = CranesOperation::preformOperation(op, port, *this);
             if (result == CraneOperationResult::SUCCESS) {

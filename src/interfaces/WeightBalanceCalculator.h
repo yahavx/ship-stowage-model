@@ -7,18 +7,18 @@
 
 #pragma once
 
-enum BalanceStatus {  // TODO: the enum should be inside the class
-    APPROVED , X_IMBALANCED , Y_IMBALANCED , X_Y_IMBALANCED
-};
-
 class WeightBalanceCalculator {
 
 public:
 
-// the method below is optional for ex2
-    int readShipPlan(const std::string& full_path_and_file_name);
+    enum BalanceStatus {
+        APPROVED , X_IMBALANCED , Y_IMBALANCED , X_Y_IMBALANCED
+    };
 
-    BalanceStatus tryOperation(char loadUnload, int kg, int X, int Y);
+// the method below is optional for ex2
+//    int readShipPlan(const std::string& full_path_and_file_name);
+
+    virtual BalanceStatus tryOperation(char loadUnload, int kg, int X, int Y) = 0;
 };
 
 #endif //SHIP_STOWAGE_MODEL_WEIGHTBALANCECALCULATOR_H

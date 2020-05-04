@@ -58,4 +58,4 @@ add_executable(ship_stowage_model
     # tests
     tests/FileTests.h
     tests/IOTests.h
-    tests/SimulationTests.h src/interfaces/AlgorithmRegistration.h)
+    tests/SimulationTests.h src/interfaces/AlgorithmRegistration.h src/common/actors/AbstractWeightBalancer.cpp src/common/actors/AbstractWeightBalancer.h)

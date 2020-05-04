@@ -21,7 +21,7 @@ public:
 
     int readShipRoute(const std::string &shipRoutePath) override;
 
-    int setWeightBalanceCalculator(NaiveWeightBalancer &calculator) override;
+    int setWeightBalanceCalculator(WeightBalanceCalculator &calculator) override;
 
 };
 

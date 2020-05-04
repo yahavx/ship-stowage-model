@@ -17,7 +17,7 @@ class ContainerShip {
     ShipPlan shipPlan;
     ShipRoute shipRoute;
     Cargo cargo;
-    NaiveWeightBalancer *balanceCalculator;
+    WeightBalanceCalculator *balanceCalculator;
 
 public:
     // region Constructors
@@ -25,14 +25,12 @@ public:
     ContainerShip();
 
     ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRoute,
-                  NaiveWeightBalancer &balanceCalculator);
+                  AbstractWeightBalancer &balanceCalculator);
 
     ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRoute);
     // endregion
 
     // region Getters and setters
-
-    void markCurrentVisitDone();
 
     const ShipPlan &getShipPlan() const;
 
@@ -46,18 +44,21 @@ public:
 
     void setCargo(const Cargo &cargo);
 
-    NaiveWeightBalancer &getBalanceCalculator() const;
+    WeightBalanceCalculator &getBalanceCalculator() const;
 
-    void setBalanceCalculator(NaiveWeightBalancer &balanceCalculator);
+    void setBalanceCalculator(WeightBalanceCalculator &balanceCalculator);
+
     // endregion
 
     // region Functions
 
+    void markCurrentVisitDone();
+
     /**
-     * Receives the next id of port to dock into, and list of containers that needs to be loaded.
+    * Receives the next id of port to dock into, and list of containers that needs to be loaded.
      * @return list of operations: first unload all containers for this port, and than load all the containers that needs to be loaded.
     */
-    std::vector<PackingOperation> dock(Port &port, const Containers &containersToLoad);
+    Operations dock(Port &port, const Containers &containersToLoad);
 
 private:
     /**
@@ -66,7 +67,7 @@ private:
      * @param container - container to load
      * @return legal PackingOperation or NULL if none was found
      */
-    std::vector<PackingOperation> loadContainerToArbitraryPosition(Port &port, const Container &container);
+    Operations loadContainerToArbitraryPosition(Port &port, const Container &container);
 
     /**
     * returns legal series of PackingOperation's for unloading container.
@@ -74,7 +75,7 @@ private:
     * @param container - container to load
     * @return legal series of PackingOperation's or NULL if none was found
     */
-    std::vector<PackingOperation> unloadContainer(Port &port, const ContainerPosition &container);
+    Operations unloadContainer(Port &port, const ContainerPosition &container);
     // endregion
 };
 

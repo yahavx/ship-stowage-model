@@ -38,8 +38,8 @@ int SemiAbstractAlgorithm::readShipRoute(const std::string &shipRoutePath) {
     return errors.toErrorFlag();
 }
 
-int SemiAbstractAlgorithm::setWeightBalanceCalculator(NaiveWeightBalancer &calculator) {
+int SemiAbstractAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &calculator) {
     this->ship.setBalanceCalculator(calculator);
-    this->ship.getBalanceCalculator().setPlan(this->ship.getShipPlan());
+//    this->ship.getBalanceCalculator().setPlan(this->ship.getShipPlan());  // TODO: find another way to set ship plan, its not part of the interface
     return 0;  // TODO: this can fail?
 }

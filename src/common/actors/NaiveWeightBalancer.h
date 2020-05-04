@@ -7,10 +7,10 @@
 
 #include "../data_structures/Cargo.h"
 #include "../../interfaces/WeightBalanceCalculator.h"
+#include "AbstractWeightBalancer.h"
 
-class NaiveWeightBalancer : public WeightBalanceCalculator {
-    ShipPlan plan;
-    Cargo *cargo;
+class NaiveWeightBalancer : public AbstractWeightBalancer {
+
 
 public:
     // region Constructors
@@ -21,21 +21,9 @@ public:
 
     // endregion
 
-    // region Getters and setters
-
-    Cargo &getCargo() const;
-
-    const ShipPlan &getPlan() const;
-
-    void setPlan(const ShipPlan &plan);
-
-    void setCargo(Cargo &cargo);
-
-    // endregion
-
     // region Functions
 
-    BalanceStatus tryOperation(char loadUnload, int kg, int X, int Y);
+    WeightBalanceCalculator::BalanceStatus tryOperation(char loadUnload, int kg, int X, int Y);
 
     // endregion
 };

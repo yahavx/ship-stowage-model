@@ -28,6 +28,9 @@ public:
 
     // region Simulation run
 
+    /// Run a cartesian loop of “travel” X “algorithm”.
+    void runSimulations();
+
 private:
     /**
      * Simulates an algorithm on a single travel.
@@ -35,11 +38,9 @@ private:
      */
     int runSimulation(AbstractAlgorithm &algorithm);
 
-public:
-    /// Run a cartesian loop of “travel” X “algorithm”.
-    void runSimulations();
-
     // endregion
+
+public:
 
     // region Simulation init
 
