@@ -11,7 +11,7 @@ CraneOperationResult preformLoadOperation(const PackingOperation &op, Port &port
         return CraneOperationResult::FAIL_CONTAINER_NOT_FOUND;
     }
     auto container = containerOptional.value();
-    std::tuple<int, int, int> pos = op.getFromPosition();
+    std::tuple<int, int, int> pos = op.getFirstPosition();
     int result = ship.getCargo().loadContainerOnTop(std::get<0>(pos), std::get<1>(pos), container);
 
     // If load to ship failed, put container back at port and return false
@@ -24,7 +24,7 @@ CraneOperationResult preformLoadOperation(const PackingOperation &op, Port &port
 }
 
 CraneOperationResult preformUnloadOperation(const PackingOperation &op, Port &port, ContainerShip &ship) {
-    std::tuple<int, int, int> pos = op.getFromPosition();
+    std::tuple<int, int, int> pos = op.getFirstPosition();
     auto containerOptional = ship.getCargo().getTopContainer(std::get<0>(pos), std::get<1>(pos));
     if (!containerOptional.has_value()) {
         std::cout << "Error unloading container, could not remove top container from cargo, the required one ("

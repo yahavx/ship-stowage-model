@@ -13,12 +13,12 @@
 
 
 class Simulator {
-
-public:
     std::string outputDir;
     std::string travelRootDir;
     SimulatorDataManager dataManager;
     std::vector<std::shared_ptr<AbstractAlgorithm>> algorithms;
+
+public:
 
     // region Constructors
 
@@ -44,8 +44,6 @@ private:
 
     // region Simulation init
 
-private:
-
      /// Inits the ship of a single simulation. Assume no fatal errors are in the plan and route.
     ContainerShip initSimulation(Errors &errors);
 
@@ -66,6 +64,7 @@ private:
     void validatePackingOperation(ContainerShip &ship, Port &port, const PackingOperation &op, Errors &errors) const;
 
     /// Returns true if travel can be used (i.e. ShipRoute and ShipPlan doesn't contain a fatal error).
+
     bool isTravelValid(Errors &errors = Errors::garbageCollector);
 
     // endregion

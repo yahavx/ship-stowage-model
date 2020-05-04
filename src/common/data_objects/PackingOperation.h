@@ -25,19 +25,21 @@ class PackingOperation {
 public:
     // region Constructors
 
-    PackingOperation(PackingType type, const std::string &containerId, const std::tuple<int, int, int> &fromPosition,
-                     const std::tuple<int, int, int> &toPosition);
+    PackingOperation(PackingType type, const std::string &containerId);  // for reject
 
-    PackingOperation(PackingType type, const std::string &containerId, const std::tuple<int, int, int> &fromPosition);
+    PackingOperation(PackingType type, const std::string &containerId, const std::tuple<int, int, int> &pos1);
+
+    PackingOperation(PackingType type, const std::string &containerId, const std::tuple<int, int, int> &pos1,
+                     const std::tuple<int, int, int> &pos2);
     // endregion
 
     // region Getters and setters
 
     const std::string &getContainerId() const;
 
-    const std::tuple<int, int, int> &getFromPosition() const;
+    const std::tuple<int, int, int> &getFirstPosition() const;
 
-    const std::tuple<int, int, int> &getToPosition() const;
+    const std::tuple<int, int, int> &getSecondPosition() const;
 
     PackingType getType() const;
     // endregion

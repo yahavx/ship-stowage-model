@@ -274,13 +274,13 @@ bool writePackingOperationsToFile(const std::string &filePath, Operations &opera
         currRow.push_back(packingTypeFromString(op.getType()));  // add operation type (L, U, M, R)
         currRow.push_back(op.getContainerId());  // add container id
 
-        POS fromPos = op.getFromPosition();  // add fromPosition
+        POS fromPos = op.getFirstPosition();  // add fromPosition
         currRow.push_back(intToStr(std::get<0>(fromPos)));
         currRow.push_back(intToStr(std::get<1>(fromPos)));
         currRow.push_back(intToStr(std::get<2>(fromPos)));
 
         if (op.getType() == PackingType::move) {
-            POS toPos = op.getFromPosition();  // add toPosition (if move operation)
+            POS toPos = op.getFirstPosition();  // add toPosition (if move operation)
             currRow.push_back(intToStr(std::get<0>(toPos)));
             currRow.push_back(intToStr(std::get<1>(toPos)));
             currRow.push_back(intToStr(std::get<2>(toPos)));
