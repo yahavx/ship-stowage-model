@@ -101,7 +101,7 @@ StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath) {
         std::string fileName = extractFilenameFromPath(file, false);
 
         if (!isCargoDataFileFormat(fileName)) {
-            if (fileName == "Route" || fileName == "Plan") {
+            if (endsWith(fileName, ".route") || endsWith(fileName, ".ship_plan")) {
                 continue;  // we except to see this, so just ignore
             }
 

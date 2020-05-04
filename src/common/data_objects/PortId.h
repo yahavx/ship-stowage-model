@@ -37,6 +37,12 @@ public:
 
     // endregion
 
+    // region Functions
+
+    bool isIdInIsoFormat();
+
+    // endregion
+
     // region Printer
 
     friend std::ostream &operator<<(std::ostream &os, const PortId &id);

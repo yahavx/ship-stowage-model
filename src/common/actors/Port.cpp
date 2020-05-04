@@ -33,17 +33,6 @@ OptionalContainer Port::removeContainer(const std::string &containerId) {
     return storage.removeContainer(containerId);
 }
 
-bool Port::isIdInIsoFormat(const std::string &id) {
-    if (id.length() != 11){
-        return false;
-    }
-
-    if (!isEnglishWord(id.substr(0, 4)) || !isInteger(id.substr(4, 7))){
-        return false;
-    }
-
-    return true;
-}
 // endregion
 
 // region Getters and setters

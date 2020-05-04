@@ -3,10 +3,11 @@
 //
 
 #include "PortId.h"
+#include "../utils/UtilFunctions.h"
 
 // region Constructors
 
-PortId::PortId(const std::string &code) : code(code) {}
+PortId::PortId(const std::string &code) : code(toUpper(code)) {}
 
 // endregion
 
@@ -17,7 +18,7 @@ const std::string &PortId::getCode() const {
 }
 
 void PortId::setCode(const std::string &code) {
-    PortId::code = code;
+    PortId::code = toUpper(code);
 }
 
 // endregion
@@ -34,6 +35,22 @@ bool PortId::operator!=(const PortId &rhs) const {
 
 PortId::operator std::string() const {
     return code;
+}
+
+// endregion
+
+// region Functions
+
+bool PortId::isIdInIsoFormat() {
+    if (code.length() != 11){
+        return false;
+    }
+
+    if (!isEnglishWord(code.substr(0, 4)) || !isInteger(code.substr(4, 7))){
+        return false;
+    }
+
+    return true;
 }
 
 // endregion

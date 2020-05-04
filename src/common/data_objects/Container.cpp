@@ -3,16 +3,19 @@
 //
 
 #include "Container.h"
+#include "../utils/UtilFunctions.h"
 
 #include <utility>
 
 
-// Constructors
+// region Constructors
+
 Container::Container(const std::string &id, int weight, const PortId &destPort) : id(id), weight(weight),
                                                                                   destPort(destPort) {}
+// endregion
 
+// region Getters and setters
 
-// Getters and setters
 int Container::getWeight() const {
     return weight;
 }
@@ -37,13 +40,9 @@ void Container::setId(const std::string &id) {
     Container::id = id;
 }
 
+// endregion
 
-// Printer
-std::ostream &operator<<(std::ostream &os, const Container &container) {
-    os << "Container(weight: " << container.weight << ", destPort: " << container.destPort << ", id: " << container.id
-       << ")";
-    return os;
-}
+// region Operators
 
 bool Container::operator==(const Container &rhs) const {
     return id == rhs.id;
@@ -53,3 +52,22 @@ bool Container::operator!=(const Container &rhs) const {
     return !(rhs == *this);
 }
 
+// endregion
+
+// region Functions
+
+ErrorFlag Container::isContainerLegal() {
+    return ErrorFlag::Success;
+}
+
+// endregion
+
+// region Printer
+
+std::ostream &operator<<(std::ostream &os, const Container &container) {
+    os << "Container(weight: " << container.weight << ", destPort: " << container.destPort << ", id: " << container.id
+       << ")";
+    return os;
+}
+
+// endregion

@@ -35,7 +35,7 @@ public:
 
     OptionalContainer removeContainer(const std::string &containerId);
 
-    static bool isIdInIsoFormat(const std::string &id);
+
     // endregion
 
     //region Getters and setters

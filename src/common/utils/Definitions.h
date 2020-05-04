@@ -8,8 +8,10 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "../data_objects/Container.h"
 #include "../data_objects/PackingOperation.h"
+
+
+class Container;  // no include to avoid circular includes
 
 
 /// Popular typedefs/structs

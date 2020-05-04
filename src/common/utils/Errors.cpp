@@ -2,6 +2,7 @@
 // Created by t-yabeny on 5/1/2020.
 //
 
+#include <iostream>
 #include "Errors.h"
 #include "UtilFunctions.h"
 

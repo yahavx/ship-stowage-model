@@ -11,9 +11,10 @@
 #include <vector>
 #include "PortId.h"
 #include "PackingOperation.h"
+#include "../utils/Errors.h"
 
 
-class   Container {
+class Container {
     std::string id;
     int weight;
     PortId destPort;
@@ -22,12 +23,12 @@ public:
     // region Constructors
 
     Container(const std::string &id, int weight, const PortId &destPort);
+
     // endregion
 
     // region Getters and setters
 
     int getWeight() const;
-
 
     void setWeight(int weight);
 
@@ -38,16 +39,28 @@ public:
     const std::string &getId() const;
 
     void setId(const std::string &id);
+
+    // endregion
+
+    // region Operators
+
+    bool operator==(const Container &rhs) const;
+
+    bool operator!=(const Container &rhs) const;
+
+    // endregion
+
+    // region Functions
+
+    ErrorFlag isContainerLegal();
+
     // endregion
 
     // region Printer
 
     friend std::ostream &operator<<(std::ostream &os, const Container &container);
+
     // endregion
-
-    bool operator==(const Container &rhs) const;
-
-    bool operator!=(const Container &rhs) const;
 };
 
 

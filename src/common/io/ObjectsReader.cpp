@@ -159,33 +159,46 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &erro
     }
 
     for (StringVector dataRow : data) {
-        if (dataRow.size() < 3) {
-            errors.addError(ErrorFlag::CargoData_MissingOrBadPortDest);  // the port dest is last - so he must be missing
+//        if (dataRow.size() < 3) {
+//            errors.addError(ErrorFlag::CargoData_MissingOrBadPortDest);  // the port dest is last - so he must be missing
 //            std::cout << "Warning: data row contains less than 3 arguments, ignoring" << std::endl;
+//            continue;
+//        }
+
+        std::string id, weight, destPort;
+
+        if (dataRow.size() > 0)
+            id = dataRow[0];
+        if (dataRow.size() > 1)
+            weight = dataRow[1];
+        if (dataRow.size() > 2)
+            destPort = dataRow[2];
+
+        if (id == "") {
+            errors.addError(ErrorFlag::CargoData_MissingContainerID);
             continue;
         }
 
-        std::string id = dataRow[0], weight = dataRow[1], destPort = dataRow[2];
-
-        if (!Port::isIdInIsoFormat(id)) {
-            errors.addError(ErrorFlag::CargoData_BadContainerID);
+//        if (!PortId::isIdInIsoFormat(id)) {  // TODO: the check will move to the Container class, remove it after its finished
+//            errors.addError(ErrorFlag::CargoData_BadContainerID);
 //            std::cout << "Warning: container id not in ISO format, ignoring" << std::endl;
-            continue;
-        }
+//            continue;
+//        }
 
-        if (!isInteger(weight)) {
-            errors.addError(ErrorFlag::CargoData_MissingOrBadWeight);
+//        if (!isInteger(weight)) {
+//            errors.addError(ErrorFlag::CargoData_MissingOrBadWeight);
 //            std::cout << "Warning: container weight is not an integer, ignoring" << std::endl;
-            continue;
-        }
+//            continue;
+//        }
 
-        if (!isEnglishWord(destPort) || destPort.length() != 5) {
-            errors.addError(ErrorFlag::CargoData_MissingOrBadPortDest);
+//        if (!isEnglishWord(destPort) || destPort.length() != 5) {
+//            errors.addError(ErrorFlag::CargoData_MissingOrBadPortDest);
 //            std::cout << "Warning: port symbol is invalid, ignoring" << std::endl;
-            continue;
-        }
+//            continue;
+//        }
 
-        containers.push_back(Container(id, strToInt(weight), PortId(destPort)));
+        int weightInt = isInteger(weight) ? strToInt(weight) : -1;
+        containers.push_back(Container(id, weightInt, PortId(destPort)));
     }
 
 #ifdef DEBUG
@@ -223,10 +236,10 @@ Operations readPackingOperationsFromFile(const std::string &filePath) {
             continue;
         }
 
-        if (!Port::isIdInIsoFormat(containerId)) {
-            std::cout << "Warning: container id not in ISO format, ignoring" << std::endl;
-            continue;
-        }
+//        if (!PortId::isIdInIsoFormat(containerId)) {
+//            std::cout << "Warning: container id not in ISO format, ignoring" << std::endl;
+//            continue;
+//        }
 
         if (!isInteger(floorStr) || !isInteger(xStr) || !isInteger(yStr)) {
             std::cout << "Warning: floor, x or y are not an integers, ignoring" << std::endl;
