@@ -22,7 +22,7 @@
 // region Simulation utils
 
 std::string getNextFileForPort(StringToStringVectorMap &cargoData, StringToIntMap &portVisits, const PortId &portId, SimulatorDataManager &manager, int isLast) {
-    std::string portCode = portId.getCode();
+    std::string portCode = portId;
     StringVector &filesForPort = cargoData[portCode];
 
     if (!filesForPort.empty()) {
@@ -78,28 +78,6 @@ void validateNoCargoFilesLeft(StringToStringVectorMap &map) {
     }
 }
 
-bool isTravelValid(SimulatorDataManager &manager, Errors &errors) {
-    if (!isDirectoryExists(manager.travelFolder())) {
-        errors.addError({ErrorFlag::Travel_InvalidDirectory, manager.travelName});
-        return false;
-    }
-
-    Errors tempErrors;
-
-    readShipPlanFromFile(manager.shipPlanPath(), tempErrors);
-    if (tempErrors.hasFatalError()) {
-        errors.addError({ErrorFlag::Travel_InvalidInput, manager.travelName, "Ship Plan"});
-        return false;
-    }
-
-    readShipRouteFromFile(manager.shipRoutePath(), tempErrors);
-    if (tempErrors.hasFatalError()) {
-        errors.addError({ErrorFlag::Travel_InvalidInput, manager.travelName, "Ship Route"});
-        return false;
-    }
-
-    return true;
-}
 // endregion
 
 // region Cargo data manager  // TODO: move some functions from above to this region maybe
@@ -152,14 +130,14 @@ StringToIntMap initPortsVisits(ShipRoute &shipRoute) {
     StringToIntMap map;
 
     for (PortId &port: shipRoute.getPorts()) {
-        map[port.getCode()] = 0;  // we may do it for the same port twice - no problem with that (one copy will be overwritten)
+        map[port] = 0;  // we may do it for the same port twice - no problem with that (one copy will be overwritten)
     }
 
     return map;
 }
 
 int getVisitNum(StringToIntMap &portsVisits, const PortId &portId) {
-    return ++portsVisits[portId.getCode()];
+    return ++portsVisits[portId];
 }
 
 // endregion
@@ -173,6 +151,8 @@ void initResultsTable(StringStringVector &results, StringVector &travels, std::v
     resultsFirstRow.push_back(Simulator::s_resultsTableTitle);  // set table title
 
     for (auto &travel : travels) {  // first row init (column names)
+
+
         auto travelName = extractFilenameFromPath(travel, false);
         resultsFirstRow.push_back(travelName);
     }

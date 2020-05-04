@@ -9,7 +9,8 @@
 #include "../data_objects/ShipPlan.h"
 #include "../data_structures/Cargo.h"
 
-class AbstractWeightBalancer : public WeightBalanceCalculator {
+
+class AbstractWeightBalancer : public WeightBalanceCalculator {  // our weight balancers will inherit this
 protected:
     ShipPlan plan;
     Cargo *cargo;
@@ -19,8 +20,6 @@ protected:
     explicit AbstractWeightBalancer(const ShipPlan &plan);
 
 public:
-
-
 
     // region Getters and setters
 

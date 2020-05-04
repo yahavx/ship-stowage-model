@@ -40,14 +40,14 @@ enum ErrorFlag : long {
     SimulationInit_InvalidTravelPath = 1 << 20,
     SimulationCleanup_OutputDirectoriesCleaningFailed = 1 << 21,
     Travel_InvalidDirectory = 1 << 22,
-    Travel_InvalidInput = 1 << 23,
+    Travel_FatalInput = 1 << 23,
 
     AlgorithmError_CraneOperationWithInvalidId = 1 << 24,
     AlgorithmError_InvalidCraneOperation = 1 << 25,
     AlgorithmError_LeftContainersAtPort = 1 << 26,
     AlgorithmError_ContainerIdAlreadyOnShip = 1 << 27,
-    AlgorithmError_reserved2 = 1 << 28,
-    AlgorithmError_reserved3 = 1 << 29,
+    AlgorithmError_ContainerIdNotExistsOnPort = 1 << 28,
+    AlgorithmError_ContainerIdNotExistsOnShip = 1 << 29,
     AlgorithmError_reserved4 = 1 << 30,
     AlgorithmError_reserved5 = 1 << 31,
 

@@ -23,7 +23,7 @@ Simulator::Simulator(const std::string &outputDir, const std::string &travelRoot
 //    NaiveStowageAlgorithm *naiveStowageAlgorithm2 = new NaiveStowageAlgorithm();
 
     algorithms.push_back(naiveStowageAlgorithm);
-    algorithms.push_back(badAlgorithm);
+//    algorithms.push_back(badAlgorithm);
 //    algorithms.push_back(naiveStowageAlgorithm2);
 }
 // endregion
@@ -31,7 +31,7 @@ Simulator::Simulator(const std::string &outputDir, const std::string &travelRoot
 // region Simulation run
 
 void Simulator::runSimulations() {
-    StringStringVector resultsTable;  // table for results
+    StringStringVector resultsTable;  // table of results
     Errors generalErrors;
 
     dataManager.createOutputFolders(generalErrors);
@@ -43,12 +43,12 @@ void Simulator::runSimulations() {
         return;
     }
 
-    initResultsTable(resultsTable, travels, algorithms);  // add columns names and set table structure
+    initResultsTable(resultsTable, travels, algorithms);  // add columns names and set table structure  TODO: don't add invalid travels
     for (auto &travel: travels) {
 
         dataManager.setTravelName(extractFilenameFromPath(travel));
 
-        if (!isTravelValid(dataManager, generalErrors)) {
+        if (!isTravelValid(generalErrors)) {
             continue;
         }
 
@@ -111,13 +111,13 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
         auto &portId = ports[i];
         int visitNum = getVisitNum(portsVisits, portId);  // visit number at this port right now
 
-        std::cout << "The ship has docked at port " << portId.getCode() << "." << std::endl;
+        std::cout << "The ship has docked at port " << portId << "." << std::endl;
 
         bool isLast = (i == ports.size() - 1);  // our last port is treated a bit different
 
         std::string cargoFileName = getNextFileForPort(cargoData, portsVisits, portId, dataManager, isLast);
         std::string cargoFilePath = dataManager.cargoFilePath(cargoFileName);
-        std::string instructionsOutputPath = dataManager.craneInstructionsOutputPath(portId.getCode(), visitNum);
+        std::string instructionsOutputPath = dataManager.craneInstructionsOutputPath(portId, visitNum);
 
         algorithm.getInstructionsForCargo(cargoFilePath, instructionsOutputPath);
 
@@ -181,7 +181,7 @@ ContainerShip Simulator::initSimulation(Errors &errors) {
 
 // endregion
 
-// region Perform operations
+// region Perform operations and validations
 
 void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const { // Perform operations on local ship and port
 
@@ -194,11 +194,11 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
         auto opResult = CranesOperation::preformOperation(op, port, ship);
         if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND) {
             std::cerr << "crane received illegal operation, didn't find container with ID: " << op.getContainerId() << std::endl;
-            errors.addError({ErrorFlag::AlgorithmError_CraneOperationWithInvalidId, op.getContainerId(), port.getId().getCode(), craneOperationToString(op)});
+            errors.addError({ErrorFlag::AlgorithmError_CraneOperationWithInvalidId, op.getContainerId(), port.getId(), op.toString()});
         }
         if (opResult == CraneOperationResult::FAIL_ILLEGAL_OP) {
             std::cerr << "Illegal crane operation: " << op << std::endl;
-            errors.addError({ErrorFlag::AlgorithmError_InvalidCraneOperation, craneOperationToString(op)});
+            errors.addError({ErrorFlag::AlgorithmError_InvalidCraneOperation, op.toString()});
         }
     }
 
@@ -216,7 +216,7 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
     }
 
     if (foundUnloadedContainers)
-        errors.addError({ErrorFlag::AlgorithmError_LeftContainersAtPort, port.getId().getCode()});
+        errors.addError({ErrorFlag::AlgorithmError_LeftContainersAtPort, port.getId()});
 
     std::cout << ops;
 }
@@ -241,6 +241,29 @@ void Simulator::validatePackingOperation(ContainerShip &ship, Port &port, const 
         case PackingType::move:
             break;
     }
+}
+
+bool Simulator::isTravelValid(Errors &errors) {
+    if (!isDirectoryExists(dataManager.travelFolder())) {
+        errors.addError({ErrorFlag::Travel_InvalidDirectory, dataManager.travelName});
+        return false;
+    }
+
+    Errors tempErrors;
+
+    readShipPlanFromFile(dataManager.shipPlanPath(), tempErrors);
+    if (tempErrors.hasFatalError()) {
+        errors.addError({ErrorFlag::Travel_FatalInput, dataManager.travelName, "Ship Plan"});
+        return false;
+    }
+
+    readShipRouteFromFile(dataManager.shipRoutePath(), tempErrors);
+    if (tempErrors.hasFatalError()) {
+        errors.addError({ErrorFlag::Travel_FatalInput, dataManager.travelName, "Ship Route"});
+        return false;
+    }
+
+    return true;
 }
 
 // endregion

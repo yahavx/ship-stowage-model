@@ -35,8 +35,6 @@ void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute);
 /// Checks if there are any remaining ports in the map, which still have files. Prints warning if yes.
 void validateNoCargoFilesLeft(StringToStringVectorMap &map);
 
-/// Returns true if travel can be used (i.e. ShipRoute and ShipPlan doesn't contain a fatal error).
-bool isTravelValid(SimulatorDataManager &manager, Errors &errors = Errors::garbageCollector);
 // endregion
 
 // region Table data manager

@@ -103,13 +103,13 @@ std::string Error::toString() {
 
         case Travel_InvalidDirectory:
             return "[Travel Error] Travel '" + param1 + "' is not a directory, skipping";
-        case Travel_InvalidInput:
+        case Travel_FatalInput:
             return "[Travel Error] Travel '" + param1 + "' has an invalid " + param2 +", or it doesn't exists, skipping";
 
         case AlgorithmError_CraneOperationWithInvalidId:
             return "[Algorithm Error] Didn't find container " + param1 + " while at port " + param2 + ", and executing crane operation " + param3;
         case AlgorithmError_InvalidCraneOperation:
-            return "[Algorithm Error] Received illegal crane operation: " + param1;
+            return "[Algorithm Error] Received the following invalid crane instruction: " + param1;
         case AlgorithmError_LeftContainersAtPort:
             return "[Algorithm Error] Didn't load all required containers from port " + param1 + ", although ship isn't full";
         case AlgorithmError_ContainerIdAlreadyOnShip:

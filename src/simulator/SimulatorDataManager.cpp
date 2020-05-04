@@ -36,11 +36,27 @@ std::string SimulatorDataManager::errorsFolder() {
 }
 
 std::string SimulatorDataManager::shipPlanPath() {
-    return travelFolder() + "/Plan";
+    auto travelFiles = getFilesFromDirectory(travelFolder());
+
+    for (auto& travelFile : travelFiles) {
+        if (endsWith(travelFile, ".ship_plan")) {
+            return travelFile;
+        }
+    }
+
+    return "";
 }
 
 std::string SimulatorDataManager::shipRoutePath() {
-    return travelFolder() + "/Route";
+    auto travelFiles = getFilesFromDirectory(travelFolder());
+
+    for (auto& travelFile : travelFiles) {
+        if (endsWith(travelFile, ".route")) {
+            return travelFile;
+        }
+    }
+
+    return "";
 }
 
 std::string SimulatorDataManager::craneInstructionsRootFolder() {
@@ -82,6 +98,7 @@ StringVector SimulatorDataManager::collectTravels(Errors &errors) {
 // endregion
 
 // region Files
+
 void SimulatorDataManager::saveErrorsFile(const std::string &fileName, const Errors &errors) {
     StringVector errorMessages = errors.toString();
 

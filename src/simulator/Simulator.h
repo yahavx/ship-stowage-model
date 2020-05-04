@@ -40,7 +40,7 @@ private:
 
     // endregion
 
-public:
+private:
 
     // region Simulation init
 
@@ -59,13 +59,18 @@ private:
 
     // endregion
 
-    // region Perform operations
+    // region Perform operations and validations
 
     void performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const;
 
     void validatePackingOperation(ContainerShip &ship, Port &port, const PackingOperation &op, Errors &errors) const;
 
+    /// Returns true if travel can be used (i.e. ShipRoute and ShipPlan doesn't contain a fatal error).
+    bool isTravelValid(Errors &errors = Errors::garbageCollector);
+
     // endregion
+
+public:
 
     // region Constants
 

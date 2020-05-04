@@ -17,6 +17,7 @@ add_executable(ship_stowage_model
 
         # common
             # actors
+            src/common/actors/AbstractWeightBalancer.cpp src/common/actors/AbstractWeightBalancer.h
             src/common/actors/ContainerShip.cpp src/common/actors/ContainerShip.h
             src/common/actors/CranesOperation.cpp src/common/actors/CranesOperation.h
             src/common/actors/NaiveWeightBalancer.h src/common/actors/NaiveWeightBalancer.cpp
@@ -48,6 +49,7 @@ add_executable(ship_stowage_model
 
         # interfaces
         src/interfaces/AbstractAlgorithm.h
+        src/interfaces/AlgorithmRegistration.h
         src/interfaces/WeightBalanceCalculator.h
 
         # simulator
@@ -58,4 +60,4 @@ add_executable(ship_stowage_model
     # tests
     tests/FileTests.h
     tests/IOTests.h
-    tests/SimulationTests.h src/interfaces/AlgorithmRegistration.h src/common/actors/AbstractWeightBalancer.cpp src/common/actors/AbstractWeightBalancer.h)
+    tests/SimulationTests.h)
