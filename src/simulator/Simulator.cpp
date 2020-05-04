@@ -80,9 +80,12 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
     ///     Init         ///
     ////////////////////////
 
+    std::cout << "Starting simulation (Algorithm = " << dataManager.algorithmName << ", Travel = " << dataManager.travelName << ")" << std::endl;
+
     ContainerShip ship = initSimulation(errors);
 
-    initAlgorithm(algorithm, errors);
+    NaiveWeightBalancer weightBalancer;
+    initAlgorithm(algorithm, weightBalancer, errors);
 
     StringToStringVectorMap cargoData = sortTravelCargoData(dataManager.travelFolder());  // get list of .cargo_data files, ordered for each port
     StringToIntMap portsVisits = initPortsVisits(ship.getShipRoute());  // map from each port, to number of times we have encountered him so far
@@ -100,7 +103,6 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
     ////////////////////////
 
     std::cout << "The ship has started its journey!" << std::endl;
-
     printSeparator(1, 1);
 
     std::vector<PortId> ports = ship.getShipRoute().getPorts();
@@ -145,7 +147,6 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
 //    printSeparator(1, 1);
 
     std::cout << "The ship has completed its journey. Total number of operations: " << totalNumberOfOps << std::endl;
-
     printSeparator(1, 5);
 
     if (errors.hasErrors()) {
@@ -159,25 +160,18 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
 
 // region Simulation Init
 
-void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, Errors &errors) {
-//    std::cout << "Initializing algorithm..." << std::endl;
-
+void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, WeightBalanceCalculator &calculator, Errors &errors) {
     int ret = algorithm.readShipPlan(dataManager.shipPlanPath());
     errors.addError(ret);  // if its not an error, addError will ignore it
+
     ret = algorithm.readShipRoute(dataManager.shipRoutePath());
     errors.addError(ret);
 
-    NaiveWeightBalancer algoWeightBalanceCalculator;
-    ret = algorithm.setWeightBalanceCalculator(algoWeightBalanceCalculator);
+    ret = algorithm.setWeightBalanceCalculator(calculator);
     errors.addError(ret);
-
-//    std::cout << "Success." << std::endl;
-//    printSeparator(1, 1);
 }
 
 ContainerShip Simulator::initSimulation(Errors &errors) {
-    std::cout << "Starting simulation (Algorithm = " << dataManager.algorithmName << ", Travel = " << dataManager.travelName << ")" << std::endl;
-
     ShipPlan shipPlan = readShipPlanFromFile(dataManager.shipPlanPath(), errors);
     ShipRoute shipRoute = readShipRouteFromFile(dataManager.shipRoutePath(), errors);
     NaiveWeightBalancer weightBalanceCalculator(shipPlan);

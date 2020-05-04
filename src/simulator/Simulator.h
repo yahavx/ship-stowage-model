@@ -50,7 +50,7 @@ private:
     ContainerShip initSimulation(Errors &errors);
 
     /// Inits the algorithm in a single simulation.
-    void initAlgorithm(AbstractAlgorithm &algorithm, Errors &errors);
+    void initAlgorithm(AbstractAlgorithm &algorithm, WeightBalanceCalculator &calculator, Errors &errors);
 
     /**
      * Perform packing operations received from algorithm, on simulator's ship. Validates each operation is legal.

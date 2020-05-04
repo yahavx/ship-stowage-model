@@ -4,6 +4,7 @@
 
 #include "BadAlgorithm.h"
 #include "../common/io/ObjectsReader.h"
+#include "../common/utils/UtilFunctions.h"
 
 // region Initialization
 
@@ -14,6 +15,7 @@ std::string BadAlgorithm::getAlgorithmName() {
 
 int BadAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
     if (this->algoErrors) {
+        createEmptyFile(outputFile);
         return this->algoErrors;
     }
 

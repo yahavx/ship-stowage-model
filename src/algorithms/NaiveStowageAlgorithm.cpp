@@ -20,6 +20,7 @@ std::string NaiveStowageAlgorithm::getAlgorithmName() {
 
 int NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
     if (this->algoErrors) {
+        createEmptyFile(outputFile);
         return this->algoErrors;
     }
 
