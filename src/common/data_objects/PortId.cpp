@@ -41,16 +41,8 @@ PortId::operator std::string() const {
 
 // region Functions
 
-bool PortId::isIdInIsoFormat() {
-    if (code.length() != 11){
-        return false;
-    }
-
-    if (!isEnglishWord(code.substr(0, 4)) || !isInteger(code.substr(4, 7))){
-        return false;
-    }
-
-    return true;
+bool PortId::isValid() {
+    return code.length() == 5 && isEnglishWord(code);
 }
 
 // endregion

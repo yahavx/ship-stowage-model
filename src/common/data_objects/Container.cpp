@@ -56,7 +56,31 @@ bool Container::operator!=(const Container &rhs) const {
 
 // region Functions
 
+bool Container::isIdInIsoFormat() {
+    if (id.length() != 11){
+        return false;
+    }
+
+    if (!isEnglishWord(id.substr(0, 4)) || !isInteger(id.substr(4, 7))){
+        return false;
+    }
+
+    return true;
+}
+
 ErrorFlag Container::isContainerLegal() {
+    if (!isIdInIsoFormat()) {
+        return ErrorFlag::CargoData_BadContainerID;
+    }
+
+    if (weight <= 0) {
+        return ErrorFlag::CargoData_MissingOrBadWeight;
+    }
+
+    if (!destPort.isValid()) {
+        return ErrorFlag::CargoData_MissingOrBadPortDest;
+    }
+
     return ErrorFlag::Success;
 }
 

@@ -10,7 +10,7 @@
 #include "Port.h"
 #include "ContainerShip.h"
 
-enum class CraneOperationResult{
+enum class CraneOperationResult {
     SUCCESS, FAIL_ILLEGAL_OP, FAIL_CONTAINER_NOT_FOUND
 };
 
@@ -24,7 +24,7 @@ public:
      * @param ship - the ship to load/unload to/from
      * @return operation result status
      */
-    static CraneOperationResult preformOperation(const PackingOperation& op, Port &port, ContainerShip &ship);
+    static CraneOperationResult preformOperation(const PackingOperation &op, Port &port, ContainerShip &ship);
 };
 
 

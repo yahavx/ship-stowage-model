@@ -10,7 +10,7 @@
 #include "../data_structures/Cargo.h"
 
 
-class AbstractWeightBalancer : public WeightBalanceCalculator {  // our weight balancers will inherit this
+class AbstractWeightBalancer : public WeightBalanceCalculator {  // our weight balancers will inherit from this - not in use in ex2
 protected:
     ShipPlan plan;
     Cargo *cargo;

@@ -33,13 +33,14 @@ public:
 
     bool operator!=(const PortId &rhs) const;
 
-    operator std::string() const;
+    operator std::string() const;  // allow auto conversion to string
 
     // endregion
 
     // region Functions
 
-    bool isIdInIsoFormat();
+    /// Returns true if the portId is valid according to the rules (5 english letters).
+    bool isValid();
 
     // endregion
 

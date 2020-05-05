@@ -9,7 +9,7 @@
 #include "../../interfaces/WeightBalanceCalculator.h"
 #include "AbstractWeightBalancer.h"
 
-class NaiveWeightBalancer : public AbstractWeightBalancer {
+class NaiveWeightBalancer : public AbstractWeightBalancer {  // not in use in ex2
 
 
 public:

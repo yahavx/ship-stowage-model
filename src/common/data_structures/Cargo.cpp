@@ -14,6 +14,7 @@ Cargo::Cargo(const ShipPlan &shipPlan) : shipPlan(shipPlan) {
     auto x = std::get<0>(dims), y = std::get<1>(dims);
     this->containers = std::vector<std::vector<Containers>>(x, std::vector<Containers>(y, Containers()));
 }
+
 // endregion
 
 // region Functions
@@ -107,13 +108,6 @@ int Cargo::currentTopHeight(int x, int y) const {
     auto height = this->shipPlan.getHeights()[x][y] + xyContainers.size();
     return height;
 }
-// endregion
-
-std::ostream &operator<<(std::ostream &os, const Cargo &cargo) {
-    os << "<CargoPrintNotImplemented>" << std::endl;
-    return os;
-    os << *cargo.getTopContainer(1, 1);
-}
 
 bool Cargo::hasContainer(std::string containerId) {
     POS dims = shipPlan.getDimensions();
@@ -140,3 +134,15 @@ bool Cargo::isFull() {
 
     return true;
 }
+
+// endregion
+
+// region Printer
+
+std::ostream &operator<<(std::ostream &os, const Cargo &cargo) {
+    os << "<CargoPrintNotImplemented>" << std::endl;
+    return os;
+    os << *cargo.getTopContainer(1, 1);
+}
+
+// endregion

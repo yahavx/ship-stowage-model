@@ -153,7 +153,7 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &erro
     StringStringVector data = readFile(filePath);
     Containers containers;
 
-    if (data.size() == 0) {
+    if (data.empty()) {
         errors.addError(ErrorFlag::CargoData_InvalidFile);
         return containers;
     }
@@ -167,12 +167,15 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &erro
 
         std::string id, weight, destPort;
 
-        if (dataRow.size() > 0)
+        if (dataRow.size() > 0) {
             id = dataRow[0];
-        if (dataRow.size() > 1)
+        }
+        if (dataRow.size() > 1) {
             weight = dataRow[1];
-        if (dataRow.size() > 2)
+        }
+        if (dataRow.size() > 2) {
             destPort = dataRow[2];
+        }
 
         if (id == "") {
             errors.addError(ErrorFlag::CargoData_MissingContainerID);
@@ -208,17 +211,24 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &erro
     return ContainerStorage(containers);
 }
 
-Operations readPackingOperationsFromFile(const std::string &filePath) {
+Operations readPackingOperationsFromFile(const std::string &filePath, Errors &errors) {
 #ifdef DEBUG
     std::cout << "Attempting to read operations..." << std::endl;
 #endif
-    StringStringVector data = readFile(filePath);
 
     Operations operations;
 
+    if (!isFileExist(filePath)) {
+        errors.addError(ErrorFlag::ReadOperations_InvalidFile);
+        return operations;
+    }
+
+    StringStringVector data = readFile(filePath);
+
     for (StringVector dataRow : data) {
         if (dataRow.size() < 5) {
-            std::cout << "Warning: data row contains less than 5 arguments, ignoring" << std::endl;
+            errors.addError(ErrorFlag::ReadOperations_InsufficientRowData);
+//            std::cout << "Warning: data row contains less than 5 arguments, ignoring" << std::endl;
             continue;
         }
 
@@ -226,13 +236,15 @@ Operations readPackingOperationsFromFile(const std::string &filePath) {
         std::string floorStr = dataRow[2], xStr = dataRow[3], yStr = dataRow[4];
 
         if (opStr.size() != 1 || (opStr[0] != 'L' && opStr[0] != 'U' && opStr[0] != 'M' && opStr[0] != 'R')) {
-            std::cout << "Warning: invalid operation type, ignoring" << std::endl;
+            errors.addError({ErrorFlag::ReadOperations_InvalidOperationType, opStr});
+//            std::cout << "Warning: invalid operation type, ignoring" << std::endl;
             continue;
         }
         PackingType packingType = packingTypeToString(opStr[0]);
 
         if (packingType == PackingType::move && dataRow.size() < 8) {
-            std::cout << "Warning: data row contains less than 8 arguments for move operation, ignoring" << std::endl;
+            errors.addError(ErrorFlag::ReadOperations_InsufficientRowData_MoveOp);
+//            std::cout << "Warning: data row contains less than 8 arguments for move operation, ignoring" << std::endl;
             continue;
         }
 
@@ -242,7 +254,16 @@ Operations readPackingOperationsFromFile(const std::string &filePath) {
 //        }
 
         if (!isInteger(floorStr) || !isInteger(xStr) || !isInteger(yStr)) {
-            std::cout << "Warning: floor, x or y are not an integers, ignoring" << std::endl;
+            if (!isInteger(floorStr)) {
+                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, floorStr});
+            }
+            if (!isInteger(xStr)) {
+                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, xStr});
+            }
+            if (!isInteger(yStr)) {
+                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, yStr});
+            }
+//            std::cout << "Warning: floor, x or y are not an integers, ignoring" << std::endl;
             continue;
         }
         int floor = strToInt(floorStr), x = strToInt(xStr), y = strToInt(yStr);
@@ -257,16 +278,27 @@ Operations readPackingOperationsFromFile(const std::string &filePath) {
         std::string floorStr2 = dataRow[5], xStr2 = dataRow[6], yStr2 = dataRow[7];
 
         if (!isInteger(floorStr2) || !isInteger(xStr2) || !isInteger(yStr2)) {
-            std::cout << "Warning: floor, x or y are not an integers, ignoring" << std::endl;
+            if (!isInteger(floorStr2)) {
+                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, floorStr2});
+            }
+            if (!isInteger(xStr2)) {
+                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, xStr2});
+            }
+            if (!isInteger(yStr2)) {
+                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, yStr2});
+            }
+//            std::cout << "Warning: floor, x or y are not an integers, ignoring" << std::endl;
             continue;
         }
+
         int floor2 = strToInt(floorStr2), x2 = strToInt(xStr2), y2 = strToInt(yStr2);
 
         operations.push_back(PackingOperation(packingType, containerId, {floor, x, y}, {floor2, x2, y2}));
     }
 
     if (operations.empty()) {
-        std::cout << "Warning: failed to read any operation" << std::endl;
+
+//        std::cout << "Warning: failed to read any operation" << std::endl;
     }
 
 #ifdef DEBUG

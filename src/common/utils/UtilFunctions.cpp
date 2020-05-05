@@ -199,6 +199,7 @@ bool isFileExist(const std::string &filePath)
     std::ifstream infile(filePath);
     return infile.good();
 }
+
 // endregion
 
 // region Strings

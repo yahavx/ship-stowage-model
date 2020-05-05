@@ -52,6 +52,8 @@ public:
 
     // region Functions
 
+    bool isIdInIsoFormat();  // TODO
+
     ErrorFlag isContainerLegal();
 
     // endregion

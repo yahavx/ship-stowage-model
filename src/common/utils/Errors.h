@@ -10,7 +10,7 @@
 
 #define MAX_ERROR_BIT 18  // max that is used by the algorithm (rest are for us)
 
-enum ErrorFlag : long {
+enum ErrorFlag : longUInt {
     Success = 0,
 
     ShipPlan_InvalidFloorHeight = 1 << 0,
@@ -35,7 +35,7 @@ enum ErrorFlag : long {
 
     ContainersAtPort_ContainersExceedsShipCapacity = 1 << 18,
 
-    // our errors
+    // our errors TODO: make sure the algorithm can't receive any by mistake
     SimulationInit_OutputDirectoriesCreationFailed = 1 << 19,
     SimulationInit_InvalidTravelPath = 1 << 20,
     SimulationCleanup_OutputDirectoriesCleaningFailed = 1 << 21,
@@ -49,10 +49,16 @@ enum ErrorFlag : long {
     AlgorithmError_ContainerIdNotExistsOnPort = 1 << 28,
     AlgorithmError_ContainerIdNotExistsOnShip = 1 << 29,
     AlgorithmError_reserved4 = 1 << 30,
-    AlgorithmError_reserved5 = 1 << 31,
+    AlgorithmError_reserved5 = 1ULL << 31,
 
+    // These are also kind of algorithm errors (they write the file)
+    ReadOperations_InvalidFile = 1 << 29,
     ReadOperations_InsufficientRowData = 1 << 29,
-    ReadOperations_i = 1 << 29,
+    ReadOperations_InsufficientRowData_MoveOp = 1 << 29,
+    ReadOperations_InvalidOperationType = 1 << 29,
+    ReadOperations_InvalidShipPosition = 1 << 30,
+    ReadOperations_2 = 1ULL << 31,
+    ReadOperations_3 = 1ULL << 32,
 
 
 };
