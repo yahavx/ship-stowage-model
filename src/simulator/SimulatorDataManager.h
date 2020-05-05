@@ -57,6 +57,10 @@ public:
 
     std::string travelFolder();
 
+    // endregion
+
+    // region Functions
+
 private:
     bool isTravelValid(Errors &errors = Errors::garbageCollector);
 
@@ -64,14 +68,20 @@ public:
     /// Returns a list of legal travels inside travelPath.
     StringVector collectLegalTravels(Errors &errors = Errors::garbageCollector);
 
+    /**
+ * Receives a travel directory and sorts the .cargo_files for each port.
+ * @return a map from each portID to a string vector of his .cargo_files, ordered from small to big.
+ */
+    StringToStringVectorMap getCargoDataFiles(Errors &errors = Errors::garbageCollector);
+
     // endregion
 
     // region Files IO
 private:
-    void saveErrorsFile(const std::string &fileName, const Errors &errors);
+    void saveErrorsFile(const std::string &fileName, const Errors &errorsToWrite);
 
 public:
-    void saveGeneralErrors(const Errors &errors);  // errors to be saved - not to be collected
+    void saveGeneralErrors(const Errors &errorsToWrite);  // errors to be saved - not to be collected
 
     /// Saves errors of a single simulation.
     void saveSimulationErrors(const Errors &errorsToWrite);

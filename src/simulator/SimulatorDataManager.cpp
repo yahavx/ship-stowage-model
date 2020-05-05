@@ -84,6 +84,10 @@ std::string SimulatorDataManager::travelFolder() {
     return travelRootDir + "/" + travelName;
 }
 
+// endregion
+
+// region Functions
+
 bool SimulatorDataManager::isTravelValid(Errors &errors) {
     if (!isDirectoryExists(travelFolder())) {
         errors.addError({ErrorFlag::Travel_InvalidDirectory, travelName});
@@ -127,19 +131,64 @@ StringVector SimulatorDataManager::collectLegalTravels(Errors &errors) {
     return legalTravels;
 }
 
+/// Sorts a string vector of .cargo_files by their numbers. Names must be valid, and all belong to each port.
+void sortCargoFilesByNumber(StringVector &stringVector) {
+    sort(stringVector.begin(), stringVector.end(),
+         [](const std::string &a, const std::string &b) -> bool {
+             std::string numA = a.substr(6, a.length() - 17);  // dirty trick to extract the number
+             std::string numB = b.substr(6, b.length() - 17);
+             return strToInt(numA) < strToInt(numB);
+         });
+}
+
+StringToStringVectorMap SimulatorDataManager::getCargoDataFiles(Errors &errors) {
+    StringToStringVectorMap map;
+
+    StringVector files = getFilesFromDirectory(travelFolder());
+
+    for (std::string &file : files) {
+        std::string fileName = extractFilenameFromPath(file, false);
+
+        if (!isCargoDataFileFormat(fileName)) {
+            if (endsWith(fileName, ".route") || endsWith(fileName, ".ship_plan")) {
+                continue;  // we except to see this, so just ignore
+            }
+
+            std::cout << "Warning: invalid file in travel folder: " << fileName << std::endl;
+            errors.addError({ErrorFlag::Travel_UnknownFile, fileName});
+            continue;
+        }
+
+        std::string portId = fileName.substr(0, 5);
+
+        if (map.find(portId) == map.end()) {  // port not encountered yet
+            map[portId] = StringVector();
+        }
+
+        map[portId].push_back(fileName);  // we push in correct order because files are sorted
+    }
+
+    // now we have mapping from AAAAA -> AAAAA_17, AAAAA_2 (unsorted because 17 < 2 but alphabetically 2 < 17)
+    for (auto &entry: map) {
+        sortCargoFilesByNumber(entry.second);  // sort for each port separately
+    }
+
+    return map;
+}
+
 // endregion
 
 // region Files
 
-void SimulatorDataManager::saveErrorsFile(const std::string &fileName, const Errors &errors) {
-    StringVector errorMessages = errors.toString();
+void SimulatorDataManager::saveErrorsFile(const std::string &fileName, const Errors &errorsToWrite) {
+    StringVector errorMessages = errorsToWrite.toString();
 
     std::string filePath = errorsFolder() + "/" + fileName;
     writeFile(filePath, errorMessages);
 }
 
-void SimulatorDataManager::saveGeneralErrors(const Errors &errors) {
-    saveErrorsFile("GeneralErrors", errors);
+void SimulatorDataManager::saveGeneralErrors(const Errors &errorsToWrite) {
+    saveErrorsFile("GeneralErrors", errorsToWrite);
 }
 
 void SimulatorDataManager::saveSimulationErrors(const Errors &errorsToWrite) {

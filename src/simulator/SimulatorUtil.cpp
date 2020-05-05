@@ -43,7 +43,7 @@ std::string getNextFileForPort(StringToStringVectorMap &cargoData, StringToIntMa
     return filePath;
 }
 
-void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute) {
+void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute, Errors &errors) {
     StringVector toErase;
 
     for (auto &entry: map) {
@@ -59,6 +59,7 @@ void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute) {
 
         if (!found) {  // port is not in the route, remove it
             std::cerr << "Warning: port " << currPortCode << " has cargo files but doesn't appear in the route, ignoring" << std::endl;
+            errors.addError({ErrorFlag::Travel_CargoData_PortNotInRoute, currPortCode});
             toErase.push_back(currPortCode);  // we don't erase in-place because it will crash the map iterator
         }
     }
@@ -68,63 +69,19 @@ void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute) {
     }
 }
 
-void validateNoCargoFilesLeft(StringToStringVectorMap &map) {
+void validateNoCargoFilesLeft(StringToStringVectorMap &map, Errors &errors) {
     for (auto &entry: map) {
         std::string portId = entry.first;
-        if (map[portId].size() > 0) {
-            std::cout << "Warning: finished the route, but port " << portId << " have cargo files that were not used"
-                      << std::endl;
+        if (!map[portId].empty()) {
+            std::cout << "Warning: finished the route, but port " << portId << " have cargo files that were not used" << std::endl;
+            errors.addError({ErrorFlag::Travel_CargoData_RemainingFilesAfterFinish, portId});
         }
     }
 }
 
 // endregion
 
-// region Cargo data manager  // TODO: move some functions from above to this region maybe
-
-/// Sorts a string vector of .cargo_files by their numbers. Names must be valid, and all belong to each port.
-void sortCargoFilesByNumber(StringVector &stringVector) {
-    sort(stringVector.begin(), stringVector.end(),
-         [](const std::string &a, const std::string &b) -> bool {
-             std::string numA = a.substr(6, a.length() - 17);  // dirty trick to extract the number
-             std::string numB = b.substr(6, b.length() - 17);
-             return strToInt(numA) < strToInt(numB);
-         });
-}
-
-StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath) {
-    StringToStringVectorMap map;
-
-    StringVector files = getFilesFromDirectory(directoryPath);
-
-    for (std::string &file : files) {
-        std::string fileName = extractFilenameFromPath(file, false);
-
-        if (!isCargoDataFileFormat(fileName)) {
-            if (endsWith(fileName, ".route") || endsWith(fileName, ".ship_plan")) {
-                continue;  // we except to see this, so just ignore
-            }
-
-            std::cout << "Warning: invalid file in travel folder: " << fileName << std::endl;
-            continue;
-        }
-
-        std::string portId = fileName.substr(0, 5);
-
-        if (map.find(portId) == map.end()) {  // port not encountered yet
-            map[portId] = StringVector();
-        }
-
-        map[portId].push_back(fileName);  // we push in correct order because files are sorted
-    }
-
-    // now we have mapping from AAAAA -> AAAAA_17, AAAAA_2 (unsorted because 17 < 2 but alphabetically 2 < 17)
-    for (auto &entry: map) {
-        sortCargoFilesByNumber(entry.second);  // sort for each port separately
-    }
-
-    return map;
-}
+// region Cargo data manager
 
 StringToIntMap initPortsVisits(ShipRoute &shipRoute) {
     StringToIntMap map;

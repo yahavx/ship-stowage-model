@@ -23,6 +23,7 @@ public:
     explicit Port(const PortId &id);
 
     Port(const PortId &id, const ContainerStorage &storage);
+
     // endregion
 
     // region Functions
@@ -35,7 +36,6 @@ public:
 
     OptionalContainer removeContainer(const std::string &containerId);
 
-
     // endregion
 
     //region Getters and setters
@@ -47,11 +47,13 @@ public:
     const ContainerStorage &getStorage() const;
 
     void setStorage(const ContainerStorage &storage);
+
     // endregion
 
     // region Printer
 
     friend std::ostream &operator<<(std::ostream &os, const Port &port);
+
     // endregion
 };
 

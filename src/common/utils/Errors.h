@@ -41,6 +41,9 @@ enum ErrorFlag : longUInt {
     SimulationCleanup_OutputDirectoriesCleaningFailed = 1 << 21,
     Travel_InvalidDirectory = 1 << 22,
     Travel_FatalInput = 1 << 23,
+    Travel_UnknownFile,
+    Travel_CargoData_PortNotInRoute,
+    Travel_CargoData_RemainingFilesAfterFinish,
 
     AlgorithmError_CraneOperationWithInvalidId = 1 << 24,
     AlgorithmError_InvalidCraneOperation = 1 << 25,

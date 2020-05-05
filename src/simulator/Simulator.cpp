@@ -35,15 +35,10 @@ void Simulator::runSimulations() {
     Errors generalErrors;
 
     dataManager.createOutputFolders(generalErrors);
+
     StringVector travels = dataManager.collectLegalTravels(generalErrors);
 
-    if (generalErrors.hasErrors()) {  // any init error is fatal so we have to terminate
-        dataManager.saveGeneralErrors(generalErrors);
-        dataManager.cleanOutputFolders();
-        return;
-    }
-
-    initResultsTable(resultsTable, travels, algorithms);  // add columns names and set table structure  TODO: don't add invalid travels
+    initResultsTable(resultsTable, travels, algorithms);  // add columns names and set table structure
     for (auto &travel: travels) {
 
         dataManager.setTravelName(extractFilenameFromPath(travel));
@@ -89,11 +84,11 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
     WeightBalanceCalculator algoWeightBalancer;
     initAlgorithm(algorithm, algoWeightBalancer, errors);
 
-    StringToStringVectorMap cargoData = sortTravelCargoData(dataManager.travelFolder());  // get list of .cargo_data files, ordered for each port
+    StringToStringVectorMap cargoData = dataManager.getCargoDataFiles(errors);  // get list of .cargo_data files, ordered for each port
     StringToIntMap portsVisits = initPortsVisits(ship.getShipRoute());  // map from each port, to number of times we have encountered him so far
 
 //    std::cout << "Validating route..." << std::endl;
-    filterUnusedPorts(cargoData, ship.getShipRoute());  // remove the port files which are not on the ship route
+    filterUnusedPorts(cargoData, ship.getShipRoute(), errors);  // remove the port files which are not on the ship route
 //    std::cout << "Finished." << std::endl;
 
 //    printSeparator(1, 1);
@@ -138,7 +133,7 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
         printSeparator(1, 1);
     }
 
-    validateNoCargoFilesLeft(cargoData);  // if there are remaining cargo files in the map, we need to print a warning because we couldn't use them
+    validateNoCargoFilesLeft(cargoData, errors);  // if there are remaining cargo files in the map, we need to print a warning because we couldn't use them
 
 //    printSeparator(1, 1);
 

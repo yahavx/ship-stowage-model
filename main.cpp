@@ -29,6 +29,8 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+//    travelPath = "../input-examples/travels";
+
     Simulator simulator(outputPath, travelPath);
 
     simulator.runSimulations();

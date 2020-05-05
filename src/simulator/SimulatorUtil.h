@@ -14,11 +14,6 @@
 
 // region Simulation utils
 
-/**
- * Receives a travel directory and sorts the .cargo_files for each port.
- * @return a map from each portID to a string vector of his .cargo_files, ordered from small to big.
- */
-StringToStringVectorMap sortTravelCargoData(const std::string &directoryPath);
 
 /// Inits a map from each port id to zero (will be incremented each time we visit this port)
 StringToIntMap initPortsVisits(ShipRoute &shipRoute);
@@ -30,10 +25,10 @@ int getVisitNum(StringToIntMap &portsVisits, const PortId &portId);
 std::string getNextFileForPort(StringToStringVectorMap &cargoData, StringToIntMap &portVisits, const PortId &portId, SimulatorDataManager &manager, int isLast);
 
 /// Removes from map ports that doesn't appear in the route.
-void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute);
+void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute, Errors &errors);
 
 /// Checks if there are any remaining ports in the map, which still have files. Prints warning if yes.
-void validateNoCargoFilesLeft(StringToStringVectorMap &map);
+void validateNoCargoFilesLeft(StringToStringVectorMap &map, Errors &errors);
 
 // endregion
 

@@ -50,7 +50,7 @@ bool PortId::isValid() {
 // region Printer
 
 std::ostream &operator<<(std::ostream &os, const PortId &id) {
-    os << "PortCode: " << id.code;
+    os << id.code;
     return os;
 }
 
