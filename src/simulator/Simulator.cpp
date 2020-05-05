@@ -35,7 +35,7 @@ void Simulator::runSimulations() {
     Errors generalErrors;
 
     dataManager.createOutputFolders(generalErrors);
-    StringVector travels = dataManager.collectTravels(generalErrors);
+    StringVector travels = dataManager.collectLegalTravels(generalErrors);
 
     if (generalErrors.hasErrors()) {  // any init error is fatal so we have to terminate
         dataManager.saveGeneralErrors(generalErrors);
@@ -47,10 +47,6 @@ void Simulator::runSimulations() {
     for (auto &travel: travels) {
 
         dataManager.setTravelName(extractFilenameFromPath(travel));
-
-        if (!isTravelValid(generalErrors)) {
-            continue;
-        }
 
         for (longUInt i = 0; i < algorithms.size(); i++) {
             auto &algorithm = algorithms[i];
@@ -64,9 +60,14 @@ void Simulator::runSimulations() {
         }
     }
 
-    finalizeResultsTable(resultsTable);
+    if (!travels.empty()) {
+        finalizeResultsTable(resultsTable);
+        dataManager.saveSimulationResults(resultsTable);
+    }
 
-    dataManager.saveSimulationFinalResults(resultsTable, generalErrors);
+    if (generalErrors.hasErrors()) {
+        dataManager.saveGeneralErrors(generalErrors);
+    }
 
     dataManager.cleanOutputFolders();  // remove temp and errors (if empty), can disable it to debug
 }
@@ -111,34 +112,28 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
     for (longUInt i = 0; i < ports.size(); i++) {  // Start the journey
         auto &portId = ports[i];
         int visitNum = getVisitNum(portsVisits, portId);  // visit number at this port right now
+        bool isLast = (i == ports.size() - 1);  // our last port is treated a bit different
 
         std::cout << "The ship has docked at port " << portId << "." << std::endl;
-
-        bool isLast = (i == ports.size() - 1);  // our last port is treated a bit different
 
         std::string cargoFileName = getNextFileForPort(cargoData, portsVisits, portId, dataManager, isLast);
         std::string cargoFilePath = dataManager.cargoFilePath(cargoFileName);
         std::string instructionsOutputPath = dataManager.craneInstructionsOutputPath(portId, visitNum);
-
         algorithm.getInstructionsForCargo(cargoFilePath, instructionsOutputPath);
 
-        Errors cargoErrors;
-        Port port(portId, readPortCargoFromFile(cargoFilePath, errors));
+        Port port(portId, readPortCargoFromFile(cargoFilePath, errors));  // init current port for the simulator
 
-        Operations ops = readPackingOperationsFromFile(instructionsOutputPath);  // read the operations to perform, written by the algorithm
-
-        if (ops.empty()) {
-            std::cout << "Warning: no packing operations were read" << std::endl;
-        }
-
-        performPackingOperations(ship, port, ops, errors);   // TODO: validate the operations are safe (inside the function call)
+        Operations ops = readPackingOperationsFromFile(instructionsOutputPath, errors);  // read the operations to perform, written by the algorithm
+        performPackingOperations(ship, port, ops, errors);
         totalNumberOfOps = totalNumberOfOps + ops.size();
 
-        if (!isLast) {
-            std::cout << "The ship is continuing to the next port..." << std::endl;
-        } else {
-            std::cout << "The ship is going into maintenance..." << std::endl;
+        if (errors.hasAlgorithmErrors()) {
+            dataManager.saveSimulationErrors(errors);  // TODO: see if we can continue and collect more errors, but its ok like this
+            return -1;
         }
+
+        if (!isLast) { std::cout << "The ship is continuing to the next port..." << std::endl;
+        } else {std::cout << "The ship is going into maintenance..." << std::endl; }
 
         printSeparator(1, 1);
     }
@@ -186,6 +181,7 @@ ContainerShip Simulator::initSimulation(WeightBalanceCalculator &calculator, Err
 void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const { // Perform operations on local ship and port
 
     // TODO: check that any containers that were loaded to the port to unload others, are back in ship
+    // TODO: ops can be empty, maybe we need to document it
 
     for (const PackingOperation &op : ops) {
 
@@ -202,7 +198,7 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
         }
     }
 
-    ship.markCurrentVisitDone();
+    ship.advanceToNextPort();
 
     // Check if algorithm loaded all required containers (if there is space on the ship)
     bool foundUnloadedContainers = false;
@@ -241,29 +237,6 @@ void Simulator::validatePackingOperation(ContainerShip &ship, Port &port, const 
         case PackingType::move:
             break;
     }
-}
-
-bool Simulator::isTravelValid(Errors &errors) {
-    if (!isDirectoryExists(dataManager.travelFolder())) {
-        errors.addError({ErrorFlag::Travel_InvalidDirectory, dataManager.travelName});
-        return false;
-    }
-
-    Errors tempErrors;
-
-    readShipPlanFromFile(dataManager.shipPlanPath(), tempErrors);
-    if (tempErrors.hasFatalError()) {
-        errors.addError({ErrorFlag::Travel_FatalInput, dataManager.travelName, "Ship Plan"});
-        return false;
-    }
-
-    readShipRouteFromFile(dataManager.shipRoutePath(), tempErrors);
-    if (tempErrors.hasFatalError()) {
-        errors.addError({ErrorFlag::Travel_FatalInput, dataManager.travelName, "Ship Route"});
-        return false;
-    }
-
-    return true;
 }
 
 // endregion

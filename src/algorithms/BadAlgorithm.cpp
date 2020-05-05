@@ -45,7 +45,7 @@ int BadAlgorithm::getInstructionsForCargo(const std::string &inputFile, const st
 
     writePackingOperationsToFile(outputFile, ops);
 
-    ship.markCurrentVisitDone(); // pop the current port from the ShipRoute
+    ship.advanceToNextPort(); // pop the current port from the ShipRoute
 
     return errors.toErrorFlag();
 }

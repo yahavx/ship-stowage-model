@@ -219,9 +219,10 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
     return ops;
 }
 
-void ContainerShip::markCurrentVisitDone() {
-    if (!shipRoute.getPorts().empty())
+void ContainerShip::advanceToNextPort() {
+    if (!shipRoute.getPorts().empty()) {
         this->shipRoute.getPorts().erase(this->shipRoute.getPorts().begin());
+    }
 }
 
 // endregion

@@ -5,6 +5,7 @@
 #include "SimulatorDataManager.h"
 #include "../common/utils/UtilFunctions.h"
 #include "../common/io/FileReader.h"
+#include "../common/io/ObjectsReader.h"
 
 // region Constructors
 
@@ -83,16 +84,47 @@ std::string SimulatorDataManager::travelFolder() {
     return travelRootDir + "/" + travelName;
 }
 
-StringVector SimulatorDataManager::collectTravels(Errors &errors) {
+bool SimulatorDataManager::isTravelValid(Errors &errors) {
+    if (!isDirectoryExists(travelFolder())) {
+        errors.addError({ErrorFlag::Travel_InvalidDirectory, travelName});
+        return false;
+    }
+
+    Errors tempErrors;
+
+    readShipPlanFromFile(shipPlanPath(), tempErrors);
+    if (tempErrors.hasFatalError()) {
+        errors.addError({ErrorFlag::Travel_FatalInput, travelName, "Ship Plan"});
+        return false;
+    }
+
+    readShipRouteFromFile(shipRoutePath(), tempErrors);
+    if (tempErrors.hasFatalError()) {
+        errors.addError({ErrorFlag::Travel_FatalInput, travelName, "Ship Route"});
+        return false;
+    }
+
+    return true;
+}
+
+StringVector SimulatorDataManager::collectLegalTravels(Errors &errors) {
     if (travelRootDir == "") {  // no travel path supplied
         errors.addError(ErrorFlag::SimulationInit_InvalidTravelPath);
     }
-    StringVector files = getFilesFromDirectory(travelRootDir);
-    if (files.empty()) {
+    StringVector travels = getFilesFromDirectory(travelRootDir);
+    if (travels.empty()) {
         errors.addError(ErrorFlag::SimulationInit_InvalidTravelPath);
     }
 
-    return files;
+    StringVector legalTravels;
+    for (auto& travel: travels) {
+        travelName = extractFilenameFromPath(travel);
+        if (isTravelValid(errors)) {
+            legalTravels.push_back(travel);
+        }
+    }
+
+    return legalTravels;
 }
 
 // endregion
@@ -110,16 +142,13 @@ void SimulatorDataManager::saveGeneralErrors(const Errors &errors) {
     saveErrorsFile("GeneralErrors", errors);
 }
 
-void SimulatorDataManager::saveSimulationErrors(const Errors &errors) {
+void SimulatorDataManager::saveSimulationErrors(const Errors &errorsToWrite) {
     std::string fileName = algorithmName + "_" + travelName + "_errors";
-    saveErrorsFile(fileName, errors);
+    saveErrorsFile(fileName, errorsToWrite);
 }
 
-void SimulatorDataManager::saveSimulationFinalResults(const StringStringVector &results, const Errors &errors) {
+void SimulatorDataManager::saveSimulationResults(const StringStringVector &results) {
     writeFile(outputDir + "/simulation.results.csv", results);
-    if (errors.hasErrors()) {
-        saveGeneralErrors(errors);
-    }
 }
 
 void SimulatorDataManager::createTravelCraneFolder() {

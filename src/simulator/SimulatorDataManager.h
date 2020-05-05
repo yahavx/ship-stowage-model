@@ -57,20 +57,26 @@ public:
 
     std::string travelFolder();
 
-    /// Returns a list of travels (i.e. directories) inside travelPath.
-    StringVector collectTravels(Errors &errors = Errors::garbageCollector);
+private:
+    bool isTravelValid(Errors &errors = Errors::garbageCollector);
+
+public:
+    /// Returns a list of legal travels inside travelPath.
+    StringVector collectLegalTravels(Errors &errors = Errors::garbageCollector);
 
     // endregion
 
     // region Files IO
 private:
     void saveErrorsFile(const std::string &fileName, const Errors &errors);
+
 public:
     void saveGeneralErrors(const Errors &errors);  // errors to be saved - not to be collected
 
-    void saveSimulationErrors(const Errors &errors);
+    /// Saves errors of a single simulation.
+    void saveSimulationErrors(const Errors &errorsToWrite);
 
-    void saveSimulationFinalResults(const StringStringVector &results, const Errors &errors = Errors::garbageCollector);
+    void saveSimulationResults(const StringStringVector &results);
 
     /// Creates a crane folder for a single simulation run (must call setTravelInfo before).
     void createTravelCraneFolder();

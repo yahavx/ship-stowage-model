@@ -65,8 +65,6 @@ private:
 
     /// Returns true if travel can be used (i.e. ShipRoute and ShipPlan doesn't contain a fatal error).
 
-    bool isTravelValid(Errors &errors = Errors::garbageCollector);
-
     // endregion
 
 public:

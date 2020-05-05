@@ -52,7 +52,7 @@ public:
 
     // region Functions
 
-    void markCurrentVisitDone();
+    void advanceToNextPort();
 
     /**
     * Receives the next id of port to dock into, and list of containers that needs to be loaded.

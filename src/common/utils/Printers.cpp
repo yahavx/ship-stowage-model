@@ -58,7 +58,7 @@ std::ostream &operator<<(std::ostream &os, const Operations &ops) {
     }
     std::cout << "Operations {" << std::endl;
     for (longUInt i = 0; i < ops.size(); i++) {
-        std::cout << '\t' << ops[i] << std::endl;
+        std::cout << '\t' << ops[i].toString() << std::endl;
     }
     std::cout << "}" << std::endl;
     return os;
