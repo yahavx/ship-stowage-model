@@ -71,7 +71,7 @@ public:
     /// Adds reject operation for all the ids.
     void addRejectOperations(const StringVector &containerIds);
 
-    int size() const;
+    int size(bool excludeRejects = false) const;
 
     bool empty() const;
 

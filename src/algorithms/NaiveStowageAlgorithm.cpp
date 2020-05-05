@@ -36,27 +36,41 @@ int NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile,
     StringVector toReject = port.removeBadContainers(ship.getShipRoute());
     ops.addRejectOperations(toReject);  // If its empty, nothing will be added
 
-    Containers containersToLoad;
-    std::vector<PortId> alreadyCollected;  // To not collect from same port twice
-
-    // Collect all containers that needs to be loaded
-    for (longUInt i = 1; i < ship.getShipRoute().getPorts().size(); i++) {
-        const PortId &id = ship.getShipRoute().getPorts()[i];
-        auto it = std::find(alreadyCollected.begin(), alreadyCollected.end(), id);
-        if (it == alreadyCollected.end()) {
-            alreadyCollected.push_back(id);
-            Containers portContainers = port.getContainersForDestination(id);
-            containersToLoad.insert(containersToLoad.end(), portContainers.begin(), portContainers.end());
-        }
-    }
-
-    // Get ops for unloading and loading from ship
-    ops.addOperations(ship.dock(port, containersToLoad));
+    Containers containersToLoad = getContainersToLoad(port);
+    ops.addOperations(this->generateOperations(ship, port, containersToLoad));  // Get ops for unloading and loading from ship
 
     writePackingOperationsToFile(outputFile, ops);
 
     ship.advanceToNextPort();  // pop the current port from the ShipRoute
 
-    return errors.toErrorFlag();  // TODO: collect all errors
+    return errors.toErrorFlag();
 }
+
+Operations NaiveStowageAlgorithm::generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad) {
+    Operations operations;
+
+    std::vector<ContainerPosition> containersToUnload = ship.getCargo().getContainersForPort(port.getId());
+
+    // Unload all required containers
+    for (const ContainerPosition &containerPos: containersToUnload) {
+        // Get instructions for removing the container
+        Operations unloadOps = ship.unloadContainer(port, containerPos);
+
+        // Add unload operations to set of all instructions
+        operations.addOperations(unloadOps);
+    }
+
+    // Load all required containers
+    for (const Container &container: containersToLoad) {
+        // Get instructions for adding the container
+        Operations loadOps = ship.loadContainerToArbitraryPosition(port, container);
+
+        // Add load operations to set of all instructions
+        operations.addOperations(loadOps);
+    }
+
+    return operations;
+
+}
+
 // endregion

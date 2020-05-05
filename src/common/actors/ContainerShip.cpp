@@ -60,32 +60,6 @@ void ContainerShip::setBalanceCalculator(WeightBalanceCalculator &balanceCalcula
 
 // region Functions
 
-Operations ContainerShip::dock(Port &port, const Containers &containersToLoad) {
-    Operations operations;
-
-    std::vector<ContainerPosition> containersToUnload = this->getCargo().getContainersForPort(port.getId());
-
-    // Unload all required containers
-    for (const ContainerPosition &containerPos: containersToUnload) {
-        // Get instructions for removing the container
-        Operations unloadOps = this->unloadContainer(port, containerPos);
-
-        // Add unload operations to set of all instructions
-        operations.addOperations(unloadOps);
-    }
-
-    // Load all required containers
-    for (const Container &container: containersToLoad) {
-        // Get instructions for adding the container
-        Operations loadOps = this->loadContainerToArbitraryPosition(port, container);
-
-        // Add load operations to set of all instructions
-        operations.addOperations(loadOps);
-    }
-
-    return operations;
-}
-
 Operations ContainerShip::loadContainerToArbitraryPosition(Port &port, const Container &container) {
     Operations ops = Operations();
     POS dims = this->shipPlan.getDimensions();
@@ -129,7 +103,7 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
     auto y = containerPos.y();
     auto z = containerPos.z();
 
-    int currentHeight = this->getCargo().currentTopHeight(containerPos.x(), containerPos.y());
+    int currentHeight = this->getCargo().currentTopHeight(x, y);
     int numOfContainersOnTop = currentHeight - z - 1;
 
     Containers containersOnTop = Containers();
@@ -148,16 +122,14 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
 
         auto containerOptional = this->getCargo().getTopContainer(x, y);
         if (!containerOptional.has_value()) {
-            std::cout << "Error unloading container, could not get top container from cargo ("
-                      << containerPos.x() << ", " << containerPos.y() << ")" << std::endl;
-
+            std::cout << "Error unloading container, could not get top container from cargo (" << containerPos.x() << ", " << containerPos.y() << ")" << std::endl;
             failed = true;
             break;
         }
 
         auto container = containerOptional.value();
 
-        //Add to list of containers to load back only if the container destination is not current port
+        // Add to list of containers to load back only if the container destination is not current port
         containersOnTop.push_back(container);
         auto op = PackingOperation(PackingType::unload, container.getId(), {x, y, z + (numOfContainersOnTop - i)});
         auto result = CranesOperation::preformOperation(op, port, *this);
@@ -170,7 +142,6 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
             break;
         }
         ops.addOperation(op);
-
     }
 
     // Unload the requested container

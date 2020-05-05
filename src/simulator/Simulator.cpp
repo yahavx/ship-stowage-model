@@ -119,7 +119,7 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
 
         Operations ops = readPackingOperationsFromFile(instructionsOutputPath, errors);  // read the operations to perform, written by the algorithm
         performPackingOperations(ship, port, ops, errors);
-        totalNumberOfOps = totalNumberOfOps + ops.size();
+        totalNumberOfOps = totalNumberOfOps + ops.size(true);
 
         if (errors.hasAlgorithmErrors()) {
             std:: cout << "Found an error in the algorithm, terminating" << std::endl << errors;
@@ -179,11 +179,15 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
     // TODO: check that any containers that were loaded to the port to unload others, are back in ship
     // TODO: ops can be empty, maybe we need to document it
 
+    int rejects = 0;
+
     for (const PackingOperation &op : ops.ops) {
 
         validatePackingOperation(ship, port, op, errors);
 
-        if (op.getType() == PackingType::reject) {
+        if (op.getType() == PackingType::reject)
+        {
+            rejects++;
             continue;  // TODO: check the reject is correct
         }
 

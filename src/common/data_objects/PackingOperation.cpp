@@ -96,8 +96,19 @@ void Operations::addRejectOperations(const StringVector &containerIds) {
     }
 }
 
-int Operations::size() const {
-    return ops.size();
+int Operations::size(bool excludeRejects) const {
+    if (!excludeRejects)
+        return ops.size();
+
+    int count = 0;
+
+    for (auto& op : ops) {
+        if (op.getType() != PackingType::reject) {
+            count++;
+        }
+    }
+
+    return count;
 }
 
 bool Operations::empty() const {

@@ -56,13 +56,6 @@ public:
     void advanceToNextPort();
 
     /**
-    * Receives the next id of port to dock into, and list of containers that needs to be loaded.
-     * @return list of operations: first unload all containers for this port, and than load all the containers that needs to be loaded.
-    */
-    Operations dock(Port &port, const Containers &containersToLoad);
-
-private:
-    /**
      * returns legal PackingOperation for loading the container to an arbitrary position.
      *
      * @param container - container to load
