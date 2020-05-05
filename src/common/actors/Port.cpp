@@ -2,9 +2,13 @@
 // Created by yahav on 06/04/2020.
 //
 
+#include <unordered_map>
+#include <unordered_set>
 #include "Port.h"
 #include "../data_objects/PortId.h"
 #include "../utils/UtilFunctions.h"
+#include "../data_objects/ShipRoute.h"
+
 
 // region Constructors
 
@@ -13,26 +17,6 @@ Port::Port() : id("") {}
 Port::Port(const PortId &id) : id(id) {}
 
 Port::Port(const PortId &id, const ContainerStorage &storage) : id(id), storage(storage) {}
-// endregion
-
-// region Functions
-
-Containers Port::getContainersForDestination(const PortId &destId) {
-    return storage.getContainersForDestination(destId);
-}
-
-void Port::addContainer(const Container &container) {
-    return storage.addContainer(container);
-}
-
-void Port::addContainers(const Containers &containers) {
-    return storage.addContainers(containers);
-}
-
-OptionalContainer Port::removeContainer(const std::string &containerId) {
-    return storage.removeContainer(containerId);
-}
-
 // endregion
 
 // region Getters and setters
@@ -54,6 +38,66 @@ void Port::setStorage(const ContainerStorage &storage) {
 }
 // endregion
 
+// region Functions
+
+Containers Port::getContainersForDestination(const PortId &destId) {
+    return storage.getContainersForDestination(destId);
+}
+
+void Port::addContainer(const Container &container) {
+    return storage.addContainer(container);
+}
+
+void Port::addContainers(const Containers &containers) {
+    return storage.addContainers(containers);
+}
+
+OptionalContainer Port::removeContainer(const std::string &containerId) {
+    return storage.removeContainer(containerId);
+}
+
+StringVector Port::removeBadContainers(const ShipRoute &route, Errors &errors) {
+    std::unordered_set<std::string> portsSet = route.getNextPortsSet();  // All next ports in the route
+    std::vector<std::string> invalidContainersIds;
+    std::unordered_set<std::string> containerIds;  // Collect all ids to detect duplicates
+
+    for (auto &container : storage.getContainers()) {
+        auto& contId = container.getId();
+
+        if (containerIds.find(contId) == containerIds.end()) {
+            containerIds.insert(contId);
+        }
+        else {  // Already seen this id
+            errors.addError({ErrorFlag::ContainersAtPort_DuplicateID, contId});
+            invalidContainersIds.push_back(contId);
+            continue;
+        }
+
+        Error err = container.isContainerLegal();
+
+        // Illegal containers
+        if (!err.isSuccess()) {
+            errors.addError(err);
+            invalidContainersIds.push_back(contId);
+            continue;
+        }
+
+        // Container destination is not on route
+        if (portsSet.find(container.getDestPort()) == portsSet.end()) {
+            errors.addError({ContainersAtPort_ContainerNotOnRoute, container.getDestPort()});
+            invalidContainersIds.push_back(contId);
+        }
+    }
+
+    for (auto& badContainerId : invalidContainersIds) {
+        storage.removeContainerFromEnd(badContainerId);  // Remove from end to keep the first copy in case of duplicates
+    }
+
+    return invalidContainersIds;
+}
+
+// endregion
+
 // region Printer
 
 std::ostream &operator<<(std::ostream &os, const Port &port) {
@@ -63,4 +107,5 @@ std::ostream &operator<<(std::ostream &os, const Port &port) {
     os << "}" << std::endl;
     return os;
 }
+
 // endregion

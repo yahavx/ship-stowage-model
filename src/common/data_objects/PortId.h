@@ -40,7 +40,7 @@ public:
     // region Functions
 
     /// Returns true if the portId is valid according to the rules (5 english letters).
-    bool isValid();
+    bool isValid() const;
 
     // endregion
 

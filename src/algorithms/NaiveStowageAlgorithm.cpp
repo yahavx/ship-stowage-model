@@ -8,6 +8,8 @@
 #include "../common/utils/Constants.h"
 #include "../common/io/ObjectsReader.h"
 #include "../common/utils/UtilFunctions.h"
+#include <unordered_set>
+
 
 // region Initialization
 
@@ -30,23 +32,30 @@ int NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile,
     ContainerStorage storage = readPortCargoFromFile(inputFile, errors);
     Port port(id, storage);
 
-    Containers containersToLoad;
+    Operations ops;
 
-    std::vector<PortId> alreadyCollected;
+    StringVector toReject = port.removeBadContainers(ship.getShipRoute());
+
+    for (auto& contId: toReject) {
+        ops.addOperation({PackingType::reject, contId});
+    }
+
+    Containers containersToLoad;
+    std::vector<PortId> alreadyCollected;  // To not collect from same port twice
 
     // Collect all containers that needs to be loaded
     for (longUInt i = 1; i < this->ship.getShipRoute().getPorts().size(); i++) {
         const PortId &id = ship.getShipRoute().getPorts()[i];
         auto it = std::find(alreadyCollected.begin(), alreadyCollected.end(), id);
-        if (it != alreadyCollected.end())
-            continue;
-        alreadyCollected.push_back(id);
-        Containers portContainers = port.getContainersForDestination(id);
-        containersToLoad.insert(containersToLoad.end(), portContainers.begin(), portContainers.end());
+        if (it == alreadyCollected.end()) {
+            alreadyCollected.push_back(id);
+            Containers portContainers = port.getContainersForDestination(id);
+            containersToLoad.insert(containersToLoad.end(), portContainers.begin(), portContainers.end());
+        }
     }
 
     // Get ops for unloading and loading from ship
-    Operations ops = ship.dock(port, containersToLoad);
+    ops.addOperations(ship.dock(port, containersToLoad));
 
     writePackingOperationsToFile(outputFile, ops);
 

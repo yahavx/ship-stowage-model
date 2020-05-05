@@ -41,7 +41,7 @@ PortId::operator std::string() const {
 
 // region Functions
 
-bool PortId::isValid() {
+bool PortId::isValid() const {
     return code.length() == 5 && isEnglishWord(code);
 }
 

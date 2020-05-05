@@ -70,8 +70,8 @@ Operations ContainerShip::dock(Port &port, const Containers &containersToLoad) {
         // Get instructions for removing the container
         Operations unloadOps = this->unloadContainer(port, containerPos);
 
-        // Add unload operations  to set of all instructions
-        operations.insert(operations.end(), unloadOps.begin(), unloadOps.end());
+        // Add unload operations to set of all instructions
+        operations.addOperations(unloadOps);
     }
 
     // Load all required containers
@@ -80,7 +80,7 @@ Operations ContainerShip::dock(Port &port, const Containers &containersToLoad) {
         Operations loadOps = this->loadContainerToArbitraryPosition(port, container);
 
         // Add load operations to set of all instructions
-        operations.insert(operations.end(), loadOps.begin(), loadOps.end());
+        operations.addOperations(loadOps);
     }
 
     return operations;
@@ -101,7 +101,7 @@ Operations ContainerShip::loadContainerToArbitraryPosition(Port &port, const Con
                     auto op = PackingOperation(PackingType::load, container.getId(), {x, y, z});
                     auto result = CranesOperation::preformOperation(op, port, *this);
                     if (result == CraneOperationResult::SUCCESS) { /// Successfully loaded
-                        ops.push_back(op);
+                        ops.addOperation(op);
                     } else {
                         std::cerr
                                 << "Error loading container, crane operation failed to load container: "
@@ -116,8 +116,7 @@ Operations ContainerShip::loadContainerToArbitraryPosition(Port &port, const Con
 
     if (z < 0) {
         ops = Operations();
-        ops.push_back(PackingOperation(PackingType::reject, container.getId(), {-1, -1, -1})
-        );
+        ops.addOperation({PackingType::reject, container.getId()});
         return ops;
     }
 
@@ -170,7 +169,7 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
             failed = true;
             break;
         }
-        ops.push_back(op);
+        ops.addOperation(op);
 
     }
 
@@ -187,7 +186,7 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
             auto op = PackingOperation(PackingType::unload, container.getId(), {x, y, z});
             auto result = CranesOperation::preformOperation(op, port, *this);
             if (result == CraneOperationResult::SUCCESS) {
-                ops.push_back(op);
+                ops.addOperation(op);
             } else { // CranesOperation failed
                 std::cerr
                         << "Error unloading container, crane operation failed to unload requested container: "
@@ -206,13 +205,13 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
         // TODO: check if balance calculator allows to load back, if not load to another place
         auto op = PackingOperation(PackingType::load, cont.getId(), {x, y, z + i});
         CranesOperation::preformOperation(op, port, *this);
-        ops.push_back(op);
+        ops.addOperation(op);
     }
 
     // If failed return reject packing operation
     if (failed) {
         ops = Operations();
-        ops.push_back(PackingOperation(PackingType::reject, containerPos.getContainer().getId()));
+        ops.addOperation(PackingOperation(PackingType::reject, containerPos.getContainer().getId()));
         return ops;
     }
 

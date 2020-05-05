@@ -11,6 +11,8 @@
 #include "../data_objects/PortId.h"
 #include "../utils/Definitions.h"
 
+class ShipRoute;
+
 class Port {
     PortId id;
     ContainerStorage storage;
@@ -26,6 +28,18 @@ public:
 
     // endregion
 
+    //region Getters and setters
+
+    const PortId &getId() const;
+
+    void setId(const PortId &id);
+
+    const ContainerStorage &getStorage() const;
+
+    void setStorage(const ContainerStorage &storage);
+
+    // endregion
+
     // region Functions
 
     Containers getContainersForDestination(const PortId &destId);
@@ -36,17 +50,13 @@ public:
 
     OptionalContainer removeContainer(const std::string &containerId);
 
-    // endregion
-
-    //region Getters and setters
-
-    const PortId &getId() const;
-
-    void setId(const PortId &id);
-
-    const ContainerStorage &getStorage() const;
-
-    void setStorage(const ContainerStorage &storage);
+    /**
+     * Removes all containers that can't be loaded from the port (duplicate ID, not on route, etc).
+     *
+     * @param errors all errors found, in each container, will be added to this
+     * @return list of id's, one per each removed container.
+     */
+    StringVector removeBadContainers(const ShipRoute& route, Errors &errors = e_garbageCollector);
 
     // endregion
 

@@ -7,6 +7,7 @@
 
 #include <tuple>
 #include <ostream>
+#include <vector>
 
 enum class PackingType {
     load, unload, reject, move
@@ -53,5 +54,22 @@ public:
     // endregion
 };
 
+class Operations {
+
+public:
+    std::vector<PackingOperation> ops;
+
+    // region Functions
+
+    void addOperation(const PackingOperation &op);
+
+    void addOperations(const Operations& ops);
+
+    int size() const;
+
+    bool empty() const;
+
+    // endregion
+};
 
 #endif //SHIP_STOWAGE_MODEL_PACKINGOPERATION_H

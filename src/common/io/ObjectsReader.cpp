@@ -243,7 +243,7 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
         PackingType packingType = packingTypeToString(opStr[0]);
 
         if (packingType == PackingType::reject) {
-            operations.push_back(PackingOperation(packingType, containerId));
+            operations.addOperation({packingType, containerId});
             continue;
         }
 
@@ -269,7 +269,7 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
         int floor = strToInt(floorStr), x = strToInt(xStr), y = strToInt(yStr);
 
         if (packingType != PackingType::move) {  // We have all the arguments needed
-            operations.push_back(PackingOperation(packingType, containerId, {floor, x, y}));
+            operations.addOperation({packingType, containerId, {floor, x, y}});
             continue;
         }
 
@@ -293,7 +293,7 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
 
         int floor2 = strToInt(floorStr2), x2 = strToInt(xStr2), y2 = strToInt(yStr2);
 
-        operations.push_back(PackingOperation(packingType, containerId, {floor, x, y}, {floor2, x2, y2}));
+        operations.addOperation({packingType, containerId, {floor, x, y}, {floor2, x2, y2}});
     }
 
     if (operations.empty()) {
@@ -312,7 +312,7 @@ bool writePackingOperationsToFile(const std::string &filePath, Operations &opera
 #ifdef DEBUG
     std::cout << "Attempting to write operations..." << std::endl;
 #endif
-    for (PackingOperation op : operations) {
+    for (PackingOperation op : operations.ops) {
         data.emplace_back();  // add new row
         StringVector &currRow = data.back();
 

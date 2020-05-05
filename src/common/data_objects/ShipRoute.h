@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <ostream>
+#include <unordered_set>
 #include "../actors/Port.h"
 
 class ShipRoute {
@@ -19,6 +20,7 @@ public:
     ShipRoute();
 
     explicit ShipRoute(const std::vector<PortId> &ports);
+
     // endregion
 
     // region Getters and setters
@@ -28,11 +30,20 @@ public:
     void setPorts(std::vector<PortId> &ports);
 
     PortId& getFirstPort();
+
+    // endregion
+
+    // region Functions
+
+    /// Returns the list of ports ids as a set of strings (without duplicates), excluding the first one.
+    std::unordered_set<std::string> getNextPortsSet() const;
+
     // endregion
 
     // region Printer
 
     friend std::ostream &operator<<(std::ostream &os, const ShipRoute &route);
+
     // endregion
 };
 

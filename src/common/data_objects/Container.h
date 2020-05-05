@@ -52,9 +52,9 @@ public:
 
     // region Functions
 
-    bool isIdInIsoFormat();  // TODO
+    bool isIdInIsoFormat() const;  // TODO
 
-    ErrorFlag isContainerLegal();
+    Error isContainerLegal() const;
 
     // endregion
 

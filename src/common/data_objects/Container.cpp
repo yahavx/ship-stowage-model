@@ -56,7 +56,7 @@ bool Container::operator!=(const Container &rhs) const {
 
 // region Functions
 
-bool Container::isIdInIsoFormat() {
+bool Container::isIdInIsoFormat() const {
     if (id.length() != 11){
         return false;
     }
@@ -68,17 +68,17 @@ bool Container::isIdInIsoFormat() {
     return true;
 }
 
-ErrorFlag Container::isContainerLegal() {
+Error Container::isContainerLegal() const {
     if (!isIdInIsoFormat()) {
-        return ErrorFlag::CargoData_BadContainerID;
+        return {ErrorFlag::ContainersAtPort_BadContainerID, id};
     }
 
     if (weight <= 0) {
-        return ErrorFlag::CargoData_MissingOrBadWeight;
+        return {ErrorFlag::ContainersAtPort_MissingOrBadWeight, intToStr(weight)};
     }
 
     if (!destPort.isValid()) {
-        return ErrorFlag::CargoData_MissingOrBadPortDest;
+        return {ErrorFlag::ContainersAtPort_MissingOrBadPortDest, destPort};
     }
 
     return ErrorFlag::Success;

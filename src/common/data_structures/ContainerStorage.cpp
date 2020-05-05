@@ -51,13 +51,23 @@ OptionalContainer ContainerStorage::removeContainer(const std::string& container
 
     return {};
 }
+
+void ContainerStorage::removeContainerFromEnd(const std::string& containerId) {
+    for (int i = containers.size() - 1; i > 0; i--) {
+        if (containers[i].getId() == containerId) {
+            containers.erase(containers.begin() + i);
+            }
+    }
+}
+
 // endregion
 
 // region Getters and setters
 
-const Containers &ContainerStorage::getContainers() const {
+Containers &ContainerStorage::getContainers() {
     return containers;
 }
+
 // endregion
 
 // region Printer

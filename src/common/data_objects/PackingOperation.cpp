@@ -6,6 +6,8 @@
 #include "../utils/UtilFunctions.h"
 #include "../utils/Printers.h"
 
+// region class PackingOperation
+
 // region Constructors
 
 PackingOperation::PackingOperation(PackingType type, const std::string &containerId) : type(type), containerId(containerId), pos1({-1, -1, -1}),
@@ -55,21 +57,48 @@ std::ostream &operator<<(std::ostream &os, const PackingOperation &operation) {
 std::string PackingOperation::toString() const {
     int x1 = std::get<0>(pos1), y1 = std::get<1>(pos1), z1 = std::get<2>(pos1);
     int x2 = std::get<0>(pos2), y2 = std::get<1>(pos2), z2 = std::get<2>(pos2);
-    std::string pos1 = "(" + intToStr(x1) + ", " + intToStr(y1) + "), floor " + intToStr(z1);
-    std::string pos2 = "(" + intToStr(x2) + ", " + intToStr(y2) + "), floor " + intToStr(z2);
+    std::string p1 = "(" + intToStr(x1) + ", " + intToStr(y1) + "), floor " + intToStr(z1);
+    std::string p2 = "(" + intToStr(x2) + ", " + intToStr(y2) + "), floor " + intToStr(z2);
 
     switch (type) {
         case PackingType::load:
-            return "Load container '" + containerId + "' to position " + pos1;
+            return "Load container '" + containerId + "' to position " + p1;
         case PackingType::unload:
-            return "Unload container '" + containerId + "' from position " + pos1;
+            return "Unload container '" + containerId + "' from position " + p1;
         case PackingType::reject:
             return "Reject container '" + containerId + "'";
         case PackingType::move:
-            return "Move container '" + containerId + "' from " + pos1 + " to " + pos2;
+            return "Move container '" + containerId + "' from " + p1 + " to " + p2;
     }
 
     return "Invalid operation";
 }
 
 // endregion
+
+// endregion
+
+// region class Operations
+
+// region Functions
+
+void Operations::addOperation(const PackingOperation &op) {
+    ops.push_back(op);
+}
+
+void Operations::addOperations(const Operations &otherOps) {
+    ops.insert(ops.end(), otherOps.ops.begin(), otherOps.ops.end());
+}
+
+int Operations::size() const {
+    return ops.size();
+}
+
+bool Operations::empty() const {
+    return ops.empty();
+}
+
+// endregion
+
+// endregion
+

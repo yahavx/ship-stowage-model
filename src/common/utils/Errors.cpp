@@ -11,7 +11,7 @@
 
 // region Garbage Collector
 
-Errors garbageCollector;
+Errors e_garbageCollector;
 
 // endregion
 
@@ -60,43 +60,43 @@ std::string Error::toString() {
             return "Success (this shouldn't appear)";
 
         case ShipPlan_InvalidFloorHeight:
-            return "Ship plan warning: data row exceeds the maximum available containers, ignored";
+            return "[Ship Plan Error] Data row exceeds the maximum available containers, ignored";
         case ShipPlan_InvalidXYCoordinates:
-            return "Ship plan warning: data row exceeds the ship dimensions, ignored";
+            return "[Ship Plan Error] Data row exceeds the ship dimensions, ignored";
         case ShipPlan_BadLineFormat:
-            return "Ship plan warning: data row is in invalid format, ignored";
+            return "[Ship Plan Error] Data row is in invalid format, ignoring";
         case ShipPlan_FatalError:
-            return "Ship plan fatal error: invalid first line, or couldn't read file, terminating the travel";
+            return "[Ship Plan Fatal Error] Invalid first line, or couldn't read file, terminating the travel";
 
         case ShipRoute_TwoConsecutiveSamePort:
-            return "Ship route warning: a route appeared twice in a row";
+            return "[Ship Route Error] Port '" + param1 + "' appeared twice in a row, ignoring the latter";
         case ShipRoute_BadPortSymbol:
-            return "Ship route warning: invalid port symbol format";
+            return "[Ship Route Error] Invalid port symbol format '" + param1 + "'";
         case ShipRoute_FatalError:
-            return "Ship route fatal error: no ports in the route, or couldn't read file, terminating the travel";
+            return "[Ship Route Fatal Error] no ports in the route, or couldn't read file, terminating the travel";
         case ShipRoute_FatalError_SinglePort:
-            return "Ship route fatal error: only one port appears in the route, terminating the travel";
+            return "[Ship Route Fatal Error] only one port appears in the route, terminating the travel";
 
         case ContainersAtPort_DuplicateID:
-            return "Containers at port warning: duplicate container ID found, rejecting";
+            return "[Containers At Port Error] Container with the same ID ('" + param1 + "') was already found on port, rejecting";
         case ContainersAtPort_IDAlreadyOnShip:
-            return "Containers at port warning: container with the same ID already on the ship, rejecting";
-
-        case CargoData_MissingOrBadWeight:
-            return "Cargo data warning: missing or bad weight, ignoring";
-        case CargoData_MissingOrBadPortDest:
-            return "Cargo data warning: missing or bad destination port, ignoring";
+            return "[Containers At Port Error] Container with the same ID ('" + param1 + "') is already on the ship, rejecting";
+        case ContainersAtPort_MissingOrBadWeight:
+            return "[Containers At Port Error] Missing or bad weight, rejecting";
+        case ContainersAtPort_MissingOrBadPortDest:
+            return "[Containers At Port Error] Missing or bad destination port, ignoring";
         case CargoData_MissingContainerID:
-            return "Cargo data warning: missing container ID, ignoring";
-        case CargoData_BadContainerID:
-            return "Cargo data warning: container ID is not in ISO 6346 format, ignoring";
+            return "[Cargo data Error] Container has no ID, ignoring";
+        case ContainersAtPort_BadContainerID:
+            return "[Containers At Port Error] container '" + param1 + "' ID is not in ISO 6346 format, rejecting";
         case CargoData_InvalidFile:
-            return "Cargo data warning: couldn't read any container from file, cargo will only be loaded";
-        case CargoData_LastPortHasContainers:
-            return "Containers at port warning: last port has waiting containers, ignoring";
-
+            return "[Cargo Data Warning] Couldn't read any container from file, cargo will only be loaded";
+        case ContainersAtPort_LastPortHasContainers:
+            return "[Containers At Port Error] Last port has waiting containers, ignoring";
         case ContainersAtPort_ContainersExceedsShipCapacity:
-            return "Containers at port warning: ship is at full capacity, far containers will not be loaded";
+            return "[Containers At Port Error] Ship is at full capacity, container '" + param1 + "' is rejected";
+        case ContainersAtPort_ContainerNotOnRoute:
+            return "[Containers At Port Error] Container '" + param1 + "' destination port is '" + param2 + "', which is not on the ship route, rejecting";
 
             // Our errors
 
@@ -106,19 +106,19 @@ std::string Error::toString() {
         case SimulationInit_InvalidTravelPath:
             return "[Simulator Fatal Error] Travel path not supplied, or couldn't find any travel directories";
         case SimulationCleanup_OutputDirectoriesCleaningFailed:
-            return "[Simulator Warning] Couldn't remove temporary directories";
+            return "[Simulator Error] Couldn't remove temporary directories";
 
             // Travel
         case Travel_InvalidDirectory:
-            return "[Travel Error] Travel '" + param1 + "' is not a directory, skipping";
+            return "[Travel Fatal Error] Travel '" + param1 + "' is not a directory, skipping travel";
         case Travel_FatalInput:
-            return "[Travel Error] Travel '" + param1 + "' has an invalid " + param2 + ", or it doesn't exists, skipping";
+            return "[Travel Fatal Error] Travel '" + param1 + "' has an invalid " + param2 + ", or it doesn't exists, skipping travel";
         case Travel_UnknownFile:
-            break;
+            return "[Travel Error] Travel '" + param1 + "' has an invalid file ('" + param2 + "'), ignoring";
         case Travel_CargoData_PortNotInRoute:
-            break;
+            return "[Travel Error] Port '" + param1 + "' has cargo_data files, but doesn't appear in the Route, ignoring";
         case Travel_CargoData_RemainingFilesAfterFinish:
-            break;
+            return "[Travel Error] Port '" + param1 + "' has " + param2 + " cargo_data files remaining, after travel is finished, ignoring";
 
             // Algorithm
         case AlgorithmError_CraneOperationWithInvalidId:
@@ -161,6 +161,10 @@ bool Error::isFlag(ErrorFlag flag) {
 
 bool Error::isFatalError() {
     return (errorFlag & ShipPlan_FatalError) | (errorFlag & ShipRoute_FatalError) | (errorFlag & ShipRoute_FatalError_SinglePort);
+}
+
+bool Error::isSuccess() {
+    return errorFlag == ErrorFlag::Success;
 }
 
 // endregion

@@ -27,14 +27,14 @@ enum ErrorFlag : longUInt {
     ContainersAtPort_DuplicateID = 1 << 10,
     ContainersAtPort_IDAlreadyOnShip = 1 << 11,
 
-    CargoData_MissingOrBadWeight = 1 << 12,
-    CargoData_MissingOrBadPortDest = 1 << 13,
+    ContainersAtPort_MissingOrBadWeight = 1 << 12,
+    ContainersAtPort_MissingOrBadPortDest = 1 << 13,
     CargoData_MissingContainerID = 1 << 14,
-    CargoData_BadContainerID = 1 << 15,
+    ContainersAtPort_BadContainerID = 1 << 15,
     CargoData_InvalidFile = 1 << 16,
-    CargoData_LastPortHasContainers = 1 << 17,
-
+    ContainersAtPort_LastPortHasContainers = 1 << 17,
     ContainersAtPort_ContainersExceedsShipCapacity = 1 << 18,
+    ContainersAtPort_ContainerNotOnRoute = 1 << 9,  // TODO: check what to do with this
 
     // our errors TODO: make sure the algorithm can't receive any by mistake
     SimulationInit_OutputDirectoriesCreationFailed = 1 << 19,
@@ -102,6 +102,9 @@ public:
     bool isFlag(ErrorFlag flag);  // kind of equality operator
 
     bool isFatalError();
+
+    bool isSuccess();
+
     // endregion
 };
 
@@ -139,7 +142,7 @@ public:
 
 // region Garbage Collector
 
-extern Errors garbageCollector;
+extern Errors e_garbageCollector;
 
 // endregion
 

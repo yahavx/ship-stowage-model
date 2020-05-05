@@ -5,13 +5,16 @@
 #include "ShipRoute.h"
 
 
-// Constructors
+// region Constructors
+
 ShipRoute::ShipRoute() {}
 
 ShipRoute::ShipRoute(const std::vector<PortId> &ports) : ports(ports) {}
 
+// endregion
 
-// Setters and getters
+// region  Setters and getters
+
 std::vector<PortId> &ShipRoute::getPorts() {
     return ports;
 }
@@ -23,7 +26,23 @@ void ShipRoute::setPorts(std::vector<PortId> &ports) {
 PortId& ShipRoute::getFirstPort() {
     return this->ports[0];
 }
-// Printer
+
+// endregion
+
+// region Functions
+
+std::unordered_set<std::string> ShipRoute::getNextPortsSet() const {
+    std::unordered_set<std::string> portsSet;
+    for (auto& portId: ports) {
+        portsSet.insert(portId);
+    }
+    return portsSet;
+}
+
+// endregion
+
+// region Printer
+
 std::ostream &operator<<(std::ostream &os, const ShipRoute &route) {
     std::cout << "ShipRoute {" << std::endl;
     for (auto port : route.ports)
@@ -31,3 +50,5 @@ std::ostream &operator<<(std::ostream &os, const ShipRoute &route) {
     std::cout << "}" << std::endl;
     return os;
 }
+
+// endregion

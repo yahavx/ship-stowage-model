@@ -58,17 +58,17 @@ public:
     // region Functions
 
 private:
-    bool isTravelValid(Errors &errors = garbageCollector);
+    bool isTravelValid(Errors &errors = e_garbageCollector);
 
 public:
     /// Returns a list of legal travels inside travelPath.
-    StringVector collectLegalTravels(Errors &errors = garbageCollector);
+    StringVector collectLegalTravels(Errors &errors = e_garbageCollector);
 
     /**
  * Receives a travel directory and sorts the .cargo_files for each port.
  * @return a map from each portID to a string vector of his .cargo_files, ordered from small to big.
  */
-    StringToStringVectorMap getCargoDataFiles(Errors &errors = garbageCollector);
+    StringToStringVectorMap getCargoDataFiles(Errors &errors = e_garbageCollector);
 
     // endregion
 
@@ -91,7 +91,7 @@ public:
     void createOutputFolders(Errors &errors);
 
     /// Remove unneeded output folders (temp, and errors if not generated).
-    void cleanOutputFolders(Errors &errors = garbageCollector);
+    void cleanOutputFolders(Errors &errors = e_garbageCollector);
 
     // endregion
 };

@@ -49,16 +49,22 @@ public:
      * @param container - container to add
      */
     OptionalContainer removeContainer(const std::string& containerId);
+
+    /// Removes the last appearance of a container from the port.
+    void removeContainerFromEnd(const std::string& containerId);
+
     // endregion
 
     // region Getters and setters
 
-    const Containers &getContainers() const;
+    Containers &getContainers();
+
     // endregion
 
     //region Printer
 
     friend std::ostream &operator<<(std::ostream &os, const ContainerStorage &storage);
+
     // endregion
 };
 
