@@ -110,7 +110,7 @@ void initResultsTable(StringStringVector &results, StringVector &travels, std::v
     for (auto &travel : travels) {  // first row init (column names)
 
 
-        auto travelName = extractFilenameFromPath(travel, false);
+        auto travelName = extractFilenameFromPath(travel);
         resultsFirstRow.push_back(travelName);
     }
     resultsFirstRow.push_back(Simulator::s_sumColumnTitle);

@@ -6,15 +6,16 @@
 #define SHIP_STOWAGE_MODEL_CARGO_H
 
 #include <ostream>
+#include <unordered_set>
 #include "../data_objects/ShipPlan.h"
 #include "../data_objects/ContainerPosition.h"
 
 
 /// Cargo is the stock of containers in the ship
 class Cargo {
-    std::vector<std::vector<std::vector<Container>>> containers;
-
     ShipPlan shipPlan;
+    std::vector<std::vector<std::vector<Container>>> containers;
+    std::unordered_set<std::string> containerIds;  // hash of IDs, for quick checking
 
 public:
     // region Constructors

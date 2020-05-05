@@ -76,6 +76,9 @@ private:
     * @return legal series of PackingOperation's or NULL if none was found
     */
     Operations unloadContainer(Port &port, const ContainerPosition &container);
+
+    bool isContainerOnShip(const std::string &containerId);
+
     // endregion
 };
 

@@ -10,6 +10,7 @@
 
 #define MAX_ERROR_BIT 18  // max that is used by the algorithm (rest are for us)
 
+
 enum ErrorFlag : longUInt {
     Success = 0,
 
@@ -39,29 +40,33 @@ enum ErrorFlag : longUInt {
     SimulationInit_OutputDirectoriesCreationFailed = 1 << 19,
     SimulationInit_InvalidTravelPath = 1 << 20,
     SimulationCleanup_OutputDirectoriesCleaningFailed = 1 << 21,
+
     Travel_InvalidDirectory = 1 << 22,
     Travel_FatalInput = 1 << 23,
-    Travel_UnknownFile,
-    Travel_CargoData_PortNotInRoute,
-    Travel_CargoData_RemainingFilesAfterFinish,
+    Travel_UnknownFile = 1 << 24,
+    Travel_CargoData_PortNotInRoute = 1 << 25,
+    Travel_CargoData_RemainingFilesAfterFinish = 1 << 26,
 
-    AlgorithmError_CraneOperationWithInvalidId = 1 << 24,
-    AlgorithmError_InvalidCraneOperation = 1 << 25,
-    AlgorithmError_LeftContainersAtPort = 1 << 26,
-    AlgorithmError_ContainerIdAlreadyOnShip = 1 << 27,
-    AlgorithmError_ContainerIdNotExistsOnPort = 1 << 28,
-    AlgorithmError_ContainerIdNotExistsOnShip = 1 << 29,
-    AlgorithmError_reserved4 = 1 << 30,
-    AlgorithmError_reserved5 = 1ULL << 31,
+    AlgorithmError_CraneOperationWithInvalidId = 1 << 28,
+    AlgorithmError_InvalidCraneOperation = 1 << 29,
+    AlgorithmError_LeftContainersAtPort = 1 << 30,
+    AlgorithmError_ContainerIdAlreadyOnShip = 1ULL << 31,
+    AlgorithmError_ContainerIdNotExistsOnPort = 1ULL << 32,
+    AlgorithmError_ContainerIdNotExistsOnShip = 1ULL << 33,
+    AlgorithmError_reserved4 = 1ULL << 34,
+    AlgorithmError_reserved5 = 1ULL << 35,
+    AlgorithmError_reserved6 = 1ULL << 36,
+    AlgorithmError_reserved7 = 1ULL << 37,
+    AlgorithmError_reserved8 = 1ULL << 38,
 
     // These are also kind of algorithm errors (they write the file)
-    ReadOperations_InvalidFile = 1 << 29,
-    ReadOperations_InsufficientRowData = 1 << 29,
-    ReadOperations_InsufficientRowData_MoveOp = 1 << 29,
-    ReadOperations_InvalidOperationType = 1 << 29,
-    ReadOperations_InvalidShipPosition = 1 << 30,
-    ReadOperations_2 = 1ULL << 31,
-    ReadOperations_3 = 1ULL << 32,
+    ReadOperations_InvalidFile = 1ULL << 40,
+    ReadOperations_InsufficientRowData = 1ULL << 41,
+    ReadOperations_InsufficientRowData_MoveOp = 1ULL << 42,
+    ReadOperations_InvalidOperationType = 1ULL << 43,
+    ReadOperations_InvalidShipPosition = 1ULL << 44,
+    ReadOperations_reserved2 = 1ULL << 45,
+    ReadOperations_reserved3 = 1ULL << 46,
 
 
 };
@@ -129,8 +134,13 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Errors &errors);
     // endregion
 
-    static Errors garbageCollector;  // functions can use this as default parameter to ignore errors
+      // functions can use this as default parameter to ignore errors
 };
 
+// region Garbage Collector
+
+extern Errors garbageCollector;
+
+// endregion
 
 #endif //SHIP_STOWAGE_MODEL_ERRORS_H

@@ -50,6 +50,7 @@ OptionalContainer Cargo::removeTopContainer(int x, int y) {
 
     const Container &container = xyContainers.back();
     xyContainers.pop_back();
+    containerIds.erase(container.getId());
     return container;
 }
 
@@ -77,6 +78,7 @@ int Cargo::loadContainerOnTop(int x, int y, const Container &container) {
     Containers &xyContainers = containers[x][y];
     xyContainers.push_back(container);
 
+    containerIds.insert(container.getId());
     return currentHeight;
 }
 
@@ -110,6 +112,9 @@ int Cargo::currentTopHeight(int x, int y) const {
 }
 
 bool Cargo::hasContainer(std::string containerId) {
+    return containerIds.find(containerId) != containerIds.end();
+
+    // TODO: remove after making sure the above works
     POS dims = shipPlan.getDimensions();
     for (int x = 0; x < std::get<0>(dims); x++)
         for (int y = 0; y < std::get<1>(dims); y++) {

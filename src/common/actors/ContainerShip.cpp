@@ -212,7 +212,7 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
     // If failed return reject packing operation
     if (failed) {
         ops = Operations();
-        ops.push_back(PackingOperation(PackingType::reject, containerPos.getContainer().getId(), {-1, -1, -1}));
+        ops.push_back(PackingOperation(PackingType::reject, containerPos.getContainer().getId()));
         return ops;
     }
 
@@ -223,6 +223,10 @@ void ContainerShip::advanceToNextPort() {
     if (!shipRoute.getPorts().empty()) {
         this->shipRoute.getPorts().erase(this->shipRoute.getPorts().begin());
     }
+}
+
+bool ContainerShip::isContainerOnShip(const std::string &containerId) {
+    return cargo.hasContainer(containerId);
 }
 
 // endregion

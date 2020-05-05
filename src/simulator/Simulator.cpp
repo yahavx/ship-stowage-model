@@ -17,13 +17,12 @@
 
 Simulator::Simulator(const std::string &outputDir, const std::string &travelRootDir) : outputDir(outputDir), travelRootDir(travelRootDir),
                                                                                        dataManager(outputDir, travelRootDir) {
-
     auto naiveStowageAlgorithm = std::make_shared<NaiveStowageAlgorithm>();
     auto badAlgorithm = std::make_shared<BadAlgorithm>();
 //    NaiveStowageAlgorithm *naiveStowageAlgorithm2 = new NaiveStowageAlgorithm();
 
     algorithms.push_back(naiveStowageAlgorithm);
-//    algorithms.push_back(badAlgorithm);
+    algorithms.push_back(badAlgorithm);
 //    algorithms.push_back(naiveStowageAlgorithm2);
 }
 // endregion
@@ -39,8 +38,8 @@ void Simulator::runSimulations() {
     StringVector travels = dataManager.collectLegalTravels(generalErrors);
 
     initResultsTable(resultsTable, travels, algorithms);  // add columns names and set table structure
-    for (auto &travel: travels) {
 
+    for (auto &travel: travels) {
         dataManager.setTravelName(extractFilenameFromPath(travel));
 
         for (longUInt i = 0; i < algorithms.size(); i++) {
@@ -123,6 +122,8 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
         totalNumberOfOps = totalNumberOfOps + ops.size();
 
         if (errors.hasAlgorithmErrors()) {
+            std:: cout << "Found an error in the algorithm, terminating" << std::endl << errors;
+            printSeparator(1, 3);
             dataManager.saveSimulationErrors(errors);  // TODO: see if we can continue and collect more errors, but its ok like this
             return -1;
         }

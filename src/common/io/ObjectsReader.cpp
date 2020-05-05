@@ -242,26 +242,26 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
         }
         PackingType packingType = packingTypeToString(opStr[0]);
 
+        if (packingType == PackingType::reject) {
+            operations.push_back(PackingOperation(packingType, containerId));
+            continue;
+        }
+
         if (packingType == PackingType::move && dataRow.size() < 8) {
             errors.addError(ErrorFlag::ReadOperations_InsufficientRowData_MoveOp);
 //            std::cout << "Warning: data row contains less than 8 arguments for move operation, ignoring" << std::endl;
             continue;
         }
 
-//        if (!PortId::isIdInIsoFormat(containerId)) {
-//            std::cout << "Warning: container id not in ISO format, ignoring" << std::endl;
-//            continue;
-//        }
-
         if (!isInteger(floorStr) || !isInteger(xStr) || !isInteger(yStr)) {
             if (!isInteger(floorStr)) {
-                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, floorStr});
+                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, "floor", floorStr});
             }
             if (!isInteger(xStr)) {
-                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, xStr});
+                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, "x", xStr});
             }
             if (!isInteger(yStr)) {
-                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, yStr});
+                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, "y", yStr});
             }
 //            std::cout << "Warning: floor, x or y are not an integers, ignoring" << std::endl;
             continue;
@@ -279,13 +279,13 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
 
         if (!isInteger(floorStr2) || !isInteger(xStr2) || !isInteger(yStr2)) {
             if (!isInteger(floorStr2)) {
-                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, floorStr2});
+                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, "floor", floorStr2});
             }
             if (!isInteger(xStr2)) {
-                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, xStr2});
+                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, "x", xStr2});
             }
             if (!isInteger(yStr2)) {
-                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, yStr2});
+                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, "y", yStr2});
             }
 //            std::cout << "Warning: floor, x or y are not an integers, ignoring" << std::endl;
             continue;

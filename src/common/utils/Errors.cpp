@@ -9,7 +9,11 @@
 
 // region Error class
 
-Errors Errors::garbageCollector;
+// region Garbage Collector
+
+Errors garbageCollector;
+
+// endregion
 
 // region Constructors
 
@@ -42,6 +46,7 @@ Error::Error(int errorFlags) {
         }
     }
 }
+
 // endregion
 
 // region Functions
@@ -95,6 +100,7 @@ std::string Error::toString() {
 
             // Our errors
 
+            // Simulation
         case SimulationInit_OutputDirectoriesCreationFailed:
             return "[Simulator Fatal Error] Couldn't initialize output folders";
         case SimulationInit_InvalidTravelPath:
@@ -102,11 +108,19 @@ std::string Error::toString() {
         case SimulationCleanup_OutputDirectoriesCleaningFailed:
             return "[Simulator Warning] Couldn't remove temporary directories";
 
+            // Travel
         case Travel_InvalidDirectory:
             return "[Travel Error] Travel '" + param1 + "' is not a directory, skipping";
         case Travel_FatalInput:
-            return "[Travel Error] Travel '" + param1 + "' has an invalid " + param2 +", or it doesn't exists, skipping";
+            return "[Travel Error] Travel '" + param1 + "' has an invalid " + param2 + ", or it doesn't exists, skipping";
+        case Travel_UnknownFile:
+            break;
+        case Travel_CargoData_PortNotInRoute:
+            break;
+        case Travel_CargoData_RemainingFilesAfterFinish:
+            break;
 
+            // Algorithm
         case AlgorithmError_CraneOperationWithInvalidId:
             return "[Algorithm Error] Didn't find container " + param1 + " while at port " + param2 + ", and executing crane operation " + param3;
         case AlgorithmError_InvalidCraneOperation:
@@ -115,10 +129,30 @@ std::string Error::toString() {
             return "[Algorithm Error] Didn't load all required containers from port " + param1 + ", although ship isn't full";
         case AlgorithmError_ContainerIdAlreadyOnShip:
             return "[Algorithm Error] Tried to load container with ID '" + param1 + "', which is already on the ship";
+        case AlgorithmError_ContainerIdNotExistsOnPort:
+            break;
+        case AlgorithmError_ContainerIdNotExistsOnShip:
+            break;
+
+            // Read packing operations (produced by algorithm)
+        case ReadOperations_InvalidFile:
+            return "[Algorithm Output Error] Operations output file was not created by the algorithm";
+        case ReadOperations_InsufficientRowData:
+            return "[Algorithm Output Error] Data row contains less than 5 arguments (format: <L/U/M/R> <container id>, <floor>, <X>, <Y>";
+        case ReadOperations_InsufficientRowData_MoveOp:
+            return "[Algorithm Output Error] Data row contains less than 8 arguments, in a move operation " // strings are concatenated
+                   "(format: M, <container id>, <floor>, <X>, <Y>, <floor>, <X>, <Y>)";
+        case ReadOperations_InvalidOperationType:
+            return "[Algorithm Output Error] Operation is invalid: '" + param1 + "' (should be L/U/M/R)";
+        case ReadOperations_InvalidShipPosition:
+            return "[Algorithm Output Error] Received invalid ship " + param1 + " position: '" + param2 + "' (should be an integer)";
+
 
         default:
             return "ERROR NOT SUPPORTED YET";
     }
+
+    return "TO STRING ERROR";
 }
 
 bool Error::isFlag(ErrorFlag flag) {
@@ -129,7 +163,6 @@ bool Error::isFatalError() {
     return (errorFlag & ShipPlan_FatalError) | (errorFlag & ShipRoute_FatalError) | (errorFlag & ShipRoute_FatalError_SinglePort);
 }
 
-// endregion
 // endregion
 
 // region Errors class
@@ -161,10 +194,11 @@ bool Errors::hasFatalError() {
 }
 
 bool Errors::hasAlgorithmErrors() {
-    longUInt algorithmInstructionErrors = AlgorithmError_CraneOperationWithInvalidId | AlgorithmError_InvalidCraneOperation | AlgorithmError_LeftContainersAtPort
+    longUInt algorithmInstructionErrors =
+            AlgorithmError_CraneOperationWithInvalidId | AlgorithmError_InvalidCraneOperation | AlgorithmError_LeftContainersAtPort
             | AlgorithmError_ContainerIdAlreadyOnShip;
     longUInt algorithmFileErrors = ReadOperations_InvalidFile | ReadOperations_InsufficientRowData | ReadOperations_InsufficientRowData_MoveOp
-            | ReadOperations_InvalidOperationType | ReadOperations_InvalidShipPosition;
+                                   | ReadOperations_InvalidOperationType | ReadOperations_InvalidShipPosition;
     longUInt algorithmErrors = algorithmInstructionErrors | algorithmFileErrors;
 
     for (Error &error : errorsList) {

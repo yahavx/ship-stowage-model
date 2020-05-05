@@ -9,7 +9,7 @@
 #include "../interfaces/AbstractAlgorithm.h"
 #include "../common/actors/ContainerShip.h"
 #include "SemiAbstractAlgorithm.h"
-
+#include "../interfaces/AlgorithmRegistration.h"
 
 /**
  * A naive implementation.

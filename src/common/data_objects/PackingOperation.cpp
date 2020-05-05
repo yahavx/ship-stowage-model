@@ -64,7 +64,7 @@ std::string PackingOperation::toString() const {
         case PackingType::unload:
             return "Unload container '" + containerId + "' from position " + pos1;
         case PackingType::reject:
-            return "Rejected container '" + containerId + "'";
+            return "Reject container '" + containerId + "'";
         case PackingType::move:
             return "Move container '" + containerId + "' from " + pos1 + " to " + pos2;
     }
