@@ -161,8 +161,11 @@ bool Errors::hasFatalError() {
 }
 
 bool Errors::hasAlgorithmErrors() {
-    int algorithmErrors = AlgorithmError_CraneOperationWithInvalidId | AlgorithmError_InvalidCraneOperation | AlgorithmError_LeftContainersAtPort
+    longUInt algorithmInstructionErrors = AlgorithmError_CraneOperationWithInvalidId | AlgorithmError_InvalidCraneOperation | AlgorithmError_LeftContainersAtPort
             | AlgorithmError_ContainerIdAlreadyOnShip;
+    longUInt algorithmFileErrors = ReadOperations_InvalidFile | ReadOperations_InsufficientRowData | ReadOperations_InsufficientRowData_MoveOp
+            | ReadOperations_InvalidOperationType | ReadOperations_InvalidShipPosition;
+    longUInt algorithmErrors = algorithmInstructionErrors | algorithmFileErrors;
 
     for (Error &error : errorsList) {
         if (error.errorFlag & algorithmErrors) {

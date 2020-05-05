@@ -297,7 +297,7 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
     }
 
     if (operations.empty()) {
-
+        // TODO: do we need to report this?
 //        std::cout << "Warning: failed to read any operation" << std::endl;
     }
 
