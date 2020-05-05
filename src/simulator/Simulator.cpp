@@ -82,10 +82,11 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
 
     std::cout << "Starting simulation (Algorithm = " << dataManager.algorithmName << ", Travel = " << dataManager.travelName << ")" << std::endl;
 
-    ContainerShip ship = initSimulation(errors);
+    WeightBalanceCalculator simWeightBalancer;
+    ContainerShip ship = initSimulation(simWeightBalancer, errors);
 
-    NaiveWeightBalancer weightBalancer;
-    initAlgorithm(algorithm, weightBalancer, errors);
+    WeightBalanceCalculator algoWeightBalancer;
+    initAlgorithm(algorithm, algoWeightBalancer, errors);
 
     StringToStringVectorMap cargoData = sortTravelCargoData(dataManager.travelFolder());  // get list of .cargo_data files, ordered for each port
     StringToIntMap portsVisits = initPortsVisits(ship.getShipRoute());  // map from each port, to number of times we have encountered him so far
@@ -171,12 +172,11 @@ void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, WeightBalanceCalcula
     errors.addError(ret);
 }
 
-ContainerShip Simulator::initSimulation(Errors &errors) {
+ContainerShip Simulator::initSimulation(WeightBalanceCalculator &calculator, Errors &errors) {
     ShipPlan shipPlan = readShipPlanFromFile(dataManager.shipPlanPath(), errors);
     ShipRoute shipRoute = readShipRouteFromFile(dataManager.shipRoutePath(), errors);
-    NaiveWeightBalancer weightBalanceCalculator(shipPlan);
 
-    return ContainerShip(shipPlan, shipRoute, weightBalanceCalculator);
+    return ContainerShip(shipPlan, shipRoute, calculator);
 }
 
 // endregion

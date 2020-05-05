@@ -15,7 +15,7 @@ ContainerShip::ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRout
                                                                                      cargo(shipPlan) {}
 
 ContainerShip::ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRoute,
-                             AbstractWeightBalancer &balanceCalculator) : shipPlan(shipPlan), shipRoute(shipRoute),
+                             WeightBalanceCalculator &balanceCalculator) : shipPlan(shipPlan), shipRoute(shipRoute),
                                                                        cargo(shipPlan),
                                                                        balanceCalculator(&balanceCalculator) {}
 // endregion
@@ -94,8 +94,8 @@ Operations ContainerShip::loadContainerToArbitraryPosition(Port &port, const Con
     // Loop over all possible ship matrix cells and try to load the container on top, until success
     for (int x = 0; (x < std::get<0>(dims)) && (z < 0); x++) {
         for (int y = 0; (y < std::get<1>(dims)) && (z < 0); y++) {
-            AbstractWeightBalancer::BalanceStatus status = this->balanceCalculator->tryOperation('L', container.getWeight(), x, y);
-            if (status == AbstractWeightBalancer::BalanceStatus::APPROVED) {
+            WeightBalanceCalculator::BalanceStatus status = this->balanceCalculator->tryOperation('L', container.getWeight(), x, y);
+            if (status == WeightBalanceCalculator::BalanceStatus::APPROVED) {
                 z = this->getCargo().canLoadContainerOnTop(x, y);
                 if (z >= 0) {
                     auto op = PackingOperation(PackingType::load, container.getId(), {x, y, z});

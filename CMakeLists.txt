@@ -50,7 +50,7 @@ add_executable(ship_stowage_model
         # interfaces
         src/interfaces/AbstractAlgorithm.h
         src/interfaces/AlgorithmRegistration.h
-        src/interfaces/WeightBalanceCalculator.h
+        src/interfaces/WeightBalanceCalculator.h src/interfaces/WeightBalanceCalculator.cpp
 
         # simulator
         src/simulator/Simulator.cpp src/simulator/Simulator.h

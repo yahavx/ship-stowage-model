@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <string>
+
 class WeightBalanceCalculator {
 
 public:
@@ -15,10 +17,9 @@ public:
         APPROVED , X_IMBALANCED , Y_IMBALANCED , X_Y_IMBALANCED
     };
 
-// the method below is optional for ex2
-//    int readShipPlan(const std::string& full_path_and_file_name);
+    int readShipPlan(const std::string& full_path_and_file_name);
 
-    virtual BalanceStatus tryOperation(char loadUnload, int kg, int X, int Y) = 0;
+    BalanceStatus tryOperation(char loadUnload, int kg, int X, int Y);
 };
 
 #endif //SHIP_STOWAGE_MODEL_WEIGHTBALANCECALCULATOR_H
