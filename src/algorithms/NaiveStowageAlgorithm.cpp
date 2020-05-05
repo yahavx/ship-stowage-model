@@ -21,30 +21,26 @@ std::string NaiveStowageAlgorithm::getAlgorithmName() {
 // region Functions
 
 int NaiveStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
-    if (this->algoErrors) {
+    if (hasFatalError()) {  // Not initialized, or bad plan/route
         createEmptyFile(outputFile);
-        return this->algoErrors;
+        return algoErrors;
     }
 
+    Operations ops;
     Errors errors;
 
-    PortId id = this->ship.getShipRoute().getFirstPort();
+    PortId id = ship.getShipRoute().getFirstPort();
     ContainerStorage storage = readPortCargoFromFile(inputFile, errors);
     Port port(id, storage);
 
-    Operations ops;
-
     StringVector toReject = port.removeBadContainers(ship.getShipRoute());
-
-    for (auto& contId: toReject) {
-        ops.addOperation({PackingType::reject, contId});
-    }
+    ops.addRejectOperations(toReject);  // If its empty, nothing will be added
 
     Containers containersToLoad;
     std::vector<PortId> alreadyCollected;  // To not collect from same port twice
 
     // Collect all containers that needs to be loaded
-    for (longUInt i = 1; i < this->ship.getShipRoute().getPorts().size(); i++) {
+    for (longUInt i = 1; i < ship.getShipRoute().getPorts().size(); i++) {
         const PortId &id = ship.getShipRoute().getPorts()[i];
         auto it = std::find(alreadyCollected.begin(), alreadyCollected.end(), id);
         if (it == alreadyCollected.end()) {

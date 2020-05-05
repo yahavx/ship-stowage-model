@@ -183,13 +183,17 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
 
         validatePackingOperation(ship, port, op, errors);
 
+        if (op.getType() == PackingType::reject) {
+            continue;  // TODO: check the reject is correct
+        }
+
         auto opResult = CranesOperation::preformOperation(op, port, ship);
         if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND) {
-            std::cerr << "crane received illegal operation, didn't find container with ID: " << op.getContainerId() << std::endl;
+            std::cout << "crane received illegal operation, didn't find container with ID: " << op.getContainerId() << std::endl;
             errors.addError({ErrorFlag::AlgorithmError_CraneOperationWithInvalidId, op.getContainerId(), port.getId(), op.toString()});
         }
         if (opResult == CraneOperationResult::FAIL_ILLEGAL_OP) {
-            std::cerr << "Illegal crane operation: " << op << std::endl;
+            std::cout << "Illegal crane operation: " << op << std::endl;
             errors.addError({ErrorFlag::AlgorithmError_InvalidCraneOperation, op.toString()});
         }
     }

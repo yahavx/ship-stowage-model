@@ -8,6 +8,9 @@
 #include <tuple>
 #include <ostream>
 #include <vector>
+//#include "../utils/Definitions.h"
+
+typedef std::vector<std::string> StringVector;
 
 enum class PackingType {
     load, unload, reject, move
@@ -65,9 +68,18 @@ public:
 
     void addOperations(const Operations& ops);
 
+    /// Adds reject operation for all the ids.
+    void addRejectOperations(const StringVector &containerIds);
+
     int size() const;
 
     bool empty() const;
+
+    // endregion
+
+    // region Printer
+
+    friend std::ostream &operator<<(std::ostream &os, const Operations &operations);
 
     // endregion
 };

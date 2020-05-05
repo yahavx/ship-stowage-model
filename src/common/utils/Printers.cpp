@@ -51,19 +51,6 @@ std::ostream &operator<<(std::ostream &os, const std::tuple<int, int, int> &tup)
     return os << "]";
 }
 
-std::ostream &operator<<(std::ostream &os, const Operations &ops) {
-    if (ops.size() == 0) {
-        std::cout << "<NoOperations>" << std::endl;
-        return os;
-    }
-    std::cout << "Operations {" << std::endl;
-    for (int i = 0; i < ops.size(); i++) {
-        std::cout << '\t' << ops.ops[i].toString() << std::endl;
-    }
-    std::cout << "}" << std::endl;
-    return os;
-}
-
 std::ostream &operator<<(std::ostream &os, const StringToStringVectorMap &map) {
     std::cout << "StringToStringStringVector map {" << std::endl;
     for (auto key : map) {

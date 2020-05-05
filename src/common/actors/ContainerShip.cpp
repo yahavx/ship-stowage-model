@@ -103,7 +103,7 @@ Operations ContainerShip::loadContainerToArbitraryPosition(Port &port, const Con
                     if (result == CraneOperationResult::SUCCESS) { /// Successfully loaded
                         ops.addOperation(op);
                     } else {
-                        std::cerr
+                        std::cout
                                 << "Error loading container, crane operation failed to load container: "
                                 << op << "\n";
                         z = -1;
@@ -148,7 +148,7 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
 
         auto containerOptional = this->getCargo().getTopContainer(x, y);
         if (!containerOptional.has_value()) {
-            std::cerr << "Error unloading container, could not get top container from cargo ("
+            std::cout << "Error unloading container, could not get top container from cargo ("
                       << containerPos.x() << ", " << containerPos.y() << ")" << std::endl;
 
             failed = true;
@@ -162,7 +162,7 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
         auto op = PackingOperation(PackingType::unload, container.getId(), {x, y, z + (numOfContainersOnTop - i)});
         auto result = CranesOperation::preformOperation(op, port, *this);
         if (result != CraneOperationResult::SUCCESS) {
-            std::cerr
+            std::cout
                     << "Error unloading container, crane operation failed to unload container on top of required one: "
                     << op << "\n";
 
@@ -176,7 +176,7 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
     // Unload the requested container
     auto containerOptional = this->getCargo().getTopContainer(x, y);
     if (!containerOptional.has_value()) {
-        std::cerr << "Error unloading container, could not get top container from cargo ("
+        std::cout << "Error unloading container, could not get top container from cargo ("
                   << containerPos.x() << ", " << containerPos.y() << ")" << std::endl;
         failed = true;
     } else {
@@ -188,7 +188,7 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
             if (result == CraneOperationResult::SUCCESS) {
                 ops.addOperation(op);
             } else { // CranesOperation failed
-                std::cerr
+                std::cout
                         << "Error unloading container, crane operation failed to unload requested container: "
                         << op << std::endl;
 

@@ -6,6 +6,8 @@
 #include "../common/utils/Errors.h"
 #include "../common/io/ObjectsReader.h"
 
+// region Init
+
 int SemiAbstractAlgorithm::readShipPlan(const std::string &shipPlanPath) {
     Errors errors;
     auto shipPlan = readShipPlanFromFile(shipPlanPath, errors);
@@ -43,3 +45,33 @@ int SemiAbstractAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &c
 //    this->ship.getBalanceCalculator().setPlan(this->ship.getShipPlan());  // TODO: find another way to set ship plan, its not part of the interface
     return 0;  // TODO: this can fail?
 }
+
+// endregion
+
+// region Functions
+
+Containers SemiAbstractAlgorithm::getContainersToLoad(Port &port) {
+    Containers containersToLoad;
+    std::vector<PortId> alreadyCollected;  // To not collect from same port twice
+
+    // Collect all containers that needs to be loaded
+    for (longUInt i = 1; i < ship.getShipRoute().getPorts().size(); i++) {
+        const PortId &id = ship.getShipRoute().getPorts()[i];
+        auto it = std::find(alreadyCollected.begin(), alreadyCollected.end(), id);
+        if (it == alreadyCollected.end()) {  // Not seen yet
+            alreadyCollected.push_back(id);
+            Containers portContainers = port.getContainersForDestination(id);
+            containersToLoad.insert(containersToLoad.end(), portContainers.begin(), portContainers.end());
+        }
+    }
+
+    return containersToLoad;
+}
+
+bool SemiAbstractAlgorithm::hasFatalError() {
+    return algoErrors;
+}
+
+// endregion
+
+

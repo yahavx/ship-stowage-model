@@ -20,6 +20,7 @@ class ContainerShip {
     WeightBalanceCalculator *balanceCalculator;
 
 public:
+
     // region Constructors
 
     ContainerShip();

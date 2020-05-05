@@ -23,6 +23,11 @@ public:
 
     int setWeightBalanceCalculator(WeightBalanceCalculator &calculator) override;
 
+protected:
+
+    Containers getContainersToLoad(Port &port);
+
+    bool hasFatalError();
 };
 
 
