@@ -27,18 +27,23 @@ bool validatePosition(POS pos, ContainerShip &ship) {
 void AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
     const auto &containerId = op.getContainerId();
     if (!currentPort.hasContainer(containerId)) {
-        errors.addError({AlgorithmError_ContainerIdNotExistsOnPort, op.getContainerId()});
+        if (isBadContainer(containerId)) {
+            errors.addError({ErrorFlag::AlgorithmError_TriedToLoadButShouldReject, containerId, currentPort.getId()});
+        }
+        else {
+            errors.addError({ErrorFlag::AlgorithmError_ContainerIdNotExistsOnPort, op.getContainerId()});
+        }
     }
 
     if (ship.getCargo().hasContainer(containerId)) {
-        errors.addError({AlgorithmError_ContainerIdAlreadyOnShip, op.getContainerId()});
+        errors.addError({ErrorFlag::AlgorithmError_ContainerIdAlreadyOnShip, op.getContainerId()});
     }
 
     auto pos = op.getFirstPosition();
     //Check if it is possible to load container to given position
     if (ship.getCargo().canLoadContainerOnTop(std::get<0>(pos), get<1>(pos))) {
         int x = std::get<0>(pos), y = std::get<1>(pos);
-        errors.addError({AlgorithmError_LoadAboveNotLegal, op.getContainerId(), std::to_string(x), std::to_string(y)});
+        errors.addError({ErrorFlag::AlgorithmError_LoadAboveNotLegal, op.getContainerId(), std::to_string(x), std::to_string(y)});
     }
 }
 
@@ -48,11 +53,11 @@ void AlgorithmValidation::validateUnloadOperation(const PackingOperation &op) {
     auto containerOptional = ship.getCargo().getTopContainer(std::get<0>(pos), std::get<1>(pos));
 
     if (!containerOptional.has_value()) { // There are no containers at given (x,y)
-        errors.addError({AlgorithmError_UnloadNoContainersAtPosition, op.getContainerId(), std::to_string(x), std::to_string(y)});
+        errors.addError({ErrorFlag::AlgorithmError_UnloadNoContainersAtPosition, op.getContainerId(), std::to_string(x), std::to_string(y)});
     } else {
         auto container = containerOptional.value();
         if (container.getId() != op.getContainerId()) { // The top container at given (x,y) has different id
-            errors.addError({AlgorithmError_UnloadBadId, op.getContainerId(), std::to_string(x), std::to_string(y)});
+            errors.addError({ErrorFlag::AlgorithmError_UnloadBadId, op.getContainerId(), std::to_string(x), std::to_string(y)});
         }
     }
 }
@@ -65,11 +70,11 @@ void AlgorithmValidation::validateMoveOperation(const PackingOperation &op) {
 
     // Check if can remove the container from it's current position
     if (!containerOptional.has_value()) { // There are no containers at given (x,y)
-        errors.addError({AlgorithmError_MoveNoContainersAtPosition, op.getContainerId(), std::to_string(x), std::to_string(y)});
+        errors.addError({ErrorFlag::AlgorithmError_MoveNoContainersAtPosition, op.getContainerId(), std::to_string(x), std::to_string(y)});
     } else {
         auto container = containerOptional.value();
         if (container.getId() != op.getContainerId()) { // The top container at given (x,y) has different id
-            errors.addError({AlgorithmError_MoveBadId, op.getContainerId(), std::to_string(x), std::to_string(y)});
+            errors.addError({ErrorFlag::AlgorithmError_MoveBadId, op.getContainerId(), std::to_string(x), std::to_string(y)});
         }
     }
 
@@ -78,7 +83,7 @@ void AlgorithmValidation::validateMoveOperation(const PackingOperation &op) {
     // Check if it is possible to add container to given position
     if (ship.getCargo().canLoadContainerOnTop(std::get<0>(loadTo), get<1>(loadTo))) {
         x = std::get<0>(loadTo), y = std::get<1>(loadTo);
-        errors.addError({AlgorithmError_MoveAboveNotLegal, op.getContainerId(), std::to_string(x), std::to_string(y)});
+        errors.addError({ErrorFlag::AlgorithmError_MoveAboveNotLegal, op.getContainerId(), std::to_string(x), std::to_string(y)});
     }
 }
 
@@ -95,9 +100,9 @@ void AlgorithmValidation::validateRejectOperation(const PackingOperation &op) {
     // Rejection failed, need to find out why
 
     if (currentPort.hasContainer(containerId)) {  // Its a legal one
-        errors.addError({AlgorithmError_RejectedGoodContainer, containerId});
+        errors.addError({ErrorFlag::AlgorithmError_RejectedGoodContainer, containerId});
     } else {  // This container doesn't exists
-        errors.addError({AlgorithmError_ContainerIdNotExistsOnPort, containerId});
+        errors.addError({ErrorFlag::AlgorithmError_ContainerIdNotExistsOnPort, containerId});
     }
 }
 
@@ -106,7 +111,7 @@ void AlgorithmValidation::validatePackingOperation(const PackingOperation &op) {
     auto pos = op.getFirstPosition();
     if (!validatePosition(pos, ship)) {
         int x = std::get<0>(pos), y = std::get<1>(pos);
-        errors.addError({AlgorithmError_InvalidXYCoordinates, op.getContainerId(), std::to_string(x), std::to_string(y)});
+        errors.addError({ErrorFlag::AlgorithmError_InvalidXYCoordinates, op.getContainerId(), std::to_string(x), std::to_string(y)});
     }
 
     switch (op.getType()) {
@@ -135,6 +140,16 @@ void AlgorithmValidation::validateNoContainersLeftOnPort() {
             errors.addError({ErrorFlag::AlgorithmError_LeftContainersAtPort, portId, currentPort.getId()});
         }
     }
+}
+
+bool AlgorithmValidation::isBadContainer(const std::string &id) {
+    for (auto& badId: badContainerIds) {
+        if (badId == id) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 // endregion

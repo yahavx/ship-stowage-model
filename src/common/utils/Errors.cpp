@@ -24,7 +24,8 @@ longUInt c_algorithmInstructionErrors =
         AlgorithmError_CraneOperationWithInvalidId | AlgorithmError_InvalidCraneOperation | AlgorithmError_LeftContainersAtPort
         | AlgorithmError_ContainerIdAlreadyOnShip | AlgorithmError_ContainerIdNotExistsOnPort | AlgorithmError_ContainerIdNotExistsOnShip
         | AlgorithmError_RejectedGoodContainer | AlgorithmError_LoadAboveNotLegal | AlgorithmError_UnloadNoContainersAtPosition | AlgorithmError_UnloadBadId
-        | AlgorithmError_InvalidXYCoordinates | AlgorithmError_MoveNoContainersAtPosition | AlgorithmError_MoveBadId | AlgorithmError_MoveAboveNotLegal;
+        | AlgorithmError_InvalidXYCoordinates | AlgorithmError_MoveNoContainersAtPosition | AlgorithmError_MoveBadId | AlgorithmError_MoveAboveNotLegal
+        | AlgorithmError_TriedToLoadButShouldReject;
 
 longUInt c_algorithmFileErrors = ReadOperations_InvalidFile | ReadOperations_InsufficientRowData | ReadOperations_InsufficientRowData_MoveOp
                                  | ReadOperations_InvalidOperationType | ReadOperations_InvalidShipPosition;
@@ -104,7 +105,7 @@ std::string Error::toString() {
         case ShipPlan_InvalidFloorHeight:
             return shipPlanError + "Data row exceeds the maximum available containers, ignored";
         case ShipPlan_InvalidXYCoordinates:
-            return shipPlanError+ "Data row exceeds the ship dimensions, ignored";
+            return shipPlanError + "Data row exceeds the ship dimensions, ignored";
         case ShipPlan_BadLineFormat:
             return shipPlanError + "Data row is in invalid format, ignoring";
         case ShipPlan_FatalError_NoFileOrInvalidFirstLine:
@@ -181,19 +182,25 @@ std::string Error::toString() {
             return algorithmError + "Received a move/unload operation on container with ID '" + param1 + "', which doesn't exist on the ship";
         case AlgorithmError_RejectedGoodContainer:
             return algorithmError + "Received a reject operation on container with ID '" + param1 +
-                   "', but no apparently it should have been loaded to the ship";
+                   "', but apparently it should have been loaded to the ship";
         case AlgorithmError_LoadAboveNotLegal:
             return algorithmError + "Received loading operation of container with ID '" + param1 +
-                          "', at (" + param2 +  +", " + param3 + ")"  + " but there is no space on top";
+                   "', at (" + param2 + +", " + param3 + ")" + " but there is no space on top";
         case AlgorithmError_UnloadBadId:
             return algorithmError + "Received unloading operation of container with ID '" + param1 +
-                   "', at (" + param2 +  +", " + param3 + ")"  + " but there is container with non matching ID on top";
+                   "', at (" + param2 + +", " + param3 + ")" + " but there is container with non matching ID on top";
         case AlgorithmError_UnloadNoContainersAtPosition:
             return algorithmError + "Received unloading operation of container with ID '" + param1 +
-                   "', at (" + param2 +  +", " + param3 + ")"  + " but there are no containers";
+                   "', at (" + param2 + +", " + param3 + ")" + " but there are no containers";
         case AlgorithmError_InvalidXYCoordinates:
             return algorithmError + "Received operation of container with ID '" + param1 +
-                   "', to illegal position: (" + param2 +  +", " + param3 + ")";
+                   "', to illegal position: (" + param2 + +", " + param3 + ")";
+        case AlgorithmError_MoveNoContainersAtPosition:
+            break;
+        case AlgorithmError_MoveBadId:
+            break;
+        case AlgorithmError_TriedToLoadButShouldReject:
+            return algorithmError + "Try to load container with ID '" + param1 + "' from port '" + param2 +"', but it should have been rejected";
 
 
             // Read packing operations (produced by algorithm)
@@ -203,7 +210,7 @@ std::string Error::toString() {
             return algorithmOutputError + "Data row contains less than 5 arguments (format: <L/U/M/R> <container id>, <floor>, <X>, <Y>";
         case ReadOperations_InsufficientRowData_MoveOp:
             return algorithmOutputError + "Data row contains less than 8 arguments, in a move operation " // strings are concatenated
-                   "(format: M, <container id>, <floor>, <X>, <Y>, <floor>, <X>, <Y>)";
+                                          "(format: M, <container id>, <floor>, <X>, <Y>, <floor>, <X>, <Y>)";
         case ReadOperations_InvalidOperationType:
             return algorithmOutputError + "Operation is invalid: '" + param1 + "' (should be L/U/M/R)";
         case ReadOperations_InvalidShipPosition:

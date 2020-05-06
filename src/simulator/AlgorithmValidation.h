@@ -38,6 +38,13 @@ public:
     void validateNoContainersLeftOnPort();
 
     // endregion
+
+    // region Functions
+
+private:
+    bool isBadContainer(const std::string &id);
+
+    // endregion
 };
 
 

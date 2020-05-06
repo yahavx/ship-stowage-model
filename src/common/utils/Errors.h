@@ -63,6 +63,7 @@ enum ErrorFlag : longUInt {
     AlgorithmError_MoveNoContainersAtPosition,
     AlgorithmError_MoveBadId,
     AlgorithmError_MoveAboveNotLegal,
+    AlgorithmError_TriedToLoadButShouldReject,
 
 
     // These are also kind of algorithm errors (they write the file)
