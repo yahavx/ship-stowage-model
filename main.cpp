@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 
 //    travelPath = "../input-examples/travels";
 
-    Simulator simulator(outputPath, travelPath);
+    Simulator simulator(travelPath, algorithmPath, outputPath);
 
     simulator.runSimulations();
 

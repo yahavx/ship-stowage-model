@@ -5,12 +5,15 @@
 #include "ContainerPosition.h"
 
 
-// Constructors
+// region Constructor
+
 ContainerPosition::ContainerPosition(Container &container, const POS &position) : container(
         container), position(position) {}
 
+// endregion
 
-// Getters and setters
+// region Getters and setters
+
 Container &ContainerPosition::getContainer() const {
     return container;
 }
@@ -38,3 +41,5 @@ int ContainerPosition::y() const {
 int ContainerPosition::z() const {
     return std::get<2>(position);
 }
+
+// endregion

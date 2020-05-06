@@ -13,8 +13,9 @@
 
 
 class Simulator {
-    std::string outputDir;
     std::string travelRootDir;
+    std::string algorithmsDir;
+    std::string outputDir;
     SimulatorDataManager dataManager;
     std::vector<std::shared_ptr<AbstractAlgorithm>> algorithms;
 
@@ -22,7 +23,7 @@ public:
 
     // region Constructors
 
-    Simulator(const std::string &outputDir, const std::string &travelRootDir);
+    Simulator(const std::string &travelRootDir, const std::string &algorithmsDir, const std::string &outputDir);
 
     // endregion
 
@@ -38,13 +39,16 @@ private:
      */
     int runSimulation(AbstractAlgorithm &algorithm);
 
+    /// Loads algorithms dynamically, returns false if no algorithm was loaded.
+    void loadAlgorithmsDynamically(Errors &errors);
+
     // endregion
 
 private:
 
     // region Simulation init
 
-     /// Inits the ship of a single simulation. Assume no fatal errors are in the plan and route.
+    /// Inits the ship of a single simulation. Assume no fatal errors are in the plan and route.
     ContainerShip initSimulation(WeightBalanceCalculator &calculator, Errors &errors);
 
     /// Inits the algorithm in a single simulation.
