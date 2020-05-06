@@ -61,4 +61,4 @@ add_executable(ship_stowage_model
     # tests
     tests/FileTests.h
     tests/IOTests.h
-    tests/SimulationTests.h)
+    tests/SimulationTests.h src/algorithms/RobustStowageAlgorithm.cpp src/algorithms/RobustStowageAlgorithm.h)

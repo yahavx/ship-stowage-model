@@ -103,6 +103,45 @@ Operations ContainerShip::loadContainerToArbitraryPosition(Port &port, const Con
     return ops;
 }
 
+Operations ContainerShip::loadContainerToLowestPositionAvailable(Port &port, const Container &container) {
+    CranesManagement crane(*this, port);
+    Operations ops = Operations();
+    POS dims = this->shipPlan.getDimensions();
+
+    int minZ = std::get<0>(dims)+1, minX = -1, minY = -1;
+    // Loop over all possible ship matrix cells and try to load the container on top, until success
+    for (int x = 0; (x < std::get<0>(dims)); x++) {
+        for (int y = 0; (y < std::get<1>(dims)); y++) {
+            WeightBalanceCalculator::BalanceStatus status = this->balanceCalculator->tryOperation('L', container.getWeight(), x, y);
+            if (status == WeightBalanceCalculator::BalanceStatus::APPROVED) {
+                int z = this->getCargo().canLoadContainerOnTop(x, y);
+                if (z >= 0 && z < minZ) {
+                    minZ = z, minX = x, minY = y;
+                }
+            }
+        }
+    }
+
+    if (minZ < 0) {
+        ops = Operations();
+        ops.addOperation({PackingType::reject, container.getId()});
+        return ops;
+    } else {
+        auto op = PackingOperation(PackingType::load, container.getId(), {minX, minY, minZ});
+        auto result = crane.preformOperation(op);
+        if (result == CraneOperationResult::SUCCESS) { /// Successfully loaded
+            ops.addOperation(op);
+        } else {
+            std::cout
+                    << "Error loading container, crane operation failed to load container: "
+                    << op << "\n";
+            return loadContainerToArbitraryPosition(port, container);
+        }
+    }
+
+    return ops;
+}
+
 Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &containerPos) {
     Operations ops;
     auto x = containerPos.x(), y = containerPos.y(), z = containerPos.z();
