@@ -6,13 +6,11 @@
 #define SHIP_STOWAGE_MODEL_POSITION_H
 
 
-#include <tuple>
-
 class Position {
 public:
-    int x, y, z;
+    int x, y, floor;
 
-    Position(int x, int y, int z);
+    Position(int x, int y, int floor);
 };
 
 

@@ -20,7 +20,7 @@ AlgorithmValidation::AlgorithmValidation(ContainerShip &ship, Port &currentPort,
 bool validatePosition(POS pos, ContainerShip &ship) {
     return std::get<0>(pos) >= 0 &&
            std::get<0>(pos) < std::get<0>(ship.getShipPlan().getDimensions()) &&
-           std::get<0>(pos) >= 0 &&
+           std::get<1>(pos) >= 0 &&
            std::get<1>(pos) < std::get<1>(ship.getShipPlan().getDimensions());
 }
 

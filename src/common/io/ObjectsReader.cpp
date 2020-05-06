@@ -199,24 +199,6 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &erro
             continue;
         }
 
-//        if (!PortId::isIdInIsoFormat(id)) {  // TODO: the check will move to the Container class, remove it after its finished
-//            errors.addError(ErrorFlag::CargoData_BadContainerID);
-//            std::cout << "Warning: container id not in ISO format, ignoring" << std::endl;
-//            continue;
-//        }
-
-//        if (!isInteger(weight)) {
-//            errors.addError(ErrorFlag::CargoData_MissingOrBadWeight);
-//            std::cout << "Warning: container weight is not an integer, ignoring" << std::endl;
-//            continue;
-//        }
-
-//        if (!isEnglishWord(destPort) || destPort.length() != 5) {
-//            errors.addError(ErrorFlag::CargoData_MissingOrBadPortDest);
-//            std::cout << "Warning: port symbol is invalid, ignoring" << std::endl;
-//            continue;
-//        }
-
         int weightInt = isInteger(weight) ? strToInt(weight) : -1;
         containers.push_back(Container(id, weightInt, PortId(destPort)));
     }
@@ -336,13 +318,13 @@ bool writePackingOperationsToFile(const std::string &filePath, Operations &opera
         currRow.push_back(packingTypeFromString(op.getType()));  // add operation type (L, U, M, R)
         currRow.push_back(op.getContainerId());  // add container id
 
-        POS fromPos = op.getFirstPosition();  // add fromPosition
+        POS fromPos = op.getFirstPosition();  // add pos1
         currRow.push_back(intToStr(std::get<0>(fromPos)));
         currRow.push_back(intToStr(std::get<1>(fromPos)));
         currRow.push_back(intToStr(std::get<2>(fromPos)));
 
         if (op.getType() == PackingType::move) {
-            POS toPos = op.getFirstPosition();  // add toPosition (if move operation)
+            POS toPos = op.getSecondPosition();  // add pos2
             currRow.push_back(intToStr(std::get<0>(toPos)));
             currRow.push_back(intToStr(std::get<1>(toPos)));
             currRow.push_back(intToStr(std::get<2>(toPos)));

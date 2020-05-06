@@ -4,4 +4,4 @@
 
 #include "Position.h"
 
-Position::Position(int x, int y, int z) : x(x), y(y), z(z) {}
+Position::Position(int x, int y, int floor) : x(x), y(y), floor(floor) {}

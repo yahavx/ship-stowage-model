@@ -57,6 +57,7 @@ public:
     // endregion
 };
 
+/// A list of packing operations.
 class Operations {
 
 public:
