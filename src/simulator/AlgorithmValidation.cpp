@@ -100,10 +100,11 @@ void AlgorithmValidation::validatePackingOperation(const PackingOperation &op) {
 }
 
 void AlgorithmValidation::validateNoContainersLeftOnPort() {
-    for (auto portId : ship.getShipRoute().getPorts()) {
-        if (portId == currentPort.getId())
+    for (auto &portId : ship.getShipRoute().getNextPortsSet()) {
+        PortId id(portId);
+        if (id == currentPort.getId())
             continue;
-        if (!currentPort.getContainersForDestination(portId).empty() && !ship.getCargo().isFull()) {
+        if (!currentPort.getContainersForDestination(id).empty() && !ship.getCargo().isFull()) {
             errors.addError({ErrorFlag::AlgorithmError_LeftContainersAtPort, portId, currentPort.getId()});
         }
     }
