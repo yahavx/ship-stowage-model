@@ -27,7 +27,7 @@ CraneOperationResult preformUnloadOperation(const PackingOperation &op, Port &po
     std::tuple<int, int, int> pos = op.getFirstPosition();
     auto containerOptional = ship.getCargo().getTopContainer(std::get<0>(pos), std::get<1>(pos));
     if (!containerOptional.has_value()) {
-        std::cout << "Error unloading container, could not remove top container from cargo, the required one ("
+        std::cout << "Error unloading container, could not remove top container from cargo ("
                   << std::get<0>(pos) << ", " << std::get<1>(pos) << ")" << std::endl;
         return CraneOperationResult::FAIL_ILLEGAL_OP;
     }
