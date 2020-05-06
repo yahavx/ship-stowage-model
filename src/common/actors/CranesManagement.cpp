@@ -50,12 +50,45 @@ CraneOperationResult preformUnloadOperation(const PackingOperation &op, Port &po
     return CraneOperationResult::SUCCESS;
 }
 
+CraneOperationResult preformMoveOperation(const PackingOperation &op, ContainerShip &ship) {
+    std::tuple<int, int, int> unloadFrom = op.getFirstPosition();
+    std::tuple<int, int, int> loadTo = op.getSecondPosition();
+    auto containerOptional = ship.getCargo().getTopContainer(std::get<0>(unloadFrom), std::get<1>(unloadFrom));
+
+    // If can't remove container do nothing and return error
+    if (!containerOptional.has_value()) {
+        std::cout << "Error moving container, could not remove top container from cargo ("
+                  << std::get<0>(unloadFrom) << ", " << std::get<1>(unloadFrom) << ")" << std::endl;
+        return CraneOperationResult::FAIL_ILLEGAL_OP;
+    }
+    auto container = containerOptional.value();
+    if (container.getId() != op.getContainerId()) {
+        return CraneOperationResult::FAIL_ILLEGAL_OP;
+    }
+
+
+    // If can't load to container to requested position do nothing and return error
+    if (!ship.getCargo().canLoadContainerOnTop(std::get<0>(loadTo), std::get<1>(loadTo))) {
+        std::cout << "Error moving container, could not add container on top ("
+                  << std::get<0>(loadTo) << ", " << std::get<1>(loadTo) << ")" << std::endl;
+        return CraneOperationResult::FAIL_ILLEGAL_OP;
+    }
+
+    //If can remove container and add to required position, do the action
+    ship.getCargo().removeTopContainer(std::get<0>(unloadFrom), std::get<1>(unloadFrom));
+    ship.getCargo().loadContainerOnTop(std::get<0>(loadTo), std::get<1>(loadTo), container);
+
+    return CraneOperationResult::SUCCESS;
+}
+
 CraneOperationResult CranesManagement::preformOperation(const PackingOperation &op) {
     switch (op.getType()) {
         case PackingType::load :
             return preformLoadOperation(op, currentPort, ship);
         case PackingType::unload :
             return preformUnloadOperation(op, currentPort, ship);
+        case PackingType::move :
+            return preformMoveOperation(op,ship);
         default:
             return CraneOperationResult::FAIL_ILLEGAL_OP;
     }
