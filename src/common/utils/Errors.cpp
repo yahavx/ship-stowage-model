@@ -172,6 +172,18 @@ bool Error::isFatalError() {
     return errorFlag & fatalError;
 }
 
+bool Error::isAlgorithmError() {
+    longUInt algorithmInstructionErrors =
+            AlgorithmError_CraneOperationWithInvalidId | AlgorithmError_InvalidCraneOperation | AlgorithmError_LeftContainersAtPort
+            | AlgorithmError_ContainerIdAlreadyOnShip | AlgorithmError_ContainerIdNotExistsOnPort | AlgorithmError_ContainerIdNotExistsOnShip
+            | AlgorithmError_RejectedGoodContainer;
+    longUInt algorithmFileErrors = ReadOperations_InvalidFile | ReadOperations_InsufficientRowData | ReadOperations_InsufficientRowData_MoveOp
+                                   | ReadOperations_InvalidOperationType | ReadOperations_InvalidShipPosition;
+    longUInt algorithmErrors = algorithmInstructionErrors | algorithmFileErrors;
+
+    return errorFlag & algorithmErrors;
+}
+
 bool Error::isSuccess() {
     return errorFlag == ErrorFlag::Success;
 }
@@ -207,15 +219,10 @@ bool Errors::hasFatalError() {
 }
 
 bool Errors::hasAlgorithmErrors() {
-    longUInt algorithmInstructionErrors =
-            AlgorithmError_CraneOperationWithInvalidId | AlgorithmError_InvalidCraneOperation | AlgorithmError_LeftContainersAtPort
-            | AlgorithmError_ContainerIdAlreadyOnShip;
-    longUInt algorithmFileErrors = ReadOperations_InvalidFile | ReadOperations_InsufficientRowData | ReadOperations_InsufficientRowData_MoveOp
-                                   | ReadOperations_InvalidOperationType | ReadOperations_InvalidShipPosition;
-    longUInt algorithmErrors = algorithmInstructionErrors | algorithmFileErrors;
+
 
     for (Error &error : errorsList) {
-        if (error.errorFlag & algorithmErrors) {
+        if (error.isAlgorithmError()) {
             return true;
         }
     }

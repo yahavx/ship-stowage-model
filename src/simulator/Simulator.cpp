@@ -180,12 +180,12 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
     // TODO: check that any containers that were loaded to the port to unload others, are back in ship
     // TODO: ops can be empty, maybe we need to document it
 
-    StringVector badContainers = port.removeBadContainers(ship.getShipRoute());
+    StringVector badContainers = port.removeBadContainers(ship.getShipRoute());  // Removes from port and returns the ids of the bad containers
     AlgorithmValidation validation(ship, port, badContainers, errors);
 
     for (const PackingOperation &op : ops.ops) {
 
-        validation.validatePackingOperation(op);  // TODO: add support + checks to all 4 commands (this should not be validated down here)
+        validation.validatePackingOperation(op);  // TODO: add support + checks to all 4 commands
 
         if (errors.hasAlgorithmErrors())
             return;
@@ -194,7 +194,7 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
             continue;
 
         auto opResult = CranesOperation::preformOperation(op, port, ship);
-        if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND) {
+        if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND) {  // TODO: this should generally always succeed - we need to validate before sending inst. to crane
             std::cout << "crane received illegal operation, didn't find container with ID: " << op.getContainerId() << std::endl;
             errors.addError({ErrorFlag::AlgorithmError_CraneOperationWithInvalidId, op.getContainerId(), port.getId(), op.toString()});
         }

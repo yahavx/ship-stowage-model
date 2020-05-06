@@ -5,8 +5,8 @@
 #ifndef SHIP_STOWAGE_MODEL_ALGORITHMVALIDATION_H
 #define SHIP_STOWAGE_MODEL_ALGORITHMVALIDATION_H
 
-
 #include "../common/actors/ContainerShip.h"
+
 
 /// This class is responsible to perform all needed checks on operations received from the algorithm.
 class AlgorithmValidation {
@@ -24,6 +24,7 @@ public:
     // endregion
 
     // region Validations
+
     void validateLoadOperation(const PackingOperation &op);
 
     void validatePackingOperation(const PackingOperation &op);

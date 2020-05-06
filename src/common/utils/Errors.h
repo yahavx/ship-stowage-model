@@ -105,6 +105,8 @@ public:
 
     bool isFatalError();
 
+    bool isAlgorithmError();
+
     bool isSuccess();
 
     // endregion
