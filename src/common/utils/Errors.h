@@ -142,10 +142,15 @@ public:
     /// If errors were added (checking against the the last checkpoint), it will add an informative line about the state of the simulation.
     void addSimulationLog(int portVisitNum, const std::string &portId, int totalStops);
 
+private:
+    /// Add a separator line to the error list.
+    void addSeparator(int pos);
+
     // endregion
 
     // region Check Error Type
 
+public:
     bool hasFatalError();
 
     bool hasAlgorithmErrors();

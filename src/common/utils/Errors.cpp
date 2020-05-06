@@ -280,11 +280,19 @@ void Errors::setCheckpoint() {
 
 void Errors::addSimulationLog(int portVisitNum, const std::string &portId, int totalStops) {
     if (errorsList.size() > checkpoint) {
+        if (checkpoint != 0) {
+            addSeparator(checkpoint);
+        }
         std::string logMessage =
-                "\nThe following errors were detected on visit number " + intToStr(portVisitNum) + " in port '" + portId + "', which is stop number " +
+                "The following errors were detected on visit number " + intToStr(portVisitNum) + " in port '" + portId + "', which is stop number " +
                 intToStr(totalStops) + " since the beginning of the journey:";
         errorsList.insert(errorsList.begin() + checkpoint, logMessage);
     }
+}
+
+void Errors::addSeparator(int pos) {
+    std::string separator = "\n----------------------------\n\n";
+    errorsList.insert(errorsList.begin() + pos, separator);
 }
 
 // endregion
