@@ -2,7 +2,15 @@
 // Created by Orr on 4/17/2020.
 //
 
-#include "CranesOperation.h"
+#include "CranesManagement.h"
+
+// region Constructor
+
+CranesManagement::CranesManagement(ContainerShip &ship, Port &currentPort) : ship(ship), currentPort(currentPort) {}
+
+// endregion
+
+// region Functions
 
 CraneOperationResult preformLoadOperation(const PackingOperation &op, Port &port, ContainerShip &ship) {
     auto containerOptional = port.removeContainer(op.getContainerId());
@@ -42,15 +50,15 @@ CraneOperationResult preformUnloadOperation(const PackingOperation &op, Port &po
     return CraneOperationResult::SUCCESS;
 }
 
-CraneOperationResult CranesOperation::preformOperation(const PackingOperation &op, Port &port, ContainerShip &ship) {
+CraneOperationResult CranesManagement::preformOperation(const PackingOperation &op) {
     switch (op.getType()) {
         case PackingType::load :
-            return preformLoadOperation(op, port, ship);
+            return preformLoadOperation(op, currentPort, ship);
         case PackingType::unload :
-            return preformUnloadOperation(op, port, ship);
+            return preformUnloadOperation(op, currentPort, ship);
         default:
             return CraneOperationResult::FAIL_ILLEGAL_OP;
     }
 }
 
-
+// endregion

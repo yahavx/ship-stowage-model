@@ -43,7 +43,7 @@ public:
 
     Cargo &getCargo();  // Not const
 
-    void setCargo(const Cargo &cargo);
+//    void setCargo(const Cargo &cargo);  // May cause problems
 
     WeightBalanceCalculator &getBalanceCalculator() const;
 

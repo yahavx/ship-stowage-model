@@ -7,7 +7,7 @@
 #include "../algorithms/NaiveStowageAlgorithm.h"
 #include "../common/io/ObjectsReader.h"
 #include "../common/utils/Printers.h"
-#include "../common/actors/CranesOperation.h"
+#include "../common/actors/CranesManagement.h"
 #include "../common/io/FileReader.h"
 #include "../common/utils/UtilFunctions.h"
 #include "../common/utils/Errors.h"
@@ -182,6 +182,7 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
 
     StringVector badContainers = port.removeBadContainers(ship.getShipRoute());  // Removes from port and returns the ids of the bad containers
     AlgorithmValidation validation(ship, port, badContainers, errors);
+    CranesManagement crane(ship, port);
 
     for (const PackingOperation &op : ops.ops) {
 
@@ -193,7 +194,7 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
         if (op.getType() == PackingType::reject)
             continue;
 
-        auto opResult = CranesOperation::preformOperation(op, port, ship);
+        auto opResult = crane.preformOperation(op);
         if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND) {  // TODO: this should generally always succeed - we need to validate before sending inst. to crane
             std::cout << "crane received illegal operation, didn't find container with ID: " << op.getContainerId() << std::endl;
             errors.addError({ErrorFlag::AlgorithmError_CraneOperationWithInvalidId, op.getContainerId(), port.getId(), op.toString()});

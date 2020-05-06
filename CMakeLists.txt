@@ -19,7 +19,7 @@ add_executable(ship_stowage_model
             # actors
             src/common/actors/AbstractWeightBalancer.cpp src/common/actors/AbstractWeightBalancer.h
             src/common/actors/ContainerShip.cpp src/common/actors/ContainerShip.h
-            src/common/actors/CranesOperation.cpp src/common/actors/CranesOperation.h
+        src/common/actors/CranesManagement.cpp src/common/actors/CranesManagement.h
             src/common/actors/NaiveWeightBalancer.h src/common/actors/NaiveWeightBalancer.cpp
             src/common/actors/Port.cpp src/common/actors/Port.h
 

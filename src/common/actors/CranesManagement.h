@@ -2,8 +2,8 @@
 // Created by Orr on 4/17/2020.
 //
 
-#ifndef SHIP_STOWAGE_MODEL_CRANESOPERATION_H
-#define SHIP_STOWAGE_MODEL_CRANESOPERATION_H
+#ifndef SHIP_STOWAGE_MODEL_CRANESMANAGEMENT_H
+#define SHIP_STOWAGE_MODEL_CRANESMANAGEMENT_H
 
 
 #include "../data_objects/PackingOperation.h"
@@ -14,9 +14,20 @@ enum class CraneOperationResult {
     SUCCESS, FAIL_ILLEGAL_OP, FAIL_CONTAINER_NOT_FOUND
 };
 
-class CranesOperation {
+class CranesManagement {
+    ContainerShip &ship;
+    Port &currentPort;
 
 public:
+
+    // region Constructors
+
+    CranesManagement(ContainerShip &ship, Port &currentPort);
+
+    // endregion
+
+    // region Functions
+
     /**
      * Perform packing operation if is legal operation.
      * @param op - the operation to perform
@@ -24,8 +35,10 @@ public:
      * @param ship - the ship to load/unload to/from
      * @return operation result status
      */
-    static CraneOperationResult preformOperation(const PackingOperation &op, Port &port, ContainerShip &ship);
+    CraneOperationResult preformOperation(const PackingOperation &op);
+
+    // endregion
 };
 
 
-#endif //SHIP_STOWAGE_MODEL_CRANESOPERATION_H
+#endif //SHIP_STOWAGE_MODEL_CRANESMANAGEMENT_H
