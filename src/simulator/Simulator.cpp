@@ -185,7 +185,13 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
 
     for (const PackingOperation &op : ops.ops) {
 
-        validation.validatePackingOperation(op);
+        validation.validatePackingOperation(op);  // TODO: add support + checks to all 4 commands (this should not be validated down here)
+
+        if (errors.hasAlgorithmErrors())
+            return;
+
+        if (op.getType() == PackingType::reject)
+            continue;
 
         auto opResult = CranesOperation::preformOperation(op, port, ship);
         if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND) {
