@@ -107,9 +107,9 @@ void AlgorithmValidation::validateRejectOperation(const PackingOperation &op) {
 }
 
 void AlgorithmValidation::validatePackingOperation(const PackingOperation &op) {
-
     auto pos = op.getFirstPosition();
-    if (!validatePosition(pos, ship)) {
+
+    if (op.getType() != PackingType::reject && !validatePosition(pos, ship)) {
         int x = std::get<0>(pos), y = std::get<1>(pos);
         errors.addError({ErrorFlag::AlgorithmError_InvalidXYCoordinates, op.getContainerId(), std::to_string(x), std::to_string(y)});
     }
