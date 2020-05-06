@@ -108,6 +108,7 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
     std::vector<PortId> ports = ship.getShipRoute().getPorts();
     int totalNumberOfOps = 0;
     for (longUInt i = 0; i < ports.size(); i++) {  // Start the journey
+        errors.setCheckpoint();
         auto &portId = ports[i];
         int visitNum = getVisitNum(portsVisits, portId);  // visit number at this port right now
         bool isLast = (i == ports.size() - 1);  // our last port is treated a bit different
@@ -128,7 +129,8 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
         if (errors.hasAlgorithmErrors()) {
             std:: cout << "Found an error in the algorithm, terminating" << std::endl << errors;
             printSeparator(1, 3);
-            dataManager.saveSimulationErrors(errors);  // TODO: see if we can continue and collect more errors, but its ok like this
+            errors.addSimulationLog(visitNum, ports[i], i+1);
+            dataManager.saveSimulationErrors(errors);
             return -1;
         }
 
@@ -136,6 +138,7 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
         } else {std::cout << "The ship is going into maintenance..." << std::endl; }
 
         printSeparator(1, 1);
+        errors.addSimulationLog(visitNum, ports[i], i+1);
     }
 
     validateNoCargoFilesLeft(cargoData, errors);  // if there are remaining cargo files in the map, we need to print a warning because we couldn't use them

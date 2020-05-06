@@ -69,6 +69,9 @@ Error::Error(ErrorFlag errorFlag, const std::string &param1, const std::string &
 Error::Error(ErrorFlag errorFlag, const std::string &param1, const std::string &param2, const std::string &param3) : errorFlag(errorFlag), param1(param1),
                                                                                                                      param2(param2), param3(param3) {}
 
+Error::Error(ErrorFlag errorFlag, const std::string &param1, const std::string &param2, const std::string &param3, const std::string &param4) : errorFlag(
+        errorFlag), param1(param1), param2(param2), param3(param3), param4(param4) {}
+
 Error::Error(const std::string &errorMsg) : errorMsg(errorMsg) {}
 
 Error::Error(int errorFlags) {
@@ -187,20 +190,19 @@ std::string Error::toString() {
             return algorithmError + "Received loading operation of container with ID '" + param1 +
                    "', at (" + param2 + +", " + param3 + ")" + " but there is no space on top";
         case AlgorithmError_UnloadBadId:
-            return algorithmError + "Received unloading operation of container with ID '" + param1 +
+            return algorithmError + "Received unload operation of container with ID '" + param1 +
                    "', at (" + param2 + +", " + param3 + ")" + " but there is container with non matching ID on top";
         case AlgorithmError_UnloadNoContainersAtPosition:
-            return algorithmError + "Received unloading operation of container with ID '" + param1 +
+            return algorithmError + "Received unload operation of container with ID '" + param1 +
                    "', at (" + param2 + +", " + param3 + ")" + " but there are no containers";
         case AlgorithmError_InvalidXYCoordinates:
-            return algorithmError + "Received operation of container with ID '" + param1 +
-                   "', to illegal position: (" + param2 + +", " + param3 + ")";
+            return algorithmError + "Received operation on container with ID '" + param2 + "', using an illegal position: (" + param3 + +", " + param4 + ")";
         case AlgorithmError_MoveNoContainersAtPosition:
             break;
         case AlgorithmError_MoveBadId:
             break;
         case AlgorithmError_TriedToLoadButShouldReject:
-            return algorithmError + "Try to load container with ID '" + param1 + "' from port '" + param2 +"', but it should have been rejected";
+            return algorithmError + "Try to load container with ID '" + param1 + "' from port '" + param2 + "', but it should have been rejected";
 
 
             // Read packing operations (produced by algorithm)
@@ -242,6 +244,8 @@ bool Error::isSuccess() {
 
 // endregion
 
+// endregion
+
 // region Errors class
 
 // region Functions
@@ -260,6 +264,32 @@ StringVector Errors::toString() const {
 
     return errors;
 }
+
+int Errors::toErrorFlag() {
+    int errors;
+    for (Error error : errorsList) {
+        errors |= error.errorFlag;
+    }
+
+    return errors;
+}
+
+void Errors::setCheckpoint() {
+    checkpoint = errorsList.size();
+}
+
+void Errors::addSimulationLog(int portVisitNum, const std::string &portId, int totalStops) {
+    if (errorsList.size() > checkpoint) {
+        std::string logMessage =
+                "\nThe following errors were detected on visit number " + intToStr(portVisitNum) + " in port '" + portId + "', which is stop number " +
+                intToStr(totalStops) + " since the beginning of the journey:";
+        errorsList.insert(errorsList.begin() + checkpoint, logMessage);
+    }
+}
+
+// endregion
+
+// region Check Error Type
 
 bool Errors::hasFatalError() {
     for (Error error : errorsList) {
@@ -282,15 +312,6 @@ bool Errors::hasAlgorithmErrors() {
     return false;
 }
 
-int Errors::toErrorFlag() {
-    int errors;
-    for (Error error : errorsList) {
-        errors |= error.errorFlag;
-    }
-
-    return errors;
-}
-
 bool Errors::hasNoErrors() const {
     return errorsList.empty();
 }
@@ -298,6 +319,7 @@ bool Errors::hasNoErrors() const {
 bool Errors::hasErrors() const {
     return !errorsList.empty();
 }
+
 // endregion
 
 // region Printer
@@ -311,5 +333,6 @@ std::ostream &operator<<(std::ostream &os, const Errors &errors) {
     std::cout << "}" << std::endl;
     return os;
 }
+
 // endregion
 // endregion

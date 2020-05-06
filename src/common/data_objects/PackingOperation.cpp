@@ -54,6 +54,21 @@ std::ostream &operator<<(std::ostream &os, const PackingOperation &operation) {
     return os;
 }
 
+std::string PackingOperation::operationToString() const {
+    switch (type) {
+        case PackingType::load:
+            return "load";
+        case PackingType::unload:
+            return "unload";
+        case PackingType::reject:
+            return "reject";
+        case PackingType::move:
+            return "move";
+    }
+
+    return "ERROR";  // stupid compiler
+}
+
 std::string PackingOperation::toString() const {
     int x1 = std::get<0>(pos1), y1 = std::get<1>(pos1), z1 = std::get<2>(pos1);
     int x2 = std::get<0>(pos2), y2 = std::get<1>(pos2), z2 = std::get<2>(pos2);

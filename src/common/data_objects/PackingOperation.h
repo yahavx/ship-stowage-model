@@ -52,6 +52,8 @@ public:
 
     friend std::ostream &operator<<(std::ostream &os, const PackingOperation &operation);
 
+    std::string operationToString() const;
+
     std::string toString() const;
 
     // endregion

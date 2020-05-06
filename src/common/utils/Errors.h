@@ -85,6 +85,7 @@ public:
     std::string param1 = "<>";
     std::string param2 = "<>";
     std::string param3 = "<>";
+    std::string param4 = "<>";
 
     // region Constructors
 
@@ -95,6 +96,8 @@ public:
     Error(ErrorFlag errorFlag, const std::string &param1, const std::string &param2);
 
     Error(ErrorFlag errorFlag, const std::string &param1, const std::string &param2, const std::string &param3);
+
+    Error(ErrorFlag errorFlag, const std::string &param1, const std::string &param2, const std::string &param3, const std::string &param4);
 
     Error(const std::string &errorMsg);
 
@@ -119,6 +122,7 @@ public:
 
 class Errors {
     std::vector<Error> errorsList;
+    longUInt checkpoint = 0;
 
 public:
 
@@ -129,29 +133,39 @@ public:
 
     StringVector toString() const;
 
+    /// Returns an int that represents all the errors in the list. If an error appears multiple times, it is treated as once.
+    int toErrorFlag();
+
+    /// Used to set a checkpoint, to be able later detect if errors were added in a period of time.
+    void setCheckpoint();
+
+    /// If errors were added (checking against the the last checkpoint), it will add an informative line about the state of the simulation.
+    void addSimulationLog(int portVisitNum, const std::string &portId, int totalStops);
+
+    // endregion
+
+    // region Check Error Type
+
     bool hasFatalError();
 
     bool hasAlgorithmErrors();
 
-    /// Returns an int that represents all the errors in the list. If an error appears multiple times, it is treated as once.
-    int toErrorFlag();
-
     bool hasNoErrors() const;
 
     bool hasErrors() const;
+
     // endregion
 
     // region Printer
 
     friend std::ostream &operator<<(std::ostream &os, const Errors &errors);
-    // endregion
 
-      // functions can use this as default parameter to ignore errors
+    // endregion
 };
 
 // region Garbage Collector
 
-extern Errors e_garbageCollector;
+extern Errors e_garbageCollector; // functions can use this as default parameter to ignore errors
 
 // endregion
 
