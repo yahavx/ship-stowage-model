@@ -40,8 +40,8 @@ void AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
     }
 
     auto pos = op.getFirstPosition();
-    //Check if it is possible to load container to given position
-    if (ship.getCargo().canLoadContainerOnTop(std::get<0>(pos), get<1>(pos))) {
+    // Check if it is possible to load container to given position
+    if (!ship.getCargo().canLoadContainerToPosition(std::get<0>(pos), get<1>(pos))) {
         int x = std::get<0>(pos), y = std::get<1>(pos);
         errors.addError({ErrorFlag::AlgorithmError_LoadAboveNotLegal, op.getContainerId(), std::to_string(x), std::to_string(y)});
     }
@@ -81,7 +81,7 @@ void AlgorithmValidation::validateMoveOperation(const PackingOperation &op) {
     auto loadTo = op.getFirstPosition();
 
     // Check if it is possible to add container to given position
-    if (ship.getCargo().canLoadContainerOnTop(std::get<0>(loadTo), get<1>(loadTo))) {
+    if (ship.getCargo().getAvailableFloorToLoadContainer(std::get<0>(loadTo), get<1>(loadTo))) {
         x = std::get<0>(loadTo), y = std::get<1>(loadTo);
         errors.addError({ErrorFlag::AlgorithmError_MoveAboveNotLegal, op.getContainerId(), std::to_string(x), std::to_string(y)});
     }

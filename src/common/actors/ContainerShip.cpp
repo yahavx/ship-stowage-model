@@ -76,7 +76,7 @@ Operations ContainerShip::loadContainerToArbitraryPosition(Port &port, const Con
         for (int y = 0; (y < std::get<1>(dims)) && (z < 0); y++) {
             WeightBalanceCalculator::BalanceStatus status = this->balanceCalculator->tryOperation('L', container.getWeight(), x, y);
             if (status == WeightBalanceCalculator::BalanceStatus::APPROVED) {
-                z = this->getCargo().canLoadContainerOnTop(x, y);
+                z = this->getCargo().getAvailableFloorToLoadContainer(x, y);
                 if (z >= 0) {
                     auto op = PackingOperation(PackingType::load, container.getId(), {x, y, z});
                     auto result = crane.preformOperation(op);
@@ -114,7 +114,7 @@ Operations ContainerShip::loadContainerToLowestPositionAvailable(Port &port, con
         for (int y = 0; (y < std::get<1>(dims)); y++) {
             WeightBalanceCalculator::BalanceStatus status = this->balanceCalculator->tryOperation('L', container.getWeight(), x, y);
             if (status == WeightBalanceCalculator::BalanceStatus::APPROVED) {
-                int z = this->getCargo().canLoadContainerOnTop(x, y);
+                int z = this->getCargo().getAvailableFloorToLoadContainer(x, y);
                 if (z >= 0 && z < minZ) {
                     minZ = z, minX = x, minY = y;
                 }

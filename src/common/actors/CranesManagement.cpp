@@ -68,7 +68,7 @@ CraneOperationResult preformMoveOperation(const PackingOperation &op, ContainerS
 
 
     // If can't load to container to requested position do nothing and return error
-    if (!ship.getCargo().canLoadContainerOnTop(std::get<0>(loadTo), std::get<1>(loadTo))) {
+    if (!ship.getCargo().getAvailableFloorToLoadContainer(std::get<0>(loadTo), std::get<1>(loadTo))) {
         std::cout << "Error moving container, could not add container on top ("
                   << std::get<0>(loadTo) << ", " << std::get<1>(loadTo) << ")" << std::endl;
         return CraneOperationResult::FAIL_ILLEGAL_OP;

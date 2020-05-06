@@ -54,7 +54,11 @@ OptionalContainer Cargo::removeTopContainer(int x, int y) {
     return container;
 }
 
-int Cargo::canLoadContainerOnTop(int x, int y) const {
+bool Cargo::canLoadContainerToPosition(int x, int y) const {
+    return getAvailableFloorToLoadContainer(x, y) != -1;
+}
+
+int Cargo::getAvailableFloorToLoadContainer(int x, int y) const {
     if (!validateXY(x, y, shipPlan))
         return -1;
 

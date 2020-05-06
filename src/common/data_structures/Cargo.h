@@ -25,11 +25,15 @@ public:
     // endregion
 
     // region Functions
+
+    /// Returns true if its possible to load the container in the position.
+    bool canLoadContainerToPosition(int x, int y) const;
+
     /**
-     * If possible to load the container on top in this x,y position returns the height it would be loaded to.
-     * else returns negative integer
+     * If possible to load the container on top in this x,y position, returns the height it would be loaded to.
+     * Otherwise returns -1.
      */
-    int canLoadContainerOnTop(int x, int y) const;
+    int getAvailableFloorToLoadContainer(int x, int y) const;
 
     /**
      * Returns the current number of containers in position (x,y), or -1 if x or y are out of bounds.
