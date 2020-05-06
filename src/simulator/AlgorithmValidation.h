@@ -25,6 +25,9 @@ public:
 
     // region Validations
 
+private:
+    bool validatePosition(POS pos);
+
     void validateLoadOperation(const PackingOperation &op);
 
     void validateUnloadOperation(const PackingOperation &op);
@@ -33,6 +36,7 @@ public:
 
     void validateRejectOperation(const PackingOperation &op);
 
+public:
     void validatePackingOperation(const PackingOperation &op);
 
     void validateNoContainersLeftOnPort();

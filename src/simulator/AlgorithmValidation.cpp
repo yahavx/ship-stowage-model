@@ -17,7 +17,7 @@ AlgorithmValidation::AlgorithmValidation(ContainerShip &ship, Port &currentPort,
 
 // region Validations
 
-bool validatePosition(POS pos, ContainerShip &ship) {
+bool AlgorithmValidation::validatePosition(POS pos) {
     return std::get<0>(pos) >= 0 &&
            std::get<0>(pos) < std::get<0>(ship.getShipPlan().getDimensions()) &&
            std::get<1>(pos) >= 0 &&
@@ -107,14 +107,23 @@ void AlgorithmValidation::validateRejectOperation(const PackingOperation &op) {
 }
 
 void AlgorithmValidation::validatePackingOperation(const PackingOperation &op) {
-    auto pos = op.getFirstPosition();
+    auto pos1 = op.getFirstPosition(), pos2 = op.getSecondPosition();
+    auto opType = op.getType();
 
-    if (op.getType() != PackingType::reject && !validatePosition(pos, ship)) {
-        int x = std::get<0>(pos), y = std::get<1>(pos);
-        errors.addError({ErrorFlag::AlgorithmError_InvalidXYCoordinates, op.getContainerId(), std::to_string(x), std::to_string(y)});
+    if (opType != PackingType::reject) {
+        if (!validatePosition(pos1)) {
+            int x = std::get<0>(pos1), y = std::get<1>(pos1);
+            errors.addError({ErrorFlag::AlgorithmError_InvalidXYCoordinates, op.getContainerId(), std::to_string(x), std::to_string(y)});
+            return;
+        }
+        if (opType == PackingType::move && !validatePosition(pos2)) {
+            int x = std::get<0>(pos2), y = std::get<1>(pos2);
+            errors.addError({ErrorFlag::AlgorithmError_InvalidXYCoordinates, op.getContainerId(), std::to_string(x), std::to_string(y)});
+            return;
+        }
     }
 
-    switch (op.getType()) {
+    switch (opType) {
         case PackingType::load:
             validateLoadOperation(op);
             break;
