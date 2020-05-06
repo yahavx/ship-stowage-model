@@ -36,25 +36,25 @@ longUInt c_algorithmErrors = c_algorithmInstructionErrors | c_algorithmFileError
 
 // region Error Prefixes
 
-const std::string shipPlanError = "[Ship Plan Error] ";
-const std::string shipPlanFatalError = "[Ship Plan Fatal Error] ";
+const std::string shipPlanError = "\t[Ship Plan Error] ";
+const std::string shipPlanFatalError = "\t[Ship Plan Fatal Error] ";
 
-const std::string shipRouteError = "[Ship Route Error] ";
-const std::string shipRouteFatalError = "[Ship Route Fatal Error] ";
+const std::string shipRouteError = "\t[Ship Route Error] ";
+const std::string shipRouteFatalError = "\t[Ship Route Fatal Error] ";
 
-const std::string containersAtPortError = "[Containers At Port Error] ";
+const std::string containersAtPortError = "\t[Containers At Port Error] ";
 
-const std::string cargoDataError = "[Cargo Data Error] ";
-const std::string cargoDataWarning = "[Cargo Data Warning] ";
+const std::string cargoDataError = "\t[Cargo Data Error] ";
+const std::string cargoDataWarning = "\t[Cargo Data Warning] ";
 
-const std::string simulatorError = "[Simulator Error] ";
-const std::string simulatorFatalError = "[Simulator Fatal Error] ";
+const std::string simulatorError = "\t[Simulator Error] ";
+const std::string simulatorFatalError = "\t[Simulator Fatal Error] ";
 
-const std::string travelError = "[Travel Error] ";
-const std::string travelFatalError = "[Travel Fatal Error] ";
+const std::string travelError = "\t[Travel Error] ";
+const std::string travelFatalError = "\t[Travel Fatal Error] ";
 
-const std::string algorithmError = "[Algorithm Error] ";
-const std::string algorithmOutputError = "[Algorithm Output Error] ";
+const std::string algorithmError = "\t[Algorithm Error] ";
+const std::string algorithmOutputError = "\t[Algorithm Output Error] ";
 
 // endregion
 
@@ -85,7 +85,7 @@ Error::Error(int errorFlags) {
     }
 
     if (!errorNumbers.empty()) {
-        errorMsg = "The algorithm reported the following errors: " + intToStr(errorNumbers[0]);
+        errorMsg = "\t[Algorithm Report] The algorithm reported the following errors: " + intToStr(errorNumbers[0]);
 
         for (longUInt i = 1; i < errorNumbers.size(); i++) {
             errorMsg += ", " + intToStr(errorNumbers[i]);
@@ -278,25 +278,40 @@ int Errors::toErrorFlag() {
     return errors;
 }
 
-void Errors::setCheckpoint() {
-    checkpoint = errorsList.size();
+// endregion
+
+// region Logging
+
+void Errors::addSimulationInitLog() {
+    addLog("The following errors were detected during the initialization of the Simulator and the Algorithm:");
 }
 
 void Errors::addSimulationPortVisitLog(int portVisitNum, const std::string &portId, int totalStops) {
+    addLog("The following errors were detected on visit number " + intToStr(portVisitNum) + " in port '" + portId + "', which is stop number " +
+           intToStr(totalStops) + " since the beginning of the journey:");
+}
+
+void Errors::addTravelLog(const std::string &travelName) {
+    addLog("The following errors were detected on travel '" + travelName +"':");
+}
+
+void Errors::addLog(const std::string &logMessage) {
     if (errorsList.size() > checkpoint) {
+        errorsList.insert(errorsList.begin() + checkpoint, logMessage);
         if (checkpoint != 0) {
             addSeparator(checkpoint);
         }
-        std::string logMessage =
-                "The following errors were detected on visit number " + intToStr(portVisitNum) + " in port '" + portId + "', which is stop number " +
-                intToStr(totalStops) + " since the beginning of the journey:";
-        errorsList.insert(errorsList.begin() + checkpoint, logMessage);
+        setCheckpoint();
     }
 }
 
 void Errors::addSeparator(int pos) {
-    std::string separator = "\n----------------------------\n\n";
+    std::string separator = "-----------------------------------------------------------------";
     errorsList.insert(errorsList.begin() + pos, separator);
+}
+
+void Errors::setCheckpoint() {
+    checkpoint = errorsList.size();
 }
 
 // endregion

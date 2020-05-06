@@ -60,10 +60,10 @@ enum ErrorFlag : longUInt {
     AlgorithmError_UnloadNoContainersAtPosition = 1ULL << 36,
     AlgorithmError_UnloadBadId = 1ULL << 37,
     AlgorithmError_InvalidXYCoordinates = 1ULL << 38,
-    AlgorithmError_MoveNoContainersAtPosition,
-    AlgorithmError_MoveBadId,
-    AlgorithmError_MoveAboveNotLegal,
-    AlgorithmError_TriedToLoadButShouldReject,
+    AlgorithmError_MoveNoContainersAtPosition = 1ULL << 47,
+    AlgorithmError_MoveBadId = 1ULL << 48,
+    AlgorithmError_MoveAboveNotLegal = 1ULL << 51,
+    AlgorithmError_TriedToLoadButShouldReject = 1ULL << 52,
 
     // These are also kind of algorithm errors (they write the file)
     ReadOperations_InvalidFile = 1ULL << 40,
@@ -73,6 +73,8 @@ enum ErrorFlag : longUInt {
     ReadOperations_InvalidShipPosition = 1ULL << 44,
     ReadOperations_reserved2 = 1ULL << 45,
     ReadOperations_reserved3 = 1ULL << 46,
+
+    // next error is 53
 
 
 };
@@ -137,15 +139,28 @@ public:
     /// Returns an int that represents all the errors in the list. If an error appears multiple times, it is treated as once.
     int toErrorFlag();
 
-    /// Used to set a checkpoint, to be able later detect if errors were added in a period of time.
-    void setCheckpoint();
+    // region
 
-    /// If errors were added (checking against the the last checkpoint), it will add an informative line about the state of the simulation.
+    // region Logging
+
+    /// If errors were added (checking against the last call to this function), it will add an informative line about the simulation init.
+    void addSimulationInitLog();
+
+    /// If errors were added (checking against the last call to this function), it will add an informative line about the state of the simulation.
     void addSimulationPortVisitLog(int portVisitNum, const std::string &portId, int totalStops);
 
+    /// If errors were added (checking against the last call to this function), it will add an informative line about the travel.
+    void addTravelLog(const std::string &travelName);
+
 private:
+    /// If errors were added (checking against the the last checkpoint), it will add an informative line about the state of the simulation.
+    void addLog(const std::string &logMessage);
+
     /// Add a separator line to the error list.
     void addSeparator(int pos);
+
+    /// Used to set a checkpoint, to be able later detect if errors were added in a period of time.
+    void setCheckpoint();
 
     // endregion
 

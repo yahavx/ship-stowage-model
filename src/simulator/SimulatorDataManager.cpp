@@ -128,6 +128,7 @@ StringVector SimulatorDataManager::collectLegalTravels(Errors &errors) {
         if (isTravelValid(errors)) {
             legalTravels.push_back(travel);
         }
+        errors.addTravelLog(travelName);
     }
 
     return legalTravels;

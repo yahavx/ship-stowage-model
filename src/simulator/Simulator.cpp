@@ -13,7 +13,10 @@
 #include "../common/utils/Errors.h"
 #include "../algorithms/BadAlgorithm.h"
 #include "AlgorithmValidation.h"
+#include <iostream>
 #include "../algorithms/RobustStowageAlgorithm.h"
+//#include <dlfcn.h>
+
 
 // region Constructors
 
@@ -98,9 +101,7 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
     filterUnusedPorts(cargoData, ship.getShipRoute(), errors);  // remove the port files which are not on the ship route
 //    std::cout << "Finished." << std::endl;
 
-//    printSeparator(1, 1);
-
-    // endregion
+    errors.addSimulationInitLog();
 
     ////////////////////////
     /// Start simulation ///
@@ -112,7 +113,6 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
     std::vector<PortId> ports = ship.getShipRoute().getPorts();
     int totalNumberOfOps = 0;
     for (longUInt i = 0; i < ports.size(); i++) {  // Start the journey
-        errors.setCheckpoint();
         auto &portId = ports[i];
         int visitNum = getVisitNum(portsVisits, portId);  // visit number at this port right now
         bool isLast = (i == ports.size() - 1);  // our last port is treated a bit different
@@ -159,6 +159,12 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
 
     return errors.hasAlgorithmErrors() ? -1 : totalNumberOfOps;
 }
+
+//struct DlCloser{
+//    void operator()(void *dlHandle) const noexcept {
+//        dlclose(dlHandle);
+//    }
+//};
 
 void Simulator::loadAlgorithmsDynamically(Errors &errors) {
     if (algorithmsDir == "") {
