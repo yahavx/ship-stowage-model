@@ -27,13 +27,13 @@ public:
 
     void validateLoadOperation(const PackingOperation &op);
 
-    void validateRejectOperation(const PackingOperation &op);
-
     void validateUnloadOperation(const PackingOperation &op);
+
+    void validateRejectOperation(const PackingOperation &op);
 
     void validatePackingOperation(const PackingOperation &op);
 
-
+    void validateNoContainersLeftOnPort();
 
     // endregion
 };

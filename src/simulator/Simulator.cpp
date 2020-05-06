@@ -207,19 +207,7 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
 
     ship.advanceToNextPort();
 
-    // Check if algorithm loaded all required containers (if there is space on the ship)
-    bool foundUnloadedContainers = false;
-    for (auto portId : ship.getShipRoute().getPorts()) {
-        if (portId == port.getId())
-            continue;
-        if (!port.getContainersForDestination(portId).empty() && !ship.getCargo().isFull()) {
-            foundUnloadedContainers = true;
-            break;
-        }
-    }
-
-    if (foundUnloadedContainers)
-        errors.addError({ErrorFlag::AlgorithmError_LeftContainersAtPort, port.getId()});
+    validation.validateNoContainersLeftOnPort();
 
     std::cout << ops;
 }

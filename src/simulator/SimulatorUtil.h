@@ -14,7 +14,6 @@
 
 // region Simulation utils
 
-
 /// Inits a map from each port id to zero (will be incremented each time we visit this port)
 StringToIntMap initPortsVisits(ShipRoute &shipRoute);
 
