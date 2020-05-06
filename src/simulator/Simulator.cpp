@@ -13,6 +13,7 @@
 #include "../common/utils/Errors.h"
 #include "../algorithms/BadAlgorithm.h"
 #include "AlgorithmValidation.h"
+#include "../algorithms/RobustStowageAlgorithm.h"
 
 // region Constructors
 
@@ -20,10 +21,12 @@ Simulator::Simulator(const std::string &outputDir, const std::string &travelRoot
                                                                                        dataManager(outputDir, travelRootDir) {
     auto naiveStowageAlgorithm = std::make_shared<NaiveStowageAlgorithm>();
     auto badAlgorithm = std::make_shared<BadAlgorithm>();
+    auto robustAlgorithm = std::make_shared<RobustStowageAlgorithm>();
 //    NaiveStowageAlgorithm *naiveStowageAlgorithm2 = new NaiveStowageAlgorithm();
 
     algorithms.push_back(naiveStowageAlgorithm);
     algorithms.push_back(badAlgorithm);
+    algorithms.push_back(robustAlgorithm);
 //    algorithms.push_back(naiveStowageAlgorithm2);
 }
 // endregion

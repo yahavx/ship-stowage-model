@@ -25,7 +25,7 @@ public:
 
 protected:
 
-    Containers getContainersToLoad(Port &port);
+    virtual Containers getContainersToLoad(Port &port);
 
     bool hasFatalError();
 };

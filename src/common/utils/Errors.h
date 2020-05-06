@@ -60,6 +60,10 @@ enum ErrorFlag : longUInt {
     AlgorithmError_UnloadNoContainersAtPosition = 1ULL << 36,
     AlgorithmError_UnloadBadId = 1ULL << 37,
     AlgorithmError_InvalidXYCoordinates = 1ULL << 38,
+    AlgorithmError_MoveNoContainersAtPosition,
+    AlgorithmError_MoveBadId,
+    AlgorithmError_MoveAboveNotLegal,
+
 
     // These are also kind of algorithm errors (they write the file)
     ReadOperations_InvalidFile = 1ULL << 40,

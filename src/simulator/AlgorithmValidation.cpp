@@ -57,6 +57,31 @@ void AlgorithmValidation::validateUnloadOperation(const PackingOperation &op) {
     }
 }
 
+void AlgorithmValidation::validateMoveOperation(const PackingOperation &op) {
+    std::tuple<int, int, int> unloadFrom = op.getFirstPosition();
+    int x = std::get<0>(unloadFrom), y = std::get<1>(unloadFrom);
+
+    auto containerOptional = ship.getCargo().getTopContainer(std::get<0>(unloadFrom), std::get<1>(unloadFrom));
+
+    // Check if can remove the container from it's current position
+    if (!containerOptional.has_value()) { // There are no containers at given (x,y)
+        errors.addError({AlgorithmError_MoveNoContainersAtPosition, op.getContainerId(), std::to_string(x), std::to_string(y)});
+    } else {
+        auto container = containerOptional.value();
+        if (container.getId() != op.getContainerId()) { // The top container at given (x,y) has different id
+            errors.addError({AlgorithmError_MoveBadId, op.getContainerId(), std::to_string(x), std::to_string(y)});
+        }
+    }
+
+    auto loadTo = op.getFirstPosition();
+
+    // Check if it is possible to add container to given position
+    if (ship.getCargo().canLoadContainerOnTop(std::get<0>(loadTo), get<1>(loadTo))) {
+        x = std::get<0>(loadTo), y = std::get<1>(loadTo);
+        errors.addError({AlgorithmError_MoveAboveNotLegal, op.getContainerId(), std::to_string(x), std::to_string(y)});
+    }
+}
+
 void AlgorithmValidation::validateRejectOperation(const PackingOperation &op) {
     auto &containerId = op.getContainerId();
 
@@ -91,11 +116,13 @@ void AlgorithmValidation::validatePackingOperation(const PackingOperation &op) {
         case PackingType::unload:
             validateUnloadOperation(op);
             break;
+        case PackingType::move:
+            validateMoveOperation(op);
+            break;
         case PackingType::reject:
             validateRejectOperation(op);
             break;
-        case PackingType::move:
-            break;
+
     }
 }
 

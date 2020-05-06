@@ -29,6 +29,8 @@ public:
 
     void validateUnloadOperation(const PackingOperation &op);
 
+    void validateMoveOperation(const PackingOperation &op);
+
     void validateRejectOperation(const PackingOperation &op);
 
     void validatePackingOperation(const PackingOperation &op);
