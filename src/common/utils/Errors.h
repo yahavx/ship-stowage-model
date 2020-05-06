@@ -56,10 +56,10 @@ enum ErrorFlag : longUInt {
     AlgorithmError_ContainerIdNotExistsOnPort = 1ULL << 32,
     AlgorithmError_ContainerIdNotExistsOnShip = 1ULL << 33,
     AlgorithmError_RejectedGoodContainer = 1ULL << 34,
-    AlgorithmError_reserved5 = 1ULL << 35,
-    AlgorithmError_reserved6 = 1ULL << 36,
-    AlgorithmError_reserved7 = 1ULL << 37,
-    AlgorithmError_reserved8 = 1ULL << 38,
+    AlgorithmError_LoadAboveNotLegal = 1ULL << 35,
+    AlgorithmError_UnloadNoContainersAtPosition = 1ULL << 36,
+    AlgorithmError_UnloadBadId = 1ULL << 37,
+    AlgorithmError_InvalidXYCoordinates = 1ULL << 38,
 
     // These are also kind of algorithm errors (they write the file)
     ReadOperations_InvalidFile = 1ULL << 40,

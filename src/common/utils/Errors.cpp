@@ -140,6 +140,19 @@ std::string Error::toString() {
         case AlgorithmError_RejectedGoodContainer:
             return "[Algorithm Error] Received a reject operation on container with ID '" + param1 +
                    "', but no apparently it should have been loaded to the ship";
+        case AlgorithmError_LoadAboveNotLegal:
+            return "[Algorithm Error] Received loading operation of container with ID '" + param1 +
+                          "', at (" + param2 +  +", " + param3 + ")"  + " but there is no space on top";
+        case AlgorithmError_UnloadBadId:
+            return "[Algorithm Error] Received unloading operation of container with ID '" + param1 +
+                   "', at (" + param2 +  +", " + param3 + ")"  + " but there is container with non matching ID on top";
+        case AlgorithmError_UnloadNoContainersAtPosition:
+            return "[Algorithm Error] Received unloading operation of container with ID '" + param1 +
+                   "', at (" + param2 +  +", " + param3 + ")"  + " but there are no containers";
+        case AlgorithmError_InvalidXYCoordinates:
+            return "[Algorithm Error] Received operation of container with ID '" + param1 +
+                   "', to illegal position: (" + param2 +  +", " + param3 + ")";
+
 
             // Read packing operations (produced by algorithm)
         case ReadOperations_InvalidFile:
