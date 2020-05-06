@@ -65,7 +65,6 @@ enum ErrorFlag : longUInt {
     AlgorithmError_MoveAboveNotLegal,
     AlgorithmError_TriedToLoadButShouldReject,
 
-
     // These are also kind of algorithm errors (they write the file)
     ReadOperations_InvalidFile = 1ULL << 40,
     ReadOperations_InsufficientRowData = 1ULL << 41,
@@ -131,6 +130,8 @@ public:
     /// Adds an error to the list, only if its an actual error (i.e. contains message, or flag is not Success).
     void addError(const Error &error);
 
+    void addErrors(const Errors &errors);
+
     StringVector toString() const;
 
     /// Returns an int that represents all the errors in the list. If an error appears multiple times, it is treated as once.
@@ -140,7 +141,7 @@ public:
     void setCheckpoint();
 
     /// If errors were added (checking against the the last checkpoint), it will add an informative line about the state of the simulation.
-    void addSimulationLog(int portVisitNum, const std::string &portId, int totalStops);
+    void addSimulationPortVisitLog(int portVisitNum, const std::string &portId, int totalStops);
 
 private:
     /// Add a separator line to the error list.

@@ -74,7 +74,7 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors) {
         std::string pos = intToStr(n) +"," +intToStr(m);
 
         if (positionsWithData.find(pos) != positionsWithData.end()) {
-            errors.addError({ErrorFlag::ShipPlan_FatalError_DuplicateData, intToStr(x), intToStr(y)});
+            errors.addError({ErrorFlag::ShipPlan_FatalError_DuplicateData, intToStr(n), intToStr(m)});
             return shipPlan;
         }
 

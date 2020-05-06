@@ -37,7 +37,7 @@ longUInt c_algorithmErrors = c_algorithmInstructionErrors | c_algorithmFileError
 // region Error Prefixes
 
 const std::string shipPlanError = "[Ship Plan Error] ";
-const std::string shipPlanFatalError = "[Ship Plan Error] ";
+const std::string shipPlanFatalError = "[Ship Plan Fatal Error] ";
 
 const std::string shipRouteError = "[Ship Route Error] ";
 const std::string shipRouteFatalError = "[Ship Route Fatal Error] ";
@@ -256,6 +256,10 @@ void Errors::addError(const Error &error) {
     }
 }
 
+void Errors::addErrors(const Errors &errors) {
+    errorsList.insert(errorsList.end(), errors.errorsList.begin(), errors.errorsList.end());
+}
+
 StringVector Errors::toString() const {
     StringVector errors;
     for (Error error : errorsList) {
@@ -278,7 +282,7 @@ void Errors::setCheckpoint() {
     checkpoint = errorsList.size();
 }
 
-void Errors::addSimulationLog(int portVisitNum, const std::string &portId, int totalStops) {
+void Errors::addSimulationPortVisitLog(int portVisitNum, const std::string &portId, int totalStops) {
     if (errorsList.size() > checkpoint) {
         if (checkpoint != 0) {
             addSeparator(checkpoint);

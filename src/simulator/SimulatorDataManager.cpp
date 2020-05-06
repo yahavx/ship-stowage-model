@@ -98,12 +98,14 @@ bool SimulatorDataManager::isTravelValid(Errors &errors) {
 
     readShipPlanFromFile(shipPlanPath(), tempErrors);
     if (tempErrors.hasFatalError()) {
+        errors.addErrors(tempErrors);
         errors.addError({ErrorFlag::Travel_FatalInput, travelName, "Ship Plan"});
         return false;
     }
 
     readShipRouteFromFile(shipRoutePath(), tempErrors);
     if (tempErrors.hasFatalError()) {
+        errors.addErrors(tempErrors);
         errors.addError({ErrorFlag::Travel_FatalInput, travelName, "Ship Route"});
         return false;
     }
