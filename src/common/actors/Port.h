@@ -58,6 +58,14 @@ public:
      */
     StringVector removeBadContainers(const ShipRoute& route, Errors &errors = e_garbageCollector);
 
+    bool isDuplicateIdOnPort(const std::string &containerId);
+
+    /// Returns the number of containers on port with the following id.
+    int containersWithSameIdOnPort(const std::string &containerId);
+
+    /// Checks if the port storage contains a container with the following id.
+    bool hasContainer(const std::string &containerId);
+
     // endregion
 
     // region Printer

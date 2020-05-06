@@ -87,6 +87,11 @@ StringVector Port::removeBadContainers(const ShipRoute &route, Errors &errors) {
             errors.addError({ContainersAtPort_ContainerNotOnRoute, container.getDestPort()});
             invalidContainersIds.push_back(contId);
         }
+
+        // Container destination is current port
+        if (container.getDestPort() == route.getFirstPort()) {
+            errors.addError({ContainersAtPort_ContainerDestinationIsCurrentPort, container.getId()});
+        }
     }
 
     for (auto& badContainerId : invalidContainersIds) {
@@ -94,6 +99,22 @@ StringVector Port::removeBadContainers(const ShipRoute &route, Errors &errors) {
     }
 
     return invalidContainersIds;
+}
+
+bool Port::isDuplicateIdOnPort(const std::string &containerId)  {
+    return containersWithSameIdOnPort(containerId) > 1;
+}
+
+int Port::containersWithSameIdOnPort(const std::string &containerId) {
+    int count = 0;
+
+    for (auto& container : storage.getContainers()) {
+        if (container.getId() == containerId) {
+            count++;
+        }
+    }
+
+    return count;
 }
 
 // endregion
@@ -106,6 +127,10 @@ std::ostream &operator<<(std::ostream &os, const Port &port) {
     os << port.storage;
     os << "}" << std::endl;
     return os;
+}
+
+bool Port::hasContainer(const std::string &containerId) {
+    return storage.hasContainer(containerId);
 }
 
 // endregion

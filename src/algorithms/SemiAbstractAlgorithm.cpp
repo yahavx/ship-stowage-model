@@ -18,7 +18,7 @@ int SemiAbstractAlgorithm::readShipPlan(const std::string &shipPlanPath) {
     }
 
     else {
-        this->algoErrors &= (~ErrorFlag::ShipPlan_FatalError);  // turn off the flag
+        this->algoErrors &= (~ErrorFlag::ShipPlan_FatalError_NoFileOrInvalidFirstLine);  // turn off the flag
     }
 
     return errors.toErrorFlag();
@@ -34,7 +34,7 @@ int SemiAbstractAlgorithm::readShipRoute(const std::string &shipRoutePath) {
     }
 
     else {
-        this->algoErrors &= (~ErrorFlag::ShipRoute_FatalError);  // turn off the flag
+        this->algoErrors &= (~ErrorFlag::ShipRoute_FatalError_NoFileOrNoLegalPorts);  // turn off the flag
     }
 
     return errors.toErrorFlag();

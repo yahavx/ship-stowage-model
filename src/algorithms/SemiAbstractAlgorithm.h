@@ -13,7 +13,7 @@
 class SemiAbstractAlgorithm : public AbstractAlgorithm {  // implements the basics that each algorithm use - all will inherit from this
 protected:
     ContainerShip ship;
-    int algoErrors = ErrorFlag::ShipPlan_FatalError | ErrorFlag::ShipRoute_FatalError;  // we remove the flags after they are set
+    int algoErrors = ErrorFlag::ShipPlan_FatalError_NoFileOrInvalidFirstLine | ErrorFlag::ShipRoute_FatalError_NoFileOrNoLegalPorts;  // we remove the flags after they are set
 
 public:
 

@@ -23,6 +23,12 @@ public:
     ContainerStorage(const Containers &containers);
     // endregion
 
+    // region Getters and setters
+
+    Containers &getContainers();
+
+    // endregion
+
     // region Functions
 
     /**
@@ -43,7 +49,6 @@ public:
      */
     void addContainers(const Containers &newContainers);
 
-
     /**
      * Remove container from this storage
      * @param container - container to add
@@ -53,11 +58,7 @@ public:
     /// Removes the last appearance of a container from the port.
     void removeContainerFromEnd(const std::string& containerId);
 
-    // endregion
-
-    // region Getters and setters
-
-    Containers &getContainers();
+    bool hasContainer(const std::string& containerId);
 
     // endregion
 

@@ -23,7 +23,7 @@ void ShipRoute::setPorts(std::vector<PortId> &ports) {
     ShipRoute::ports = ports;
 }
 
-PortId& ShipRoute::getFirstPort() {
+const PortId& ShipRoute::getFirstPort() const {
     return this->ports[0];
 }
 

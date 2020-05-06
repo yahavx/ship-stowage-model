@@ -70,7 +70,6 @@ Operations NaiveStowageAlgorithm::generateOperations(ContainerShip &ship, Port &
     }
 
     return operations;
-
 }
 
 // endregion

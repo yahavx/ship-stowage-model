@@ -13,6 +13,14 @@ ContainerStorage::ContainerStorage() {}
 ContainerStorage::ContainerStorage(const Containers &containers) : containers(containers) {}
 // endregion
 
+// region Getters and setters
+
+Containers &ContainerStorage::getContainers() {
+    return containers;
+}
+
+// endregion
+
 // region Functions
 
 Containers ContainerStorage::getContainersForDestination(const PortId &destId) {
@@ -60,12 +68,13 @@ void ContainerStorage::removeContainerFromEnd(const std::string& containerId) {
     }
 }
 
-// endregion
-
-// region Getters and setters
-
-Containers &ContainerStorage::getContainers() {
-    return containers;
+bool ContainerStorage::hasContainer(const std::string& containerId) {
+    for (auto& container : containers) {
+        if (container.getId() == containerId) {
+            return true;
+        }
+    }
+    return false;
 }
 
 // endregion

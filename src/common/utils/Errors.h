@@ -17,11 +17,12 @@ enum ErrorFlag : longUInt {
     ShipPlan_InvalidFloorHeight = 1 << 0,
     ShipPlan_InvalidXYCoordinates = 1 << 1,
     ShipPlan_BadLineFormat = 1 << 2,
-    ShipPlan_FatalError = 1 << 3,
+    ShipPlan_FatalError_NoFileOrInvalidFirstLine = 1 << 3,
+    ShipPlan_FatalError_DuplicateData = 1 << 4,
 
     ShipRoute_TwoConsecutiveSamePort = 1 << 5,
     ShipRoute_BadPortSymbol = 1 << 6,
-    ShipRoute_FatalError = 1 << 7,
+    ShipRoute_FatalError_NoFileOrNoLegalPorts = 1 << 7,
     ShipRoute_FatalError_SinglePort = 1 << 8,
 
     ContainersAtPort_DuplicateID = 1 << 10,
@@ -34,7 +35,8 @@ enum ErrorFlag : longUInt {
     CargoData_InvalidFile = 1 << 16,
     ContainersAtPort_LastPortHasContainers = 1 << 17,
     ContainersAtPort_ContainersExceedsShipCapacity = 1 << 18,
-    ContainersAtPort_ContainerNotOnRoute = 1 << 9,  // TODO: check what to do with this
+    ContainersAtPort_ContainerNotOnRoute = 1ULL << 49,  // TODO: check what to do with this
+    ContainersAtPort_ContainerDestinationIsCurrentPort = 1ULL << 50,
 
     // our errors TODO: make sure the algorithm can't receive any by mistake
     SimulationInit_OutputDirectoriesCreationFailed = 1 << 19,
@@ -47,13 +49,13 @@ enum ErrorFlag : longUInt {
     Travel_CargoData_PortNotInRoute = 1 << 25,
     Travel_CargoData_RemainingFilesAfterFinish = 1 << 26,
 
-    AlgorithmError_CraneOperationWithInvalidId = 1 << 28,
+    AlgorithmError_CraneOperationWithInvalidId = 1 << 28,  // TODO: this should be mapped to error 32/33
     AlgorithmError_InvalidCraneOperation = 1 << 29,
     AlgorithmError_LeftContainersAtPort = 1 << 30,
     AlgorithmError_ContainerIdAlreadyOnShip = 1ULL << 31,
     AlgorithmError_ContainerIdNotExistsOnPort = 1ULL << 32,
     AlgorithmError_ContainerIdNotExistsOnShip = 1ULL << 33,
-    AlgorithmError_reserved4 = 1ULL << 34,
+    AlgorithmError_RejectedGoodContainer = 1ULL << 34,
     AlgorithmError_reserved5 = 1ULL << 35,
     AlgorithmError_reserved6 = 1ULL << 36,
     AlgorithmError_reserved7 = 1ULL << 37,

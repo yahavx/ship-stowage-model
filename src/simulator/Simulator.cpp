@@ -12,6 +12,7 @@
 #include "../common/utils/UtilFunctions.h"
 #include "../common/utils/Errors.h"
 #include "../algorithms/BadAlgorithm.h"
+#include "AlgorithmValidation.h"
 
 // region Constructors
 
@@ -179,17 +180,12 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
     // TODO: check that any containers that were loaded to the port to unload others, are back in ship
     // TODO: ops can be empty, maybe we need to document it
 
-    int rejects = 0;
+    StringVector badContainers = port.removeBadContainers(ship.getShipRoute());
+    AlgorithmValidation validation(ship, port, badContainers, errors);
 
     for (const PackingOperation &op : ops.ops) {
 
-        validatePackingOperation(ship, port, op, errors);
-
-        if (op.getType() == PackingType::reject)
-        {
-            rejects++;
-            continue;  // TODO: check the reject is correct
-        }
+        validation.validatePackingOperation(op);
 
         auto opResult = CranesOperation::preformOperation(op, port, ship);
         if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND) {
@@ -221,34 +217,13 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
     std::cout << ops;
 }
 
-void validateLoadOperation(ContainerShip &ship, Port &port, const PackingOperation &op, Errors &errors) {
-    const auto &containerId = op.getContainerId();
-    if (ship.getCargo().hasContainer(containerId)) {
-        errors.addError({AlgorithmError_ContainerIdAlreadyOnShip, op.getContainerId()});
-    }
-    return;
-    std::cout << port;
-}
-
-void Simulator::validatePackingOperation(ContainerShip &ship, Port &port, const PackingOperation &op, Errors &errors) const {
-
-    switch (op.getType()) {
-        case PackingType::load:
-            validateLoadOperation(ship, port, op, errors);
-            break;
-        case PackingType::unload:
-        case PackingType::reject:
-        case PackingType::move:
-            break;
-    }
-}
-
 // endregion
 
 // region Constants
 
 const std::string Simulator::s_resultsTableTitle = "RESULTS";
 const std::string Simulator::s_sumColumnTitle = "Sum";
+
 const std::string Simulator::s_errorsColumnTitle = "Num Errors";
 
 // endregion

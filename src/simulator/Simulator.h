@@ -57,13 +57,9 @@ private:
 
     // endregion
 
-    // region Perform operations and validations
+    // region Perform operations
 
     void performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const;
-
-    void validatePackingOperation(ContainerShip &ship, Port &port, const PackingOperation &op, Errors &errors) const;
-
-    /// Returns true if travel can be used (i.e. ShipRoute and ShipPlan doesn't contain a fatal error).
 
     // endregion
 

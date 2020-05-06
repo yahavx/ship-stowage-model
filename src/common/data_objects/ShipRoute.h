@@ -29,7 +29,7 @@ public:
 
     void setPorts(std::vector<PortId> &ports);
 
-    PortId& getFirstPort();
+    const PortId& getFirstPort() const;
 
     // endregion
 

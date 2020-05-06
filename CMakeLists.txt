@@ -53,6 +53,7 @@ add_executable(ship_stowage_model
         src/interfaces/WeightBalanceCalculator.h src/interfaces/WeightBalanceCalculator.cpp
 
         # simulator
+        src/simulator/AlgorithmValidation.cpp src/simulator/AlgorithmValidation.h
         src/simulator/Simulator.cpp src/simulator/Simulator.h
         src/simulator/SimulatorDataManager.cpp src/simulator/SimulatorDataManager.h
         src/simulator/SimulatorUtil.cpp src/simulator/SimulatorUtil.h

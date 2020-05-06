@@ -65,14 +65,16 @@ std::string Error::toString() {
             return "[Ship Plan Error] Data row exceeds the ship dimensions, ignored";
         case ShipPlan_BadLineFormat:
             return "[Ship Plan Error] Data row is in invalid format, ignoring";
-        case ShipPlan_FatalError:
+        case ShipPlan_FatalError_NoFileOrInvalidFirstLine:
             return "[Ship Plan Fatal Error] Invalid first line, or couldn't read file, terminating the travel";
+        case ShipPlan_FatalError_DuplicateData:
+            return "[Ship Plan Fatal Error] Duplicate data rows, about position (" + param1 + ", " + param2 + ")";
 
         case ShipRoute_TwoConsecutiveSamePort:
             return "[Ship Route Error] Port '" + param1 + "' appeared twice in a row, ignoring the latter";
         case ShipRoute_BadPortSymbol:
             return "[Ship Route Error] Invalid port symbol format '" + param1 + "'";
-        case ShipRoute_FatalError:
+        case ShipRoute_FatalError_NoFileOrNoLegalPorts:
             return "[Ship Route Fatal Error] no ports in the route, or couldn't read file, terminating the travel";
         case ShipRoute_FatalError_SinglePort:
             return "[Ship Route Fatal Error] only one port appears in the route, terminating the travel";
@@ -90,13 +92,15 @@ std::string Error::toString() {
         case ContainersAtPort_BadContainerID:
             return "[Containers At Port Error] container '" + param1 + "' ID is not in ISO 6346 format, rejecting";
         case CargoData_InvalidFile:
-            return "[Cargo Data Warning] Couldn't read any container from file, cargo will only be loaded";
+            return "[Cargo Data Warning] Couldn't read any container from file '" + param1 + "', cargo will only be loaded";
         case ContainersAtPort_LastPortHasContainers:
-            return "[Containers At Port Error] Last port has waiting containers, ignoring";
+            return "[Containers At Port Error] Last port has awaiting containers, ignoring";
         case ContainersAtPort_ContainersExceedsShipCapacity:
             return "[Containers At Port Error] Ship is at full capacity, container '" + param1 + "' is rejected";
         case ContainersAtPort_ContainerNotOnRoute:
             return "[Containers At Port Error] Container '" + param1 + "' destination port is '" + param2 + "', which is not on the ship route, rejecting";
+        case ContainersAtPort_ContainerDestinationIsCurrentPort:
+            return "[Containers At Port Error] Container '" + param1 + "' destination is the current port, rejecting";
 
             // Our errors
 
@@ -130,9 +134,12 @@ std::string Error::toString() {
         case AlgorithmError_ContainerIdAlreadyOnShip:
             return "[Algorithm Error] Tried to load container with ID '" + param1 + "', which is already on the ship";
         case AlgorithmError_ContainerIdNotExistsOnPort:
-            break;
+            return "[Algorithm Error] Received a load operation on container ID '" + param1 + "', which doesn't exist on the current port";
         case AlgorithmError_ContainerIdNotExistsOnShip:
-            break;
+            return "[Algorithm Error] Received a move/unload operation on container with ID '" + param1 + "', which doesn't exist on the ship";
+        case AlgorithmError_RejectedGoodContainer:
+            return "[Algorithm Error] Received a reject operation on container with ID '" + param1 +
+                   "', but no apparently it should have been loaded to the ship";
 
             // Read packing operations (produced by algorithm)
         case ReadOperations_InvalidFile:
@@ -160,7 +167,9 @@ bool Error::isFlag(ErrorFlag flag) {
 }
 
 bool Error::isFatalError() {
-    return (errorFlag & ShipPlan_FatalError) | (errorFlag & ShipRoute_FatalError) | (errorFlag & ShipRoute_FatalError_SinglePort);
+    int fatalError = ShipPlan_FatalError_NoFileOrInvalidFirstLine | ShipPlan_FatalError_DuplicateData | ShipRoute_FatalError_NoFileOrNoLegalPorts |
+                     ShipRoute_FatalError_SinglePort;
+    return errorFlag & fatalError;
 }
 
 bool Error::isSuccess() {

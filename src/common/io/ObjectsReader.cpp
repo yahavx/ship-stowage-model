@@ -8,6 +8,8 @@
 #include "../utils/Printers.h"
 #include "../utils/Errors.h"
 #include <tuple>
+#include <unordered_map>
+#include <set>
 
 //#define DEBUG
 
@@ -23,15 +25,16 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors) {
 #endif
     StringStringVector data = readFile(filePath);
     ShipPlan shipPlan;
+    std::unordered_set<std::string> positionsWithData;  // To track duplicates
 
     if (data.size() == 0) {
-        errors.addError(ErrorFlag::ShipPlan_FatalError);  // no data read, or couldn't open file
+        errors.addError(ErrorFlag::ShipPlan_FatalError_NoFileOrInvalidFirstLine);  // no data read, or couldn't open file
         return shipPlan;
     }
 
     StringVector &firstRow = data[0];
     if (firstRow.size() < 3 || !isRowOnlyIntegers(firstRow)) {
-        errors.addError(ErrorFlag::ShipPlan_FatalError);
+        errors.addError(ErrorFlag::ShipPlan_FatalError_NoFileOrInvalidFirstLine);
 //        std::cerr << "Error: insufficient number of arguments for ship dimensions, exiting" << std::endl;
         return shipPlan;
     }
@@ -64,10 +67,18 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors) {
         int availableContainers = intDataRow[2];
 
         if (n < 0 || n >= x || m < 0 || m >= y) {
-            errors.addError(ErrorFlag::ShipPlan_InvalidXYCoordinates);
+            errors.addError({ErrorFlag::ShipPlan_InvalidXYCoordinates, intToStr(n), intToStr(m)});
 //            std::cout << "Warning: data row exceeds the ship dimensions, ignoring" << std::endl;
             continue;
         }
+        std::string pos = intToStr(n) +"," +intToStr(m);
+
+        if (positionsWithData.find(pos) != positionsWithData.end()) {
+            errors.addError({ErrorFlag::ShipPlan_FatalError_DuplicateData, intToStr(x), intToStr(y)});
+            return shipPlan;
+        }
+
+        positionsWithData.insert(pos);
 
         if (availableContainers >= z) {
             errors.addError(ErrorFlag::ShipPlan_InvalidFloorHeight);
@@ -93,7 +104,7 @@ ShipRoute readShipRouteFromFile(const std::string &filePath, Errors &errors) {
     ShipRoute shipRoute;
 
     if (data.size() == 0) {
-        errors.addError(ErrorFlag::ShipRoute_FatalError);  // no data read, or couldn't open file
+        errors.addError(ErrorFlag::ShipRoute_FatalError_NoFileOrNoLegalPorts);  // no data read, or couldn't open file
         return shipRoute;
     }
 
@@ -128,7 +139,7 @@ ShipRoute readShipRouteFromFile(const std::string &filePath, Errors &errors) {
     }
 
     if (ports.size() == 0) {
-        errors.addError(ErrorFlag::ShipRoute_FatalError);
+        errors.addError(ErrorFlag::ShipRoute_FatalError_NoFileOrNoLegalPorts);
 //        std::cerr << "Error: couldn't read any port from route file" << std::endl;
         return shipRoute;
     }
@@ -150,11 +161,17 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &erro
 //        return std::nullopt;
 //    }
 
-    StringStringVector data = readFile(filePath);
     Containers containers;
 
+    if (!isFileExist(filePath)) {
+        errors.addError({ErrorFlag::CargoData_InvalidFile, extractFilenameFromPath(filePath)});
+        return containers;
+    }
+
+    StringStringVector data = readFile(filePath);
+
     if (data.empty()) {
-        errors.addError(ErrorFlag::CargoData_InvalidFile);
+        errors.addError({ErrorFlag::CargoData_InvalidFile, extractFilenameFromPath(filePath)});
         return containers;
     }
 
