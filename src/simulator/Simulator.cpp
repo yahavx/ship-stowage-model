@@ -17,8 +17,11 @@
 
 // region Constructors
 
-Simulator::Simulator(const std::string &outputDir, const std::string &travelRootDir) : outputDir(outputDir), travelRootDir(travelRootDir),
-                                                                                       dataManager(outputDir, travelRootDir) {
+Simulator::Simulator(const std::string &travelRootDir, const std::string &algorithmsDir, const std::string &outputDir) : travelRootDir(travelRootDir),
+                                                                                                                         algorithmsDir(algorithmsDir),
+                                                                                                                         outputDir(outputDir),
+                                                                                                                         dataManager(outputDir,
+                                                                                                                                     travelRootDir) {
     auto naiveStowageAlgorithm = std::make_shared<NaiveStowageAlgorithm>();
     auto badAlgorithm = std::make_shared<BadAlgorithm>();
     auto robustAlgorithm = std::make_shared<RobustStowageAlgorithm>();
@@ -29,6 +32,7 @@ Simulator::Simulator(const std::string &outputDir, const std::string &travelRoot
     algorithms.push_back(robustAlgorithm);
 //    algorithms.push_back(naiveStowageAlgorithm2);
 }
+
 // endregion
 
 // region Simulation run
@@ -40,8 +44,8 @@ void Simulator::runSimulations() {
     dataManager.createOutputFolders(generalErrors);
 
     StringVector travels = dataManager.collectLegalTravels(generalErrors);
-
     initResultsTable(resultsTable, travels, algorithms);  // add columns names and set table structure
+    loadAlgorithmsDynamically(generalErrors);
 
     for (auto &travel: travels) {
         dataManager.setTravelName(extractFilenameFromPath(travel));
@@ -127,15 +131,16 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
         totalNumberOfOps = totalNumberOfOps + ops.size(true);
 
         if (errors.hasAlgorithmErrors()) {
-            std:: cout << "Found an error in the algorithm, terminating" << std::endl << errors;
+            std::cout << "Found an error in the algorithm, terminating" << std::endl << errors;
             printSeparator(1, 3);
             errors.addSimulationPortVisitLog(visitNum, ports[i], i + 1);
             dataManager.saveSimulationErrors(errors);
             return -1;
         }
 
-        if (!isLast) { std::cout << "The ship is continuing to the next port..." << std::endl;
-        } else {std::cout << "The ship is going into maintenance..." << std::endl; }
+        if (!isLast) {
+            std::cout << "The ship is continuing to the next port..." << std::endl;
+        } else { std::cout << "The ship is going into maintenance..." << std::endl; }
 
         printSeparator(1, 1);
         errors.addSimulationPortVisitLog(visitNum, ports[i], i + 1);
@@ -153,6 +158,24 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
     }
 
     return errors.hasAlgorithmErrors() ? -1 : totalNumberOfOps;
+}
+
+void Simulator::loadAlgorithmsDynamically(Errors &errors) {
+    if (algorithmsDir == "") {
+        algorithmsDir = ".";  // We search in current directory if no path supplied
+    }
+
+    // TODO
+
+    if (!isDirectoryExists(algorithmsDir)) {
+
+    }
+
+    if (isFolderEmpty(algorithmsDir)){
+
+    }
+
+    (void)errors;
 }
 
 // endregion
@@ -181,7 +204,8 @@ ContainerShip Simulator::initSimulation(WeightBalanceCalculator &calculator, Err
 
 // region Perform operations and validations
 
-void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const { // Perform operations on local ship and port
+void
+Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const { // Perform operations on local ship and port
 
     // TODO: check that any containers that were loaded to the port to unload others, are back in ship
     // TODO: ops can be empty, maybe we need to document it
@@ -201,7 +225,8 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
             continue;
 
         auto opResult = crane.preformOperation(op);
-        if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND) {  // TODO: this should generally always succeed - we need to validate before sending inst. to crane
+        if (opResult ==
+            CraneOperationResult::FAIL_CONTAINER_NOT_FOUND) {  // TODO: this should generally always succeed - we need to validate before sending inst. to crane
             std::cout << "crane received illegal operation, didn't find container with ID: " << op.getContainerId() << std::endl;
             errors.addError({ErrorFlag::AlgorithmError_CraneOperationWithInvalidId, op.getContainerId(), port.getId(), op.toString()});
         }

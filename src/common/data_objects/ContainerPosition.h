@@ -16,11 +16,14 @@ class ContainerPosition {
     POS position;
 
 public:
-    // Constructors
+    // region Constructor
+
     ContainerPosition(Container &container, const POS &position);
 
+    // endregion
 
-    // Getters and setters
+    // region Getters and setters
+
     Container &getContainer() const;
 
     void setContainer(Container &container);
@@ -32,6 +35,8 @@ public:
     int x() const;
     int y() const;
     int z() const;
+
+    // endregion
 };
 
 
