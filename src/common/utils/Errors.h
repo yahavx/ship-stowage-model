@@ -41,6 +41,7 @@ enum ErrorFlag : longUInt {
     // our errors TODO: make sure the algorithm can't receive any by mistake
     SimulationInit_OutputDirectoriesCreationFailed = 1 << 19,
     SimulationInit_InvalidTravelPath = 1 << 20,
+    SimulationInit_AllTravelsAreInvalid = 1ULL << 53,
     SimulationCleanup_OutputDirectoriesCleaningFailed = 1 << 21,
 
     Travel_InvalidDirectory = 1 << 22,
@@ -74,7 +75,7 @@ enum ErrorFlag : longUInt {
     ReadOperations_reserved2 = 1ULL << 45,
     ReadOperations_reserved3 = 1ULL << 46,
 
-    // next error is 53
+    // next error is 55
 
 
 };
@@ -143,17 +144,17 @@ public:
 
     // region Logging
 
-    /// If errors were added (checking against the last call to this function), it will add an informative line about the simulation init.
+    /// If errors were added (checking against the last call to log functions), it will add an informative line about the simulation init.
     void addSimulationInitLog();
 
-    /// If errors were added (checking against the last call to this function), it will add an informative line about the state of the simulation.
+    /// If errors were added, it will add an informative line about the state of the simulation.
     void addSimulationPortVisitLog(int portVisitNum, const std::string &portId, int totalStops);
 
-    /// If errors were added (checking against the last call to this function), it will add an informative line about the travel.
+    /// If errors were added, it will add an informative line about the travel.
     void addTravelLog(const std::string &travelName);
 
 private:
-    /// If errors were added (checking against the the last checkpoint), it will add an informative line about the state of the simulation.
+    /// Adds a log message if errors were added since the last call.
     void addLog(const std::string &logMessage);
 
     /// Add a separator line to the error list.

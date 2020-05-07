@@ -114,21 +114,28 @@ bool SimulatorDataManager::isTravelValid(Errors &errors) {
 }
 
 StringVector SimulatorDataManager::collectLegalTravels(Errors &errors) {
+    StringVector legalTravels;
+
     if (travelRootDir == "") {  // no travel path supplied
         errors.addError(ErrorFlag::SimulationInit_InvalidTravelPath);
+        return legalTravels;
     }
     StringVector travels = getFilesFromDirectory(travelRootDir);
     if (travels.empty()) {
         errors.addError(ErrorFlag::SimulationInit_InvalidTravelPath);
+        return legalTravels;
     }
 
-    StringVector legalTravels;
     for (auto& travel: travels) {
         travelName = extractFilenameFromPath(travel);
         if (isTravelValid(errors)) {
             legalTravels.push_back(travel);
         }
         errors.addTravelLog(travelName);
+    }
+
+    if (legalTravels.empty()) {
+        errors.addError(ErrorFlag::SimulationInit_AllTravelsAreInvalid);
     }
 
     return legalTravels;
@@ -208,7 +215,6 @@ void SimulatorDataManager::createTravelCraneFolder() {
 }
 
 void SimulatorDataManager::createOutputFolders(Errors &errors) {
-
     bool res = createFolder(craneInstructionsRootFolder());
     bool res2 = createFolder(tempFolder());
     bool res3 = createFolder(errorsFolder());

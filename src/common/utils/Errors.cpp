@@ -112,7 +112,7 @@ std::string Error::toString() {
         case ShipPlan_BadLineFormat:
             return shipPlanError + "Data row is in invalid format, ignoring";
         case ShipPlan_FatalError_NoFileOrInvalidFirstLine:
-            return shipPlanFatalError + "Invalid first line, or couldn't read file, terminating the travel";
+            return shipPlanFatalError + "Invalid first line, or couldn't read file";
         case ShipPlan_FatalError_DuplicateData:
             return shipPlanFatalError + "Duplicate data rows, about position (" + param1 + ", " + param2 + ")";
 
@@ -121,9 +121,9 @@ std::string Error::toString() {
         case ShipRoute_BadPortSymbol:
             return shipRouteError + "Invalid port symbol format '" + param1 + "'";
         case ShipRoute_FatalError_NoFileOrNoLegalPorts:
-            return shipRouteFatalError + "No ports in the route, or couldn't read file, terminating the travel";
+            return shipRouteFatalError + "No ports in the route, or couldn't read file";
         case ShipRoute_FatalError_SinglePort:
-            return shipRouteFatalError + "Only one port appears in the route, terminating the travel";
+            return shipRouteFatalError + "Only one port appears in the route";
 
         case ContainersAtPort_DuplicateID:
             return containersAtPortError + "Container with the same ID ('" + param1 + "') was already found on port, rejecting";
@@ -155,6 +155,8 @@ std::string Error::toString() {
             return simulatorFatalError + "Couldn't initialize output folders";
         case SimulationInit_InvalidTravelPath:
             return simulatorFatalError + "Travel path not supplied, or couldn't find any travel directories";
+        case SimulationInit_AllTravelsAreInvalid:
+            return simulatorFatalError + "All travels in the travel directory supplied are invalid";
         case SimulationCleanup_OutputDirectoriesCleaningFailed:
             return simulatorError + "Couldn't remove temporary directories";
 

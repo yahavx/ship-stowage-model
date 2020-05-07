@@ -82,15 +82,17 @@ StringVector Port::removeBadContainers(const ShipRoute &route, Errors &errors) {
             continue;
         }
 
+        // Container destination is current port
+        if (container.getDestPort() == route.getFirstPort()) {
+            errors.addError({ContainersAtPort_ContainerDestinationIsCurrentPort, container.getId()});
+            invalidContainersIds.push_back(contId);
+            continue;
+        }
+
         // Container destination is not on route
         if (portsSet.find(container.getDestPort()) == portsSet.end()) {
             errors.addError({ContainersAtPort_ContainerNotOnRoute, container.getDestPort()});
             invalidContainersIds.push_back(contId);
-        }
-
-        // Container destination is current port
-        if (container.getDestPort() == route.getFirstPort()) {
-            errors.addError({ContainersAtPort_ContainerDestinationIsCurrentPort, container.getId()});
         }
     }
 

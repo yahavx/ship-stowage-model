@@ -96,10 +96,7 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
 
     StringToStringVectorMap cargoData = dataManager.getCargoDataFiles(errors);  // get list of .cargo_data files, ordered for each port
     StringToIntMap portsVisits = initPortsVisits(ship.getShipRoute());  // map from each port, to number of times we have encountered him so far
-
-//    std::cout << "Validating route..." << std::endl;
     filterUnusedPorts(cargoData, ship.getShipRoute(), errors);  // remove the port files which are not on the ship route
-//    std::cout << "Finished." << std::endl;
 
     errors.addSimulationInitLog();
 
@@ -155,7 +152,7 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
 //    printSeparator(1, 1);
 
     std::cout << "The ship has completed its journey. Total number of operations: " << totalNumberOfOps << std::endl;
-    printSeparator(1, 5);
+    printSeparator(1, 3);
 
     if (errors.hasErrors()) {
         dataManager.saveSimulationErrors(errors);
