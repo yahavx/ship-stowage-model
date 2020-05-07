@@ -18,7 +18,9 @@ class NaiveStowageAlgorithm : public SemiAbstractAlgorithm {
 
 public:
 
+#ifndef RUNNING_ON_NOVA
     std::string getAlgorithmName() override;
+#endif
 
 private:
 

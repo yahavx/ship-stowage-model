@@ -5,14 +5,16 @@
 #ifndef SHIP_STOWAGE_MODEL_ROBUSTSTOWAGEALGORITHM_H
 #define SHIP_STOWAGE_MODEL_ROBUSTSTOWAGEALGORITHM_H
 
-
 #include "SemiAbstractAlgorithm.h"
+
 
 class RobustStowageAlgorithm : public SemiAbstractAlgorithm {
 
 public:
 
+#ifndef RUNNING_ON_NOVA
     std::string getAlgorithmName() override;
+#endif
 
 private:
 

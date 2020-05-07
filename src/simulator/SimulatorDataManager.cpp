@@ -172,7 +172,7 @@ StringToStringVectorMap SimulatorDataManager::getCargoDataFiles(Errors &errors) 
             }
 
             std::cout << "Warning: invalid file in travel folder: " << fileName << std::endl;
-            errors.addError({ErrorFlag::Travel_UnknownFile, fileName});
+            errors.addError({ErrorFlag::Travel_UnknownFile, travelName, fileName});
             continue;
         }
 

@@ -112,7 +112,7 @@ void AlgorithmValidation::validatePackingOperation(const PackingOperation &op) {
 
     if (opType != PackingType::reject) {
         if (!validatePosition(pos1)) {
-            int x = std::get<0>(pos1), y = std::get<1>(pos1);  // TODO:::::
+            int x = std::get<0>(pos1), y = std::get<1>(pos1);
             errors.addError({ErrorFlag::AlgorithmError_InvalidXYCoordinates, op.getContainerId(), std::to_string(x), std::to_string(y)});
             return;
         }

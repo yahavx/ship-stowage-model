@@ -10,6 +10,9 @@
 #include "../common/utils/UtilFunctions.h"
 #include <unordered_set>
 
+#ifdef RUNNING_ON_NOVA
+REGISTER_ALGORITHM(_305170987_b)
+#endif
 
 // region Initialization
 

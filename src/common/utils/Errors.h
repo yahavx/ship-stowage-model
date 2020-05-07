@@ -9,7 +9,7 @@
 #include "Definitions.h"
 
 #define MAX_ERROR_BIT 18  // max that is used by the algorithm (rest are for us)
-
+//#define RUNNING_ON_NOVA  // this will turn on all sections in code that work only on nova - disable note when on nova
 
 enum ErrorFlag : longUInt {
     Success = 0,

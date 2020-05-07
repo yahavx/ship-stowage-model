@@ -7,6 +7,7 @@
 #include "../common/io/ObjectsReader.h"
 #include "../common/utils/UtilFunctions.h"
 
+
 // region Init
 
 int SemiAbstractAlgorithm::readShipPlan(const std::string &shipPlanPath) {
@@ -16,9 +17,7 @@ int SemiAbstractAlgorithm::readShipPlan(const std::string &shipPlanPath) {
 
     if (errors.hasFatalError()) {
         this->algoErrors = errors.toErrorFlag();
-    }
-
-    else {
+    } else {
         this->algoErrors &= (~ErrorFlag::ShipPlan_FatalError_NoFileOrInvalidFirstLine);  // turn off the flag
     }
 
@@ -32,9 +31,7 @@ int SemiAbstractAlgorithm::readShipRoute(const std::string &shipRoutePath) {
 
     if (errors.hasFatalError()) {
         this->algoErrors = errors.toErrorFlag();
-    }
-
-    else {
+    } else {
         this->algoErrors &= (~ErrorFlag::ShipRoute_FatalError_NoFileOrNoLegalPorts);  // turn off the flag
     }
 
@@ -44,7 +41,7 @@ int SemiAbstractAlgorithm::readShipRoute(const std::string &shipRoutePath) {
 int SemiAbstractAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &calculator) {
     this->ship.setBalanceCalculator(calculator);
 //    this->ship.getBalanceCalculator().setPlan(this->ship.getShipPlan());  // TODO: find another way to set ship plan, its not part of the interface
-    return 0;  // TODO: this can fail?
+    return 0;
 }
 
 // endregion
@@ -91,7 +88,7 @@ int SemiAbstractAlgorithm::getInstructionsForCargo(const std::string &inputFile,
 
     Containers containersToLoad = getContainersToLoad(port);
 
-    if(ship.getShipRoute().isLastPort() && !containersToLoad.empty()) {
+    if (ship.getShipRoute().isLastPort() && !containersToLoad.empty()) {
         errors.addError({ErrorFlag::ContainersAtPort_LastPortHasContainers});
         containersToLoad = Containers();
     }

@@ -2,19 +2,23 @@
 // Created by t-yabeny on 4/18/2020.
 //
 
+#include <iostream>
 #include "Simulator.h"
 #include "SimulatorUtil.h"
-#include "../algorithms/NaiveStowageAlgorithm.h"
+#include "AlgorithmValidation.h"
 #include "../common/io/ObjectsReader.h"
 #include "../common/utils/Printers.h"
 #include "../common/actors/CranesManagement.h"
+#include "../common/utils/Errors.h"
 #include "../common/io/FileReader.h"
 #include "../common/utils/UtilFunctions.h"
-#include "../common/utils/Errors.h"
+#include "../interfaces/AbstractAlgorithm.h"
+
+#ifndef RUNNING_ON_NOVA
+#include "../algorithms/NaiveStowageAlgorithm.h"
 #include "../algorithms/BadAlgorithm.h"
-#include "AlgorithmValidation.h"
-#include <iostream>
 #include "../algorithms/RobustStowageAlgorithm.h"
+#endif
 //#include <dlfcn.h>
 
 
@@ -25,15 +29,16 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
                                                                                                                          outputDir(outputDir),
                                                                                                                          dataManager(outputDir,
                                                                                                                                      travelRootDir) {
+#ifndef RUNNING_ON_NOVA
     auto naiveStowageAlgorithm = std::make_shared<NaiveStowageAlgorithm>();
     auto badAlgorithm = std::make_shared<BadAlgorithm>();
     auto robustAlgorithm = std::make_shared<RobustStowageAlgorithm>();
-//    NaiveStowageAlgorithm *naiveStowageAlgorithm2 = new NaiveStowageAlgorithm();
+
 
     algorithms.push_back(naiveStowageAlgorithm);
-    algorithms.push_back(badAlgorithm);
-    algorithms.push_back(robustAlgorithm);
-//    algorithms.push_back(naiveStowageAlgorithm2);
+//    algorithms.push_back(badAlgorithm);
+//    algorithms.push_back(robustAlgorithm);
+#endif
 }
 
 // endregion
@@ -48,7 +53,9 @@ void Simulator::runSimulations() {
 
     StringVector travels = dataManager.collectLegalTravels(generalErrors);
     initResultsTable(resultsTable, travels, algorithms);  // add columns names and set table structure
+#ifdef RUNNING_ON_NOVA
     loadAlgorithmsDynamically(generalErrors);
+#endif
 
     for (auto &travel: travels) {
         dataManager.setTravelName(extractFilenameFromPath(travel));
@@ -162,11 +169,12 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
     return errors.hasAlgorithmErrors() ? -1 : totalNumberOfOps;
 }
 
-//struct DlCloser{
-//    void operator()(void *dlHandle) const noexcept {
-//        dlclose(dlHandle);
-//    }
-//};
+#ifdef RUNNING_ON_NOVA
+struct DlCloser{
+    void operator()(void *dlHandle) const noexcept {
+        dlclose(dlHandle);
+    }
+};
 
 void Simulator::loadAlgorithmsDynamically(Errors &errors) {
     if (algorithmsDir == "") {
@@ -185,6 +193,7 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
 
     (void)errors;
 }
+#endif
 
 // endregion
 

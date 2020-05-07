@@ -106,9 +106,9 @@ std::string Error::toString() {
             return "Success (this shouldn't appear)";
 
         case ShipPlan_InvalidFloorHeight:
-            return shipPlanError + "Data row exceeds the maximum available containers, ignored";
+            return shipPlanError + "Data row exceeds the maximum available containers in a spot, ignoring";
         case ShipPlan_InvalidXYCoordinates:
-            return shipPlanError + "Data row exceeds the ship dimensions, ignored";
+            return shipPlanError + "Data row exceeds the ship dimensions, ignoring";
         case ShipPlan_BadLineFormat:
             return shipPlanError + "Data row is in invalid format, ignoring";
         case ShipPlan_FatalError_NoFileOrInvalidFirstLine:
@@ -274,7 +274,9 @@ StringVector Errors::toString() const {
 int Errors::toErrorFlag() {
     int errors;
     for (Error error : errorsList) {
-        errors |= error.errorFlag;
+        if (error.errorFlag <= 1 << MAX_ERROR_BIT) {  // We want to collect only errors relevant to the algorithm
+            errors |= error.errorFlag;
+        }
     }
 
     return errors;

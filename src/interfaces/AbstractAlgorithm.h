@@ -20,13 +20,15 @@ public:
 
     virtual int readShipPlan(const std::string& full_path_and_file_name) = 0 ;
 
-    virtual int readShipRoute(const std::string& full_path_and_file_name) = 0;  // TODO: change shipRoutePath (and shipPlanPath) to full_path_and_file_name?
+    virtual int readShipRoute(const std::string& full_path_and_file_name) = 0;
 
     virtual int setWeightBalanceCalculator(WeightBalanceCalculator& calculator) = 0;
 
     virtual int getInstructionsForCargo(const std::string& input_full_path_and_file_name, const std::string& output_full_path_and_file_name) = 0;
 
+#ifndef RUNNING_ON_NOVA
     virtual std::string getAlgorithmName() = 0;  // TODO: remove
+#endif
 };
 
 

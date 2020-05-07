@@ -10,6 +10,11 @@
 #include "RobustStowageAlgorithm.h"
 
 
+#ifdef RUNNING_ON_NOVA
+REGISTER_ALGORITHM(_305170987_a)
+#endif
+
+
 std::string RobustStowageAlgorithm::getAlgorithmName() {
     return "RobustStowageAlgorithm";
 }
