@@ -41,7 +41,7 @@ void ContainerStorage::addContainers(const Containers &newContainers) {
     this->containers.insert(this->containers.end(), newContainers.begin(), newContainers.end());
 }
 
-OptionalContainer ContainerStorage::removeContainer(const std::string& containerId) {
+OptionalContainer ContainerStorage::removeContainer(const std::string &containerId) {
     int foundIndex = -1;
     for (longUInt i = 0; i < containers.size(); i++) {
         Container container = containers[i];
@@ -60,16 +60,17 @@ OptionalContainer ContainerStorage::removeContainer(const std::string& container
     return {};
 }
 
-void ContainerStorage::removeContainerFromEnd(const std::string& containerId) {
-    for (int i = containers.size() - 1; i > 0; i--) {
+void ContainerStorage::removeContainerFromEnd(const std::string &containerId) {
+    for (int i = containers.size() - 1; i >= 0; i--) {
         if (containers[i].getId() == containerId) {
             containers.erase(containers.begin() + i);
-            }
+            break;
+        }
     }
 }
 
-bool ContainerStorage::hasContainer(const std::string& containerId) {
-    for (auto& container : containers) {
+bool ContainerStorage::hasContainer(const std::string &containerId) {
+    for (auto &container : containers) {
         if (container.getId() == containerId) {
             return true;
         }
