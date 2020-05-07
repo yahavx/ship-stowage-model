@@ -47,7 +47,7 @@ public:
 
     std::string craneInstructionsOutputPath(const std::string &portId, int i);
 
-    std::string cargoDataTempFilePath(const std::string &portId);
+    std::string createCargoDataTempFilePath(const std::string &portId);
 
     std::string cargoFilePath(const std::string &cargoFileName);
 

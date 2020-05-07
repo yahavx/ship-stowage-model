@@ -135,6 +135,7 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
             std::cout << "Found an error in the algorithm, terminating" << std::endl << errors;
             printSeparator(1, 3);
             errors.addSimulationPortVisitLog(visitNum, ports[i], i + 1);
+            errors.addSimulationErrorLog();
             dataManager.saveSimulationErrors(errors);
             return -1;
         }

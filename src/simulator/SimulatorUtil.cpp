@@ -38,8 +38,7 @@ std::string getNextFileForPort(StringToStringVectorMap &cargoData, StringToIntMa
         std::cout << "";
 
     // there is no matching cargo_data file, so we will generate an empty one
-    std::string filePath = manager.cargoDataTempFilePath(portCode);
-    createEmptyFile(filePath);
+    std::string filePath = manager.createCargoDataTempFilePath(portCode);
     return filePath;
 }
 

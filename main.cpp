@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-//    travelPath = "../input-examples/travels";
+    travelPath = "../input-examples/single-travel-difference";
 
     Simulator simulator(travelPath, algorithmPath, outputPath);
 

@@ -170,11 +170,6 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &erro
 
     StringStringVector data = readFile(filePath);
 
-    if (data.empty()) {
-        errors.addError({ErrorFlag::CargoData_InvalidFile, extractFilenameFromPath(filePath)});
-        return containers;
-    }
-
     for (StringVector dataRow : data) {
 //        if (dataRow.size() < 3) {
 //            errors.addError(ErrorFlag::CargoData_MissingOrBadPortDest);  // the port dest is last - so he must be missing
@@ -225,7 +220,7 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
     StringStringVector data = readFile(filePath);
 
     for (StringVector dataRow : data) {
-        if (dataRow.size() < 5) {
+        if (dataRow.size() < 5) {  // TODO: reject can have less than 5, but we can keep it like this
             errors.addError(ErrorFlag::ReadOperations_InsufficientRowData);
 //            std::cout << "Warning: data row contains less than 5 arguments, ignoring" << std::endl;
             continue;

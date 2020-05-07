@@ -190,6 +190,7 @@ bool createEmptyFile(const std::string &filePath) {
     }
 
     outputFile << "";
+    outputFile.close();
     return true;
 }
 

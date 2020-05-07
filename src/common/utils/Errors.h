@@ -150,6 +150,8 @@ public:
     /// If errors were added, it will add an informative line about the state of the simulation.
     void addSimulationPortVisitLog(int portVisitNum, const std::string &portId, int totalStops);
 
+    void addSimulationErrorLog();
+
     /// If errors were added, it will add an informative line about the travel.
     void addTravelLog(const std::string &travelName);
 

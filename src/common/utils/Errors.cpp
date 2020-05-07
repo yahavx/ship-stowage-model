@@ -293,6 +293,12 @@ void Errors::addSimulationPortVisitLog(int portVisitNum, const std::string &port
            intToStr(totalStops) + " since the beginning of the journey:");
 }
 
+void Errors::addSimulationErrorLog() {
+    addSeparator(errorsList.size());
+    std::string logMsg = "The simulation has been terminated due to an algorithm error.";
+    errorsList.push_back(logMsg);
+}
+
 void Errors::addTravelLog(const std::string &travelName) {
     addLog("The following errors were detected on travel '" + travelName +"':");
 }

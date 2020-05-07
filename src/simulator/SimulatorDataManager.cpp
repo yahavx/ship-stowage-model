@@ -72,11 +72,18 @@ std::string SimulatorDataManager::craneInstructionsOutputPath(const std::string 
     return craneInstructionsSimulationFolder() + "/" + portId + "_" + intToStr(i) + ".crane_instructions";
 }
 
-std::string SimulatorDataManager::cargoDataTempFilePath(const std::string &portId) {
-    return tempFolder() + "/" + portId + "_0.cargo_data";
+std::string SimulatorDataManager::createCargoDataTempFilePath(const std::string &portId) {
+
+    std::string filePath = tempFolder() + "/" + portId + "_dummy";
+    createEmptyFile(filePath);
+    return filePath;
 }
 
 std::string SimulatorDataManager::cargoFilePath(const std::string &cargoFileName) {
+    if (endsWith(cargoFileName, "dummy")) {
+        std::string fileName = extractFilenameFromPath(cargoFileName);
+        return tempFolder() + "/" + fileName;
+    }
     return travelFolder() + "/" + cargoFileName;
 }
 
