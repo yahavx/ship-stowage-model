@@ -126,6 +126,10 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
 
         Port port(portId, readPortCargoFromFile(cargoFilePath, errors));  // init current port for the simulator
 
+        if(isLast && !port.getStorage().isEmpty()) { // Last port has containers
+            errors.addError({ErrorFlag::ContainersAtPort_LastPortHasContainers});
+        }
+
         Operations ops = readPackingOperationsFromFile(instructionsOutputPath, errors);  // read the operations to perform, written by the algorithm
         performPackingOperations(ship, port, ops, errors);
         totalNumberOfOps = totalNumberOfOps + ops.size(true);

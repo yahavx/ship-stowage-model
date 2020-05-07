@@ -45,6 +45,8 @@ bool isDataOnlyIntegers(const StringStringVector &data);
 
 /// Checks if word consists only of english letters (a-z, A-Z)
 bool isEnglishWord(const std::string &str);
+
+bool isLegalCategoryIdentifier(const std::string &str);
 // endregion
 
 // region Files

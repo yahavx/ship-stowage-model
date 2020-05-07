@@ -82,6 +82,11 @@ public:
     bool isFull();
     // endregion
 
+    /**
+     * Returns The number of empty positions to load containers to
+     */
+    int numberOfEmptyPositions();
+
     friend std::ostream &operator<<(std::ostream &os, const Cargo &cargo);
 };
 

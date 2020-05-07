@@ -10,32 +10,6 @@
 #include "RobustStowageAlgorithm.h"
 
 
-int RobustStowageAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
-    if (hasFatalError()) {  // Not initialized, or bad plan/route
-        createEmptyFile(outputFile);
-        return algoErrors;
-    }
-
-    Operations ops;
-    Errors errors;
-
-    PortId id = ship.getShipRoute().getFirstPort();
-    ContainerStorage storage = readPortCargoFromFile(inputFile, errors);
-    Port port(id, storage);
-
-    StringVector toReject = port.removeBadContainers(ship.getShipRoute());
-    ops.addRejectOperations(toReject);  // If its empty, nothing will be added
-
-    Containers containersToLoad = getContainersToLoad(port);
-    ops.addOperations(this->generateOperations(ship, port, containersToLoad));  // Get ops for unloading and loading from ship
-
-    writePackingOperationsToFile(outputFile, ops);
-
-    ship.advanceToNextPort();  // pop the current port from the ShipRoute
-
-    return errors.toErrorFlag();
-}
-
 std::string RobustStowageAlgorithm::getAlgorithmName() {
     return "RobustStowageAlgorithm";
 }
@@ -54,13 +28,26 @@ Operations RobustStowageAlgorithm::generateOperations(ContainerShip &ship, Port 
         operations.addOperations(unloadOps);
     }
 
-    // Load all required containers
-    for (const Container &container: containersToLoad) {
-        // Get instructions for adding the container
-        Operations loadOps = ship.loadContainerToLowestPositionAvailable(port, container);
+    if((int)containersToLoad.size() <= ship.getCargo().numberOfEmptyPositions()) {
+        // There is space for all required containers, so load them from furthest port to nearest
+        for (const Container &container: containersToLoad) {
+            // Get instructions for adding the container
+            Operations loadOps = ship.loadContainerToLowestPositionAvailable(port, container);
 
-        // Add load operations to set of all instructions
-        operations.addOperations(loadOps);
+            // Add load operations to set of all instructions
+            operations.addOperations(loadOps);
+        }
+    } else {
+        // There is not enough space for all required containers, so load them from nearest port to furthest
+        for(int i = containersToLoad.size()-1; i >= 0; i--) {
+            const Container &container = containersToLoad[i];
+
+            // Get instructions for adding the container
+            Operations loadOps = ship.loadContainerToLowestPositionAvailable(port, container);
+
+            // Add load operations to set of all instructions
+            operations.addOperations(loadOps);
+        }
     }
 
     return operations;
