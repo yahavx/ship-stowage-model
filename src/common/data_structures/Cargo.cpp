@@ -144,6 +144,18 @@ bool Cargo::isFull() {
     return true;
 }
 
+int Cargo::numberOfEmptyPositions() {
+    POS dims = shipPlan.getDimensions();
+    int sum = 0;
+    for (int x = 0; x < std::get<0>(dims); x++)
+        for (int y = 0; y < std::get<1>(dims); y++) {
+            Containers xyContainers = containers[x][y];
+            sum += (std::get<2>(dims) - shipPlan.getHeights()[x][y]) - xyContainers.size();
+        }
+
+    return sum;
+}
+
 // endregion
 
 // region Printer

@@ -54,13 +54,26 @@ Operations RobustStowageAlgorithm::generateOperations(ContainerShip &ship, Port 
         operations.addOperations(unloadOps);
     }
 
-    // Load all required containers
-    for (const Container &container: containersToLoad) {
-        // Get instructions for adding the container
-        Operations loadOps = ship.loadContainerToLowestPositionAvailable(port, container);
+    if((int)containersToLoad.size() <= ship.getCargo().numberOfEmptyPositions()) {
+        // There is space for all required containers, so load them from furthest port to nearest
+        for (const Container &container: containersToLoad) {
+            // Get instructions for adding the container
+            Operations loadOps = ship.loadContainerToLowestPositionAvailable(port, container);
 
-        // Add load operations to set of all instructions
-        operations.addOperations(loadOps);
+            // Add load operations to set of all instructions
+            operations.addOperations(loadOps);
+        }
+    } else {
+        // There is not enough space for all required containers, so load them from nearest port to furthest
+        for(int i = containersToLoad.size()-1; i >= 0; i--) {
+            const Container &container = containersToLoad[i];
+
+            // Get instructions for adding the container
+            Operations loadOps = ship.loadContainerToLowestPositionAvailable(port, container);
+
+            // Add load operations to set of all instructions
+            operations.addOperations(loadOps);
+        }
     }
 
     return operations;
