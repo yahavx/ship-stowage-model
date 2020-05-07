@@ -19,6 +19,7 @@ REGISTER_ALGORITHM(_305170987_b)
 std::string NaiveStowageAlgorithm::getAlgorithmName() {
     return "NaiveStowageAlgorithm";
 }
+
 // endregion
 
 // region Functions

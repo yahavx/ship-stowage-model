@@ -19,8 +19,9 @@
 #include "../algorithms/BadAlgorithm.h"
 #include "../algorithms/RobustStowageAlgorithm.h"
 #endif
-//#include <dlfcn.h>
-
+#ifdef RUNNING_ON_NOVA
+#include <dlfcn.h>
+#endif
 
 // region Constructors
 
@@ -34,7 +35,6 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
     auto badAlgorithm = std::make_shared<BadAlgorithm>();
     auto robustAlgorithm = std::make_shared<RobustStowageAlgorithm>();
 
-
     algorithms.push_back(naiveStowageAlgorithm);
 //    algorithms.push_back(badAlgorithm);
 //    algorithms.push_back(robustAlgorithm);
@@ -44,7 +44,7 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
 // endregion
 
 // region Simulation run
-
+#define RUNNING_ON_NOVA
 void Simulator::runSimulations() {
     StringStringVector resultsTable;  // table of results
     Errors generalErrors;
