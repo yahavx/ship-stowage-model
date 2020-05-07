@@ -54,11 +54,18 @@ Containers SemiAbstractAlgorithm::getContainersToLoad(Port &port) {
 
     // Collect all containers that needs to be loaded
     for (longUInt i = 1; i < ship.getShipRoute().getPorts().size(); i++) {
-        const PortId &id = ship.getShipRoute().getPorts()[i];
-        auto it = std::find(alreadyCollected.begin(), alreadyCollected.end(), id);
-        if (it == alreadyCollected.end()) {  // Not seen yet
-            alreadyCollected.push_back(id);
-            Containers portContainers = port.getContainersForDestination(id);
+        const PortId &currentPort = ship.getShipRoute().getPorts()[i];
+        bool found = false;
+
+        for (auto &portSeen: alreadyCollected) {
+            if (portSeen == currentPort) {
+                found = true;
+            }
+        }
+
+        if (!found) {
+            alreadyCollected.push_back(currentPort);
+            Containers portContainers = port.getContainersForDestination(currentPort);
             containersToLoad.insert(containersToLoad.end(), portContainers.begin(), portContainers.end());
         }
     }
