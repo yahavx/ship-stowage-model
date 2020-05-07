@@ -51,4 +51,8 @@ std::ostream &operator<<(std::ostream &os, const ShipRoute &route) {
     return os;
 }
 
+bool ShipRoute::isLastPort() {
+    return ports.size() == 1;
+}
+
 // endregion

@@ -60,6 +60,8 @@ public:
 
     bool hasContainer(const std::string& containerId);
 
+    bool isEmpty() const;
+
     // endregion
 
     //region Printer

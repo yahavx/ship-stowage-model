@@ -11,10 +11,12 @@
 class BadAlgorithm : public SemiAbstractAlgorithm {  // use this to test the simulator
 
 public:
-
-    int getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) override;
-
     std::string getAlgorithmName() override;
+
+private:
+
+    Operations generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad) override;
+
 };
 
 

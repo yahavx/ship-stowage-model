@@ -97,4 +97,8 @@ std::ostream &operator<<(std::ostream &os, const ContainerStorage &storage) {
     std::cout << "\t}" << std::endl;
     return os;
 }
+
+bool ContainerStorage::isEmpty() const {
+    return containers.empty();
+}
 // endregion

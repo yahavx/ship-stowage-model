@@ -5,6 +5,7 @@
 #include "SemiAbstractAlgorithm.h"
 #include "../common/utils/Errors.h"
 #include "../common/io/ObjectsReader.h"
+#include "../common/utils/UtilFunctions.h"
 
 // region Init
 
@@ -70,6 +71,38 @@ Containers SemiAbstractAlgorithm::getContainersToLoad(Port &port) {
 
 bool SemiAbstractAlgorithm::hasFatalError() {
     return algoErrors;
+}
+
+int SemiAbstractAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
+    if (hasFatalError()) {  // Not initialized, or bad plan/route
+        createEmptyFile(outputFile);
+        return algoErrors;
+    }
+
+    Operations ops;
+    Errors errors;
+
+    PortId id = ship.getShipRoute().getFirstPort();
+    ContainerStorage storage = readPortCargoFromFile(inputFile, errors);
+    Port port(id, storage);
+
+    StringVector toReject = port.removeBadContainers(ship.getShipRoute());
+    ops.addRejectOperations(toReject);  // If its empty, nothing will be added
+
+    Containers containersToLoad = getContainersToLoad(port);
+
+    if(ship.getShipRoute().isLastPort() && !containersToLoad.empty()) {
+        errors.addError({ErrorFlag::ContainersAtPort_LastPortHasContainers});
+        containersToLoad = Containers();
+    }
+
+    ops.addOperations(this->generateOperations(ship, port, containersToLoad));  // Get ops for unloading and loading from ship
+
+    writePackingOperationsToFile(outputFile, ops);
+
+    ship.advanceToNextPort();  // pop the current port from the ShipRoute
+
+    return errors.toErrorFlag();
 }
 
 // endregion

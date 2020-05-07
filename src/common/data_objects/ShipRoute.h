@@ -38,6 +38,8 @@ public:
     /// Returns the list of ports ids as a set of strings (without duplicates), excluding the first one.
     std::unordered_set<std::string> getNextPortsSet() const;
 
+    bool isLastPort();
+
     // endregion
 
     // region Printer

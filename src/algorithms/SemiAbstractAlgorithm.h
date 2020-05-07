@@ -23,7 +23,15 @@ public:
 
     int setWeightBalanceCalculator(WeightBalanceCalculator &calculator) override;
 
+    int getInstructionsForCargo(const std::string& input_full_path_and_file_name, const std::string& output_full_path_and_file_name) override;
+
 protected:
+
+    /**
+    * Receives the ship, next id of port to dock into, and list of containers that needs to be loaded.
+    * @return list of operations: first unload all containers for this port, and than load all the containers that needs to be loaded.
+    */
+    virtual Operations generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad) = 0;
 
     virtual Containers getContainersToLoad(Port &port);
 
