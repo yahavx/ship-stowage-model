@@ -36,15 +36,15 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
     auto robustAlgorithm = std::make_shared<RobustStowageAlgorithm>();
 
     algorithms.push_back(naiveStowageAlgorithm);
-//    algorithms.push_back(badAlgorithm);
-//    algorithms.push_back(robustAlgorithm);
+    algorithms.push_back(badAlgorithm);
+    algorithms.push_back(robustAlgorithm);
 #endif
 }
 
 // endregion
 
 // region Simulation run
-#define RUNNING_ON_NOVA
+
 void Simulator::runSimulations() {
     StringStringVector resultsTable;  // table of results
     Errors generalErrors;
@@ -62,8 +62,11 @@ void Simulator::runSimulations() {
 
         for (longUInt i = 0; i < algorithms.size(); i++) {
             auto &algorithm = algorithms[i];
-
+#ifndef RUNNING_ON_NOVA
             dataManager.setAlgorithmName(algorithm->getAlgorithmName());
+#else
+            dataManager.setAlgorithmName("Algorithm" + intToStr(i + 1));
+#endif
             dataManager.createTravelCraneFolder();
 
             int totalCraneInstructions = runSimulation(*algorithm);

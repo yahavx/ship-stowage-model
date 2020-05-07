@@ -23,16 +23,16 @@ CPP_COMP_FLAG = -std=c++2a -Wall -Wextra -Werror -pedantic-errors -DNDEBUG
 CPP_LINK_FLAG = -ldl -export-dynamic #(-rdynamic)
 
 $(EXEC): $(OBJS)
-	$(COMP) $(OBJS) $(CPP_LINK_FLAG) -o $@ 
-	
+	$(COMP) $(OBJS) $(CPP_LINK_FLAG) -o $@
+$(OBJS):
+	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp -o $@
+
 # AlgorithmRegistrar.o: AlgorithmRegistrar.cpp #put dependencies here!
 #	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
 
 # AlgorithmRegistration.o: AlgorithmRegistration.cpp #put dependencies here!
 #	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
 
-main.o: main.cpp #put dependencies here!
-	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
-	
+
 clean:
 	rm -f $(OBJS) $(EXEC)

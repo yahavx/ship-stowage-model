@@ -107,17 +107,21 @@ void initResultsTable(StringStringVector &results, StringVector &travels, std::v
     resultsFirstRow.push_back(Simulator::s_resultsTableTitle);  // set table title
 
     for (auto &travel : travels) {  // first row init (column names)
-
-
         auto travelName = extractFilenameFromPath(travel);
         resultsFirstRow.push_back(travelName);
     }
     resultsFirstRow.push_back(Simulator::s_sumColumnTitle);
     resultsFirstRow.push_back(Simulator::s_errorsColumnTitle);
 
-    for (auto &algorithm : algorithms) {  // init a row for each algorithm
+    for (longUInt i = 0; i < algorithms.size(); i++) {  // init a row for each algorithm
         results.emplace_back();
-        results.back().push_back(algorithm->getAlgorithmName());
+#ifndef RUNNING_ON_NOVA
+        results.back().push_back(algorithms[i]->getAlgorithmName());
+#else
+        results.back().push_back("Algorithm" + intToStr(i + 1));
+#endif
+
+
     }
 }
 
@@ -136,8 +140,7 @@ void finalizeResultsTable(StringStringVector &results) {
 
             if (ops == -1) {
                 errors++;
-            }
-            else {
+            } else {
                 totalOps += ops;
             }
         }
@@ -154,7 +157,7 @@ void sortResultsTable(StringStringVector &results) {
     if (results.size() <= 2)  // nothing to sort
         return;
 
-    std::sort(results.begin() + 1, results.end(), [](StringVector& row1, StringVector& row2) -> bool {
+    std::sort(results.begin() + 1, results.end(), [](StringVector &row1, StringVector &row2) -> bool {
         int n = row1.size();  // should be same size for both
         int errors1 = strToInt(row1[n - 1]), steps1 = strToInt(row1[n - 2]);
         int errors2 = strToInt(row2[n - 1]), steps2 = strToInt(row2[n - 2]);
