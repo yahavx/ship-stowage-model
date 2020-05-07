@@ -54,7 +54,7 @@ public:
 
     bool isIdInIsoFormat() const;  // TODO
 
-    Error isContainerLegal() const;
+    Error isContainerLegal(bool validateIdFormat) const;
 
     // endregion
 

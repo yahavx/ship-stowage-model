@@ -114,6 +114,10 @@ bool isEnglishWord(const std::string &str) {
 
     return true;
 }
+
+bool isLegalCategoryIdentifier(const std::string &str) {
+    return str == "U" || str == "J" || str == "Z";
+}
 // endregion
 
 // region Files

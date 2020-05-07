@@ -57,19 +57,15 @@ bool Container::operator!=(const Container &rhs) const {
 // region Functions
 
 bool Container::isIdInIsoFormat() const {
-    if (id.length() != 11){
-        return false;
-    }
+    return id.length() == 11
+           && !isEnglishWord(id.substr(0, 3))
+           && isLegalCategoryIdentifier(id.substr(3, 4))
+           && !isInteger(id.substr(4, 11));
 
-    if (!isEnglishWord(id.substr(0, 4)) || !isInteger(id.substr(4, 7))){
-        return false;
-    }
-
-    return true;
 }
 
-Error Container::isContainerLegal() const {
-    if (!isIdInIsoFormat()) {
+Error Container::isContainerLegal(bool validateIdFormat = false) const {
+    if (validateIdFormat && !isIdInIsoFormat()) {
         return {ErrorFlag::ContainersAtPort_BadContainerID, id};
     }
 
