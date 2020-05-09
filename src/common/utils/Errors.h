@@ -189,12 +189,13 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Errors &errors);
 
     // endregion
+
+    // region Garbage Collector
+
+    static Errors e_garbageCollector;
+
+    // endregion
 };
 
-// region Garbage Collector
-
-extern Errors e_garbageCollector; // functions can use this as default parameter to ignore errors
-
-// endregion
 
 #endif //SHIP_STOWAGE_MODEL_ERRORS_H

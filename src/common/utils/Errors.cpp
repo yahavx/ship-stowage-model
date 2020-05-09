@@ -11,7 +11,7 @@
 
 // region Garbage Collector
 
-Errors e_garbageCollector;
+Errors Errors::e_garbageCollector;
 
 // endregion
 
