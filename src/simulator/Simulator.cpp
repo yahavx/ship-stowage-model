@@ -53,6 +53,9 @@ void Simulator::runSimulations() {
     initResultsTable(resultsTable, travels, algorithmNames);  // add columns names and set table structure
     loadAlgorithmsDynamically(generalErrors);
 
+    std::cout << generalErrors;
+    std::cout << "Size of algorithms list: " << algorithmFactories.size();
+
     for (auto &travel: travels) {
         dataManager.setTravelName(extractFilenameFromPath(travel));
 
@@ -172,14 +175,13 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
 #ifndef RUNNING_ON_NOVA
     return;
 #endif
-
     if (!isDirectoryExists(algorithmsDir)) {
-        errors.addError(ErrorFlag::SharedObject_InvalidDirectory);
+        errors.addError({ErrorFlag::SharedObject_InvalidDirectory, algorithmsDir});
         return;
     }
 
     if (isFolderEmpty(algorithmsDir)) {
-        errors.addError(ErrorFlag::SharedObject_InvalidDirectory);
+        errors.addError({ErrorFlag::SharedObject_InvalidDirectory, algorithmsDir});
         return;
     }
 
@@ -205,6 +207,7 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
                 break;
             case 1:
                 algorithmFactories.push_back(registrar.getLast());
+                algorithmNames.push_back(extractFilenameFromPath(file, true));
                 break;
             default:
                 errors.addError({ErrorFlag::SharedObject_LoadedMoreThanOneAlgorithm, extractFilenameFromPath(file)});

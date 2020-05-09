@@ -56,6 +56,9 @@ const std::string travelFatalError = "\t[Travel Fatal Error] ";
 const std::string algorithmError = "\t[Algorithm Error] ";
 const std::string algorithmOutputError = "\t[Algorithm Output Error] ";
 
+const std::string dynamicLoadError = "\t[Dynamic Load Error] ";
+const std::string dynamicLoadFatalError = "\t[Dynamic Load Error] ";
+
 // endregion
 
 // region Constructors
@@ -220,6 +223,16 @@ std::string Error::toString() {
         case ReadOperations_InvalidShipPosition:
             return algorithmOutputError + "Received invalid ship " + param1 + " position: '" + param2 + "' (should be an integer)";
 
+        case SharedObject_CantLoadSoFile:
+            return dynamicLoadError + "Error while loading SO file: '" + param1 + "'";
+        case SharedObject_InvalidDirectory:
+            return dynamicLoadFatalError + "Couldn't load any algorithm, the directory is empty or invalid: '" + param1+ "'";
+        case SharedObject_AlgorithmDidntSelfRegister:
+            return dynamicLoadError + "Algorithm '" + param1 +"' didn't register himself, and is unavailable";
+        case SharedObject_LoadedMoreThanOneAlgorithm:
+            return dynamicLoadFatalError + "Algorithm '" + param1 +"' registered more than once";
+        case SharedObject_NoAlgorithmsLoaded:
+            return dynamicLoadFatalError + "No algorithm was loaded successfully";
 
         default:
             return "ERROR NOT SUPPORTED YET";

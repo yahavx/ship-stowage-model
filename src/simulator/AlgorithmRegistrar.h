@@ -12,6 +12,8 @@
 #include "../common/utils/Definitions.h"
 #include "../common/utils/Errors.h"
 #ifdef RUNNING_ON_NOVA
+
+#include "iostream"
 #include <dlfcn.h>
 #endif
 
@@ -38,11 +40,15 @@ public:
     ErrorFlag loadSharedObject(const std::string &path);
 
 #ifdef RUNNING_ON_NOVA
+private:
     struct DlCloser{
         void operator()(void *dlHandle) const noexcept {
+            std::cout << "Closing handle" << std::endl;
             dlclose(dlHandle);
         }
     };
+
+    std::vector<std::unique_ptr<void, DlCloser>> handles;  // We keep them here to call the destructor at the end
 #endif
 };
 

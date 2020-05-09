@@ -39,14 +39,14 @@ std::function<std::unique_ptr<AbstractAlgorithm>()> &AlgorithmRegistrar::getLast
 
 ErrorFlag AlgorithmRegistrar::loadSharedObject(const std::string &path) {
 #ifdef RUNNING_ON_NOVA
+    std::cout << "Loading algorithm: " << path << std::endl;
     std::unique_ptr<void, DlCloser> handle(dlopen(path.c_str(), RTLD_LAZY));
     if (!handle) {
-        return ErrorFlag::SharedObject_CantLoadSoFile;
         std::cout << "Load failed" << std::endl;
+        return ErrorFlag::SharedObject_CantLoadSoFile;
     }
-    else {
-        std::cout << "Load success" << std::endl;
-    }
+    std::cout << "Load success" << std::endl;
+    handles.push_back(std::move(handle));
 #endif
     (void)path;  // ignore unused parameter
     return ErrorFlag::Success;

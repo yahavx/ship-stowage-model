@@ -5,11 +5,10 @@
 #ifndef SHIP_STOWAGE_MODEL_SEMIABSTRACTALGORITHM_H
 #define SHIP_STOWAGE_MODEL_SEMIABSTRACTALGORITHM_H
 
-
-
 #include "../interfaces/AbstractAlgorithm.h"
 #include "../common/actors/ContainerShip.h"
 #include "../common/utils/Errors.h"
+
 
 class SemiAbstractAlgorithm : public AbstractAlgorithm {  // implements the basics that each algorithm use - all will inherit from this
 protected:
