@@ -19,8 +19,9 @@
 #include "../algorithms/BadAlgorithm.h"
 #include "../algorithms/RobustStowageAlgorithm.h"
 #endif
-//#include <dlfcn.h>
-
+#ifdef RUNNING_ON_NOVA
+#include <dlfcn.h>
+#endif
 
 // region Constructors
 
@@ -34,10 +35,9 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
     auto badAlgorithm = std::make_shared<BadAlgorithm>();
     auto robustAlgorithm = std::make_shared<RobustStowageAlgorithm>();
 
-
     algorithms.push_back(naiveStowageAlgorithm);
-//    algorithms.push_back(badAlgorithm);
-//    algorithms.push_back(robustAlgorithm);
+    algorithms.push_back(badAlgorithm);
+    algorithms.push_back(robustAlgorithm);
 #endif
 }
 
@@ -62,8 +62,11 @@ void Simulator::runSimulations() {
 
         for (longUInt i = 0; i < algorithms.size(); i++) {
             auto &algorithm = algorithms[i];
-
+#ifndef RUNNING_ON_NOVA
             dataManager.setAlgorithmName(algorithm->getAlgorithmName());
+#else
+            dataManager.setAlgorithmName("Algorithm" + intToStr(i + 1));
+#endif
             dataManager.createTravelCraneFolder();
 
             int totalCraneInstructions = runSimulation(*algorithm);

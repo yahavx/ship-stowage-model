@@ -4,8 +4,10 @@
 #include "src/common/utils/UtilFunctions.h"
 #include "src/simulator/Simulator.h"
 #include "src/simulator/SimulatorUtil.h"
+#ifdef RUNNING_ON_NOVA
 #include "tests/IOTests.h"
 #include "tests/SimulationTests.h"
+#endif
 
 std::string parseCmdArguments(int argc, char **argv, std::string &travelPath, std::string &algorithmPath, std::string &outputPath);
 

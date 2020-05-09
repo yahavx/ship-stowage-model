@@ -3,6 +3,7 @@
 //
 
 #include "SimulatorDataManager.h"
+#include <algorithm>
 #include "../common/utils/UtilFunctions.h"
 #include "../common/io/FileReader.h"
 #include "../common/io/ObjectsReader.h"
