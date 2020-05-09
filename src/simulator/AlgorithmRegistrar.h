@@ -11,8 +11,8 @@
 #include "../interfaces/AbstractAlgorithm.h"
 #include "../common/utils/Definitions.h"
 #include "../common/utils/Errors.h"
-#ifdef RUNNING_ON_NOVA
 
+#ifdef RUNNING_ON_NOVA
 #include "iostream"
 #include <dlfcn.h>
 #endif
@@ -43,9 +43,9 @@ public:
 private:
     struct DlCloser{
         void operator()(void *dlHandle) const noexcept {
-//            std::cout << "Closing handle" << std::endl;
-            (void) dlHandle;
-//            dlclose(dlHandle);  // TODO: uncomment after solving duplicates problem
+            std::cout << "Closing handle" << std::endl;
+//            (void) dlHandle;
+//            dlclose(dlHandle);  // TODO: each algorithm is registered twice now for some reason, making the destructor called twice and crash the program, need to fix it somehow
         }
     };
 

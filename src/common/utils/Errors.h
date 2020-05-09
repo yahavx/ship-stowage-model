@@ -65,6 +65,7 @@ enum ErrorFlag : longUInt {
     AlgorithmError_MoveBadId = 1ULL << 48,
     AlgorithmError_MoveAboveNotLegal = 1ULL << 51,
     AlgorithmError_TriedToLoadButShouldReject = 1ULL << 52,
+    AlgorithmError_FalseErrorReport = 1ULL << 60,
 
     // These are also kind of algorithm errors (they write the file)
     ReadOperations_InvalidFile = 1ULL << 40,
@@ -143,6 +144,9 @@ public:
 
     /// Returns an int that represents all the errors in the list. If an error appears multiple times, it is treated as once.
     int toErrorFlag();
+
+    /// Compares the errors list to the list of errors represented by the flag. Returns true if they are equal. Only compares errors indexed 0 to MAX_ERROR_BIT.
+    bool compareReports(int errorFlag);
 
     // region
 

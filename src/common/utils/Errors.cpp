@@ -208,6 +208,8 @@ std::string Error::toString() {
             break;
         case AlgorithmError_TriedToLoadButShouldReject:
             return algorithmError + "Try to load container with ID '" + param1 + "' from port '" + param2 + "', but it should have been rejected";
+        case AlgorithmError_FalseErrorReport:
+            return algorithmError + "Algorithm returned a false error report (reported a non-existing error, or didn't report a real error";
 
 
             // Read packing operations (produced by algorithm)
@@ -294,6 +296,11 @@ int Errors::toErrorFlag() {
 
     return errors;
 }
+
+bool Errors::compareReports(int errorFlag) {
+    return this->toErrorFlag() == errorFlag;
+}
+
 
 // endregion
 

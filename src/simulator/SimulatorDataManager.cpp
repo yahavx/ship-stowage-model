@@ -234,13 +234,13 @@ void SimulatorDataManager::createOutputFolders(Errors &errors) {
 void SimulatorDataManager::cleanOutputFolders(Errors &errors) {
     bool res = removeFolder(tempFolder());
 
-    bool res2;
+    bool res2 = true;
     if (isFolderEmpty(errorsFolder())) {
         res2 = removeFolder(errorsFolder());
     }
 
     if (!(res && res2)) {
-        errors.addError(ErrorFlag::SimulationInit_OutputDirectoriesCreationFailed);
+        errors.addError(ErrorFlag::SimulationCleanup_OutputDirectoriesCleaningFailed);
     }
 }
 

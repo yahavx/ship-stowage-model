@@ -12,3 +12,8 @@ Operations BadAlgorithm::generateOperations(ContainerShip &ship, Port &port, con
     (void) port;
     (void) containersToLoad;
 }
+
+int BadAlgorithm::readShipPlan(const std::string &shipPlanPath) {
+    SemiAbstractAlgorithm::readShipPlan(shipPlanPath);
+    return 2;
+}

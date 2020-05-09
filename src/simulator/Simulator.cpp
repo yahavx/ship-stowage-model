@@ -96,13 +96,19 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
     ContainerShip ship = initSimulation(simWeightBalancer, errors);
 
     WeightBalanceCalculator algoWeightBalancer;
-    initAlgorithm(algorithm.get(), algoWeightBalancer, errors);
+    int algorithmReport = initAlgorithm(algorithm.get(), algoWeightBalancer, errors);
+    if (!errors.compareReports(algorithmReport)) {  // Algorithm report is different than the simulator
+        std::cout << "Algorithm misreported during initialization." << std::endl;
+        errors.addError(ErrorFlag::AlgorithmError_FalseErrorReport);
+    }
 
     StringToStringVectorMap cargoData = dataManager.getCargoDataFiles(errors);  // get list of .cargo_data files, ordered for each port
     StringToIntMap portsVisits = initPortsVisits(ship.getShipRoute());  // map from each port, to number of times we have encountered him so far
     filterUnusedPorts(cargoData, ship.getShipRoute(), errors);  // remove the port files which are not on the ship route
 
     errors.addSimulationInitLog();
+
+    // endregion
 
     ////////////////////////
     /// Start simulation ///
@@ -135,10 +141,11 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
         performPackingOperations(ship, port, ops, errors);
         totalNumberOfOps = totalNumberOfOps + ops.size(true);
 
+        errors.addSimulationPortVisitLog(visitNum, ports[i], i + 1);
+
         if (errors.hasAlgorithmErrors()) {
             std::cout << "Found an error in the algorithm, terminating" << std::endl << errors;
             printSeparator(1, 3);
-            errors.addSimulationPortVisitLog(visitNum, ports[i], i + 1);
             errors.addSimulationErrorLog();
             dataManager.saveSimulationErrors(errors);
             return -1;
@@ -149,7 +156,7 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
         } else { std::cout << "The ship is going into maintenance..." << std::endl; }
 
         printSeparator(1, 1);
-        errors.addSimulationPortVisitLog(visitNum, ports[i], i + 1);
+
     }
 
     validateNoCargoFilesLeft(cargoData, errors);  // if there are remaining cargo files in the map, we need to print a warning because we couldn't use them
@@ -227,15 +234,21 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
 
 // region Simulation Init
 
-void Simulator::initAlgorithm(AbstractAlgorithm *algorithm, WeightBalanceCalculator &calculator, Errors &errors) {
+int Simulator::initAlgorithm(AbstractAlgorithm *algorithm, WeightBalanceCalculator &calculator, Errors &errors) {
     int ret = algorithm->readShipPlan(dataManager.shipPlanPath());
-    errors.addError(ret);  // if its not an error, addError will ignore it
+//    errors.addError(ret);  // if its not an error, addError will ignore it  // TODO: using the value of 'ret' causes valgrind error for some reason (probably related to SO). need to check if its okay
+//    std::cout << "Ship plan init algorithm result: " << ret << std::endl;
 
-    ret = algorithm->readShipRoute(dataManager.shipRoutePath());
-    errors.addError(ret);
+    int ret2 = algorithm->readShipRoute(dataManager.shipRoutePath());
+//    errors.addError(ret);
+//    std::cout << "Ship route init algorithm result: " << ret2 << std::endl;
 
-    ret = algorithm->setWeightBalanceCalculator(calculator);
-    errors.addError(ret);
+    int ret3 = algorithm->setWeightBalanceCalculator(calculator);
+//    errors.addError(ret);
+//    std::cout << "Weight balancer init algorithm result: " << ret3 << std::endl;
+
+    (void)errors;
+    return ret | ret2 | ret3;  // unify results
 }
 
 ContainerShip Simulator::initSimulation(WeightBalanceCalculator &calculator, Errors &errors) {
