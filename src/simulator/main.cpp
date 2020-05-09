@@ -4,12 +4,14 @@
 #include "../common/utils/UtilFunctions.h"
 #include "Simulator.h"
 #include "SimulatorUtil.h"
-#ifdef RUNNING_ON_NOVA
+#ifndef RUNNING_ON_NOVA
 #include "../../tests/IOTests.h"
 #include "../../tests/SimulationTests.h"
 #endif
 
 std::string parseCmdArguments(int argc, char **argv, std::string &travelPath, std::string &algorithmPath, std::string &outputPath);
+
+void printFormat();
 
 int main(int argc, char **argv) {
 //    runIOTests();
@@ -17,8 +19,9 @@ int main(int argc, char **argv) {
 //    return 0;
 
     if (argc != 3 && argc != 5 && argc != 7) {
-        std::cerr << "Insufficient arguments supplied. Please read the README for usage instructions. Program is terminated." << std::endl;
-        return 1;
+        std::cerr << "Insufficient arguments supplied." << std::endl;
+        printFormat();
+        return EXIT_FAILURE;
     }
 
     std::string travelPath = "", algorithmPath = "", outputPath = "";
@@ -26,14 +29,16 @@ int main(int argc, char **argv) {
     std::string error = parseCmdArguments(argc, argv, travelPath, algorithmPath, outputPath);
 
     if (error != "") {
-        std::cerr << "Invalid flag received. Program is terminated.";
+        std::cerr << "Invalid flag received: '" << error << "'" << std::endl;
+        printFormat();
+        return EXIT_FAILURE;
     }
 
 
     bool created = createFolder(outputPath);
     if (!created) {
-        std::cerr << "Couldn't initialize output directory. Program is terminated." << std::endl;
-        return 1;
+        std::cerr << "Couldn't initialize output directory." << std::endl;
+        return EXIT_FAILURE;
     }
 
     travelPath = "../input-examples/single-travel-difference";
@@ -42,7 +47,7 @@ int main(int argc, char **argv) {
 
     simulator.runSimulations();
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 std::string parseCmdArguments(int argc, char **argv, std::string &travelPath, std::string &algorithmPath, std::string &outputPath) {
@@ -64,4 +69,9 @@ std::string parseCmdArguments(int argc, char **argv, std::string &travelPath, st
     }
 
     return "";  // success
+}
+
+void printFormat() {
+
+    std::cout << "Format: ./simulator [-travel_path <path>] [-algorithm_path <algorithm path>] [-output <output path>]" << std::endl;
 }

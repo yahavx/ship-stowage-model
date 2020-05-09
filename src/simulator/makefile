@@ -1,6 +1,6 @@
 COMP = g++-8.3.0
 
-OBJS = main.o AlgorithmValidation.o Simulator.o SimulatorDataManager.o SimulatorUtil.o $\
+OBJS = main.o AlgorithmRegistrar.o AlgorithmValidation.o Simulator.o SimulatorDataManager.o SimulatorUtil.o $\
 $\
 ../common/actors/AbstractWeightBalancer.o ../common/actors/ContainerShip.o ../common/actors/CranesManagement.o $\
 ../common/actors/NaiveWeightBalancer.o ../common/actors/Port.o $\
@@ -20,7 +20,7 @@ $\
 
 EXEC = simulator
 CPP_COMP_FLAG = -std=c++2a -Wall -Wextra -Werror -pedantic-errors -DNDEBUG
-CPP_LINK_FLAG = -ldl -export-dynamic #(-rdynamic)
+CPP_LINK_FLAG = -ldl -export-dynamic -lstdc++fs #(-rdynamic)
 
 $(EXEC): $(OBJS)
 	$(COMP) $(OBJS) $(CPP_LINK_FLAG) -o $@

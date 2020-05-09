@@ -39,7 +39,7 @@ std::function<std::unique_ptr<AbstractAlgorithm>()> &AlgorithmRegistrar::getLast
 
 ErrorFlag AlgorithmRegistrar::loadSharedObject(const std::string &path) {
 #ifdef RUNNING_ON_NOVA
-    std::unique_ptr<void, DlCloser> handle(dlopen(path, RTLD_LAZY));
+    std::unique_ptr<void, DlCloser> handle(dlopen(path.c_str(), RTLD_LAZY));
     if (!handle) {
         return ErrorFlag::SharedObject_CantLoadSoFile;
         std::cout << "Load failed" << std::endl;
