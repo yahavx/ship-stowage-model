@@ -3,7 +3,9 @@
 //
 
 #include "AlgorithmRegistration.h"
+#include "../simulator/AlgorithmRegistrar.h"
 
-AlgorithmRegistration::AlgorithmRegistration(std::function<std::unique_ptr<AbstractAlgorithm>()>) {
-    // TODO
+
+AlgorithmRegistration::AlgorithmRegistration(std::function<std::unique_ptr<AbstractAlgorithm>()> algorithmFactory) {
+    AlgorithmRegistrar::getInstance().registerAlgorithm(algorithmFactory);
 }

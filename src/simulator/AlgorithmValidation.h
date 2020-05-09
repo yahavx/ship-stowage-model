@@ -13,6 +13,7 @@ class AlgorithmValidation {
     ContainerShip &ship;
     Port &currentPort;
     StringVector &badContainerIds;
+    StringVector temporaryContainersOnPort;  // ids of containers that should be loaded back
     Errors &errors;
 
 public:

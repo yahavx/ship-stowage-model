@@ -7,7 +7,7 @@
 #include "tests/IOTests.h"
 #include "tests/SimulationTests.h"
 
-void parseCmdArguments(int argc, char **argv, std::string &travelPath, std::string &algorithmPath, std::string &outputPath);
+std::string parseCmdArguments(int argc, char **argv, std::string &travelPath, std::string &algorithmPath, std::string &outputPath);
 
 int main(int argc, char **argv) {
 //    runIOTests();
@@ -21,7 +21,12 @@ int main(int argc, char **argv) {
 
     std::string travelPath = "", algorithmPath = "", outputPath = "";
 
-    parseCmdArguments(argc, argv, travelPath, algorithmPath, outputPath);
+    std::string error = parseCmdArguments(argc, argv, travelPath, algorithmPath, outputPath);
+
+    if (error != "") {
+        std::cerr << "Invalid flag received. Program is terminated.";
+    }
+
 
     bool created = createFolder(outputPath);
     if (!created) {
@@ -38,21 +43,23 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-void parseCmdArguments(int argc, char **argv, std::string &travelPath, std::string &algorithmPath, std::string &outputPath) {
-    for (int i = 1; i < argc; i += 2) {
+std::string parseCmdArguments(int argc, char **argv, std::string &travelPath, std::string &algorithmPath, std::string &outputPath) {
+    for (int i = 1; i < argc-1; i += 2) {
         std::string flag = argv[i];
 
         if (flag == "-travel_path") {
             travelPath = argv[i + 1];
         }
 
-        if (flag == "-algorithm_path") {
+        else if (flag == "-algorithm_path") {
             algorithmPath = argv[i + 1];
         }
 
-        if (flag == "-output") {
+        else if (flag == "-output") {
             outputPath = argv[i + 1];
         }
-
+        else return flag;  // error
     }
+
+    return "";  // success
 }

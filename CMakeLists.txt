@@ -13,6 +13,7 @@ add_executable(ship_stowage_model
         # algorithms
         src/algorithms/BadAlgorithm.cpp src/algorithms/BadAlgorithm.h
         src/algorithms/NaiveStowageAlgorithm.cpp src/algorithms/NaiveStowageAlgorithm.h
+        src/algorithms/RobustStowageAlgorithm.cpp src/algorithms/RobustStowageAlgorithm.h
         src/algorithms/SemiAbstractAlgorithm.cpp src/algorithms/SemiAbstractAlgorithm.h
 
         # common
@@ -53,6 +54,7 @@ add_executable(ship_stowage_model
         src/interfaces/WeightBalanceCalculator.h src/interfaces/WeightBalanceCalculator.cpp
 
         # simulator
+        src/simulator/AlgorithmRegistrar.cpp src/simulator/AlgorithmRegistrar.h
         src/simulator/AlgorithmValidation.cpp src/simulator/AlgorithmValidation.h
         src/simulator/Simulator.cpp src/simulator/Simulator.h
         src/simulator/SimulatorDataManager.cpp src/simulator/SimulatorDataManager.h
@@ -61,4 +63,4 @@ add_executable(ship_stowage_model
     # tests
     tests/FileTests.h
     tests/IOTests.h
-    tests/SimulationTests.h src/algorithms/RobustStowageAlgorithm.cpp src/algorithms/RobustStowageAlgorithm.h)
+    tests/SimulationTests.h)
