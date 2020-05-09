@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    travelPath = "../input-examples/single-travel-difference";
+//    travelPath = "../input-examples/single-travel-difference";
 
     Simulator simulator(travelPath, algorithmPath, outputPath);
 

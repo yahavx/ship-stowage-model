@@ -48,13 +48,12 @@ void Simulator::runSimulations() {
     Errors generalErrors;
 
     dataManager.createOutputFolders(generalErrors);
-
     StringVector travels = dataManager.collectLegalTravels(generalErrors);
     initResultsTable(resultsTable, travels, algorithmNames);  // add columns names and set table structure
     loadAlgorithmsDynamically(generalErrors);
 
     std::cout << generalErrors;
-    std::cout << "Size of algorithms list: " << algorithmFactories.size();
+//    std::cout << "Size of algorithms list: " << algorithmFactories.size() << std::endl;
 
     for (auto &travel: travels) {
         dataManager.setTravelName(extractFilenameFromPath(travel));
@@ -79,7 +78,7 @@ void Simulator::runSimulations() {
         dataManager.saveGeneralErrors(generalErrors);
     }
 
-    dataManager.cleanOutputFolders();  // remove temp and errors (if empty), can disable it to debug
+    dataManager.cleanOutputFolders(generalErrors);  // remove temp and errors (if empty), can disable it to debug  // TODO: when calling with no parameter, it crashed in nova. check why (maybe the garbageCollector)
 }
 
 int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
@@ -193,6 +192,7 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
         if (!endsWith(file, ".so")) {
             continue;
         }
+
         ErrorFlag soLoadResult = registrar.loadSharedObject(file);
         if (soLoadResult != ErrorFlag::Success) {
             errors.addError({soLoadResult, extractFilenameFromPath(file)});
@@ -210,7 +210,10 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
                 algorithmNames.push_back(extractFilenameFromPath(file, true));
                 break;
             default:
-                errors.addError({ErrorFlag::SharedObject_LoadedMoreThanOneAlgorithm, extractFilenameFromPath(file)});
+                std::cout << "Warning: algorithm registered more than once" << std::endl;
+                algorithmFactories.push_back(registrar.getLast());  // TODO: remove this 2 lines and unmark the error (temp solution)
+                algorithmNames.push_back(extractFilenameFromPath(file, true));
+//                errors.addError({ErrorFlag::SharedObject_LoadedMoreThanOneAlgorithm, extractFilenameFromPath(file)});
                 break;
         }
     }
