@@ -43,8 +43,9 @@ public:
 private:
     struct DlCloser{
         void operator()(void *dlHandle) const noexcept {
-            std::cout << "Closing handle" << std::endl;
-            dlclose(dlHandle);
+//            std::cout << "Closing handle" << std::endl;
+            (void) dlHandle;
+//            dlclose(dlHandle);  // TODO: uncomment after solving duplicates problem
         }
     };
 

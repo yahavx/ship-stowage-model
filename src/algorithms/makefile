@@ -17,7 +17,7 @@ $\
 ../common/utils/Constants.o ../common/utils/Errors.o $\
 ../common/utils/Printers.o ../common/utils/UtilFunctions.o $\
 $\
-../interfaces/AlgorithmRegistration.o ../interfaces/WeightBalanceCalculator.o
+../interfaces/WeightBalanceCalculator.o
 
 CPP_COMP_FLAG = -std=c++2a -Wall -Wextra -Werror -pedantic-errors -DNDEBUG -fPIC
 CPP_LINK_FLAG = -shared

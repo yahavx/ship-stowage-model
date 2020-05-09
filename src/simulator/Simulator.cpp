@@ -49,10 +49,10 @@ void Simulator::runSimulations() {
 
     dataManager.createOutputFolders(generalErrors);
     StringVector travels = dataManager.collectLegalTravels(generalErrors);
-    initResultsTable(resultsTable, travels, algorithmNames);  // add columns names and set table structure
     loadAlgorithmsDynamically(generalErrors);
+    initResultsTable(resultsTable, travels, algorithmNames);  // add columns names and set table structure
 
-    std::cout << generalErrors;
+//    std::cout << generalErrors;
 //    std::cout << "Size of algorithms list: " << algorithmFactories.size() << std::endl;
 
     for (auto &travel: travels) {

@@ -116,12 +116,16 @@ void initResultsTable(StringStringVector &results, StringVector &travels, String
     resultsFirstRow.push_back(Simulator::s_errorsColumnTitle);
 
     for (auto &algorithmsName : algorithmsNames) {  // init a row for each algorithm
+//        std::cout << "Added row for " + algorithmsName << std::endl;
         results.emplace_back();
         results.back().push_back(algorithmsName);
     }
+
+//    std::cout << "Number of rows in results table: " << results.size() << std::endl;
 }
 
 void addSimulationResultToTable(StringStringVector &simulationResults, int totalCraneInstructions, int rowNum) {
+//    std::cout << "Adding results to row " << rowNum << " in results table" << std::endl;
     simulationResults[rowNum].push_back(intToStr(totalCraneInstructions));
 }
 

@@ -24,7 +24,6 @@ AlgorithmRegistrar &AlgorithmRegistrar::getInstance() {
 
 void AlgorithmRegistrar::registerAlgorithm(std::function<std::unique_ptr<AbstractAlgorithm>()> algorithm) {
     algorithmsFactory.push_back(algorithm);
-    std::cout << "Added algorithm!" << std::endl;
 }
 
 int AlgorithmRegistrar::factoriesIncrease() {
