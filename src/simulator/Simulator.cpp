@@ -29,13 +29,9 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
                                                                                                                          dataManager(outputDir,
                                                                                                                                      travelRootDir) {
 #ifndef RUNNING_ON_NOVA
-    auto naiveStowageAlgorithm = std::make_shared<NaiveStowageAlgorithm>();
-    auto badAlgorithm = std::make_shared<BadAlgorithm>();
-    auto robustAlgorithm = std::make_shared<RobustStowageAlgorithm>();
-
-    algorithms.push_back(naiveStowageAlgorithm);
-    algorithms.push_back(badAlgorithm);
-    algorithms.push_back(robustAlgorithm);
+    algorithmFactories.emplace_back([](){return std::make_unique<NaiveStowageAlgorithm>();});
+    algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
+    algorithmFactories.emplace_back([](){return std::make_unique<RobustStowageAlgorithm>();});
 
     algorithmNames.push_back("Naive");
     algorithmNames.push_back("Bad");
@@ -60,12 +56,12 @@ void Simulator::runSimulations() {
     for (auto &travel: travels) {
         dataManager.setTravelName(extractFilenameFromPath(travel));
 
-        for (longUInt i = 0; i < algorithms.size(); i++) {
-            auto &algorithm = algorithms[i];
+        for (longUInt i = 0; i < algorithmFactories.size(); i++) {
+            std::unique_ptr<AbstractAlgorithm> algorithm = algorithmFactories[i]();
             dataManager.setAlgorithmName(algorithmNames[i]);
             dataManager.createTravelCraneFolder();
 
-            int totalCraneInstructions = runSimulation(*algorithm);
+            int totalCraneInstructions = runSimulation(std::move(algorithm));
 
             addSimulationResultToTable(resultsTable, totalCraneInstructions, i + 1);
         }
@@ -83,7 +79,7 @@ void Simulator::runSimulations() {
     dataManager.cleanOutputFolders();  // remove temp and errors (if empty), can disable it to debug
 }
 
-int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
+int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
     Errors errors;
 
     // region Init
@@ -98,7 +94,7 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
     ContainerShip ship = initSimulation(simWeightBalancer, errors);
 
     WeightBalanceCalculator algoWeightBalancer;
-    initAlgorithm(algorithm, algoWeightBalancer, errors);
+    initAlgorithm(algorithm.get(), algoWeightBalancer, errors);
 
     StringToStringVectorMap cargoData = dataManager.getCargoDataFiles(errors);  // get list of .cargo_data files, ordered for each port
     StringToIntMap portsVisits = initPortsVisits(ship.getShipRoute());  // map from each port, to number of times we have encountered him so far
@@ -125,11 +121,11 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
         std::string cargoFileName = getNextFileForPort(cargoData, portsVisits, portId, dataManager, isLast);
         std::string cargoFilePath = dataManager.cargoFilePath(cargoFileName);
         std::string instructionsOutputPath = dataManager.craneInstructionsOutputPath(portId, visitNum);
-        algorithm.getInstructionsForCargo(cargoFilePath, instructionsOutputPath);
+        algorithm->getInstructionsForCargo(cargoFilePath, instructionsOutputPath);
 
         Port port(portId, readPortCargoFromFile(cargoFilePath, errors));  // init current port for the simulator
 
-        if(isLast && !port.getStorage().isEmpty()) { // Last port has containers
+        if (isLast && !port.getStorage().isEmpty()) { // Last port has containers
             errors.addError({ErrorFlag::ContainersAtPort_LastPortHasContainers});
         }
 
@@ -182,37 +178,42 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
         return;
     }
 
-    if (isFolderEmpty(algorithmsDir)){
+    if (isFolderEmpty(algorithmsDir)) {
         errors.addError(ErrorFlag::SharedObject_InvalidDirectory);
         return;
     }
 
     auto files = getFilesFromDirectory(algorithmsDir);
 
-    auto& registrar = AlgorithmRegistrar::getInstance();
+    auto &registrar = AlgorithmRegistrar::getInstance();
 
-    for (auto& file: files) {
-        if (endsWith(file, ".so")) {
-            ErrorFlag soLoadResult = registrar.loadSharedObject(file);
-            if (soLoadResult != ErrorFlag::Success) {
-                errors.addError({soLoadResult, extractFilenameFromPath(file)});
-                continue;
-            }
-
-            int delta = registrar.factoriesIncrease();  // how many algorithms were added
-
-            switch (delta) {  // TODO: maybe move this logic to the loadSharedObject
-                case 0:
-                    errors.addError({ErrorFlag::SharedObject_AlgorithmDidntSelfRegister, extractFilenameFromPath(file)});
-                    break;
-                case 1:
-                    algorithmFactories.push_back(registrar.getLast());
-                    break;
-                default:
-                    errors.addError({ErrorFlag::SharedObject_LoadedMoreThanOneAlgorithm, extractFilenameFromPath(file)});
-                    break;
-            }
+    for (auto &file: files) {
+        if (!endsWith(file, ".so")) {
+            continue;
         }
+        ErrorFlag soLoadResult = registrar.loadSharedObject(file);
+        if (soLoadResult != ErrorFlag::Success) {
+            errors.addError({soLoadResult, extractFilenameFromPath(file)});
+            continue;
+        }
+
+        int delta = registrar.factoriesIncrease();  // how many algorithms were added
+
+        switch (delta) {  // TODO: maybe move this logic to the loadSharedObject
+            case 0:
+                errors.addError({ErrorFlag::SharedObject_AlgorithmDidntSelfRegister, extractFilenameFromPath(file)});
+                break;
+            case 1:
+                algorithmFactories.push_back(registrar.getLast());
+                break;
+            default:
+                errors.addError({ErrorFlag::SharedObject_LoadedMoreThanOneAlgorithm, extractFilenameFromPath(file)});
+                break;
+        }
+    }
+
+    if (algorithmFactories.empty()) {
+        errors.addError(ErrorFlag::SharedObject_NoAlgorithmsLoaded);
     }
 }
 
@@ -220,14 +221,14 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
 
 // region Simulation Init
 
-void Simulator::initAlgorithm(AbstractAlgorithm &algorithm, WeightBalanceCalculator &calculator, Errors &errors) {
-    int ret = algorithm.readShipPlan(dataManager.shipPlanPath());
+void Simulator::initAlgorithm(AbstractAlgorithm *algorithm, WeightBalanceCalculator &calculator, Errors &errors) {
+    int ret = algorithm->readShipPlan(dataManager.shipPlanPath());
     errors.addError(ret);  // if its not an error, addError will ignore it
 
-    ret = algorithm.readShipRoute(dataManager.shipRoutePath());
+    ret = algorithm->readShipRoute(dataManager.shipRoutePath());
     errors.addError(ret);
 
-    ret = algorithm.setWeightBalanceCalculator(calculator);
+    ret = algorithm->setWeightBalanceCalculator(calculator);
     errors.addError(ret);
 }
 

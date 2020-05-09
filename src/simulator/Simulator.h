@@ -41,7 +41,7 @@ private:
      * Simulates an algorithm on a single travel.
      * @return number of steps took to simulate, or -1 if the algorithm made at least 1 error.
      */
-    int runSimulation(AbstractAlgorithm &algorithm);
+    int runSimulation(std::unique_ptr<AbstractAlgorithm> algorithmPtr);
 
     /// Loads algorithms dynamically, returns false if no algorithm was loaded.
     void loadAlgorithmsDynamically(Errors &errors);
@@ -56,7 +56,7 @@ private:
     ContainerShip initSimulation(WeightBalanceCalculator &calculator, Errors &errors);
 
     /// Inits the algorithm in a single simulation.
-    void initAlgorithm(AbstractAlgorithm &algorithm, WeightBalanceCalculator &calculator, Errors &errors);
+    void initAlgorithm(AbstractAlgorithm *algorithm, WeightBalanceCalculator &calculator, Errors &errors);
 
     /**
      * Perform packing operations received from algorithm, on simulator's ship. Validates each operation is legal.
