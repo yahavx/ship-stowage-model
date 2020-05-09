@@ -11,16 +11,8 @@
 #include <unordered_set>
 
 #ifdef RUNNING_ON_NOVA
-REGISTER_ALGORITHM(_305170987_b)
+REGISTER_ALGORITHM(NaiveStowageAlgorithm)
 #endif
-
-// region Initialization
-
-std::string NaiveStowageAlgorithm::getAlgorithmName() {
-    return "NaiveStowageAlgorithm";
-}
-
-// endregion
 
 // region Functions
 

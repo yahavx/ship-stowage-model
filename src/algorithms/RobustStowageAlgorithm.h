@@ -10,12 +10,6 @@
 
 class RobustStowageAlgorithm : public SemiAbstractAlgorithm {
 
-public:
-
-#ifndef RUNNING_ON_NOVA
-    std::string getAlgorithmName() override;
-#endif
-
 private:
 
     Operations generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad) override ;

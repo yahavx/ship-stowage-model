@@ -10,9 +10,6 @@
 
 class BadAlgorithm : public SemiAbstractAlgorithm {  // use this to test the simulator
 
-public:
-    std::string getAlgorithmName() override;
-
 private:
 
     Operations generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad) override;

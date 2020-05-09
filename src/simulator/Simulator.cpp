@@ -13,14 +13,12 @@
 #include "../common/io/FileReader.h"
 #include "../common/utils/UtilFunctions.h"
 #include "../interfaces/AbstractAlgorithm.h"
+#include "AlgorithmRegistrar.h"
 
 #ifndef RUNNING_ON_NOVA
 #include "../algorithms/NaiveStowageAlgorithm.h"
 #include "../algorithms/BadAlgorithm.h"
 #include "../algorithms/RobustStowageAlgorithm.h"
-#endif
-#ifdef RUNNING_ON_NOVA
-#include <dlfcn.h>
 #endif
 
 // region Constructors
@@ -38,6 +36,10 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
     algorithms.push_back(naiveStowageAlgorithm);
     algorithms.push_back(badAlgorithm);
     algorithms.push_back(robustAlgorithm);
+
+    algorithmNames.push_back("Naive");
+    algorithmNames.push_back("Bad");
+    algorithmNames.push_back("Robust");
 #endif
 }
 
@@ -52,21 +54,15 @@ void Simulator::runSimulations() {
     dataManager.createOutputFolders(generalErrors);
 
     StringVector travels = dataManager.collectLegalTravels(generalErrors);
-    initResultsTable(resultsTable, travels, algorithms);  // add columns names and set table structure
-#ifdef RUNNING_ON_NOVA
+    initResultsTable(resultsTable, travels, algorithmNames);  // add columns names and set table structure
     loadAlgorithmsDynamically(generalErrors);
-#endif
 
     for (auto &travel: travels) {
         dataManager.setTravelName(extractFilenameFromPath(travel));
 
         for (longUInt i = 0; i < algorithms.size(); i++) {
             auto &algorithm = algorithms[i];
-#ifndef RUNNING_ON_NOVA
-            dataManager.setAlgorithmName(algorithm->getAlgorithmName());
-#else
-            dataManager.setAlgorithmName("Algorithm" + intToStr(i + 1));
-#endif
+            dataManager.setAlgorithmName(algorithmNames[i]);
             dataManager.createTravelCraneFolder();
 
             int totalCraneInstructions = runSimulation(*algorithm);
@@ -172,31 +168,53 @@ int Simulator::runSimulation(AbstractAlgorithm &algorithm) {
     return errors.hasAlgorithmErrors() ? -1 : totalNumberOfOps;
 }
 
-#ifdef RUNNING_ON_NOVA
-struct DlCloser{
-    void operator()(void *dlHandle) const noexcept {
-        dlclose(dlHandle);
-    }
-};
-
 void Simulator::loadAlgorithmsDynamically(Errors &errors) {
     if (algorithmsDir == "") {
         algorithmsDir = ".";  // We search in current directory if no path supplied
     }
 
-    // TODO
+#ifndef RUNNING_ON_NOVA
+    return;
+#endif
 
     if (!isDirectoryExists(algorithmsDir)) {
-
+        errors.addError(ErrorFlag::SharedObject_InvalidDirectory);
+        return;
     }
 
     if (isFolderEmpty(algorithmsDir)){
-
+        errors.addError(ErrorFlag::SharedObject_InvalidDirectory);
+        return;
     }
 
-    (void)errors;
+    auto files = getFilesFromDirectory(algorithmsDir);
+
+    auto& registrar = AlgorithmRegistrar::getInstance();
+
+    for (auto& file: files) {
+        if (endsWith(file, ".so")) {
+            ErrorFlag soLoadResult = registrar.loadSharedObject(file);
+            if (soLoadResult != ErrorFlag::Success) {
+                errors.addError({soLoadResult, extractFilenameFromPath(file)});
+                continue;
+            }
+
+            int delta = registrar.factoriesIncrease();  // how many algorithms were added
+
+            switch (delta) {  // TODO: maybe move this logic to the loadSharedObject
+                case 0:
+                    errors.addError({ErrorFlag::SharedObject_AlgorithmDidntSelfRegister, extractFilenameFromPath(file)});
+                    break;
+                case 1:
+                    algorithmFactories.push_back(registrar.getLast());
+                    break;
+                default:
+                    errors.addError({ErrorFlag::SharedObject_LoadedMoreThanOneAlgorithm, extractFilenameFromPath(file)});
+                    break;
+            }
+        }
+    }
 }
-#endif
 
 // endregion
 

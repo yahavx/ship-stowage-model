@@ -76,7 +76,10 @@ enum ErrorFlag : longUInt {
     ReadOperations_reserved3 = 1ULL << 46,
 
     // next error is 55
-
+    SharedObject_CantLoadSoFile,
+    SharedObject_InvalidDirectory,
+    SharedObject_AlgorithmDidntSelfRegister,
+    SharedObject_LoadedMoreThanOneAlgorithm,
 
 };
 

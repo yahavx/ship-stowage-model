@@ -9,15 +9,10 @@
 #include "../common/utils/UtilFunctions.h"
 #include "RobustStowageAlgorithm.h"
 
-
 #ifdef RUNNING_ON_NOVA
-REGISTER_ALGORITHM(_305170987_a)
+REGISTER_ALGORITHM(RobustStowageAlgorithm)
 #endif
 
-
-std::string RobustStowageAlgorithm::getAlgorithmName() {
-    return "RobustStowageAlgorithm";
-}
 
 Operations RobustStowageAlgorithm::generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad) {
     Operations operations;

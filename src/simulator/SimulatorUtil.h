@@ -29,12 +29,18 @@ void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute, Error
 /// Checks if there are any remaining ports in the map, which still have files. Prints warning if yes.
 void validateNoCargoFilesLeft(StringToStringVectorMap &map, Errors &errors);
 
+/**
+ * Extract the number from a cargo_data file (AAAAA_5.cargo_data -> 5)
+ * @param filePath full path to a cargo data file
+ */
+int extractNumberFromCargoFile(const std::string filePath);
+
 // endregion
 
 // region Table data manager
 
 /// Inits results and errors table, results and errors should be empty.
-void initResultsTable(StringStringVector &results, StringVector &travels, std::vector<std::shared_ptr<AbstractAlgorithm>> &algorithms);
+void initResultsTable(StringStringVector &results, StringVector &travels, StringVector &algorithmsNames);
 
 /// Add travel results of a single simulation to a table.
 void addSimulationResultToTable(StringStringVector &simulationResults, int totalCraneInstructions, int rowNum);
@@ -46,15 +52,5 @@ void finalizeResultsTable(StringStringVector &results);
 void sortResultsTable(StringStringVector &results);
 
 // endregion
-
-/**
- * Extract the number from a cargo_data file (AAAAA_5.cargo_data -> 5)
- * @param filePath full path to a cargo data file
- */
-int extractNumberFromCargoFile(const std::string filePath);
-
-/// Prints simulation starting messages.
-void printSimulationInfo(const std::string &travel, AbstractAlgorithm *&algorithm);
-
 
 #endif //SHIP_STOWAGE_MODEL_SIMULATORUTIL_H

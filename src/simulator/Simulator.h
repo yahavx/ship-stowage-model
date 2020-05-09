@@ -10,6 +10,7 @@
 #include "../common/utils/Errors.h"
 #include "SimulatorDataManager.h"
 #include <memory>
+#include <functional>
 
 
 class Simulator {
@@ -18,6 +19,9 @@ class Simulator {
     std::string outputDir;
     SimulatorDataManager dataManager;
     std::vector<std::shared_ptr<AbstractAlgorithm>> algorithms;
+
+    std::vector<std::function<std::unique_ptr<AbstractAlgorithm>()>> algorithmFactories;
+    StringVector algorithmNames;  // the entry i corresponds to the name of the algorithm of factory i
 
 public:
 

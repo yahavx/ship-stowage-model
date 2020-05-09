@@ -1,12 +1,12 @@
 #include <iostream>
-#include "src/common/io/FileReader.h"
-#include "src/common/io/ObjectsReader.h"
-#include "src/common/utils/UtilFunctions.h"
-#include "src/simulator/Simulator.h"
-#include "src/simulator/SimulatorUtil.h"
+#include "../common/io/FileReader.h"
+#include "../common/io/ObjectsReader.h"
+#include "../common/utils/UtilFunctions.h"
+#include "Simulator.h"
+#include "SimulatorUtil.h"
 #ifdef RUNNING_ON_NOVA
-#include "tests/IOTests.h"
-#include "tests/SimulationTests.h"
+#include "../../tests/IOTests.h"
+#include "../../tests/SimulationTests.h"
 #endif
 
 std::string parseCmdArguments(int argc, char **argv, std::string &travelPath, std::string &algorithmPath, std::string &outputPath);

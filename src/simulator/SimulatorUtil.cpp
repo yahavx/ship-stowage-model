@@ -21,6 +21,20 @@
 
 // region Simulation utils
 
+StringToIntMap initPortsVisits(ShipRoute &shipRoute) {
+    StringToIntMap map;
+
+    for (PortId &port: shipRoute.getPorts()) {
+        map[port] = 0;  // we may do it for the same port twice - no problem with that (one copy will be overwritten)
+    }
+
+    return map;
+}
+
+int getVisitNum(StringToIntMap &portsVisits, const PortId &portId) {
+    return ++portsVisits[portId];
+}
+
 std::string getNextFileForPort(StringToStringVectorMap &cargoData, StringToIntMap &portVisits, const PortId &portId, SimulatorDataManager &manager, int isLast) {
     std::string portCode = portId;
     StringVector &filesForPort = cargoData[portCode];
@@ -78,29 +92,17 @@ void validateNoCargoFilesLeft(StringToStringVectorMap &map, Errors &errors) {
     }
 }
 
-// endregion
-
-// region Cargo data manager
-
-StringToIntMap initPortsVisits(ShipRoute &shipRoute) {
-    StringToIntMap map;
-
-    for (PortId &port: shipRoute.getPorts()) {
-        map[port] = 0;  // we may do it for the same port twice - no problem with that (one copy will be overwritten)
-    }
-
-    return map;
-}
-
-int getVisitNum(StringToIntMap &portsVisits, const PortId &portId) {
-    return ++portsVisits[portId];
+int extractNumberFromCargoFile(const std::string filePath) {
+    std::string file = extractFilenameFromPath(filePath, true);
+    file = file.substr(6, file.size() - 6);
+    return strToInt(file);
 }
 
 // endregion
 
 // region Table data manager
 
-void initResultsTable(StringStringVector &results, StringVector &travels, std::vector<std::shared_ptr<AbstractAlgorithm>> &algorithms) {
+void initResultsTable(StringStringVector &results, StringVector &travels, StringVector &algorithmsNames) {
     // init results table
     StringVector &resultsFirstRow = results.emplace_back();
 
@@ -113,15 +115,9 @@ void initResultsTable(StringStringVector &results, StringVector &travels, std::v
     resultsFirstRow.push_back(Simulator::s_sumColumnTitle);
     resultsFirstRow.push_back(Simulator::s_errorsColumnTitle);
 
-    for (longUInt i = 0; i < algorithms.size(); i++) {  // init a row for each algorithm
+    for (auto &algorithmsName : algorithmsNames) {  // init a row for each algorithm
         results.emplace_back();
-#ifndef RUNNING_ON_NOVA
-        results.back().push_back(algorithms[i]->getAlgorithmName());
-#else
-        results.back().push_back("Algorithm" + intToStr(i + 1));
-#endif
-
-
+        results.back().push_back(algorithmsName);
     }
 }
 
@@ -170,9 +166,3 @@ void sortResultsTable(StringStringVector &results) {
 }
 
 // endregion
-
-int extractNumberFromCargoFile(const std::string filePath) {
-    std::string file = extractFilenameFromPath(filePath, true);
-    file = file.substr(6, file.size() - 6);
-    return strToInt(file);
-}
