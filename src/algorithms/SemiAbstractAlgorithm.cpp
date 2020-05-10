@@ -100,7 +100,7 @@ int SemiAbstractAlgorithm::getInstructionsForCargo(const std::string &inputFile,
         containersToLoad = Containers();
     }
 
-    ops.addOperations(this->generateOperations(ship, port, containersToLoad));  // Get ops for unloading and loading from ship
+    ops.addOperations(this->generateOperations(ship, port, containersToLoad, errors));  // Get ops for unloading and loading from ship
 
     writePackingOperationsToFile(outputFile, ops);
 

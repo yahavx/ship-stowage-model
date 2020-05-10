@@ -112,8 +112,10 @@ void AlgorithmValidation::validateRejectOperation(const PackingOperation &op) {
     }
 
     // If ship is full then the reject is valid
-    if(this->ship.getCargo().isFull())
+    if(this->ship.getCargo().isFull()) {
+        errors.addError({ErrorFlag::ContainersAtPort_ContainersExceedsShipCapacity, containerId});
         return;
+    }
 
     // Rejection failed, need to find out why
     if (currentPort.hasContainer(containerId)) {  // Its a legal one

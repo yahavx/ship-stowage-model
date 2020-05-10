@@ -6,11 +6,12 @@
 #include "../common/io/ObjectsReader.h"
 #include "../common/utils/UtilFunctions.h"
 
-Operations BadAlgorithm::generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad) {
+Operations BadAlgorithm::generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad, Errors &errors) {
     return Operations();
     (void) ship;
     (void) port;
     (void) containersToLoad;
+    (void)errors;
 }
 
 int BadAlgorithm::readShipPlan(const std::string &shipPlanPath) {

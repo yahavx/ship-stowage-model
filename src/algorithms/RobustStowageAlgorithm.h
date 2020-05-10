@@ -12,7 +12,7 @@ class RobustStowageAlgorithm : public SemiAbstractAlgorithm {
 
 private:
 
-    Operations generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad) override ;
+    Operations generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad, Errors &errors) override ;
 
     Containers getContainersToLoad(Port &port) override;
 };

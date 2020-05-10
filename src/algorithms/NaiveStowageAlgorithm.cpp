@@ -16,7 +16,7 @@ REGISTER_ALGORITHM(NaiveStowageAlgorithm)
 
 // region Functions
 
-Operations NaiveStowageAlgorithm::generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad) {
+Operations NaiveStowageAlgorithm::generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad, Errors &errors) {
     Operations operations;
 
     std::vector<ContainerPosition> containersToUnload = ship.getCargo().getContainersForPort(port.getId());
@@ -32,7 +32,7 @@ Operations NaiveStowageAlgorithm::generateOperations(ContainerShip &ship, Port &
     // Load all required containers
     for (const Container &container: containersToLoad) {
         // Get instructions for adding the container
-        Operations loadOps = ship.loadContainerToArbitraryPosition(port, container);
+        Operations loadOps = ship.loadContainerToArbitraryPosition(port, container, errors);
 
         // Add load operations to set of all instructions
         operations.addOperations(loadOps);

@@ -61,7 +61,7 @@ public:
      * @param container - container to load
      * @return legal PackingOperation or NULL if none was found
      */
-    Operations loadContainerToArbitraryPosition(Port &port, const Container &container);
+    Operations loadContainerToArbitraryPosition(Port &port, const Container &container, Errors &errors);
 
     /**
      * returns legal PackingOperation for loading the container to position with minimum height from available positions
@@ -69,7 +69,7 @@ public:
      * @param container - container to load
      * @return legal PackingOperation or NULL if none was found
      */
-    Operations loadContainerToLowestPositionAvailable(Port &port, const Container &container);
+    Operations loadContainerToLowestPositionAvailable(Port &port, const Container &container, Errors &errors);
 
     /**
     * returns legal series of PackingOperation's for unloading container.
