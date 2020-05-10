@@ -91,7 +91,7 @@ StringVector Port::removeBadContainers(const ShipRoute &route, Errors &errors) {
 
         // Container destination is not on route
         if (portsSet.find(container.getDestPort()) == portsSet.end()) {
-            errors.addError({ContainersAtPort_ContainerNotOnRoute, container.getDestPort()});
+            errors.addError({ContainersAtPort_ContainerNotOnRoute, container.getId(), container.getDestPort()});
             invalidContainersIds.push_back(contId);
         }
     }
