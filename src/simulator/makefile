@@ -37,4 +37,4 @@ $(OBJS):
 clean:
 	rm -f $(OBJS) $(EXEC)
 
-# ./simulator -travel_path ../travels -algorithm_path ../algorithms -output ../output
+# ./simulator -travel_path ../input-examples/single-travel -algorithm_path ../algorithms -output ../output

@@ -44,8 +44,8 @@ private:
     struct DlCloser{
         void operator()(void *dlHandle) const noexcept {
             std::cout << "Closing handle" << std::endl;
-//            (void) dlHandle;
-//            dlclose(dlHandle);  // TODO: each algorithm is registered twice now for some reason, making the destructor called twice and crash the program, need to fix it somehow
+            (void) dlHandle;
+//            dlclose(dlHandle);  // TODO: there is still a problem with this
         }
     };
 
