@@ -14,16 +14,16 @@
  * Reads a ship plan from a file.
  * @param errors each error found will be added to this
  */
-ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors = Errors::e_garbageCollector);
+ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors);
 
 /// Reads a route file (list of ports).
-ShipRoute readShipRouteFromFile(const std::string &filePath, Errors &errors = Errors::e_garbageCollector);
+ShipRoute readShipRouteFromFile(const std::string &filePath, Errors &errors);
 
 /// Returns all cargo found in file.
-ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &errors = Errors::e_garbageCollector);
+ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &errors);
 
 /// Reads operations from a file.
-Operations readPackingOperationsFromFile(const std::string &filePath, Errors &errors = Errors::e_garbageCollector);
+Operations readPackingOperationsFromFile(const std::string &filePath, Errors &errors);
 
 /// Write operations to a file.
 bool writePackingOperationsToFile(const std::string &filePath, Operations &operations);

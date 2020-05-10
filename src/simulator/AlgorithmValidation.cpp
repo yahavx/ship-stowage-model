@@ -33,10 +33,12 @@ void AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
         else {
             errors.addError({ErrorFlag::AlgorithmError_ContainerIdNotExistsOnPort, op.getContainerId()});
         }
+        return;
     }
 
     if (ship.getCargo().hasContainer(containerId)) {
         errors.addError({ErrorFlag::AlgorithmError_ContainerIdAlreadyOnShip, op.getContainerId()});
+        return;
     }
 
     auto pos = op.getFirstPosition();
@@ -44,6 +46,14 @@ void AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
     if (!ship.getCargo().canLoadContainerToPosition(std::get<0>(pos), std::get<1>(pos))) {
         int x = std::get<0>(pos), y = std::get<1>(pos);
         errors.addError({ErrorFlag::AlgorithmError_LoadAboveNotLegal, op.getContainerId(), std::to_string(x), std::to_string(y)});
+        return;
+    }
+
+    for (longUInt i = 0; i < temporaryContainersOnPort.size(); i++) {  // If this container was unloaded from ship before, mark we loaded him back
+        if (temporaryContainersOnPort[i] == containerId) {
+            temporaryContainersOnPort.erase(temporaryContainersOnPort.begin() + i);
+            break;
+        }
     }
 }
 
@@ -58,6 +68,10 @@ void AlgorithmValidation::validateUnloadOperation(const PackingOperation &op) {
         auto container = containerOptional.value();
         if (container.getId() != op.getContainerId()) { // The top container at given (x,y) has different id
             errors.addError({ErrorFlag::AlgorithmError_UnloadBadId, op.getContainerId(), std::to_string(x), std::to_string(y)});
+        }
+
+        else if (container.getDestPort() != currentPort.getId()) {  // This container is not for this port, track to make sure we load him back later
+            temporaryContainersOnPort.push_back(container.getId());
         }
     }
 }
@@ -141,6 +155,10 @@ void AlgorithmValidation::validatePackingOperation(const PackingOperation &op) {
 }
 
 void AlgorithmValidation::validateNoContainersLeftOnPort() {
+    if (!temporaryContainersOnPort.empty()) {
+        errors.addError(ErrorFlag::AlgorithmError_UnloadedAndDidntLoadBack);
+    }
+
     for (auto &portId : ship.getShipRoute().getNextPortsSet()) {
         PortId id(portId);
         if (id == currentPort.getId())
@@ -149,6 +167,8 @@ void AlgorithmValidation::validateNoContainersLeftOnPort() {
             errors.addError({ErrorFlag::AlgorithmError_LeftContainersAtPort, portId, currentPort.getId()});
         }
     }
+
+    // TODO: check temporaryContainersOnPort, to know if containers were not loaded, or were unloaded and not loaded back? (maybe its useless and should be removed)
 }
 
 bool AlgorithmValidation::isBadContainer(const std::string &id) {

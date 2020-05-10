@@ -9,12 +9,6 @@
 
 // region Error class
 
-// region Garbage Collector
-
-Errors Errors::e_garbageCollector;
-
-// endregion
-
 // region Error categories
 
 int c_initFatalError = ShipPlan_FatalError_NoFileOrInvalidFirstLine | ShipPlan_FatalError_DuplicateData | ShipRoute_FatalError_NoFileOrNoLegalPorts |
@@ -109,47 +103,47 @@ std::string Error::toString() {
             return "Success (this shouldn't appear)";
 
         case ShipPlan_InvalidFloorHeight:
-            return shipPlanError + "Data row exceeds the maximum available containers in a spot, ignoring";
+            return shipPlanError + "Data row exceeds the maximum available containers in a spot, ignoring (E0)";
         case ShipPlan_InvalidXYCoordinates:
-            return shipPlanError + "Data row exceeds the ship dimensions, ignoring";
+            return shipPlanError + "Data row exceeds the ship dimensions, ignoring (E1)";
         case ShipPlan_BadLineFormat:
-            return shipPlanError + "Data row is in invalid format, ignoring";
+            return shipPlanError + "Data row is in invalid format, ignoring (E2)";
         case ShipPlan_FatalError_NoFileOrInvalidFirstLine:
-            return shipPlanFatalError + "Invalid first line, or couldn't read file";
+            return shipPlanFatalError + "Invalid first line, or couldn't read file (E3)";
         case ShipPlan_FatalError_DuplicateData:
-            return shipPlanFatalError + "Duplicate data rows, about position (" + param1 + ", " + param2 + ")";
+            return shipPlanFatalError + "Duplicate data rows, about position (" + param1 + ", " + param2 + ") (E4)";
 
         case ShipRoute_TwoConsecutiveSamePort:
-            return shipRouteError + "Port '" + param1 + "' appeared twice in a row, ignoring the latter";
+            return shipRouteError + "Port '" + param1 + "' appeared twice in a row, ignoring the latter (E5)";
         case ShipRoute_BadPortSymbol:
-            return shipRouteError + "Invalid port symbol format '" + param1 + "'";
+            return shipRouteError + "Invalid port symbol format '" + param1 + "' (E6)";
         case ShipRoute_FatalError_NoFileOrNoLegalPorts:
-            return shipRouteFatalError + "No ports in the route, or couldn't read file";
+            return shipRouteFatalError + "No ports in the route, or couldn't read file (E7)";
         case ShipRoute_FatalError_SinglePort:
-            return shipRouteFatalError + "Only one port appears in the route";
+            return shipRouteFatalError + "Only one port appears in the route (8)";
 
         case ContainersAtPort_DuplicateID:
-            return containersAtPortError + "Container with the same ID ('" + param1 + "') was already found on port, rejecting";
+            return containersAtPortError + "Container with the same ID ('" + param1 + "') was already found on port, rejecting (E10)";
         case ContainersAtPort_IDAlreadyOnShip:
-            return containersAtPortError + "Container with the same ID ('" + param1 + "') is already on the ship, rejecting";
+            return containersAtPortError + "Container with the same ID ('" + param1 + "') is already on the ship, rejecting (E11)";
         case ContainersAtPort_MissingOrBadWeight:
-            return containersAtPortError + "Missing or bad weight, rejecting";
+            return containersAtPortError + "Missing or bad weight, rejecting (E12)";
         case ContainersAtPort_MissingOrBadPortDest:
-            return containersAtPortError + "Missing or bad destination port, ignoring";
+            return containersAtPortError + "Missing or bad destination port, ignoring (E13)";
         case CargoData_MissingContainerID:
-            return cargoDataError + "Container has no ID, ignoring";
+            return cargoDataError + "Container has no ID, ignoring (E14)";
         case ContainersAtPort_BadContainerID:
-            return containersAtPortError + "Container '" + param1 + "' ID is not in ISO 6346 format, rejecting";
+            return containersAtPortError + "Container '" + param1 + "' ID is not in ISO 6346 format, rejecting (E15)";
         case CargoData_InvalidFile:
-            return cargoDataWarning + "Couldn't read any container from file '" + param1 + "', cargo will only be loaded";
+            return cargoDataWarning + "Couldn't read any container from file '" + param1 + "', cargo will only be loaded (E16)";
         case ContainersAtPort_LastPortHasContainers:
-            return containersAtPortError + "Last port has awaiting containers, ignoring";
+            return containersAtPortError + "Last port has awaiting containers, ignoring (E17)";
         case ContainersAtPort_ContainersExceedsShipCapacity:
-            return containersAtPortError + "Ship is at full capacity, container '" + param1 + "' is rejected";
+            return containersAtPortError + "Ship is at full capacity, container '" + param1 + "' is rejected (E18)";
         case ContainersAtPort_ContainerNotOnRoute:
-            return containersAtPortError + "Container '" + param1 + "' destination port is '" + param2 + "', which is not on the ship route, rejecting";
+            return containersAtPortError + "Container '" + param1 + "' destination port is '" + param2 + "', which is not on the ship route, rejecting (E19)";
         case ContainersAtPort_ContainerDestinationIsCurrentPort:
-            return containersAtPortError + "Container '" + param1 + "' destination is the current port, rejecting";
+            return containersAtPortError + "Container '" + param1 + "' destination is the current port, rejecting (E20)";
 
             // Our errors
 
@@ -208,9 +202,12 @@ std::string Error::toString() {
             break;
         case AlgorithmError_TriedToLoadButShouldReject:
             return algorithmError + "Try to load container with ID '" + param1 + "' from port '" + param2 + "', but it should have been rejected";
-        case AlgorithmError_FalseErrorReport:
-            return algorithmError + "Algorithm returned a false error report (reported a non-existing error, or didn't report a real error";
-
+        case AlgorithmError_UnloadedAndDidntLoadBack:
+            return algorithmError + "Unloaded containers to port, with a different destination, and didn't load them back to ship";
+        case AlgorithmError_ExtraReport:
+            return algorithmError + "Algorithm mistakenly reported error E" + param1;
+        case AlgorithmError_MissingReport:
+            return algorithmError + "Algorithm didn't report error E" + param1 + ", but it should have been";
 
             // Read packing operations (produced by algorithm)
         case ReadOperations_InvalidFile:
@@ -297,8 +294,33 @@ int Errors::toErrorFlag() {
     return errors;
 }
 
-bool Errors::compareReports(int errorFlag) {
-    return this->toErrorFlag() == errorFlag;
+int Errors::toErrorFlagSinceLastCheckpoint() {
+    int errors;
+    for (longUInt i = checkpoint ; i < errorsList.size(); i++) {
+        if (errorsList[i].errorFlag <= 1 << MAX_ERROR_BIT) {  // We want to collect only errors relevant to the algorithm
+            errors |= errorsList[i].errorFlag;
+        }
+    }
+
+    return errors;
+}
+
+int Errors::compareReports(int otherErrorFlag) {
+    int selfFlag = this ->toErrorFlagSinceLastCheckpoint();
+
+    for (int i = 0 ; i <= MAX_ERROR_BIT; i++) {
+        bool errorAtSelf = (1 << i) & selfFlag;
+        bool errorAtOther = (1 << i) & otherErrorFlag;
+        if (errorAtSelf && !errorAtOther) {
+            return i;
+        }
+
+        if (errorAtOther && !errorAtSelf) {
+            return -i;
+        }
+    }
+
+    return 0;
 }
 
 
@@ -323,6 +345,10 @@ void Errors::addSimulationErrorLog() {
 
 void Errors::addTravelLog(const std::string &travelName) {
     addLog("The following errors were detected on travel '" + travelName +"':");
+}
+
+void Errors::addDynamicLoadErrorLog() {
+    addLog("The following errors were detected during the algorithms dynamic loading:");
 }
 
 void Errors::addLog(const std::string &logMessage) {
@@ -385,7 +411,7 @@ std::ostream &operator<<(std::ostream &os, const Errors &errors) {
     StringVector errorsStr = errors.toString();
     std::cout << "Errors {" << std::endl;
     for (longUInt i = 0; i < errorsStr.size(); i++) {
-        std::cout << "\t" << errorsStr[i] << std::endl;
+        std::cout << errorsStr[i] << std::endl;
     }
     std::cout << "}" << std::endl;
     return os;

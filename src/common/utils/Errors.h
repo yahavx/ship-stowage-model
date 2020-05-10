@@ -9,7 +9,7 @@
 #include "Definitions.h"
 
 #define MAX_ERROR_BIT 18  // max that is used by the algorithm (rest are for us)
-#define RUNNING_ON_NOVA  // this will turn on all sections in code that work only on nova - disable note when on nova
+//#define RUNNING_ON_NOVA  // this will turn on all sections in code that work only on nova - disable note when on nova
 
 enum ErrorFlag : longUInt {
     Success = 0,
@@ -35,54 +35,54 @@ enum ErrorFlag : longUInt {
     CargoData_InvalidFile = 1 << 16,
     ContainersAtPort_LastPortHasContainers = 1 << 17,
     ContainersAtPort_ContainersExceedsShipCapacity = 1 << 18,
-    ContainersAtPort_ContainerNotOnRoute = 1ULL << 49,  // TODO: check what to do with this
-    ContainersAtPort_ContainerDestinationIsCurrentPort = 1ULL << 50,
+    ContainersAtPort_ContainerNotOnRoute = 1ULL << 19,
+    ContainersAtPort_ContainerDestinationIsCurrentPort = 1ULL << 20,
 
     // our errors TODO: make sure the algorithm can't receive any by mistake
-    SimulationInit_OutputDirectoriesCreationFailed = 1 << 19,
-    SimulationInit_InvalidTravelPath = 1 << 20,
-    SimulationInit_AllTravelsAreInvalid = 1ULL << 53,
-    SimulationCleanup_OutputDirectoriesCleaningFailed = 1 << 21,
+    SimulationInit_OutputDirectoriesCreationFailed = 1 << 21,
+    SimulationInit_InvalidTravelPath = 1 << 22,
+    SimulationInit_AllTravelsAreInvalid = 1ULL << 23,
+    SimulationCleanup_OutputDirectoriesCleaningFailed = 1 << 24,
 
-    Travel_InvalidDirectory = 1 << 22,
-    Travel_FatalInput = 1 << 23,
-    Travel_UnknownFile = 1 << 24,
-    Travel_CargoData_PortNotInRoute = 1 << 25,
-    Travel_CargoData_RemainingFilesAfterFinish = 1 << 26,
+    Travel_InvalidDirectory = 1 << 25,
+    Travel_FatalInput = 1 << 26,
+    Travel_UnknownFile = 1 << 27,
+    Travel_CargoData_PortNotInRoute = 1 << 28,
+    Travel_CargoData_RemainingFilesAfterFinish = 1 << 29,
 
-    AlgorithmError_CraneOperationWithInvalidId = 1 << 28,  // TODO: this should be mapped to error 32/33
-    AlgorithmError_InvalidCraneOperation = 1 << 29,
-    AlgorithmError_LeftContainersAtPort = 1 << 30,
-    AlgorithmError_ContainerIdAlreadyOnShip = 1ULL << 31,
-    AlgorithmError_ContainerIdNotExistsOnPort = 1ULL << 32,
-    AlgorithmError_ContainerIdNotExistsOnShip = 1ULL << 33,
-    AlgorithmError_RejectedGoodContainer = 1ULL << 34,
-    AlgorithmError_LoadAboveNotLegal = 1ULL << 35,
-    AlgorithmError_UnloadNoContainersAtPosition = 1ULL << 36,
-    AlgorithmError_UnloadBadId = 1ULL << 37,
-    AlgorithmError_InvalidXYCoordinates = 1ULL << 38,
-    AlgorithmError_MoveNoContainersAtPosition = 1ULL << 47,
-    AlgorithmError_MoveBadId = 1ULL << 48,
-    AlgorithmError_MoveAboveNotLegal = 1ULL << 51,
-    AlgorithmError_TriedToLoadButShouldReject = 1ULL << 52,
-    AlgorithmError_FalseErrorReport = 1ULL << 60,
+    AlgorithmError_CraneOperationWithInvalidId = 1 << 30,  // TODO: this should be mapped to error 32/33
+    AlgorithmError_InvalidCraneOperation = 1ULL << 31,
+    AlgorithmError_LeftContainersAtPort = 1ULL << 32,
+    AlgorithmError_ContainerIdAlreadyOnShip = 1ULL << 33,
+    AlgorithmError_ContainerIdNotExistsOnPort = 1ULL << 34,
+    AlgorithmError_ContainerIdNotExistsOnShip = 1ULL << 35,
+    AlgorithmError_RejectedGoodContainer = 1ULL << 36,
+    AlgorithmError_LoadAboveNotLegal = 1ULL << 37,
+    AlgorithmError_UnloadNoContainersAtPosition = 1ULL << 38,
+    AlgorithmError_UnloadBadId = 1ULL << 39,
+    AlgorithmError_InvalidXYCoordinates = 1ULL << 40,
+    AlgorithmError_MoveNoContainersAtPosition = 1ULL << 41,
+    AlgorithmError_MoveBadId = 1ULL << 42,
+    AlgorithmError_MoveAboveNotLegal = 1ULL << 43,
+    AlgorithmError_TriedToLoadButShouldReject = 1ULL << 44,
+    AlgorithmError_UnloadedAndDidntLoadBack = 1ULL << 45,
+    AlgorithmError_ExtraReport = 1ULL << 46,
+    AlgorithmError_MissingReport = 1ULL << 52,
 
     // These are also kind of algorithm errors (they write the file)
-    ReadOperations_InvalidFile = 1ULL << 40,
-    ReadOperations_InsufficientRowData = 1ULL << 41,
-    ReadOperations_InsufficientRowData_MoveOp = 1ULL << 42,
-    ReadOperations_InvalidOperationType = 1ULL << 43,
-    ReadOperations_InvalidShipPosition = 1ULL << 44,
-    ReadOperations_reserved2 = 1ULL << 45,
-    ReadOperations_reserved3 = 1ULL << 46,
+    ReadOperations_InvalidFile = 1ULL << 47,
+    ReadOperations_InsufficientRowData = 1ULL << 48,
+    ReadOperations_InsufficientRowData_MoveOp = 1ULL << 49,
+    ReadOperations_InvalidOperationType = 1ULL << 50,
+    ReadOperations_InvalidShipPosition = 1ULL << 51,
+    ReadOperations_reserved2 = 1ULL,
+    ReadOperations_reserved3 = 1ULL,
 
-    // next error is 55
-    SharedObject_CantLoadSoFile,
-    SharedObject_InvalidDirectory,
-    SharedObject_AlgorithmDidntSelfRegister,
-    SharedObject_LoadedMoreThanOneAlgorithm,
-    SharedObject_NoAlgorithmsLoaded,
-
+    SharedObject_CantLoadSoFile = 1ULL << 54,
+    SharedObject_InvalidDirectory = 1ULL << 55,
+    SharedObject_AlgorithmDidntSelfRegister = 1ULL << 56,
+    SharedObject_LoadedMoreThanOneAlgorithm = 1ULL << 57,
+    SharedObject_NoAlgorithmsLoaded = 1ULL << 58,
 };
 
 class Error {
@@ -145,8 +145,14 @@ public:
     /// Returns an int that represents all the errors in the list. If an error appears multiple times, it is treated as once.
     int toErrorFlag();
 
-    /// Compares the errors list to the list of errors represented by the flag. Returns true if they are equal. Only compares errors indexed 0 to MAX_ERROR_BIT.
-    bool compareReports(int errorFlag);
+    /// Like the one above, but only takes into account errors since the last log (see logging section for reference).
+    int toErrorFlagSinceLastCheckpoint();
+
+    /**
+     * Compares the errors list to the list of errors represented by the flag.
+     * @return 0 if they are equal. i (greater than zero) if i'th bit is turned only onself. -i if i'th bit is turned only on other.
+     */
+    int compareReports(int otherErrorFlag);
 
     // region
 
@@ -162,6 +168,8 @@ public:
 
     /// If errors were added, it will add an informative line about the travel.
     void addTravelLog(const std::string &travelName);
+
+    void addDynamicLoadErrorLog();
 
 private:
     /// Adds a log message if errors were added since the last call.
@@ -191,12 +199,6 @@ public:
     // region Printer
 
     friend std::ostream &operator<<(std::ostream &os, const Errors &errors);
-
-    // endregion
-
-    // region Garbage Collector
-
-    static Errors e_garbageCollector;
 
     // endregion
 };

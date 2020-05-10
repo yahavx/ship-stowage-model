@@ -50,11 +50,11 @@ private:
 
     // region Simulation init
 
+    /// Inits the algorithm in a single simulation. Returns the error return value of the algorithm.
+    void initAlgorithm(AbstractAlgorithm *algorithm, WeightBalanceCalculator &calculator, Errors &errors);
+
     /// Inits the ship of a single simulation. Assume no fatal errors are in the plan and route.
     ContainerShip initSimulation(WeightBalanceCalculator &calculator, Errors &errors);
-
-    /// Inits the algorithm in a single simulation. Returns the error return value of the algorithm.
-    int initAlgorithm(AbstractAlgorithm *algorithm, WeightBalanceCalculator &calculator, Errors &errors);
 
     /**
      * Perform packing operations received from algorithm, on simulator's ship. Validates each operation is legal.

@@ -38,3 +38,5 @@ clean:
 	rm -f $(OBJS) $(EXEC)
 
 # ./simulator -travel_path ../input-examples/single-travel -algorithm_path ../algorithms -output ../output
+
+# valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all ./simulator -travel_path ../input-examples/single-travel -algorithm_path ../algorithms -output ../output
