@@ -96,11 +96,7 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
     ContainerShip ship = initSimulation(simWeightBalancer, errors);
 
     WeightBalanceCalculator algoWeightBalancer;
-    int algorithmReport = initAlgorithm(algorithm.get(), algoWeightBalancer, errors);
-    if (!errors.compareReports(algorithmReport)) {  // Algorithm report is different than the simulator
-        std::cout << "Algorithm misreported during initialization." << std::endl;
-        errors.addError(ErrorFlag::AlgorithmError_FalseErrorReport);
-    }
+    initAlgorithm(algorithm.get(), algoWeightBalancer, errors);
 
     StringToStringVectorMap cargoData = dataManager.getCargoDataFiles(errors);  // get list of .cargo_data files, ordered for each port
     StringToIntMap portsVisits = initPortsVisits(ship.getShipRoute());  // map from each port, to number of times we have encountered him so far
@@ -208,7 +204,7 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
 
         int delta = registrar.factoriesIncrease();  // how many algorithms were added
 
-        switch (delta) {  // TODO: maybe move this logic to the loadSharedObject
+        switch (delta) {
             case 0:
                 errors.addError({ErrorFlag::SharedObject_AlgorithmDidntSelfRegister, extractFilenameFromPath(file)});
                 break;
@@ -225,27 +221,30 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
     if (algorithmFactories.empty()) {
         errors.addError(ErrorFlag::SharedObject_NoAlgorithmsLoaded);
     }
+
+    errors.addDynamicLoadErrorLog();
 }
 
 // endregion
 
 // region Simulation Init
 
-int Simulator::initAlgorithm(AbstractAlgorithm *algorithm, WeightBalanceCalculator &calculator, Errors &errors) {
+void Simulator::initAlgorithm(AbstractAlgorithm *algorithm, WeightBalanceCalculator &calculator, Errors &errors) {
     int ret = algorithm->readShipPlan(dataManager.shipPlanPath());
-//    errors.addError(ret);  // if its not an error, addError will ignore it  // TODO: using the value of 'ret' causes valgrind error for some reason (probably related to SO). need to check if its okay
-//    std::cout << "Ship plan init algorithm result: " << ret << std::endl;
-
     int ret2 = algorithm->readShipRoute(dataManager.shipRoutePath());
-//    errors.addError(ret);
-//    std::cout << "Ship route init algorithm result: " << ret2 << std::endl;
-
     int ret3 = algorithm->setWeightBalanceCalculator(calculator);
-//    errors.addError(ret);
-//    std::cout << "Weight balancer init algorithm result: " << ret3 << std::endl;
 
-    (void)errors;
-    return ret | ret2 | ret3;  // unify results
+    int algorithmErrors = ret | ret2 | ret3;
+
+    int errorsDiff = errors.compareReports(algorithmErrors);
+
+    if (errorsDiff > 0) {
+        errors.addError({ErrorFlag::AlgorithmError_MissingReport, intToStr(errorsDiff)});
+    }
+
+    if (errorsDiff < 0) {
+        errors.addError({ErrorFlag::AlgorithmError_ExtraReport, intToStr(-errorsDiff)});
+    }
 }
 
 ContainerShip Simulator::initSimulation(WeightBalanceCalculator &calculator, Errors &errors) {
@@ -259,8 +258,7 @@ ContainerShip Simulator::initSimulation(WeightBalanceCalculator &calculator, Err
 
 // region Perform operations and validations
 
-void
-Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const { // Perform operations on local ship and port
+void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const { // Perform operations on local ship and port
 
     // TODO: check that any containers that were loaded to the port to unload others, are back in ship
     // TODO: ops can be empty, maybe we need to document it

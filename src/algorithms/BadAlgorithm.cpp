@@ -14,6 +14,6 @@ Operations BadAlgorithm::generateOperations(ContainerShip &ship, Port &port, con
 }
 
 int BadAlgorithm::readShipPlan(const std::string &shipPlanPath) {
-    SemiAbstractAlgorithm::readShipPlan(shipPlanPath);
-    return 2;
+    return SemiAbstractAlgorithm::readShipPlan(shipPlanPath);
+    return 1 << 2;
 }
