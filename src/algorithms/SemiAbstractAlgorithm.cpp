@@ -90,7 +90,7 @@ int SemiAbstractAlgorithm::getInstructionsForCargo(const std::string &inputFile,
     ContainerStorage storage = readPortCargoFromFile(inputFile, errors);
     Port port(id, storage);
 
-    StringVector toReject = port.removeBadContainers(ship.getShipRoute());
+    StringVector toReject = port.removeBadContainers(ship.getShipRoute(), errors);
     ops.addRejectOperations(toReject);  // If its empty, nothing will be added
 
     Containers containersToLoad = getContainersToLoad(port);

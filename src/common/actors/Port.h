@@ -56,7 +56,7 @@ public:
      * @param errors all errors found, in each container, will be added to this
      * @return list of id's, one per each removed container.
      */
-    StringVector removeBadContainers(const ShipRoute& route);
+    StringVector removeBadContainers(const ShipRoute& route, Errors &errors);
 
     bool isDuplicateIdOnPort(const std::string &containerId);
 
