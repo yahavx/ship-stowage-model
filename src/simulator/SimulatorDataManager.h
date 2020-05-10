@@ -91,7 +91,7 @@ public:
     void createOutputFolders(Errors &errors);
 
     /// Remove unneeded output folders (temp, and errors if not generated).
-    void cleanOutputFolders(Errors &errors);
+    void cleanOutputFolders();
 
     // endregion
 };

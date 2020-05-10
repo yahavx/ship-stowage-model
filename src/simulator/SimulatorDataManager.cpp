@@ -231,7 +231,8 @@ void SimulatorDataManager::createOutputFolders(Errors &errors) {
     }
 }
 
-void SimulatorDataManager::cleanOutputFolders(Errors &errors) {
+void SimulatorDataManager::cleanOutputFolders() {
+    Errors errors;
     bool res = removeFolder(tempFolder());
 
     bool res2 = true;
@@ -242,6 +243,8 @@ void SimulatorDataManager::cleanOutputFolders(Errors &errors) {
     if (!(res && res2)) {
         errors.addError(ErrorFlag::SimulationCleanup_OutputDirectoriesCleaningFailed);
     }
+
+    // errors are not sent to anywhere, but keep it for later maybe
 }
 
 // endregion

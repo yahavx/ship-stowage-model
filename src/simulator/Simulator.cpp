@@ -52,9 +52,6 @@ void Simulator::runSimulations() {
     loadAlgorithmsDynamically(generalErrors);
     initResultsTable(resultsTable, travels, algorithmNames);  // add columns names and set table structure
 
-//    std::cout << generalErrors;
-//    std::cout << "Size of algorithms list: " << algorithmFactories.size() << std::endl;
-
     for (auto &travel: travels) {
         dataManager.setTravelName(extractFilenameFromPath(travel));
 
@@ -78,7 +75,7 @@ void Simulator::runSimulations() {
         dataManager.saveGeneralErrors(generalErrors);
     }
 
-    dataManager.cleanOutputFolders(generalErrors);  // remove temp and errors (if empty), can disable it to debug  // TODO: when calling with no parameter, it crashed in nova. check why (maybe the garbageCollector)
+    dataManager.cleanOutputFolders();  // remove temp and errors (if empty)
 }
 
 int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
