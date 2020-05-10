@@ -260,7 +260,7 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
     // TODO: check that any containers that were loaded to the port to unload others, are back in ship
     // TODO: ops can be empty, maybe we need to document it
 
-    StringVector badContainers = port.removeBadContainers(ship.getShipRoute());  // Removes from port and returns the ids of the bad containers
+    StringVector badContainers = port.removeBadContainers(ship.getShipRoute(), errors);  // Removes from port and returns the ids of the bad containers
     AlgorithmValidation validation(ship, port, badContainers, errors);
     CranesManagement crane(ship, port);
 
