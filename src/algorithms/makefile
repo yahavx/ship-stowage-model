@@ -1,7 +1,10 @@
 COMP = g++-8.3.0
 
 SHARED_OBJS = NaiveStowageAlgorithm.so RobustStowageAlgorithm.so
-OBJS = BadAlgorithm.o NaiveStowageAlgorithm.o RobustStowageAlgorithm.o SemiAbstractAlgorithm.o $\
+ROBUST = RobustStowageAlgorithm.o
+NAIVE = NaiveStowageAlgorithm.o 
+
+OBJS = BadAlgorithm.o SemiAbstractAlgorithm.o $\
 $\
 ../common/actors/AbstractWeightBalancer.o ../common/actors/ContainerShip.o ../common/actors/CranesManagement.o $\
 ../common/actors/NaiveWeightBalancer.o ../common/actors/Port.o $\
@@ -24,10 +27,13 @@ CPP_LINK_FLAG = -shared
 
 all: $(SHARED_OBJS)
 
-$(SHARED_OBJS): $(OBJS)
+NaiveStowageAlgorithm.so: $(OBJS) NaiveStowageAlgorithm.o 
 	$(COMP) $(CPP_LINK_FLAG) -o $@ $^
 
-$(OBJS):
+RobustStowageAlgorithm.so: $(OBJS) RobustStowageAlgorithm.o 
+	$(COMP) $(CPP_LINK_FLAG) -o $@ $^
+	
+$(OBJS) RobustStowageAlgorithm.o NaiveStowageAlgorithm.o:
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp -o $@
 	
 clean:

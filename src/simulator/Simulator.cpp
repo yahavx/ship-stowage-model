@@ -212,15 +212,12 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
             case 0:
                 errors.addError({ErrorFlag::SharedObject_AlgorithmDidntSelfRegister, extractFilenameFromPath(file)});
                 break;
-            case 1:
+            case 1:  // The expected behaviour
                 algorithmFactories.push_back(registrar.getLast());
                 algorithmNames.push_back(extractFilenameFromPath(file, true));
                 break;
             default:
-                std::cout << "Warning: algorithm registered more than once" << std::endl;
-                algorithmFactories.push_back(registrar.getLast());  // TODO: remove this 2 lines and unmark the error (temp solution)
-                algorithmNames.push_back(extractFilenameFromPath(file, true));
-//                errors.addError({ErrorFlag::SharedObject_LoadedMoreThanOneAlgorithm, extractFilenameFromPath(file)});
+                errors.addError({ErrorFlag::SharedObject_LoadedMoreThanOneAlgorithm, extractFilenameFromPath(file)});
                 break;
         }
     }

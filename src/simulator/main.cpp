@@ -34,7 +34,6 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-
     bool created = createFolder(outputPath);
     if (!created) {
         std::cerr << "Couldn't initialize output directory." << std::endl;

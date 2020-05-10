@@ -26,7 +26,7 @@ class AlgorithmRegistrar {
 
 public:
 
-    void registerAlgorithm(std::function<std::unique_ptr<AbstractAlgorithm>()> algorithm);
+    void registerAlgorithm(std::function<std::unique_ptr<AbstractAlgorithm>()> algorithmFactory);
 
     static AlgorithmRegistrar &getInstance();
 
