@@ -111,8 +111,11 @@ void AlgorithmValidation::validateRejectOperation(const PackingOperation &op) {
         }
     }
 
-    // Rejection failed, need to find out why
+    // If ship is full then the reject is valid
+    if(this->ship.getCargo().isFull())
+        return;
 
+    // Rejection failed, need to find out why
     if (currentPort.hasContainer(containerId)) {  // Its a legal one
         errors.addError({ErrorFlag::AlgorithmError_RejectedGoodContainer, containerId});
     } else {  // This container doesn't exists
