@@ -25,7 +25,6 @@ class AlgorithmRegistrar {
     AlgorithmRegistrar() = default;  // singleton class, private constructor
 
 public:
-
     void registerAlgorithm(std::function<std::unique_ptr<AbstractAlgorithm>()> algorithmFactory);
 
     static AlgorithmRegistrar &getInstance();
@@ -39,13 +38,15 @@ public:
     /// Loads SO file.
     ErrorFlag loadSharedObject(const std::string &path);
 
+    virtual ~AlgorithmRegistrar();
+
 #ifdef RUNNING_ON_NOVA
 private:
     struct DlCloser{
         void operator()(void *dlHandle) const noexcept {
             std::cout << "Closing handle" << std::endl;
-            (void) dlHandle;
-//            dlclose(dlHandle);  // TODO: there is still a problem with this
+//            (void) dlHandle;
+            dlclose(dlHandle);  // TODO: there is still a problem with this
         }
     };
 

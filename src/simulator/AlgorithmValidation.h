@@ -47,6 +47,7 @@ public:
     // region Functions
 
 private:
+    /// Check if a container (id) is in badContainerIds.
     bool isBadContainer(const std::string &id);
 
     // endregion

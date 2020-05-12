@@ -35,8 +35,8 @@ enum ErrorFlag : longUInt {
     CargoData_InvalidFile = 1 << 16,
     ContainersAtPort_LastPortHasContainers = 1 << 17,
     ContainersAtPort_ContainersExceedsShipCapacity = 1 << 18,
-    ContainersAtPort_ContainerNotOnRoute = 1ULL << 19,
-    ContainersAtPort_ContainerDestinationIsCurrentPort = 1ULL << 20,
+    ContainersAtPort_ContainerNotOnRoute = 1 << 19,
+    ContainersAtPort_ContainerDestinationIsCurrentPort = 1 << 20,
 
     // our errors TODO: make sure the algorithm can't receive any by mistake
     SimulationInit_OutputDirectoriesCreationFailed = 1 << 21,

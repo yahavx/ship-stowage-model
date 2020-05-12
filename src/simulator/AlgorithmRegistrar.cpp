@@ -49,5 +49,11 @@ ErrorFlag AlgorithmRegistrar::loadSharedObject(const std::string &path) {
     return ErrorFlag::Success;
 }
 
+AlgorithmRegistrar::~AlgorithmRegistrar() {
+    algorithmsFactory.clear();
+#ifdef RUNNING_ON_NOVA
+    handles.clear();
+#endif
+}
 
 // endregion

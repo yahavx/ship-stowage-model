@@ -55,6 +55,10 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors) {
             continue;
         }
 
+        if (dataRow.size() != 3) {
+
+        }
+
         if (!isRowOnlyIntegers(dataRow)) {
             errors.addError(ErrorFlag::ShipPlan_BadLineFormat);
             continue;
@@ -220,7 +224,7 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
     StringStringVector data = readFile(filePath);
 
     for (StringVector dataRow : data) {
-        if (dataRow.size() < 5) {  // TODO: reject can have less than 5, but we can keep it like this
+        if (dataRow.size() < 2) {
             errors.addError(ErrorFlag::ReadOperations_InsufficientRowData);
 //            std::cout << "Warning: data row contains less than 5 arguments, ignoring" << std::endl;
             continue;
