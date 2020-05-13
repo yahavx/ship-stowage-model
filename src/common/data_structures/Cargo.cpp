@@ -50,7 +50,7 @@ OptionalContainer Cargo::removeTopContainer(int x, int y) {
 
     const Container &container = xyContainers.back();
     xyContainers.pop_back();
-    containerIds.erase(container.getId());
+    containersMapping.erase(container.getId());
     return container;
 }
 
@@ -82,7 +82,7 @@ int Cargo::loadContainerOnTop(int x, int y, const Container &container) {
     Containers &xyContainers = containers[x][y];
     xyContainers.push_back(container);
 
-    containerIds.insert(container.getId());
+    containersMapping.insert({container.getId(), container});
     return currentHeight;
 }
 
@@ -116,7 +116,16 @@ int Cargo::currentTopHeight(int x, int y) const {
 }
 
 bool Cargo::hasContainer(std::string containerId) {
-    return containerIds.find(containerId) != containerIds.end();
+    return containersMapping.find(containerId) != containersMapping.end();
+}
+
+OptionalContainer Cargo::getContainerById(std::string containerId) {
+    auto iter = containersMapping.find(containerId);
+    if (iter == containersMapping.end()) {
+        return std::nullopt;
+    }
+
+    return iter->second;
 }
 
 bool Cargo::isFull() {

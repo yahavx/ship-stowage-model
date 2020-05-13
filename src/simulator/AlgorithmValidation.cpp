@@ -89,10 +89,10 @@ void AlgorithmValidation::validateUnloadOperation(const PackingOperation &op) {
     }
 
     const std::string& containerId = op.getContainerId();
-    Container container = *currentPort.getContainer(containerId);
+    Container container = *ship.getCargo().getContainerById(containerId);
 
     // Check that it is approved by the weight balancer
-    if (ship.getBalanceCalculator().tryOperation('U', container.getWeight(), op.getFirstPositionX(), op.getFirstPositionY())) {
+    if (!ship.getBalanceCalculator().tryOperation('U', container.getWeight(), op.getFirstPositionX(), op.getFirstPositionY())) {
         errors.addError({ErrorFlag::AlgorithmError_WeightBalancerRejectedOperation, "Unload", containerId});
     }
 }
@@ -122,11 +122,11 @@ void AlgorithmValidation::validateMoveOperation(const PackingOperation &op) {
     }
 
     const std::string& containerId = op.getContainerId();
-    Container container = *currentPort.getContainer(containerId);
+    Container container = *ship.getCargo().getContainerById(containerId);
 
     // Check that it is approved by the weight balancer
-    if (ship.getBalanceCalculator().tryOperation('U', container.getWeight(), unloadFrom.X(), unloadFrom.Y())) {
-        errors.addError({ErrorFlag::AlgorithmError_WeightBalancerRejectedOperation, "Move/Unload", containerId});
+    if (!ship.getBalanceCalculator().tryOperation('U', container.getWeight(), unloadFrom.X(), unloadFrom.Y())) {
+        errors.addError({ErrorFlag::AlgorithmError_WeightBalancerRejectedOperation, "Move (unload)", containerId});
         return;
     }
 
@@ -134,13 +134,12 @@ void AlgorithmValidation::validateMoveOperation(const PackingOperation &op) {
     ship.getCargo().removeTopContainer(unloadFrom.X(), unloadFrom.Y());
 
     // Check that it is approved by the weight balancer
-    if (ship.getBalanceCalculator().tryOperation('L', container.getWeight(), loadTo.X(), loadTo.Y())) {
-        errors.addError({ErrorFlag::AlgorithmError_WeightBalancerRejectedOperation, "Move/Load", containerId});
+    if (!ship.getBalanceCalculator().tryOperation('L', container.getWeight(), loadTo.X(), loadTo.Y())) {
+        errors.addError({ErrorFlag::AlgorithmError_WeightBalancerRejectedOperation, "Move (load)", containerId});
     }
 
     // Load back the container we unloaded
     ship.getCargo().loadContainerOnTop(unloadFrom.X(), unloadFrom.Y(), container);
-
 }
 
 void AlgorithmValidation::validateRejectOperation(const PackingOperation &op) {

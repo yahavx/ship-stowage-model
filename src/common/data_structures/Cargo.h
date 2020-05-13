@@ -6,7 +6,7 @@
 #define SHIP_STOWAGE_MODEL_CARGO_H
 
 #include <ostream>
-#include <unordered_set>
+#include <unordered_map>
 #include "../data_objects/ShipPlan.h"
 #include "../data_objects/ContainerPosition.h"
 
@@ -15,7 +15,7 @@
 class Cargo {
     ShipPlan shipPlan;
     std::vector<std::vector<std::vector<Container>>> containers;
-    std::unordered_set<std::string> containerIds;  // hash of IDs, for quick checking
+    std::unordered_map<std::string, const Container&> containersMapping;  // hash of IDs, for quick checking and searching
 
 public:
     // region Constructors
@@ -75,6 +75,11 @@ public:
      * Returns true if the container with the given id exists
      */
     bool hasContainer(std::string containerId);
+
+    /**
+     * Returns the container if exists, or null.
+     */
+    OptionalContainer getContainerById(std::string containerId);
 
     /**
      * Returns true if this cargo is completely full

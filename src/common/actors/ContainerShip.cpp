@@ -83,9 +83,7 @@ Operations ContainerShip::loadContainerToArbitraryPosition(Port &port, const Con
                     if (result == CraneOperationResult::SUCCESS) { /// Successfully loaded
                         ops.addOperation(op);
                     } else {
-                        std::cout
-                                << "Error loading container, crane operation failed to load container: "
-                                << op << "\n";
+//                        std::cout << "Error loading container, crane operation failed to load container: " << op << "\n";
                         z = -1;
                     }
 
@@ -134,9 +132,7 @@ Operations ContainerShip::loadContainerToLowestPositionAvailable(Port &port, con
         if (result == CraneOperationResult::SUCCESS) { /// Successfully loaded
             ops.addOperation(op);
         } else {
-            std::cout
-                    << "Error loading container, crane operation failed to load container: "
-                    << op << "\n";
+//            std::cout << "Error loading container, crane operation failed to load container: " << op << "\n";
             ops = Operations();
             ops.addOperation({PackingType::reject, container.getId()});
             return ops;
@@ -169,7 +165,7 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
 
         auto containerOptional = this->getCargo().getTopContainer(x, y);
         if (!containerOptional.has_value()) {
-            std::cout << "Error unloading container, could not get top container from cargo (" << containerPos.x() << ", " << containerPos.y() << ")" << std::endl;
+//            std::cout << "Error unloading container, could not get top container from cargo (" << containerPos.x() << ", " << containerPos.y() << ")" << std::endl;
             failed = true;
             break;
         }
@@ -181,9 +177,7 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
         auto op = PackingOperation(PackingType::unload, container.getId(), {x, y, z + (numOfContainersOnTop - i)});
         auto result = crane.preformOperation(op);
         if (result != CraneOperationResult::SUCCESS) {
-            std::cout
-                    << "Error unloading container, crane operation failed to unload container on top of required one: "
-                    << op << "\n";
+//            std::cout << "Error unloading container, crane operation failed to unload container on top of required one: " << op << "\n";
 
             failed = true;
             break;
@@ -194,8 +188,8 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
     // Unload the requested container
     auto containerOptional = this->getCargo().getTopContainer(x, y);
     if (!containerOptional.has_value()) {
-        std::cout << "Error unloading container, could not get top container from cargo ("
-                  << containerPos.x() << ", " << containerPos.y() << ")" << std::endl;
+//        std::cout << "Error unloading container, could not get top container from cargo ("
+//                  << containerPos.x() << ", " << containerPos.y() << ")" << std::endl;
         failed = true;
     } else {
         auto container = containerOptional.value();
@@ -207,7 +201,7 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
                 ops.addOperation(op);
             } else { // CranesOperation failed
                 std::cout
-                        << "Error unloading container, crane operation failed to unload requested container: "
+//                        << "Error unloading container, crane operation failed to unload requested container: "
                         << op << std::endl;
 
                 failed = true;
@@ -234,6 +228,10 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
     }
 
     return ops;
+}
+
+OptionalContainer ContainerShip::getContainerById(const std::string &id) {
+    return cargo.getContainerById(id);
 }
 
 bool ContainerShip::isContainerOnShip(const std::string &containerId) {

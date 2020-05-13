@@ -79,6 +79,9 @@ public:
     */
     Operations unloadContainer(Port &port, const ContainerPosition &container);
 
+    /// Returns the container with the matching id. If not exists, return null.
+    OptionalContainer getContainerById(const std::string &id);
+
     bool isContainerOnShip(const std::string &containerId);
 
     // endregion
