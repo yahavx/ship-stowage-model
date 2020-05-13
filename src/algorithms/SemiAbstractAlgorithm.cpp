@@ -48,6 +48,41 @@ int SemiAbstractAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &c
 
 // region Functions
 
+int SemiAbstractAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
+    if (hasFatalError()) {  // Not initialized, or bad plan/route
+        createEmptyFile(outputFile);
+        return algoErrors;
+    }
+
+    Operations ops;
+    Errors errors;
+
+    PortId id = ship.getShipRoute().getFirstPort();
+    ContainerStorage storage = readPortCargoFromFile(inputFile, errors);
+    Port port(id, storage);
+
+    StringVector toReject = port.removeBadContainers(ship.getShipRoute(), errors);  // Get ids of all rejected containers (can contain duplicates)
+    ops.addRejectOperations(toReject);  // If its empty, nothing will be added
+
+    Containers containersToLoad;
+    if (!port.getStorage().isEmpty()) {
+        containersToLoad = getContainersToLoad(port);
+    }
+
+    if (ship.getShipRoute().isLastPort() && !containersToLoad.empty()) {
+        errors.addError({ErrorFlag::ContainersAtPort_LastPortHasContainers});
+        containersToLoad = Containers();
+    }
+
+    ops.addOperations(this->generateOperations(ship, port, containersToLoad, errors));  // Get ops for unloading and loading from ship
+
+    writePackingOperationsToFile(outputFile, ops);
+
+    ship.advanceToNextPort();  // pop the current port from the ShipRoute
+
+    return errors.toErrorFlag();
+}
+
 Containers SemiAbstractAlgorithm::getContainersToLoad(Port &port) {
     Containers containersToLoad;
     std::vector<PortId> alreadyCollected;  // To not collect from same port twice
@@ -60,6 +95,7 @@ Containers SemiAbstractAlgorithm::getContainersToLoad(Port &port) {
         for (auto &portSeen: alreadyCollected) {
             if (portSeen == currentPort) {
                 found = true;
+                break;
             }
         }
 
@@ -75,38 +111,6 @@ Containers SemiAbstractAlgorithm::getContainersToLoad(Port &port) {
 
 bool SemiAbstractAlgorithm::hasFatalError() {
     return algoErrors;
-}
-
-int SemiAbstractAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
-    if (hasFatalError()) {  // Not initialized, or bad plan/route
-        createEmptyFile(outputFile);
-        return algoErrors;
-    }
-
-    Operations ops;
-    Errors errors;
-
-    PortId id = ship.getShipRoute().getFirstPort();
-    ContainerStorage storage = readPortCargoFromFile(inputFile, errors);
-    Port port(id, storage);
-
-    StringVector toReject = port.removeBadContainers(ship.getShipRoute(), errors);
-    ops.addRejectOperations(toReject);  // If its empty, nothing will be added
-
-    Containers containersToLoad = getContainersToLoad(port);
-
-    if (ship.getShipRoute().isLastPort() && !containersToLoad.empty()) {
-        errors.addError({ErrorFlag::ContainersAtPort_LastPortHasContainers});
-        containersToLoad = Containers();
-    }
-
-    ops.addOperations(this->generateOperations(ship, port, containersToLoad, errors));  // Get ops for unloading and loading from ship
-
-    writePackingOperationsToFile(outputFile, ops);
-
-    ship.advanceToNextPort();  // pop the current port from the ShipRoute
-
-    return errors.toErrorFlag();
 }
 
 // endregion

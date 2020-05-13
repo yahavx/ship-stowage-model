@@ -47,10 +47,13 @@ public:
 
     std::string craneInstructionsRootFolder();
 
+    /// Crane instructions folder for a single algorithm-travel pair.
     std::string craneInstructionsSimulationFolder();
 
+    /// Single crane instructions file.
     std::string craneInstructionsOutputPath(const std::string &portId, int i);
 
+    /// Creates temporary cargo data file (for a port visit with no file).
     std::string createCargoDataTempFilePath(const std::string &portId);
 
     std::string cargoFilePath(const std::string &cargoFileName);

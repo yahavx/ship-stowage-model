@@ -86,7 +86,6 @@ std::string SimulatorDataManager::craneInstructionsOutputPath(const std::string 
 }
 
 std::string SimulatorDataManager::createCargoDataTempFilePath(const std::string &portId) {
-
     std::string filePath = tempFolder() + "/" + portId + "_dummy";
     createEmptyFile(filePath);
     return filePath;
@@ -94,7 +93,7 @@ std::string SimulatorDataManager::createCargoDataTempFilePath(const std::string 
 
 std::string SimulatorDataManager::cargoFilePath(const std::string &cargoFileName) {
     if (endsWith(cargoFileName, "dummy")) {
-        std::string fileName = extractFilenameFromPath(cargoFileName);
+        std::string fileName = extractFilenameFromPath(cargoFileName);  // TODO: isn't that already the name only?
         return tempFolder() + "/" + fileName;
     }
     return travelFolder() + "/" + cargoFileName;

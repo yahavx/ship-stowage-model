@@ -1,12 +1,12 @@
 COMP = g++-8.3.0
 
 SHARED_OBJS = $(NAIVE_SO) $(ROBUST_SO)
-NAIVE_SO = NaiveStowageAlgorithm.so
-ROBUST_SO = RobustStowageAlgorithm.so
-NAIVE = NaiveStowageAlgorithm.o
-ROBUST = RobustStowageAlgorithm.o
+NAIVE_SO = _305170987_a.so
+ROBUST_SO = _305170987_b.so
+NAIVE = _305170987_a.o
+ROBUST = _305170987_b.o
 
-OBJS = BadAlgorithm.o SemiAbstractAlgorithm.o $\
+OBJS = BadAlgorithm.o SemiAbstractAlgorithm.o NaiveStowageAlgorithm.o RobustStowageAlgorithm.o $\
 $\
 ../common/actors/AbstractWeightBalancer.o ../common/actors/ContainerShip.o ../common/actors/CranesManagement.o $\
 ../common/actors/NaiveWeightBalancer.o ../common/actors/Port.o $\

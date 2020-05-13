@@ -8,10 +8,6 @@
 #include "../common/utils/UtilFunctions.h"
 #include "RobustStowageAlgorithm.h"
 
-#ifdef RUNNING_ON_NOVA
-REGISTER_ALGORITHM(RobustStowageAlgorithm)
-#endif
-
 
 Operations RobustStowageAlgorithm::generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad, Errors &errors) {
     Operations operations;

@@ -11,6 +11,8 @@ add_executable(ship_stowage_model
         src/simulator/main.cpp
     # src
         # algorithms
+        src/algorithms/_305170987_a.cpp src/algorithms/_305170987_a.h
+        src/algorithms/_305170987_b.cpp src/algorithms/_305170987_b.h
         src/algorithms/BadAlgorithm.cpp src/algorithms/BadAlgorithm.h
         src/algorithms/NaiveStowageAlgorithm.cpp src/algorithms/NaiveStowageAlgorithm.h
         src/algorithms/RobustStowageAlgorithm.cpp src/algorithms/RobustStowageAlgorithm.h

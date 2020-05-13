@@ -23,6 +23,10 @@ public:
 
     int setWeightBalanceCalculator(WeightBalanceCalculator &calculator) override;
 
+    /**
+     * This method is implemented here, and is same for all inheriting algorithms (kind of general common template).
+     * It uses generateOperations (see below), which is implemented differently at each algorithm, and causes them to behave differently.
+     */
     int getInstructionsForCargo(const std::string& input_full_path_and_file_name, const std::string& output_full_path_and_file_name) override;
 
 protected:
@@ -33,6 +37,11 @@ protected:
     */
     virtual Operations generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad, Errors &errors) = 0;
 
+    /**
+     * Collect all containers that needs to be loaded from a port, according to the next ports in the route.
+     * @param port port to load from.
+     * @return list of containers, to load to the ship.
+     */
     virtual Containers getContainersToLoad(Port &port);
 
     bool hasFatalError();
