@@ -30,8 +30,8 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
                                                                                                                                      travelRootDir) {
 #ifndef RUNNING_ON_NOVA
     algorithmFactories.emplace_back([](){return std::make_unique<NaiveStowageAlgorithm>();});
-//    algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
-//    algorithmFactories.emplace_back([](){return std::make_unique<RobustStowageAlgorithm>();});
+    algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
+    algorithmFactories.emplace_back([](){return std::make_unique<RobustStowageAlgorithm>();});
 
     algorithmNames.push_back("Naive");
     algorithmNames.push_back("Bad");

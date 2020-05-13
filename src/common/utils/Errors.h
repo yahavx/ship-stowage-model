@@ -70,7 +70,7 @@ enum ErrorFlag : longUInt {
     AlgorithmError_UnloadedAndDidntLoadBack = 1ULL << 45,
     AlgorithmError_ExtraReport = 1ULL << 46,
     AlgorithmError_MissingReport = 1ULL << 52,
-    AlgorithmError_WeightBalancerRejectedOperation = 1ULL << 59,
+    AlgorithmError_WeightBalancerRejectedOperation = 1ULL << 60,
 
     // These are also kind of algorithm errors (they write the file)
     ReadOperations_InvalidFile = 1ULL << 47,
