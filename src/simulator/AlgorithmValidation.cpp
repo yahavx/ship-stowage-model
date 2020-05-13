@@ -36,6 +36,8 @@ void AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
         return;
     }
 
+    Container container = *currentPort.getContainer(containerId);  // we can safely assume its not null
+
     if (ship.getCargo().hasContainer(containerId)) {
         errors.addError({ErrorFlag::AlgorithmError_ContainerIdAlreadyOnShip, op.getContainerId()});
         return;
@@ -48,6 +50,14 @@ void AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
         errors.addError({ErrorFlag::AlgorithmError_LoadAboveNotLegal, op.getContainerId(), std::to_string(x), std::to_string(y)});
         return;
     }
+
+    // Check that it is approved by the weight balancer
+    if (ship.getBalanceCalculator().tryOperation('L', container.getWeight(), op.getFirstPositionX(), op.getFirstPositionY())) {
+        errors.addError({ErrorFlag::AlgorithmError_WeightBalancerRejectedOperation, "Load", containerId});
+        return;
+    }
+
+    // Success
 
     for (longUInt i = 0; i < temporaryContainersOnPort.size(); i++) {  // If this container was unloaded from ship before, mark we loaded him back
         if (temporaryContainersOnPort[i] == containerId) {

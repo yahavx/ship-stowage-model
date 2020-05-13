@@ -66,6 +66,9 @@ public:
     /// Checks if the port storage contains a container with the following id.
     bool hasContainer(const std::string &containerId);
 
+    /// Gets a container from port by his id. Doesn't remove the container. Null is returned if no container with this id exists on port.
+    OptionalContainer getContainer(const std::string& containerId);
+
     // endregion
 
     // region Printer

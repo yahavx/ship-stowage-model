@@ -20,9 +20,9 @@ $\
 ../common/io/FileReader.o ../common/io/ObjectsReader.o $\
 $\
 ../common/utils/Constants.o ../common/utils/Errors.o $\
-../common/utils/Printers.o ../common/utils/UtilFunctions.o $\
-$\
-../interfaces/WeightBalanceCalculator.o
+../common/utils/Printers.o ../common/utils/UtilFunctions.o # $\
+# $\
+# ../interfaces/WeightBalanceCalculator.o
 
 CPP_COMP_FLAG = -std=c++2a -Wall -Wextra -Werror -pedantic-errors -DNDEBUG -fPIC
 CPP_LINK_FLAG = -shared

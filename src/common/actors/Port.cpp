@@ -119,6 +119,15 @@ int Port::containersWithSameIdOnPort(const std::string &containerId) {
     return count;
 }
 
+
+bool Port::hasContainer(const std::string &containerId) {
+    return storage.hasContainer(containerId);
+}
+
+OptionalContainer Port::getContainer(const std::string& containerId) {
+    return storage.getContainer(containerId);
+}
+
 // endregion
 
 // region Printer
@@ -129,10 +138,6 @@ std::ostream &operator<<(std::ostream &os, const Port &port) {
     os << port.storage;
     os << "}" << std::endl;
     return os;
-}
-
-bool Port::hasContainer(const std::string &containerId) {
-    return storage.hasContainer(containerId);
 }
 
 // endregion

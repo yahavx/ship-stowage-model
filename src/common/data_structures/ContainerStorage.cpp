@@ -60,6 +60,16 @@ OptionalContainer ContainerStorage::removeContainer(const std::string &container
     return {};
 }
 
+OptionalContainer ContainerStorage::getContainer(const std::string& containerId) {
+    for (auto& container : containers) {
+        if (container.getId() == containerId) {
+            return container;
+        }
+    }
+
+    return std::nullopt;
+}
+
 void ContainerStorage::removeContainerFromEnd(const std::string &containerId) {
     for (int i = containers.size() - 1; i >= 0; i--) {
         if (containers[i].getId() == containerId) {

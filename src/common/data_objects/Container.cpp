@@ -83,10 +83,12 @@ bool Container::isIdInIsoFormat() const {
     return  (sum-tmp) == mymap[(id[n])];
 }
 
-Error Container::isContainerLegal(bool validateIdFormat) const {
-    if (validateIdFormat && !isIdInIsoFormat()) {
+Error Container::isContainerLegal() const {
+#ifndef SKIP_ISO_CHECK
+    if (!isIdInIsoFormat()) {
         return {ErrorFlag::ContainersAtPort_BadContainerID, id};
     }
+#endif
 
     if (weight <= 0) {
         return {ErrorFlag::ContainersAtPort_MissingOrBadWeight, intToStr(weight)};

@@ -208,6 +208,8 @@ std::string Error::toString() {
             return algorithmError + "Algorithm mistakenly reported error E" + param1;
         case AlgorithmError_MissingReport:
             return algorithmError + "Algorithm didn't report error E" + param1 + ", but it should have been";
+        case AlgorithmError_WeightBalancerRejectedOperation:
+            return algorithmError + param1 + " operation on container '" + param2 + "' was rejected by the ship's weight balance calculator";
 
             // Read packing operations (produced by algorithm)
         case ReadOperations_InvalidFile:

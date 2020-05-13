@@ -36,8 +36,32 @@ const std::tuple<int, int, int> &PackingOperation::getFirstPosition() const {
     return pos1;
 }
 
+int PackingOperation::getFirstPositionX() const {
+    return std::get<0>(pos1);
+}
+
+int PackingOperation::getFirstPositionY() const {
+    return std::get<1>(pos1);
+}
+
+int PackingOperation::getFirstPositionFloor() const {
+    return std::get<2>(pos1);
+}
+
 const std::tuple<int, int, int> &PackingOperation::getSecondPosition() const {
     return pos2;
+}
+
+int PackingOperation::getSecondPositionX() const {
+    return std::get<0>(pos2);
+}
+
+int PackingOperation::getSecondPositionY() const {
+    return std::get<1>(pos2);
+}
+
+int PackingOperation::getSecondPositionFloor() const {
+    return std::get<2>(pos2);
 }
 
 // endregion
