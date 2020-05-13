@@ -14,7 +14,7 @@ REGISTER_ALGORITHM(RobustStowageAlgorithm)
 #endif
 
 
-Operations RobustStowageAlgorithm::generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad) {
+Operations RobustStowageAlgorithm::generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad, Errors &errors) {
     Operations operations;
 
     std::vector<ContainerPosition> containersToUnload = ship.getCargo().getContainersForPort(port.getId());
@@ -32,7 +32,7 @@ Operations RobustStowageAlgorithm::generateOperations(ContainerShip &ship, Port 
         // There is space for all required containers, so load them from furthest port to nearest
         for (const Container &container: containersToLoad) {
             // Get instructions for adding the container
-            Operations loadOps = ship.loadContainerToLowestPositionAvailable(port, container);
+            Operations loadOps = ship.loadContainerToLowestPositionAvailable(port, container, errors);
 
             // Add load operations to set of all instructions
             operations.addOperations(loadOps);
@@ -43,7 +43,7 @@ Operations RobustStowageAlgorithm::generateOperations(ContainerShip &ship, Port 
             const Container &container = containersToLoad[i];
 
             // Get instructions for adding the container
-            Operations loadOps = ship.loadContainerToLowestPositionAvailable(port, container);
+            Operations loadOps = ship.loadContainerToLowestPositionAvailable(port, container, errors);
 
             // Add load operations to set of all instructions
             operations.addOperations(loadOps);

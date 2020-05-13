@@ -22,7 +22,7 @@ private:
     * Receives the ship, next id of port to dock into, and list of containers that needs to be loaded.
     * @return list of operations: first unload all containers for this port, and than load all the containers that needs to be loaded.
     */
-    Operations generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad) override;
+    Operations generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad, Errors &errors) override;
 };
 
 

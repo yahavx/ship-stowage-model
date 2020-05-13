@@ -66,7 +66,7 @@ void ContainerShip::advanceToNextPort() {
     }
 }
 
-Operations ContainerShip::loadContainerToArbitraryPosition(Port &port, const Container &container) {
+Operations ContainerShip::loadContainerToArbitraryPosition(Port &port, const Container &container, Errors &errors) {
     CranesManagement crane(*this, port);
     Operations ops = Operations();
     POS dims = this->shipPlan.getDimensions();
@@ -97,18 +97,19 @@ Operations ContainerShip::loadContainerToArbitraryPosition(Port &port, const Con
     if (z < 0) {
         ops = Operations();
         ops.addOperation({PackingType::reject, container.getId()});
+        errors.addError({ErrorFlag::ContainersAtPort_ContainersExceedsShipCapacity, container.getId()});
         return ops;
     }
 
     return ops;
 }
 
-Operations ContainerShip::loadContainerToLowestPositionAvailable(Port &port, const Container &container) {
+Operations ContainerShip::loadContainerToLowestPositionAvailable(Port &port, const Container &container, Errors &errors) {
     CranesManagement crane(*this, port);
     Operations ops = Operations();
     POS dims = this->shipPlan.getDimensions();
 
-    int minZ = std::get<0>(dims)+1, minX = -1, minY = -1;
+    int minZ = std::get<2>(dims)+1, minX = -1, minY = -1;
     // Loop over all possible ship matrix cells and try to load the container on top, until success
     for (int x = 0; (x < std::get<0>(dims)); x++) {
         for (int y = 0; (y < std::get<1>(dims)); y++) {
@@ -122,9 +123,10 @@ Operations ContainerShip::loadContainerToLowestPositionAvailable(Port &port, con
         }
     }
 
-    if (minZ < 0) {
+    if (minZ >= std::get<2>(dims)+1) {
         ops = Operations();
         ops.addOperation({PackingType::reject, container.getId()});
+        errors.addError({ErrorFlag::ContainersAtPort_ContainersExceedsShipCapacity, container.getId()});
         return ops;
     } else {
         auto op = PackingOperation(PackingType::load, container.getId(), {minX, minY, minZ});
@@ -135,7 +137,9 @@ Operations ContainerShip::loadContainerToLowestPositionAvailable(Port &port, con
             std::cout
                     << "Error loading container, crane operation failed to load container: "
                     << op << "\n";
-            return loadContainerToArbitraryPosition(port, container);
+            ops = Operations();
+            ops.addOperation({PackingType::reject, container.getId()});
+            return ops;
         }
     }
 
