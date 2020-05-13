@@ -67,9 +67,16 @@ void AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
 
 void AlgorithmValidation::validateUnloadOperation(const PackingOperation &op) {
     auto &pos = op.getFirstPosition();
-    int x = pos.X(), y = pos.Y();
-    auto containerOptional = ship.getCargo().getTopContainer(pos.X(), pos.Y());
+    int x = pos.X(), y = pos.Y(), z = pos.Z();
 
+    int currentHeight = ship.getCargo().currentTopHeight(x, y);
+
+    if (currentHeight != z + 1) {
+        errors.addError({ErrorFlag::AlgorithmError_UnloadBadPosition, op.getContainerId(), std::to_string(x), std::to_string(y)});
+        return;
+    }
+
+    auto containerOptional = ship.getCargo().getTopContainer(pos.X(), pos.Y());
     if (!containerOptional.has_value()) { // There are no containers at given (x,y)
         errors.addError({ErrorFlag::AlgorithmError_UnloadNoContainersAtPosition, op.getContainerId(), std::to_string(x), std::to_string(y)});
     } else {

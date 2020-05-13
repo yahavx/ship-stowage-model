@@ -191,6 +191,9 @@ std::string Error::toString() {
         case AlgorithmError_UnloadBadId:
             return algorithmError + "Received unload operation of container with ID '" + param1 +
                    "', at (" + param2 + +", " + param3 + ")" + " but there is container with non matching ID on top";
+        case AlgorithmError_UnloadBadPosition:
+            return algorithmError + "Received unload operation of container with ID '" + param1 +
+                   "', at (" + param2 + +", " + param3 + ")" + " but the floor specified is not legal";
         case AlgorithmError_UnloadNoContainersAtPosition:
             return algorithmError + "Received unload operation of container with ID '" + param1 +
                    "', at (" + param2 + +", " + param3 + ")" + " but there are no containers";

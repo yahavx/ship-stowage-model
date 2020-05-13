@@ -10,7 +10,7 @@
 
 #define MAX_ERROR_BIT 18  // max that is used by the algorithm (rest are for us)
 //#define RUNNING_ON_NOVA  // this will turn on all sections in code that work only on nova - disable note when on nova
-#define SKIP_ISO_CHECK
+//#define SKIP_ISO_CHECK
 
 enum ErrorFlag : longUInt {
     Success = 0,
@@ -61,6 +61,7 @@ enum ErrorFlag : longUInt {
     AlgorithmError_LoadAboveNotLegal = 1ULL << 37,
     AlgorithmError_UnloadNoContainersAtPosition = 1ULL << 38,
     AlgorithmError_UnloadBadId = 1ULL << 39,
+    AlgorithmError_UnloadBadPosition = 1ULL << 59,
     AlgorithmError_InvalidXYCoordinates = 1ULL << 40,
     AlgorithmError_MoveNoContainersAtPosition = 1ULL << 41,
     AlgorithmError_MoveBadId = 1ULL << 42,
@@ -69,7 +70,7 @@ enum ErrorFlag : longUInt {
     AlgorithmError_UnloadedAndDidntLoadBack = 1ULL << 45,
     AlgorithmError_ExtraReport = 1ULL << 46,
     AlgorithmError_MissingReport = 1ULL << 52,
-    AlgorithmError_WeightBalancerRejectedOperation = 1ULL << 59,
+    AlgorithmError_WeightBalancerRejectedOperation = 1ULL << 60,
 
     // These are also kind of algorithm errors (they write the file)
     ReadOperations_InvalidFile = 1ULL << 47,
