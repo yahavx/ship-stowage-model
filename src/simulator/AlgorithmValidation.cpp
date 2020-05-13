@@ -29,8 +29,7 @@ void AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
     if (!currentPort.hasContainer(containerId)) {
         if (isBadContainer(containerId)) {
             errors.addError({ErrorFlag::AlgorithmError_TriedToLoadButShouldReject, containerId, currentPort.getId()});
-        }
-        else {
+        } else {
             errors.addError({ErrorFlag::AlgorithmError_ContainerIdNotExistsOnPort, op.getContainerId()});
         }
         return;
@@ -59,18 +58,23 @@ void AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
 
 void AlgorithmValidation::validateUnloadOperation(const PackingOperation &op) {
     std::tuple<int, int, int> pos = op.getFirstPosition();
-    int x = std::get<0>(pos), y = std::get<1>(pos);
-    auto containerOptional = ship.getCargo().getTopContainer(std::get<0>(pos), std::get<1>(pos));
+    int x = std::get<0>(pos), y = std::get<1>(pos), z = std::get<2>(pos);
 
+    int currentHeight = ship.getCargo().currentTopHeight(x, y);
+
+    if (currentHeight != z + 1) {
+        errors.addError({ErrorFlag::AlgorithmError_UnloadBadPosition, op.getContainerId(), std::to_string(x), std::to_string(y)});
+        return;
+    }
+
+    auto containerOptional = ship.getCargo().getTopContainer(std::get<0>(pos), std::get<1>(pos));
     if (!containerOptional.has_value()) { // There are no containers at given (x,y)
         errors.addError({ErrorFlag::AlgorithmError_UnloadNoContainersAtPosition, op.getContainerId(), std::to_string(x), std::to_string(y)});
     } else {
         auto container = containerOptional.value();
         if (container.getId() != op.getContainerId()) { // The top container at given (x,y) has different id
             errors.addError({ErrorFlag::AlgorithmError_UnloadBadId, op.getContainerId(), std::to_string(x), std::to_string(y)});
-        }
-
-        else if (container.getDestPort() != currentPort.getId()) {  // This container is not for this port, track to make sure we load him back later
+        } else if (container.getDestPort() != currentPort.getId()) {  // This container is not for this port, track to make sure we load him back later
             temporaryContainersOnPort.push_back(container.getId());
         }
     }
@@ -112,7 +116,7 @@ void AlgorithmValidation::validateRejectOperation(const PackingOperation &op) {
     }
 
     // If ship is full then the reject is valid
-    if(this->ship.getCargo().isFull()) {
+    if (this->ship.getCargo().isFull()) {
         errors.addError({ErrorFlag::ContainersAtPort_ContainersExceedsShipCapacity, containerId});
         return;
     }

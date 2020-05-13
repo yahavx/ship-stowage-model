@@ -60,6 +60,7 @@ enum ErrorFlag : longUInt {
     AlgorithmError_LoadAboveNotLegal = 1ULL << 37,
     AlgorithmError_UnloadNoContainersAtPosition = 1ULL << 38,
     AlgorithmError_UnloadBadId = 1ULL << 39,
+    AlgorithmError_UnloadBadPosition = 1ULL << 59,
     AlgorithmError_InvalidXYCoordinates = 1ULL << 40,
     AlgorithmError_MoveNoContainersAtPosition = 1ULL << 41,
     AlgorithmError_MoveBadId = 1ULL << 42,
