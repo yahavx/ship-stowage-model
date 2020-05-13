@@ -30,6 +30,7 @@ add_executable(ship_stowage_model
             src/common/data_objects/Container.cpp src/common/data_objects/Container.h
             src/common/data_objects/ContainerPosition.cpp src/common/data_objects/ContainerPosition.h
             src/common/data_objects/Dimensions.cpp src/common/data_objects/Dimensions.h
+            src/common/data_objects/Operations.cpp src/common/data_objects/Operations.h
             src/common/data_objects/PackingOperation.cpp src/common/data_objects/PackingOperation.h
             src/common/data_objects/PortId.cpp src/common/data_objects/PortId.h
             src/common/data_objects/Position.cpp src/common/data_objects/Position.h

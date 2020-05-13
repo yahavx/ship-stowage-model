@@ -7,19 +7,41 @@
 
 // region Error categories
 
-int c_initFatalError = ShipPlan_FatalError_NoFileOrInvalidFirstLine | ShipPlan_FatalError_DuplicateData | ShipRoute_FatalError_NoFileOrNoLegalPorts |
-                       ShipRoute_FatalError_SinglePort;
+int c_initFatalError =
+        ShipPlan_FatalError_NoFileOrInvalidFirstLine
+        | ShipPlan_FatalError_DuplicateData
+        | ShipRoute_FatalError_NoFileOrNoLegalPorts
+        | ShipRoute_FatalError_SinglePort;
 
 longUInt c_algorithmInstructionErrors =
-        AlgorithmError_CraneOperationWithInvalidId | AlgorithmError_InvalidCraneOperation | AlgorithmError_LeftContainersAtPort
-        | AlgorithmError_ContainerIdAlreadyOnShip | AlgorithmError_ContainerIdNotExistsOnPort | AlgorithmError_ContainerIdNotExistsOnShip
-        | AlgorithmError_RejectedGoodContainer | AlgorithmError_LoadAboveNotLegal | AlgorithmError_UnloadNoContainersAtPosition | AlgorithmError_UnloadBadId
-        | AlgorithmError_UnloadBadPosition | AlgorithmError_InvalidXYCoordinates | AlgorithmError_MoveNoContainersAtPosition | AlgorithmError_MoveBadId
-        | AlgorithmError_MoveAboveNotLegal | AlgorithmError_TriedToLoadButShouldReject | AlgorithmError_UnloadedAndDidntLoadBack
-        | AlgorithmError_WeightBalancerRejectedOperation;  // | AlgorithmError_ExtraReport | AlgorithmError_MissingReport // TODO: decide if we count it as algorithm errors (dangerous)
+        AlgorithmError_CraneOperationWithInvalidId
+        | AlgorithmError_InvalidCraneOperation
+        | AlgorithmError_LeftContainersAtPort
+        | AlgorithmError_ContainerIdAlreadyOnShip
+        | AlgorithmError_ContainerIdNotExistsOnPort
+        | AlgorithmError_ContainerIdNotExistsOnShip
+        | AlgorithmError_RejectedGoodContainer
+        | AlgorithmError_LoadAboveNotLegal
+        | AlgorithmError_UnloadNoContainersAtPosition
+        | AlgorithmError_UnloadBadId
+        | AlgorithmError_UnloadBadPosition
+        | AlgorithmError_InvalidXYCoordinates
+        | AlgorithmError_MoveNoContainersAtPosition
+        | AlgorithmError_MoveBadId
+        | AlgorithmError_MoveAboveNotLegal
+        | AlgorithmError_TriedToLoadButShouldReject
+        | AlgorithmError_UnloadedAndDidntLoadBack
+        | AlgorithmError_WeightBalancerRejectedOperation;
+        // | AlgorithmError_ExtraReport
+        // | AlgorithmError_MissingReport
+        // TODO: decide if we count it as algorithm errors (may be dangerous)
 
-longUInt c_algorithmFileErrors = ReadOperations_InvalidFile | ReadOperations_InsufficientRowData | ReadOperations_InsufficientRowData_MoveOp
-                                 | ReadOperations_InvalidOperationType | ReadOperations_InvalidShipPosition;
+longUInt c_algorithmFileErrors =
+        ReadOperations_InvalidFile
+        | ReadOperations_InsufficientRowData
+        | ReadOperations_InsufficientRowData_MoveOp
+        | ReadOperations_InvalidOperationType
+        | ReadOperations_InvalidShipPosition;
 
 longUInt c_algorithmErrors = c_algorithmInstructionErrors | c_algorithmFileErrors;
 

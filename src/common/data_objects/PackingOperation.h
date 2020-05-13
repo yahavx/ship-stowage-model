@@ -17,7 +17,7 @@ enum class PackingType {
     load, unload, reject, move
 };
 
-/// Instructions for loading and unloading cargo to the ship
+/// Represents a single instruction, of loading/unloading/rejecting/moving cargo from/to the ship.
 class PackingOperation {
     PackingType type;
 
@@ -71,32 +71,5 @@ public:
     // endregion
 };
 
-/// A list of packing operations.
-class Operations {
-
-public:
-    std::vector<PackingOperation> ops;
-
-    // region Functions
-
-    void addOperation(const PackingOperation &op);
-
-    void addOperations(const Operations& ops);
-
-    /// Adds reject operation for all the ids.
-    void addRejectOperations(const StringVector &containerIds);
-
-    int size(bool excludeRejects = false) const;
-
-    bool empty() const;
-
-    // endregion
-
-    // region Printer
-
-    friend std::ostream &operator<<(std::ostream &os, const Operations &operations);
-
-    // endregion
-};
 
 #endif //SHIP_STOWAGE_MODEL_PACKINGOPERATION_H

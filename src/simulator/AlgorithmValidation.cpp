@@ -17,13 +17,15 @@ AlgorithmValidation::AlgorithmValidation(ContainerShip &ship, Port &currentPort,
 
 // region Validations
 
+// TODO: check all the validations are ok
+
 bool AlgorithmValidation::validatePosition(const Position &pos) {
     int x = pos.X(), y = pos.Y();
     auto &dims = ship.getShipPlan().getDimensions();
     return x >= 0 && x < dims.X() && y >= 0 && y < dims.Y();
 }
 
-void AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
+bool AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
     const auto &containerId = op.getContainerId();
     if (!currentPort.hasContainer(containerId)) {
         if (isBadContainer(containerId)) {
@@ -31,14 +33,14 @@ void AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
         } else {
             errors.addError({ErrorFlag::AlgorithmError_ContainerIdNotExistsOnPort, op.getContainerId()});
         }
-        return;
+        return false;
     }
 
-    Container container = *currentPort.getContainer(containerId);  // we can safely assume its not null
+    Container container = *currentPort.getContainer(containerId);  // We can safely assume its not null
 
     if (ship.getCargo().hasContainer(containerId)) {
         errors.addError({ErrorFlag::AlgorithmError_ContainerIdAlreadyOnShip, op.getContainerId()});
-        return;
+        return false;
     }
 
     auto pos = op.getFirstPosition();
@@ -46,13 +48,14 @@ void AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
     if (!ship.getCargo().canLoadContainerToPosition(pos.X(), pos.Y())) {
         int x = pos.X(), y = pos.Y();
         errors.addError({ErrorFlag::AlgorithmError_LoadAboveNotLegal, op.getContainerId(), std::to_string(x), std::to_string(y)});
-        return;
+        return false;
     }
 
     // Check that it is approved by the weight balancer
-    if (ship.getBalanceCalculator().tryOperation('L', container.getWeight(), op.getFirstPositionX(), op.getFirstPositionY())) {
+    auto calculatorResult = ship.getBalanceCalculator().tryOperation('L', container.getWeight(), pos.X(), pos.Y());
+    if (calculatorResult != WeightBalanceCalculator::APPROVED) {
         errors.addError({ErrorFlag::AlgorithmError_WeightBalancerRejectedOperation, "Load", containerId});
-        return;
+        return false;
     }
 
     // Success
@@ -63,9 +66,11 @@ void AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
             break;
         }
     }
+
+    return true;
 }
 
-void AlgorithmValidation::validateUnloadOperation(const PackingOperation &op) {
+bool AlgorithmValidation::validateUnloadOperation(const PackingOperation &op) {
     auto &pos = op.getFirstPosition();
     int x = pos.X(), y = pos.Y(), z = pos.Z();
 
@@ -73,32 +78,42 @@ void AlgorithmValidation::validateUnloadOperation(const PackingOperation &op) {
 
     if (currentHeight != z + 1) {
         errors.addError({ErrorFlag::AlgorithmError_UnloadBadPosition, op.getContainerId(), std::to_string(x), std::to_string(y)});
-        return;
+        return false;
     }
 
     auto containerOptional = ship.getCargo().getTopContainer(pos.X(), pos.Y());
     if (!containerOptional.has_value()) { // There are no containers at given (x,y)
         errors.addError({ErrorFlag::AlgorithmError_UnloadNoContainersAtPosition, op.getContainerId(), std::to_string(x), std::to_string(y)});
-    } else {
-        auto container = containerOptional.value();
-        if (container.getId() != op.getContainerId()) { // The top container at given (x,y) has different id
-            errors.addError({ErrorFlag::AlgorithmError_UnloadBadId, op.getContainerId(), std::to_string(x), std::to_string(y)});
-        } else if (container.getDestPort() != currentPort.getId()) {  // This container is not for this port, track to make sure we load him back later
-            temporaryContainersOnPort.push_back(container.getId());
-        }
+        return false;
     }
 
-    const std::string& containerId = op.getContainerId();
-    Container container = *ship.getCargo().getContainerById(containerId);
+    auto container = containerOptional.value();
+    if (container.getId() != op.getContainerId()) { // The top container at given (x,y) has different id
+        errors.addError({ErrorFlag::AlgorithmError_UnloadBadId, op.getContainerId(), std::to_string(x), std::to_string(y)});
+        return false;
+    }
+
+    const std::string &containerId = op.getContainerId();
+//    Container container = *ship.getCargo().getContainerById(containerId);  // We already get it from getTopContainer - check maybe verify this return the sames one (sanity check)
 
     // Check that it is approved by the weight balancer
-    if (!ship.getBalanceCalculator().tryOperation('U', container.getWeight(), op.getFirstPositionX(), op.getFirstPositionY())) {
+    auto calculatorResult = ship.getBalanceCalculator().tryOperation('U', container.getWeight(), pos.X(), pos.Y());
+    if (calculatorResult != WeightBalanceCalculator::APPROVED) {
         errors.addError({ErrorFlag::AlgorithmError_WeightBalancerRejectedOperation, "Unload", containerId});
+        return false;
     }
+
+    // Success
+
+    if (container.getDestPort() != currentPort.getId()) {  // This container is not for this port, track to make sure we load him back later
+        temporaryContainersOnPort.push_back(container.getId());
+    }
+
+    return true;
 }
 
-void AlgorithmValidation::validateMoveOperation(const PackingOperation &op) {
-    const Position& unloadFrom = op.getFirstPosition();
+bool AlgorithmValidation::validateMoveOperation(const PackingOperation &op) {
+    const Position &unloadFrom = op.getFirstPosition();
     int x = unloadFrom.X(), y = unloadFrom.Y();
 
     auto containerOptional = ship.getCargo().getTopContainer(unloadFrom.X(), unloadFrom.Y());
@@ -106,56 +121,65 @@ void AlgorithmValidation::validateMoveOperation(const PackingOperation &op) {
     // Check if can remove the container from it's current position
     if (!containerOptional.has_value()) { // There are no containers at given (x,y)
         errors.addError({ErrorFlag::AlgorithmError_MoveNoContainersAtPosition, op.getContainerId(), std::to_string(x), std::to_string(y)});
-    } else {
-        auto container = containerOptional.value();
-        if (container.getId() != op.getContainerId()) { // The top container at given (x,y) has different id
-            errors.addError({ErrorFlag::AlgorithmError_MoveBadId, op.getContainerId(), std::to_string(x), std::to_string(y)});
-        }
+        return false;
+    }
+
+    auto container = containerOptional.value();
+    if (container.getId() != op.getContainerId()) { // The top container at given (x,y) has different id
+        errors.addError({ErrorFlag::AlgorithmError_MoveBadId, op.getContainerId(), std::to_string(x), std::to_string(y)});
+        return false;
     }
 
     auto loadTo = op.getFirstPosition();
 
     // Check if it is possible to add container to given position
     x = loadTo.X(), y = loadTo.Y();
-    if (ship.getCargo().getAvailableFloorToLoadContainer(x, y)) {
+    if (!ship.getCargo().canLoadContainerToPosition(x, y)) {
         errors.addError({ErrorFlag::AlgorithmError_MoveAboveNotLegal, op.getContainerId(), std::to_string(x), std::to_string(y)});
+        return false;
     }
 
-    const std::string& containerId = op.getContainerId();
-    Container container = *ship.getCargo().getContainerById(containerId);
+    const std::string &containerId = op.getContainerId();
+//    Container container = *ship.getCargo().getContainerById(containerId);
 
     // Check that it is approved by the weight balancer
-    if (!ship.getBalanceCalculator().tryOperation('U', container.getWeight(), unloadFrom.X(), unloadFrom.Y())) {
+    auto calculatorResult = ship.getBalanceCalculator().tryOperation('U', container.getWeight(), unloadFrom.X(), unloadFrom.Y());
+    if (calculatorResult != WeightBalanceCalculator::APPROVED) {
         errors.addError({ErrorFlag::AlgorithmError_WeightBalancerRejectedOperation, "Move (unload)", containerId});
-        return;
+        return false;
     }
 
     // If unloading the container is legal, temporarily remove it and validate loading to new position
     ship.getCargo().removeTopContainer(unloadFrom.X(), unloadFrom.Y());
 
+    bool success = true;
+
     // Check that it is approved by the weight balancer
-    if (!ship.getBalanceCalculator().tryOperation('L', container.getWeight(), loadTo.X(), loadTo.Y())) {
+    calculatorResult = ship.getBalanceCalculator().tryOperation('L', container.getWeight(), loadTo.X(), loadTo.Y());
+    if (calculatorResult != WeightBalanceCalculator::APPROVED) {
         errors.addError({ErrorFlag::AlgorithmError_WeightBalancerRejectedOperation, "Move (load)", containerId});
+        success = false;
     }
 
-    // Load back the container we unloaded
+    // Load back the container we unloaded - in any case (error or not)
     ship.getCargo().loadContainerOnTop(unloadFrom.X(), unloadFrom.Y(), container);
+    return success;
 }
 
-void AlgorithmValidation::validateRejectOperation(const PackingOperation &op) {
+bool AlgorithmValidation::validateRejectOperation(const PackingOperation &op) {
     auto &containerId = op.getContainerId();
 
-    for (longUInt i = 0; i < badContainerIds.size(); i++) {
+    for (longUInt i = 0; i < badContainerIds.size(); i++) {  // TODO: maybe we need to check if his container is legal first
         if (badContainerIds[i] == containerId) {  // Successful reject
             badContainerIds.erase(badContainerIds.begin() + i);
-            return;
+            return true;
         }
     }
 
     // If ship is full then the reject is valid
     if (this->ship.getCargo().isFull()) {
         errors.addError({ErrorFlag::ContainersAtPort_ContainersExceedsShipCapacity, containerId});
-        return;
+        return true;  // its not an algorithm fault
     }
 
     // Rejection failed, need to find out why
@@ -164,45 +188,48 @@ void AlgorithmValidation::validateRejectOperation(const PackingOperation &op) {
     } else {  // This container doesn't exists
         errors.addError({ErrorFlag::AlgorithmError_ContainerIdNotExistsOnPort, containerId});
     }
+
+    return false;
 }
 
-void AlgorithmValidation::validatePackingOperation(const PackingOperation &op) {
-    const auto& pos1 = op.getFirstPosition(), pos2 = op.getSecondPosition();
+bool AlgorithmValidation::validatePackingOperation(const PackingOperation &op) {
+    const auto &pos1 = op.getFirstPosition(), pos2 = op.getSecondPosition();
     auto opType = op.getType();
 
+    // Validate the positions are legal
     if (opType != PackingType::reject) {
         if (!validatePosition(pos1)) {
             int x = pos1.X(), y = pos1.Y();
             errors.addError({ErrorFlag::AlgorithmError_InvalidXYCoordinates, op.getContainerId(), std::to_string(x), std::to_string(y)});
-            return;
+            return false;
         }
         if (opType == PackingType::move && !validatePosition(pos2)) {
             int x = pos2.X(), y = pos2.Y();
             errors.addError({ErrorFlag::AlgorithmError_InvalidXYCoordinates, op.getContainerId(), std::to_string(x), std::to_string(y)});
-            return;
+            return false;
         }
     }
 
+    // Validate the opeartion
     switch (opType) {
         case PackingType::load:
-            validateLoadOperation(op);
-            break;
+            return validateLoadOperation(op);
         case PackingType::unload:
-            validateUnloadOperation(op);
-            break;
+            return validateUnloadOperation(op);
         case PackingType::move:
-            validateMoveOperation(op);
-            break;
+            return validateMoveOperation(op);
         case PackingType::reject:
-            validateRejectOperation(op);
-            break;
-
+            return validateRejectOperation(op);
     }
+
+    return false;  // Unreachable
 }
 
-void AlgorithmValidation::validateNoContainersLeftOnPort() {
+bool AlgorithmValidation::validateNoContainersLeftOnPort() {
+    bool success = true;
     if (!temporaryContainersOnPort.empty()) {
         errors.addError(ErrorFlag::AlgorithmError_UnloadedAndDidntLoadBack);
+        success = true;  // We don't return now, to collect more errors if possible
     }
 
     for (auto &portId : ship.getShipRoute().getNextPortsSet()) {
@@ -211,10 +238,11 @@ void AlgorithmValidation::validateNoContainersLeftOnPort() {
             continue;
         if (!currentPort.getContainersForDestination(id).empty() && !ship.getCargo().isFull()) {
             errors.addError({ErrorFlag::AlgorithmError_LeftContainersAtPort, portId, currentPort.getId()});
+            success = true;
         }
     }
 
-    // TODO: check temporaryContainersOnPort, to know if containers were not loaded, or were unloaded and not loaded back? (maybe its useless and should be removed)
+    return success;
 }
 
 bool AlgorithmValidation::isBadContainer(const std::string &id) {

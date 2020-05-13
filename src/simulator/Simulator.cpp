@@ -32,11 +32,11 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
     algorithmFactories.emplace_back([](){return std::make_unique<NaiveStowageAlgorithm>();});
     algorithmNames.push_back("Naive");
 
-    algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
-    algorithmNames.push_back("Bad");
-
-    algorithmFactories.emplace_back([](){return std::make_unique<RobustStowageAlgorithm>();});
-    algorithmNames.push_back("Robust");
+//    algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
+//    algorithmNames.push_back("Bad");
+//
+//    algorithmFactories.emplace_back([](){return std::make_unique<RobustStowageAlgorithm>();});
+//    algorithmNames.push_back("Robust");
 #endif
 }
 
@@ -84,10 +84,6 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
 
     // region Init
 
-    ////////////////////////
-    ///     Init         ///
-    ////////////////////////
-
     std::cout << "Starting simulation (Algorithm = " << dataManager.algorithmName << ", Travel = " << dataManager.travelName << ")" << std::endl;
 
     WeightBalanceCalculator simWeightBalancer;
@@ -103,10 +99,6 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
     errors.addSimulationInitLog();
 
     // endregion
-
-    ////////////////////////
-    /// Start simulation ///
-    ////////////////////////
 
     std::cout << "The ship has started its journey!" << std::endl;
     printSeparator(1, 1);
@@ -256,7 +248,7 @@ ContainerShip Simulator::initSimulation(WeightBalanceCalculator &calculator, Err
 
 // region Perform operations and validations
 
-void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const { // Perform operations on local ship and port
+bool Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const { // Perform operations on local ship and port
 
     StringVector badContainers = port.removeBadContainers(ship.getShipRoute(), errors);  // Removes from port and returns the ids of the bad containers
     AlgorithmValidation validation(ship, port, badContainers, errors);
@@ -264,10 +256,9 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
 
     for (const PackingOperation &op : ops.ops) {
 
-        validation.validatePackingOperation(op);
-
-        if (errors.hasAlgorithmErrors())
-            return;
+        if (!validation.validatePackingOperation(op)) {
+            return false;
+        }
 
         if (op.getType() == PackingType::reject)
             continue;
@@ -285,9 +276,12 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
 
     ship.advanceToNextPort();
 
-    validation.validateNoContainersLeftOnPort();
+    if (!validation.validateNoContainersLeftOnPort()) {
+        return false;
+    }
 
     std::cout << ops;
+    return true;
 }
 
 // endregion

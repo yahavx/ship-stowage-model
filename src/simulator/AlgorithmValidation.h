@@ -29,18 +29,18 @@ public:
 private:
     bool validatePosition(const Position &pos);
 
-    void validateLoadOperation(const PackingOperation &op);
+    bool validateLoadOperation(const PackingOperation &op);
 
-    void validateUnloadOperation(const PackingOperation &op);
+    bool validateUnloadOperation(const PackingOperation &op);
 
-    void validateMoveOperation(const PackingOperation &op);
+    bool validateMoveOperation(const PackingOperation &op);
 
-    void validateRejectOperation(const PackingOperation &op);
+    bool validateRejectOperation(const PackingOperation &op);
 
 public:
-    void validatePackingOperation(const PackingOperation &op);
+    bool validatePackingOperation(const PackingOperation &op);
 
-    void validateNoContainersLeftOnPort();
+    bool validateNoContainersLeftOnPort();
 
     // endregion
 

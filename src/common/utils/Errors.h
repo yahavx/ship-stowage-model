@@ -10,7 +10,7 @@
 #include "Error.h"
 
 
-#define RUNNING_ON_NOVA  // this will turn on all sections in code that work only on nova - disable note when on nova
+//#define RUNNING_ON_NOVA  // this will turn on all sections in code that work only on nova - disable note when on nova
 #define SKIP_ISO_CHECK  // skip container ISO check (in simulator and algorithms)
 
 

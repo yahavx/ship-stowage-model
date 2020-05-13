@@ -9,6 +9,7 @@
 #include "../common/actors/ContainerShip.h"
 #include "../common/utils/Errors.h"
 #include "SimulatorDataManager.h"
+#include "../common/data_objects/Operations.h"
 #include <memory>
 #include <functional>
 
@@ -65,7 +66,8 @@ private:
 
     // region Perform operations
 
-    void performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const;
+    /// Perform operations on the ship, received by the algorithm. Returns true if there was an algorithm error in any of the operations.
+    bool performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const;
 
     // endregion
 

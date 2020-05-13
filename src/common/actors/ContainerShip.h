@@ -12,6 +12,7 @@
 #include "../data_objects/ShipRoute.h"
 #include "NaiveWeightBalancer.h"
 #include "../data_structures/Cargo.h"
+#include "../data_objects/Operations.h"
 
 class ContainerShip {
     ShipPlan shipPlan;

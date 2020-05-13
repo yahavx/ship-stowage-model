@@ -6,7 +6,7 @@ $\
 ../common/actors/NaiveWeightBalancer.o ../common/actors/Port.o $\
 $\
 ../common/data_objects/Container.o ../common/data_objects/ContainerPosition.o ../common/data_objects/Dimensions.o $\
-../common/data_objects/PackingOperation.o $\
+../common/data_objects/Operations.o ../common/data_objects/PackingOperation.o $\
 ../common/data_objects/PortId.o ../common/data_objects/Position.o ../common/data_objects/ShipPlan.o $\
 ../common/data_objects/ShipRoute.o $\
 $\

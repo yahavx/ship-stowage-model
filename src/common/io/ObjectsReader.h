@@ -8,6 +8,7 @@
 #include "../data_objects/ShipPlan.h"
 #include "../data_objects/ShipRoute.h"
 #include "../utils/Errors.h"
+#include "../data_objects/Operations.h"
 
 
 /**

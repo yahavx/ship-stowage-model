@@ -8,6 +8,7 @@
 #include "../interfaces/AbstractAlgorithm.h"
 #include "../common/actors/ContainerShip.h"
 #include "../common/utils/Errors.h"
+#include "../common/data_objects/Operations.h"
 
 
 class SemiAbstractAlgorithm : public AbstractAlgorithm {  // implements the basics that each algorithm use - all will inherit from this
