@@ -43,7 +43,19 @@ public:
 
     const std::tuple<int, int, int> &getFirstPosition() const;
 
+    int getFirstPositionX() const;
+
+    int getFirstPositionY() const;
+
+    int getFirstPositionFloor() const;
+
     const std::tuple<int, int, int> &getSecondPosition() const;
+
+    int getSecondPositionX() const;
+
+    int getSecondPositionY() const;
+
+    int getSecondPositionFloor() const;
 
     PackingType getType() const;
     // endregion

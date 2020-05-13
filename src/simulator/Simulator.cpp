@@ -30,8 +30,8 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
                                                                                                                                      travelRootDir) {
 #ifndef RUNNING_ON_NOVA
     algorithmFactories.emplace_back([](){return std::make_unique<NaiveStowageAlgorithm>();});
-    algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
-    algorithmFactories.emplace_back([](){return std::make_unique<RobustStowageAlgorithm>();});
+//    algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
+//    algorithmFactories.emplace_back([](){return std::make_unique<RobustStowageAlgorithm>();});
 
     algorithmNames.push_back("Naive");
     algorithmNames.push_back("Bad");
@@ -51,9 +51,6 @@ void Simulator::runSimulations() {
     StringVector travels = dataManager.collectLegalTravels(generalErrors);
     loadAlgorithmsDynamically(generalErrors);
     initResultsTable(resultsTable, travels, algorithmNames);  // add columns names and set table structure
-
-//    std::cout << generalErrors;
-//    std::cout << "Size of algorithms list: " << algorithmFactories.size() << std::endl;
 
     for (auto &travel: travels) {
         dataManager.setTravelName(extractFilenameFromPath(travel));
@@ -78,7 +75,7 @@ void Simulator::runSimulations() {
         dataManager.saveGeneralErrors(generalErrors);
     }
 
-    dataManager.cleanOutputFolders(generalErrors);  // remove temp and errors (if empty), can disable it to debug  // TODO: when calling with no parameter, it crashed in nova. check why (maybe the garbageCollector)
+    dataManager.cleanOutputFolders();  // remove temp and errors (if empty)
 }
 
 int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
@@ -260,16 +257,13 @@ ContainerShip Simulator::initSimulation(WeightBalanceCalculator &calculator, Err
 
 void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const { // Perform operations on local ship and port
 
-    // TODO: check that any containers that were loaded to the port to unload others, are back in ship
-    // TODO: ops can be empty, maybe we need to document it
-
     StringVector badContainers = port.removeBadContainers(ship.getShipRoute(), errors);  // Removes from port and returns the ids of the bad containers
     AlgorithmValidation validation(ship, port, badContainers, errors);
     CranesManagement crane(ship, port);
 
     for (const PackingOperation &op : ops.ops) {
 
-        validation.validatePackingOperation(op);  // TODO: add support + checks to all 4 commands
+        validation.validatePackingOperation(op);
 
         if (errors.hasAlgorithmErrors())
             return;
@@ -278,8 +272,7 @@ void Simulator::performPackingOperations(ContainerShip &ship, Port &port, const 
             continue;
 
         auto opResult = crane.preformOperation(op);
-        if (opResult ==
-            CraneOperationResult::FAIL_CONTAINER_NOT_FOUND) {  // TODO: this should generally always succeed - we need to validate before sending inst. to crane
+        if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND) {
             std::cout << "crane received illegal operation, didn't find container with ID: " << op.getContainerId() << std::endl;
             errors.addError({ErrorFlag::AlgorithmError_CraneOperationWithInvalidId, op.getContainerId(), port.getId(), op.toString()});
         }

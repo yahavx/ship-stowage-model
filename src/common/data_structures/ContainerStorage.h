@@ -55,6 +55,12 @@ public:
      */
     OptionalContainer removeContainer(const std::string& containerId);
 
+    /**
+     * Returns a container from this storage, by his id.
+     * @return the first appearance on port if exists, otherwise null.
+     */
+    OptionalContainer getContainer(const std::string& containerId);
+
     /// Removes the last appearance of a container from the port.
     void removeContainerFromEnd(const std::string& containerId);
 
