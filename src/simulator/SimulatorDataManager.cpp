@@ -19,6 +19,8 @@ SimulatorDataManager::SimulatorDataManager(const std::string &outputDir, const s
 
 void SimulatorDataManager::setTravelName(const std::string &travelName) {
     SimulatorDataManager::travelName = travelName;
+    shipPlanFilepath = "";  // reset
+    shipRouteFilepath = "";
 }
 
 void SimulatorDataManager::setAlgorithmName(const std::string &algorithmName) {
@@ -38,22 +40,32 @@ std::string SimulatorDataManager::errorsFolder() {
 }
 
 std::string SimulatorDataManager::shipPlanPath() {
+    if (shipPlanFilepath != "") {  // already calculated
+        return shipPlanFilepath;
+    }
+
     auto travelFiles = getFilesFromDirectory(travelFolder());
 
     for (auto& travelFile : travelFiles) {
         if (endsWith(travelFile, ".ship_plan")) {
+            shipPlanFilepath = travelFile;
             return travelFile;
         }
     }
 
-    return "";
+    return "";  // not found
 }
 
 std::string SimulatorDataManager::shipRoutePath() {
+    if (shipRouteFilepath != "") {  // already calculated
+        return shipRouteFilepath;
+    }
+
     auto travelFiles = getFilesFromDirectory(travelFolder());
 
     for (auto& travelFile : travelFiles) {
         if (endsWith(travelFile, ".route")) {
+            shipRouteFilepath = travelFile;
             return travelFile;
         }
     }
@@ -61,7 +73,7 @@ std::string SimulatorDataManager::shipRoutePath() {
     return "";
 }
 
-std::string SimulatorDataManager::craneInstructionsRootFolder() {
+std::string SimulatorDataManager::craneInstructionsRootFolder() {  // TODO: maybe we need to remove the /crane_instructions (generate under outputDir directly)
     return outputDir + "/crane_instructions";
 }
 

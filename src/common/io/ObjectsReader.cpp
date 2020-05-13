@@ -11,18 +11,37 @@
 #include <unordered_map>
 #include <set>
 
-//#define DEBUG
+
+// This is a bit ugly, but will carry on for now
+const std::string shipPlanWarning = "\t[Ship Route Warning] ";
+const std::string shipRouteWarning = "\t[Ship Route Warning] ";
+const std::string containersAtPortWarning = "\t[Containers At Port Warning] ";
+const std::string operationsWarning = "\t[Algorithm Warning] ";  // this relates to the file that the algorithm writes
+
 
 // general for this module:
 // TODO: remove all prints when we are sure we don't need them
 // TODO: check if we need to have in each data row exactly X tokens, or we can have extra and ignore them
 // TODO: match the correctness checks accordingly
-// TODO: for each error, we just say yes or no, maybe we want to count them instead
+
+
+/**
+ * Adds a warning if a data row has too many parameters.
+ *
+ * @param dataRow a data row, represented by a vector of tokens.
+ * @param errorPrefix since this is used by each of the functions below, the error prefix can't be hard coded, so this will indicate it.
+ * @param expected number of parameters expected.
+ * @param errors the error will be appended to this, if needed.
+ */
+void addExtraParametersWarningIfNeeded(const StringVector &dataRow, const std::string &errorPrefix, int expected, Errors &errors) {
+    int actual = dataRow.size();
+    if (actual > expected) {
+        errors.addError({FileInput_TooManyParameters, errorPrefix, intToStr(expected), intToStr(actual)});
+    }
+}
+
 
 ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors) {
-#ifdef DEBUG
-    std::cout << "Attempting to read ship plan..." << std::endl;
-#endif
     StringStringVector data = readFile(filePath);
     ShipPlan shipPlan;
     std::unordered_set<std::string> positionsWithData;  // To track duplicates
@@ -55,9 +74,7 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors) {
             continue;
         }
 
-        if (dataRow.size() != 3) {
-
-        }
+        addExtraParametersWarningIfNeeded(dataRow, shipPlanWarning, 3, errors);
 
         if (!isRowOnlyIntegers(dataRow)) {
             errors.addError(ErrorFlag::ShipPlan_BadLineFormat);
@@ -94,16 +111,10 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors) {
     }
 
     shipPlan.setHeights(heights);
-#ifdef DEBUG
-    std::cout << "Read ship plan successfully." << std::endl;
-#endif
     return shipPlan;
 }
 
 ShipRoute readShipRouteFromFile(const std::string &filePath, Errors &errors) {
-#ifdef DEBUG
-    std::cout << "Attempting to read ship route..." << std::endl;
-#endif
     StringStringVector data = readFile(filePath);
     ShipRoute shipRoute;
 
@@ -116,8 +127,10 @@ ShipRoute readShipRouteFromFile(const std::string &filePath, Errors &errors) {
 
     std::string previousPort;
 
-    for (StringVector dataRow : data) {
-        std::string token = dataRow[0];  // ignore extra tokens in a row
+    for (StringVector &dataRow : data) {
+        std::string &token = dataRow[0];
+
+        addExtraParametersWarningIfNeeded(dataRow, shipRouteWarning, 1, errors);
 
         if (!isEnglishWord(token) || token.length() != 5) {
             errors.addError(ErrorFlag::ShipRoute_BadPortSymbol);
@@ -138,33 +151,19 @@ ShipRoute readShipRouteFromFile(const std::string &filePath, Errors &errors) {
 
     if (ports.size() == 1) {
         errors.addError(ErrorFlag::ShipRoute_FatalError_SinglePort);
-//        std::cerr << "Error: read only one port" << std::endl;
         return shipRoute;
     }
 
     if (ports.size() == 0) {
         errors.addError(ErrorFlag::ShipRoute_FatalError_NoFileOrNoLegalPorts);
-//        std::cerr << "Error: couldn't read any port from route file" << std::endl;
         return shipRoute;
     }
 
-#ifdef DEBUG
-    std::cout << "Read ship route successfully." << std::endl;
-#endif
     shipRoute.setPorts(ports);
     return shipRoute;
 }
 
 ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &errors) {
-#ifdef DEBUG
-    std::cout << "Attempting to read cargo data..." << std::endl;
-#endif
-//    std::string fileName = extractFilenameFromPath(filePath, false);  // false keeps the .cargo_data  // TODO: we assume this can't happen now (we will send only valid files), remove this when we are sure
-//    if (!isCargoDataFileFormat(fileName)) {
-//        std::cerr << "Error: filename is in incorrect format, exiting" << std::endl;
-//        return std::nullopt;
-//    }
-
     Containers containers;
 
     if (!isFileExist(filePath)) {
@@ -175,12 +174,6 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &erro
     StringStringVector data = readFile(filePath);
 
     for (StringVector dataRow : data) {
-//        if (dataRow.size() < 3) {
-//            errors.addError(ErrorFlag::CargoData_MissingOrBadPortDest);  // the port dest is last - so he must be missing
-//            std::cout << "Warning: data row contains less than 3 arguments, ignoring" << std::endl;
-//            continue;
-//        }
-
         std::string id, weight, destPort;
 
         if (dataRow.size() > 0) {
@@ -193,6 +186,10 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &erro
             destPort = dataRow[2];
         }
 
+        if (data.size() > 2) {
+            addExtraParametersWarningIfNeeded(dataRow, containersAtPortWarning, 3, errors);
+        }
+
         if (id == "") {
             errors.addError(ErrorFlag::CargoData_MissingContainerID);
             continue;
@@ -202,18 +199,10 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &erro
         containers.push_back(Container(id, weightInt, PortId(destPort)));
     }
 
-#ifdef DEBUG
-    std::cout << "Read cargo data successfully." << std::endl;
-#endif
-
     return ContainerStorage(containers);
 }
 
 Operations readPackingOperationsFromFile(const std::string &filePath, Errors &errors) {
-#ifdef DEBUG
-    std::cout << "Attempting to read operations..." << std::endl;
-#endif
-
     Operations operations;
 
     if (!isFileExist(filePath)) {
@@ -224,9 +213,8 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
     StringStringVector data = readFile(filePath);
 
     for (StringVector dataRow : data) {
-        if (dataRow.size() < 2) {
+        if (dataRow.size() < 5) {
             errors.addError(ErrorFlag::ReadOperations_InsufficientRowData);
-//            std::cout << "Warning: data row contains less than 5 arguments, ignoring" << std::endl;
             continue;
         }
 
@@ -235,20 +223,24 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
 
         if (opStr.size() != 1 || (opStr[0] != 'L' && opStr[0] != 'U' && opStr[0] != 'M' && opStr[0] != 'R')) {
             errors.addError({ErrorFlag::ReadOperations_InvalidOperationType, opStr});
-//            std::cout << "Warning: invalid operation type, ignoring" << std::endl;
             continue;
         }
         PackingType packingType = packingTypeToString(opStr[0]);
 
         if (packingType == PackingType::reject) {
             operations.addOperation({packingType, containerId});
+            addExtraParametersWarningIfNeeded(dataRow, operationsWarning, 5, errors);
+            // The last 3 are also redundant in this case, but we don't warn because the format isn't very clear
             continue;
         }
 
         if (packingType == PackingType::move && dataRow.size() < 8) {
             errors.addError(ErrorFlag::ReadOperations_InsufficientRowData_MoveOp);
-//            std::cout << "Warning: data row contains less than 8 arguments for move operation, ignoring" << std::endl;
             continue;
+        }
+
+        if (packingType != PackingType::move) {  // Load or Unload
+            addExtraParametersWarningIfNeeded(dataRow, operationsWarning, 5, errors);
         }
 
         if (!isInteger(floorStr) || !isInteger(xStr) || !isInteger(yStr)) {
@@ -261,18 +253,19 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
             if (!isInteger(yStr)) {
                 errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, "y", yStr});
             }
-//            std::cout << "Warning: floor, x or y are not an integers, ignoring" << std::endl;
             continue;
         }
+
         int floor = strToInt(floorStr), x = strToInt(xStr), y = strToInt(yStr);
 
-        if (packingType != PackingType::move) {  // We have all the arguments needed
-            operations.addOperation({packingType, containerId, {floor, x, y}});
+        if (packingType != PackingType::move) {  // Load or Unload, We have all the arguments needed
+            operations.addOperation({packingType, containerId, {floor, x, y}});  // TODO: floor, x, y is passed in reverse order. check it is fine.
             continue;
         }
 
         // It's a move operation
 
+        addExtraParametersWarningIfNeeded(dataRow, operationsWarning, 8, errors);
         std::string floorStr2 = dataRow[5], xStr2 = dataRow[6], yStr2 = dataRow[7];
 
         if (!isInteger(floorStr2) || !isInteger(xStr2) || !isInteger(yStr2)) {
@@ -285,7 +278,6 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
             if (!isInteger(yStr2)) {
                 errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, "y", yStr2});
             }
-//            std::cout << "Warning: floor, x or y are not an integers, ignoring" << std::endl;
             continue;
         }
 
@@ -294,22 +286,12 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
         operations.addOperation({packingType, containerId, {floor, x, y}, {floor2, x2, y2}});
     }
 
-    if (operations.empty()) {
-        // TODO: do we need to report this?
-//        std::cout << "Warning: failed to read any operation" << std::endl;
-    }
-
-#ifdef DEBUG
-    std::cout << "Read operations successfully." << std::endl;
-#endif
     return operations;
 }
 
 bool writePackingOperationsToFile(const std::string &filePath, Operations &operations) {
     StringStringVector data;
-#ifdef DEBUG
-    std::cout << "Attempting to write operations..." << std::endl;
-#endif
+
     for (PackingOperation op : operations.ops) {
         data.emplace_back();  // add new row
         StringVector &currRow = data.back();
@@ -333,11 +315,8 @@ bool writePackingOperationsToFile(const std::string &filePath, Operations &opera
     bool res = writeFile(filePath, data);
 
     if (!res) {
-        std::cerr << "Error: couldn't write to file." << std::endl;
         return false;
     }
-#ifdef DEBUG
-    std::cout << "Wrote operations successfully." << std::endl;
-#endif
+
     return true;
 }

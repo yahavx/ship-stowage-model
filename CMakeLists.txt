@@ -43,8 +43,8 @@ add_executable(ship_stowage_model
             src/common/io/ObjectsReader.cpp src/common/io/ObjectsReader.h
 
             # utils
-            src/common/utils/Constants.cpp src/common/utils/Constants.h
-            src/common/utils/Definitions.h
+        src/common/utils/Definitions.h
+            src/common/utils/Error.cpp src/common/utils/Error.h
             src/common/utils/Errors.cpp src/common/utils/Errors.h
             src/common/utils/Printers.cpp src/common/utils/Printers.h
             src/common/utils/UtilFunctions.cpp src/common/utils/UtilFunctions.h

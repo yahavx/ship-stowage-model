@@ -20,7 +20,7 @@ $\
 $\
 ../common/io/FileReader.o ../common/io/ObjectsReader.o $\
 $\
-../common/utils/Constants.o ../common/utils/Errors.o $\
+../common/utils/Error.o ../common/utils/Errors.o $\
 ../common/utils/Printers.o ../common/utils/UtilFunctions.o ../common/utils/Vector3.o # $\
 # $\
 # ../interfaces/WeightBalanceCalculator.o

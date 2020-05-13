@@ -5,7 +5,6 @@
 #include "NaiveStowageAlgorithm.h"
 #include <algorithm>
 #include "../common/actors/CranesManagement.h"
-#include "../common/utils/Constants.h"
 #include "../common/io/ObjectsReader.h"
 #include "../common/utils/UtilFunctions.h"
 #include <unordered_set>

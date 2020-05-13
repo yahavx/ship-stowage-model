@@ -11,7 +11,6 @@
 #include <filesystem>
 #include "Simulator.h"
 #include "../interfaces/AbstractAlgorithm.h"
-#include "../common/utils/Constants.h"
 #include "../common/io/ObjectsReader.h"
 #include "../common/io/FileReader.h"
 #include "../common/utils/Definitions.h"

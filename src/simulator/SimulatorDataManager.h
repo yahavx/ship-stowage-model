@@ -11,6 +11,10 @@
 
 /// Handles all path generation and work against files.
 class SimulatorDataManager {
+private:
+    std::string shipPlanFilepath;
+    std::string shipRouteFilepath;
+
 public:
     std::string outputDir;
     std::string travelRootDir;
