@@ -4,4 +4,33 @@
 
 #include "Position.h"
 
-Position::Position(int x, int y, int floor) : x(x), y(y), floor(floor) {}
+// region Constructor
+
+Position::Position(int x, int y, int floor) : Vector3(x,y,floor) {}
+
+// endregion
+
+// region Getters and setters
+
+int Position::X() const {
+    return x;
+}
+
+int Position::Y() const {
+    return y;
+}
+
+int Position::Z() const {
+    return z;
+}
+
+// endregion
+
+// region Printer
+
+std::ostream &operator<<(std::ostream &os, const Position &position) {
+    os << "(" << position.x << ", " << position.y << ", " << position.z << ")";
+    return os;
+}
+
+// endregion

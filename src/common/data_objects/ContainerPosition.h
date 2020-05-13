@@ -9,16 +9,17 @@
 #include <vector>
 #include <tuple>
 #include "../utils/Definitions.h"
+#include "Position.h"
 
 /// Wraps a container with his position the ship
 class ContainerPosition {
     Container &container;
-    POS position;
+    Position position;
 
 public:
     // region Constructor
 
-    ContainerPosition(Container &container, const POS &position);
+    ContainerPosition(Container &container, const Position &position);
 
     // endregion
 
@@ -28,9 +29,9 @@ public:
 
     void setContainer(Container &container);
 
-    const POS &getPosition() const;
+    const Position &getPosition() const;
 
-    void setPosition(const POS &position);
+    void setPosition(const Position &position);
 
     int x() const;
     int y() const;

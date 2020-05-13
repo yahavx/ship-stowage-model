@@ -10,35 +10,46 @@
 #include <ostream>
 #include "Container.h"
 #include "../utils/Definitions.h"
+#include "Position.h"
+#include "Dimensions.h"
 
 
 class ShipPlan {
-    POS dimensions;
+    Dimensions dimensions;
     std::vector<std::vector<int>> heights;  // entry (x,y) is the minimum height allowed to place containers in position (x,y) in the ship
 
 public:
-    // Constructors
+    // region Constructors
+
     ShipPlan();
 
-    ShipPlan(const POS &dimensions, const std::vector<std::vector<int>> &heights);
+    ShipPlan(const Dimensions &dimensions, const std::vector<std::vector<int>> &heights);
 
+    // endregion
 
-    // Functions
+    // region Functions
+
     int getMinimumHeight(int x, int y);  // get the minimum height of (x,y)
 
+    // endregion
 
-    // Getters and setters
-    const POS &getDimensions() const;
+    // region Getters and setters
 
-    void setDimensions(const POS &dimensions);
+    const Dimensions &getDimensions() const;
+
+    void setDimensions(const Dimensions &dimensions);
 
     const std::vector<std::vector<int>> &getHeights() const;
 
     void setHeights(const std::vector<std::vector<int>> &heights);
 
+    // endregion
 
-    // Printer
+    // region Printer
+
     friend std::ostream &operator<<(std::ostream &os, const ShipPlan &plan);
+
+    // endregion
 };
 
 

@@ -69,11 +69,11 @@ void ContainerShip::advanceToNextPort() {
 Operations ContainerShip::loadContainerToArbitraryPosition(Port &port, const Container &container, Errors &errors) {
     CranesManagement crane(*this, port);
     Operations ops = Operations();
-    POS dims = this->shipPlan.getDimensions();
+    Dimensions dims = this->shipPlan.getDimensions();
     int z = -1;
     // Loop over all possible ship matrix cells and try to load the container on top, until success
-    for (int x = 0; (x < std::get<0>(dims)) && (z < 0); x++) {
-        for (int y = 0; (y < std::get<1>(dims)) && (z < 0); y++) {
+    for (int x = 0; (x < dims.X()) && (z < 0); x++) {
+        for (int y = 0; (y < dims.Y()) && (z < 0); y++) {
             WeightBalanceCalculator::BalanceStatus status = this->balanceCalculator->tryOperation('L', container.getWeight(), x, y);
             if (status == WeightBalanceCalculator::BalanceStatus::APPROVED) {
                 z = this->getCargo().getAvailableFloorToLoadContainer(x, y);
@@ -107,12 +107,12 @@ Operations ContainerShip::loadContainerToArbitraryPosition(Port &port, const Con
 Operations ContainerShip::loadContainerToLowestPositionAvailable(Port &port, const Container &container, Errors &errors) {
     CranesManagement crane(*this, port);
     Operations ops = Operations();
-    POS dims = this->shipPlan.getDimensions();
+    const Dimensions &dims = this->shipPlan.getDimensions();
 
-    int minZ = std::get<2>(dims)+1, minX = -1, minY = -1;
+    int minZ = dims.Z()+1, minX = -1, minY = -1;
     // Loop over all possible ship matrix cells and try to load the container on top, until success
-    for (int x = 0; (x < std::get<0>(dims)); x++) {
-        for (int y = 0; (y < std::get<1>(dims)); y++) {
+    for (int x = 0; (x < dims.X()); x++) {
+        for (int y = 0; (y < dims.Y()); y++) {
             WeightBalanceCalculator::BalanceStatus status = this->balanceCalculator->tryOperation('L', container.getWeight(), x, y);
             if (status == WeightBalanceCalculator::BalanceStatus::APPROVED) {
                 int z = this->getCargo().getAvailableFloorToLoadContainer(x, y);
@@ -123,7 +123,7 @@ Operations ContainerShip::loadContainerToLowestPositionAvailable(Port &port, con
         }
     }
 
-    if (minZ >= std::get<2>(dims)+1) {
+    if (minZ >= dims.Z()+1) {
         ops = Operations();
         ops.addOperation({PackingType::reject, container.getId()});
         errors.addError({ErrorFlag::ContainersAtPort_ContainersExceedsShipCapacity, container.getId()});
@@ -221,7 +221,7 @@ Operations ContainerShip::unloadContainer(Port &port, const ContainerPosition &c
     for (std::size_t i = 0, max = containersOnTop.size(); i < max; i++) {
         Container cont = containersOnTop[i];
         // TODO: check if balance calculator allows to load back, if not load to another place
-        auto op = PackingOperation(PackingType::load, cont.getId(), {x, y, z + i});
+        auto op = PackingOperation(PackingType::load, cont.getId(), {x, y, static_cast<int>(z + i)});
         crane.preformOperation(op);
         ops.addOperation(op);
     }

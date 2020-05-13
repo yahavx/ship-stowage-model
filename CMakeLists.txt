@@ -27,6 +27,7 @@ add_executable(ship_stowage_model
         # data_objects
             src/common/data_objects/Container.cpp src/common/data_objects/Container.h
             src/common/data_objects/ContainerPosition.cpp src/common/data_objects/ContainerPosition.h
+            src/common/data_objects/Dimensions.cpp src/common/data_objects/Dimensions.h
             src/common/data_objects/PackingOperation.cpp src/common/data_objects/PackingOperation.h
             src/common/data_objects/PortId.cpp src/common/data_objects/PortId.h
             src/common/data_objects/Position.cpp src/common/data_objects/Position.h
@@ -47,6 +48,7 @@ add_executable(ship_stowage_model
             src/common/utils/Errors.cpp src/common/utils/Errors.h
             src/common/utils/Printers.cpp src/common/utils/Printers.h
             src/common/utils/UtilFunctions.cpp src/common/utils/UtilFunctions.h
+            src/common/utils/Vector3.cpp src/common/utils/Vector3.h
 
         # interfaces
         src/interfaces/AbstractAlgorithm.h

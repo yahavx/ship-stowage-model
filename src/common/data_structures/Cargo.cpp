@@ -10,8 +10,8 @@
 Cargo::Cargo() {}
 
 Cargo::Cargo(const ShipPlan &shipPlan) : shipPlan(shipPlan) {
-    POS dims = shipPlan.getDimensions();
-    auto x = std::get<0>(dims), y = std::get<1>(dims);
+    Dimensions dims = shipPlan.getDimensions();
+    auto x = dims.X(), y = dims.Y();
     this->containers = std::vector<std::vector<Containers>>(x, std::vector<Containers>(y, Containers()));
 }
 
@@ -20,11 +20,11 @@ Cargo::Cargo(const ShipPlan &shipPlan) : shipPlan(shipPlan) {
 // region Functions
 
 bool validateXY(int x, int y, const ShipPlan &shipPlan) {
-    POS dims = shipPlan.getDimensions();
-    if (x < 0 || x >= std::get<0>(dims))
+    Dimensions dims = shipPlan.getDimensions();
+    if (x < 0 || x >= dims.X())
         return false;
 
-    if (y < 0 || y >= std::get<1>(dims))
+    if (y < 0 || y >= dims.Y())
         return false;
 
     return true;
@@ -62,7 +62,7 @@ int Cargo::getAvailableFloorToLoadContainer(int x, int y) const {
     if (!validateXY(x, y, shipPlan))
         return -1;
 
-    int maxHeight = std::get<2>(shipPlan.getDimensions());
+    int maxHeight = shipPlan.getDimensions().Z();
     int currentHeight = currentTopHeight(x, y);
     if (currentHeight >= maxHeight)
         return -1;
@@ -74,7 +74,7 @@ int Cargo::loadContainerOnTop(int x, int y, const Container &container) {
     if (!validateXY(x, y, shipPlan))
         return -1;
 
-    int maxHeight = std::get<2>(shipPlan.getDimensions());
+    int maxHeight = shipPlan.getDimensions().Z();
     int currentHeight = currentTopHeight(x, y);
     if (currentHeight >= maxHeight)
         return -1;
@@ -89,9 +89,9 @@ int Cargo::loadContainerOnTop(int x, int y, const Container &container) {
 std::vector<ContainerPosition> Cargo::getContainersForPort(const PortId &portId) const {
     std::vector<ContainerPosition> result = std::vector<ContainerPosition>();
 
-    POS dims = shipPlan.getDimensions();
-    for (int x = 0; x < std::get<0>(dims); x++)
-        for (int y = 0; y < std::get<1>(dims); y++) {
+    Dimensions dims = shipPlan.getDimensions();
+    for (int x = 0; x < dims.X(); x++)
+        for (int y = 0; y < dims.Y(); y++) {
             Containers xyContainers = containers[x][y];
 
             for (int z = xyContainers.size() - 1; z >= 0; z--)
@@ -117,27 +117,14 @@ int Cargo::currentTopHeight(int x, int y) const {
 
 bool Cargo::hasContainer(std::string containerId) {
     return containerIds.find(containerId) != containerIds.end();
-
-    // TODO: remove after making sure the above works
-    POS dims = shipPlan.getDimensions();
-    for (int x = 0; x < std::get<0>(dims); x++)
-        for (int y = 0; y < std::get<1>(dims); y++) {
-            Containers xyContainers = containers[x][y];
-
-            for (longUInt z = 0; z < xyContainers.size(); z--)
-                if (xyContainers[z].getId() == containerId)
-                    return true;
-        }
-
-    return false;
 }
 
 bool Cargo::isFull() {
-    POS dims = shipPlan.getDimensions();
-    for (int x = 0; x < std::get<0>(dims); x++)
-        for (int y = 0; y < std::get<1>(dims); y++) {
+    const Dimensions &dims = shipPlan.getDimensions();
+    for (int x = 0; x < dims.X(); x++)
+        for (int y = 0; y < dims.Y(); y++) {
             Containers xyContainers = containers[x][y];
-            if ((int) xyContainers.size() < std::get<2>(dims) - shipPlan.getHeights()[x][y])
+            if ((int) xyContainers.size() < dims.Z() - shipPlan.getHeights()[x][y])
                 return false;
         }
 
@@ -145,12 +132,12 @@ bool Cargo::isFull() {
 }
 
 int Cargo::numberOfEmptyPositions() {
-    POS dims = shipPlan.getDimensions();
+    const Dimensions &dims = shipPlan.getDimensions();
     int sum = 0;
-    for (int x = 0; x < std::get<0>(dims); x++)
-        for (int y = 0; y < std::get<1>(dims); y++) {
+    for (int x = 0; x < dims.X(); x++)
+        for (int y = 0; y < dims.Y(); y++) {
             Containers xyContainers = containers[x][y];
-            sum += (std::get<2>(dims) - shipPlan.getHeights()[x][y]) - xyContainers.size();
+            sum += (dims.Z() - shipPlan.getHeights()[x][y]) - xyContainers.size();
         }
 
     return sum;

@@ -27,7 +27,7 @@ public:
     // region Validations
 
 private:
-    bool validatePosition(POS pos);
+    bool validatePosition(const Position &pos);
 
     void validateLoadOperation(const PackingOperation &op);
 

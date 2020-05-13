@@ -7,7 +7,7 @@
 
 // region Constructor
 
-ContainerPosition::ContainerPosition(Container &container, const POS &position) : container(
+ContainerPosition::ContainerPosition(Container &container, const Position &position) : container(
         container), position(position) {}
 
 // endregion
@@ -22,24 +22,24 @@ void ContainerPosition::setContainer(Container &container) {
     ContainerPosition::container = container;
 }
 
-const POS &ContainerPosition::getPosition() const {
+const Position &ContainerPosition::getPosition() const {
     return position;
 }
 
-void ContainerPosition::setPosition(const POS &position) {
+void ContainerPosition::setPosition(const Position &position) {
     ContainerPosition::position = position;
 }
 
 int ContainerPosition::x() const {
-    return std::get<0>(position);
+    return position.X();
 }
 
 int ContainerPosition::y() const {
-    return std::get<1>(position);
+    return position.Y();
 }
 
 int ContainerPosition::z() const {
-    return std::get<2>(position);
+    return position.Z();
 }
 
 // endregion

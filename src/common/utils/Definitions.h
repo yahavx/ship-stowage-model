@@ -26,9 +26,9 @@ typedef std::vector<std::string> StringVector;
 
 typedef std::vector<std::vector<std::string>> StringStringVector;
 
-typedef std::tuple<int, int, int> POS;
+// typedef std::tuple<int, int, int> POS;  // deprecated
 
-//typedef std::vector<PackingOperation> Operations;  // there is a class now
+// typedef std::vector<PackingOperation> Operations; // deprecated
 
 typedef std::map<std::string, std::vector<std::string>> StringToStringVectorMap;
 

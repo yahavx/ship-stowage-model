@@ -19,8 +19,8 @@ CraneOperationResult preformLoadOperation(const PackingOperation &op, Port &port
         return CraneOperationResult::FAIL_CONTAINER_NOT_FOUND;
     }
     auto container = containerOptional.value();
-    std::tuple<int, int, int> pos = op.getFirstPosition();
-    int result = ship.getCargo().loadContainerOnTop(std::get<0>(pos), std::get<1>(pos), container);
+    const Position &pos = op.getFirstPosition();
+    int result = ship.getCargo().loadContainerOnTop(pos.X(), pos.Y(), container);
 
     // If load to ship failed, put container back at port and return false
     if (result < 0) {
@@ -32,11 +32,11 @@ CraneOperationResult preformLoadOperation(const PackingOperation &op, Port &port
 }
 
 CraneOperationResult preformUnloadOperation(const PackingOperation &op, Port &port, ContainerShip &ship) {
-    std::tuple<int, int, int> pos = op.getFirstPosition();
-    auto containerOptional = ship.getCargo().getTopContainer(std::get<0>(pos), std::get<1>(pos));
+    const Position &pos = op.getFirstPosition();
+    auto containerOptional = ship.getCargo().getTopContainer(pos.X(), pos.Y());
     if (!containerOptional.has_value()) {
         std::cout << "Error unloading container, could not remove top container from cargo ("
-                  << std::get<0>(pos) << ", " << std::get<1>(pos) << ")" << std::endl;
+                  << pos.X() << ", " << pos.Y() << ")" << std::endl;
         return CraneOperationResult::FAIL_ILLEGAL_OP;
     }
     auto container = containerOptional.value();
@@ -44,21 +44,21 @@ CraneOperationResult preformUnloadOperation(const PackingOperation &op, Port &po
         return CraneOperationResult::FAIL_ILLEGAL_OP;
     }
 
-    ship.getCargo().removeTopContainer(std::get<0>(pos), std::get<1>(pos));
+    ship.getCargo().removeTopContainer(pos.X(), pos.Y());
     port.addContainer(container);
 
     return CraneOperationResult::SUCCESS;
 }
 
 CraneOperationResult preformMoveOperation(const PackingOperation &op, ContainerShip &ship) {
-    std::tuple<int, int, int> unloadFrom = op.getFirstPosition();
-    std::tuple<int, int, int> loadTo = op.getSecondPosition();
-    auto containerOptional = ship.getCargo().getTopContainer(std::get<0>(unloadFrom), std::get<1>(unloadFrom));
+    const Position &unloadFrom = op.getFirstPosition();
+    const Position &loadTo = op.getSecondPosition();
+    auto containerOptional = ship.getCargo().getTopContainer(unloadFrom.X(), unloadFrom.Y());
 
     // If can't remove container do nothing and return error
     if (!containerOptional.has_value()) {
         std::cout << "Error moving container, could not remove top container from cargo ("
-                  << std::get<0>(unloadFrom) << ", " << std::get<1>(unloadFrom) << ")" << std::endl;
+                  << unloadFrom.X() << ", " << unloadFrom.Y() << ")" << std::endl;
         return CraneOperationResult::FAIL_ILLEGAL_OP;
     }
     auto container = containerOptional.value();
@@ -66,17 +66,16 @@ CraneOperationResult preformMoveOperation(const PackingOperation &op, ContainerS
         return CraneOperationResult::FAIL_ILLEGAL_OP;
     }
 
-
     // If can't load to container to requested position do nothing and return error
-    if (!ship.getCargo().getAvailableFloorToLoadContainer(std::get<0>(loadTo), std::get<1>(loadTo))) {
+    if (!ship.getCargo().getAvailableFloorToLoadContainer(loadTo.X(), loadTo.Y())) {
         std::cout << "Error moving container, could not add container on top ("
-                  << std::get<0>(loadTo) << ", " << std::get<1>(loadTo) << ")" << std::endl;
+                  << loadTo.X() << ", " << loadTo.Y() << ")" << std::endl;
         return CraneOperationResult::FAIL_ILLEGAL_OP;
     }
 
     //If can remove container and add to required position, do the action
-    ship.getCargo().removeTopContainer(std::get<0>(unloadFrom), std::get<1>(unloadFrom));
-    ship.getCargo().loadContainerOnTop(std::get<0>(loadTo), std::get<1>(loadTo), container);
+    ship.getCargo().removeTopContainer(unloadFrom.X(), unloadFrom.Y());
+    ship.getCargo().loadContainerOnTop(loadTo.X(), loadTo.Y(), container);
 
     return CraneOperationResult::SUCCESS;
 }

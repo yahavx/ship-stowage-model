@@ -13,12 +13,12 @@
 PackingOperation::PackingOperation(PackingType type, const std::string &containerId) : type(type), containerId(containerId), pos1({-1, -1, -1}),
                                                                                        pos2({-1, -1, -1}) {}
 
-PackingOperation::PackingOperation(PackingType type, const std::string &containerId, const std::tuple<int, int, int> &pos1) : type(type),
+PackingOperation::PackingOperation(PackingType type, const std::string &containerId, const Position &pos1) : type(type),
                                                                                                                               containerId(containerId),
                                                                                                                               pos1(pos1), pos2({-1, -1, -1}) {}
 
-PackingOperation::PackingOperation(PackingType type, const std::string &containerId, const std::tuple<int, int, int> &pos1,
-                                   const std::tuple<int, int, int> &pos2) : type(type), containerId(containerId), pos1(pos1), pos2(pos2) {}
+PackingOperation::PackingOperation(PackingType type, const std::string &containerId, const Position &pos1,
+                                   const Position &pos2) : type(type), containerId(containerId), pos1(pos1), pos2(pos2) {}
 
 // endregion
 
@@ -32,36 +32,36 @@ const std::string &PackingOperation::getContainerId() const {
     return containerId;
 }
 
-const std::tuple<int, int, int> &PackingOperation::getFirstPosition() const {
+const Position &PackingOperation::getFirstPosition() const {
     return pos1;
 }
 
 int PackingOperation::getFirstPositionX() const {
-    return std::get<0>(pos1);
+    return pos1.X();
 }
 
 int PackingOperation::getFirstPositionY() const {
-    return std::get<1>(pos1);
+    return pos1.Y();
 }
 
 int PackingOperation::getFirstPositionFloor() const {
-    return std::get<2>(pos1);
+    return pos1.Z();
 }
 
-const std::tuple<int, int, int> &PackingOperation::getSecondPosition() const {
+const Position &PackingOperation::getSecondPosition() const {
     return pos2;
 }
 
 int PackingOperation::getSecondPositionX() const {
-    return std::get<0>(pos2);
+    return pos2.X();
 }
 
 int PackingOperation::getSecondPositionY() const {
-    return std::get<1>(pos2);
+    return pos2.Y();
 }
 
 int PackingOperation::getSecondPositionFloor() const {
-    return std::get<2>(pos2);
+    return pos2.Z();
 }
 
 // endregion
@@ -71,7 +71,7 @@ int PackingOperation::getSecondPositionFloor() const {
 std::ostream &operator<<(std::ostream &os, const PackingOperation &operation) {
     os << "Op('" << packingTypeFromString(operation.type) << "', ContainerID=" << operation.containerId;
     os << ", Position=" << operation.pos1;
-    if (std::get<0>(operation.pos2) != -1) {  // TODO: make adaptions after we add move operation
+    if (operation.pos2.X() != -1) {  // TODO: make adaptions after we add move operation
         os << " To " << operation.pos2;
     }
     os << ")";
@@ -94,8 +94,9 @@ std::string PackingOperation::operationToString() const {
 }
 
 std::string PackingOperation::toString() const {
-    int x1 = std::get<0>(pos1), y1 = std::get<1>(pos1), z1 = std::get<2>(pos1);
-    int x2 = std::get<0>(pos2), y2 = std::get<1>(pos2), z2 = std::get<2>(pos2);
+    int x1 = pos1.X(), y1 = pos1.Y(), z1 = pos1.Z();
+    int x2 = pos2.X(), y2 = pos2.Y(), z2 = pos2.Z();
+
     std::string p1 = "(" + intToStr(x1) + ", " + intToStr(y1) + "), floor " + intToStr(z1);
     std::string p2 = "(" + intToStr(x2) + ", " + intToStr(y2) + "), floor " + intToStr(z2);
 

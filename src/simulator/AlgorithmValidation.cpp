@@ -17,11 +17,10 @@ AlgorithmValidation::AlgorithmValidation(ContainerShip &ship, Port &currentPort,
 
 // region Validations
 
-bool AlgorithmValidation::validatePosition(POS pos) {
-    return std::get<0>(pos) >= 0 &&
-           std::get<0>(pos) < std::get<0>(ship.getShipPlan().getDimensions()) &&
-           std::get<1>(pos) >= 0 &&
-           std::get<1>(pos) < std::get<1>(ship.getShipPlan().getDimensions());
+bool AlgorithmValidation::validatePosition(const Position &pos) {
+    int x = pos.X(), y = pos.Y();
+    auto &dims = ship.getShipPlan().getDimensions();
+    return x >= 0 && x < dims.X() && y >= 0 && y < dims.Y();
 }
 
 void AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
@@ -29,8 +28,7 @@ void AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
     if (!currentPort.hasContainer(containerId)) {
         if (isBadContainer(containerId)) {
             errors.addError({ErrorFlag::AlgorithmError_TriedToLoadButShouldReject, containerId, currentPort.getId()});
-        }
-        else {
+        } else {
             errors.addError({ErrorFlag::AlgorithmError_ContainerIdNotExistsOnPort, op.getContainerId()});
         }
         return;
@@ -45,8 +43,8 @@ void AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
 
     auto pos = op.getFirstPosition();
     // Check if it is possible to load container to given position
-    if (!ship.getCargo().canLoadContainerToPosition(std::get<0>(pos), std::get<1>(pos))) {
-        int x = std::get<0>(pos), y = std::get<1>(pos);
+    if (!ship.getCargo().canLoadContainerToPosition(pos.X(), pos.Y())) {
+        int x = pos.X(), y = pos.Y();
         errors.addError({ErrorFlag::AlgorithmError_LoadAboveNotLegal, op.getContainerId(), std::to_string(x), std::to_string(y)});
         return;
     }
@@ -68,9 +66,9 @@ void AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
 }
 
 void AlgorithmValidation::validateUnloadOperation(const PackingOperation &op) {
-    std::tuple<int, int, int> pos = op.getFirstPosition();
-    int x = std::get<0>(pos), y = std::get<1>(pos);
-    auto containerOptional = ship.getCargo().getTopContainer(std::get<0>(pos), std::get<1>(pos));
+    auto &pos = op.getFirstPosition();
+    int x = pos.X(), y = pos.Y();
+    auto containerOptional = ship.getCargo().getTopContainer(pos.X(), pos.Y());
 
     if (!containerOptional.has_value()) { // There are no containers at given (x,y)
         errors.addError({ErrorFlag::AlgorithmError_UnloadNoContainersAtPosition, op.getContainerId(), std::to_string(x), std::to_string(y)});
@@ -78,19 +76,17 @@ void AlgorithmValidation::validateUnloadOperation(const PackingOperation &op) {
         auto container = containerOptional.value();
         if (container.getId() != op.getContainerId()) { // The top container at given (x,y) has different id
             errors.addError({ErrorFlag::AlgorithmError_UnloadBadId, op.getContainerId(), std::to_string(x), std::to_string(y)});
-        }
-
-        else if (container.getDestPort() != currentPort.getId()) {  // This container is not for this port, track to make sure we load him back later
+        } else if (container.getDestPort() != currentPort.getId()) {  // This container is not for this port, track to make sure we load him back later
             temporaryContainersOnPort.push_back(container.getId());
         }
     }
 }
 
 void AlgorithmValidation::validateMoveOperation(const PackingOperation &op) {
-    std::tuple<int, int, int> unloadFrom = op.getFirstPosition();
-    int x = std::get<0>(unloadFrom), y = std::get<1>(unloadFrom);
+    const Position& unloadFrom = op.getFirstPosition();
+    int x = unloadFrom.X(), y = unloadFrom.Y();
 
-    auto containerOptional = ship.getCargo().getTopContainer(std::get<0>(unloadFrom), std::get<1>(unloadFrom));
+    auto containerOptional = ship.getCargo().getTopContainer(unloadFrom.X(), unloadFrom.Y());
 
     // Check if can remove the container from it's current position
     if (!containerOptional.has_value()) { // There are no containers at given (x,y)
@@ -105,8 +101,8 @@ void AlgorithmValidation::validateMoveOperation(const PackingOperation &op) {
     auto loadTo = op.getFirstPosition();
 
     // Check if it is possible to add container to given position
-    if (ship.getCargo().getAvailableFloorToLoadContainer(std::get<0>(loadTo), std::get<1>(loadTo))) {
-        x = std::get<0>(loadTo), y = std::get<1>(loadTo);
+    x = loadTo.X(), y = loadTo.Y();
+    if (ship.getCargo().getAvailableFloorToLoadContainer(x, y)) {
         errors.addError({ErrorFlag::AlgorithmError_MoveAboveNotLegal, op.getContainerId(), std::to_string(x), std::to_string(y)});
     }
 }
@@ -122,7 +118,7 @@ void AlgorithmValidation::validateRejectOperation(const PackingOperation &op) {
     }
 
     // If ship is full then the reject is valid
-    if(this->ship.getCargo().isFull()) {
+    if (this->ship.getCargo().isFull()) {
         errors.addError({ErrorFlag::ContainersAtPort_ContainersExceedsShipCapacity, containerId});
         return;
     }
@@ -136,17 +132,17 @@ void AlgorithmValidation::validateRejectOperation(const PackingOperation &op) {
 }
 
 void AlgorithmValidation::validatePackingOperation(const PackingOperation &op) {
-    auto pos1 = op.getFirstPosition(), pos2 = op.getSecondPosition();
+    const auto& pos1 = op.getFirstPosition(), pos2 = op.getSecondPosition();
     auto opType = op.getType();
 
     if (opType != PackingType::reject) {
         if (!validatePosition(pos1)) {
-            int x = std::get<0>(pos1), y = std::get<1>(pos1);
+            int x = pos1.X(), y = pos1.Y();
             errors.addError({ErrorFlag::AlgorithmError_InvalidXYCoordinates, op.getContainerId(), std::to_string(x), std::to_string(y)});
             return;
         }
         if (opType == PackingType::move && !validatePosition(pos2)) {
-            int x = std::get<0>(pos2), y = std::get<1>(pos2);
+            int x = pos2.X(), y = pos2.Y();
             errors.addError({ErrorFlag::AlgorithmError_InvalidXYCoordinates, op.getContainerId(), std::to_string(x), std::to_string(y)});
             return;
         }

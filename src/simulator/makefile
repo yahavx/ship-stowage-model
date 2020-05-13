@@ -5,7 +5,8 @@ $\
 ../common/actors/AbstractWeightBalancer.o ../common/actors/ContainerShip.o ../common/actors/CranesManagement.o $\
 ../common/actors/NaiveWeightBalancer.o ../common/actors/Port.o $\
 $\
-../common/data_objects/Container.o ../common/data_objects/ContainerPosition.o ../common/data_objects/PackingOperation.o $\
+../common/data_objects/Container.o ../common/data_objects/ContainerPosition.o ../common/data_objects/Dimensions.o $\
+../common/data_objects/PackingOperation.o $\
 ../common/data_objects/PortId.o ../common/data_objects/Position.o ../common/data_objects/ShipPlan.o $\
 ../common/data_objects/ShipRoute.o $\
 $\
@@ -14,7 +15,7 @@ $\
 ../common/io/FileReader.o ../common/io/ObjectsReader.o $\
 $\
 ../common/utils/Constants.o ../common/utils/Errors.o $\
-../common/utils/Printers.o ../common/utils/UtilFunctions.o $\
+../common/utils/Printers.o ../common/utils/UtilFunctions.o ../common/utils/Vector3.o $\
 $\
 ../interfaces/AlgorithmRegistration.o ../interfaces/WeightBalanceCalculator.o
 

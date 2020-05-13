@@ -8,6 +8,7 @@
 #include <tuple>
 #include <ostream>
 #include <vector>
+#include "Position.h"
 //#include "../utils/Definitions.h"
 
 typedef std::vector<std::string> StringVector;
@@ -22,26 +23,25 @@ class PackingOperation {
 
     std::string containerId;
 
-    std::tuple<int, int, int> pos1;
+    Position pos1;
 
-    std::tuple<int, int, int> pos2;  // in case of a 'move'
+    Position pos2;  // in case of a 'move'
 
 public:
     // region Constructors
 
     PackingOperation(PackingType type, const std::string &containerId);  // for reject
 
-    PackingOperation(PackingType type, const std::string &containerId, const std::tuple<int, int, int> &pos1);
+    PackingOperation(PackingType type, const std::string &containerId, const Position &pos1);
 
-    PackingOperation(PackingType type, const std::string &containerId, const std::tuple<int, int, int> &pos1,
-                     const std::tuple<int, int, int> &pos2);
+    PackingOperation(PackingType type, const std::string &containerId, const Position &pos1, const Position &pos2);
     // endregion
 
     // region Getters and setters
 
     const std::string &getContainerId() const;
 
-    const std::tuple<int, int, int> &getFirstPosition() const;
+    const Position &getFirstPosition() const;
 
     int getFirstPositionX() const;
 
@@ -49,7 +49,7 @@ public:
 
     int getFirstPositionFloor() const;
 
-    const std::tuple<int, int, int> &getSecondPosition() const;
+    const Position &getSecondPosition() const;
 
     int getSecondPositionX() const;
 

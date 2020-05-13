@@ -6,28 +6,34 @@
 #include "../utils/Printers.h"
 
 
-// Constructors
+// region Constructors
+
 ShipPlan::ShipPlan() {
 
 }
 
-ShipPlan::ShipPlan(const std::tuple<int, int, int> &dimensions, const std::vector<std::vector<int>> &heights)
+// endregion
+
+ShipPlan::ShipPlan(const Dimensions &dimensions, const std::vector<std::vector<int>> &heights)
         : dimensions(dimensions), heights(heights) {}
 
 
-// Functions
+// region Functions
+
 int ShipPlan::getMinimumHeight(int x, int y) {
     return 0;
     std::cout << x << y;  // TODO: remove
 }
 
+// endregion
 
-// Getters and setters
-const std::tuple<int, int, int> &ShipPlan::getDimensions() const {
+// region Getters and setters
+
+const Dimensions &ShipPlan::getDimensions() const {
     return dimensions;
 }
 
-void ShipPlan::setDimensions(const std::tuple<int, int, int> &dimensions) {
+void ShipPlan::setDimensions(const Dimensions &dimensions) {
     ShipPlan::dimensions = dimensions;
 }
 
@@ -39,8 +45,10 @@ void ShipPlan::setHeights(const std::vector<std::vector<int>> &heights) {
     ShipPlan::heights = heights;
 }
 
+// endregion
 
-// Printer
+// region Printer
+
 std::ostream &operator<<(std::ostream &os, const ShipPlan &plan) {
     auto dimensions = plan.getDimensions();
     auto heights = plan.getHeights();
@@ -51,3 +59,5 @@ std::ostream &operator<<(std::ostream &os, const ShipPlan &plan) {
     os << "}" << std::endl;
     return os;
 }
+
+// endregion
