@@ -87,6 +87,14 @@ void AlgorithmValidation::validateUnloadOperation(const PackingOperation &op) {
             temporaryContainersOnPort.push_back(container.getId());
         }
     }
+
+    const std::string& containerId = op.getContainerId();
+    Container container = *currentPort.getContainer(containerId);
+
+    // Check that it is approved by the weight balancer
+    if (ship.getBalanceCalculator().tryOperation('U', container.getWeight(), op.getFirstPositionX(), op.getFirstPositionY())) {
+        errors.addError({ErrorFlag::AlgorithmError_WeightBalancerRejectedOperation, "Unload", containerId});
+    }
 }
 
 void AlgorithmValidation::validateMoveOperation(const PackingOperation &op) {
@@ -112,6 +120,27 @@ void AlgorithmValidation::validateMoveOperation(const PackingOperation &op) {
     if (ship.getCargo().getAvailableFloorToLoadContainer(x, y)) {
         errors.addError({ErrorFlag::AlgorithmError_MoveAboveNotLegal, op.getContainerId(), std::to_string(x), std::to_string(y)});
     }
+
+    const std::string& containerId = op.getContainerId();
+    Container container = *currentPort.getContainer(containerId);
+
+    // Check that it is approved by the weight balancer
+    if (ship.getBalanceCalculator().tryOperation('U', container.getWeight(), unloadFrom.X(), unloadFrom.Y())) {
+        errors.addError({ErrorFlag::AlgorithmError_WeightBalancerRejectedOperation, "Move/Unload", containerId});
+        return;
+    }
+
+    // If unloading the container is legal, temporarily remove it and validate loading to new position
+    ship.getCargo().removeTopContainer(unloadFrom.X(), unloadFrom.Y());
+
+    // Check that it is approved by the weight balancer
+    if (ship.getBalanceCalculator().tryOperation('L', container.getWeight(), loadTo.X(), loadTo.Y())) {
+        errors.addError({ErrorFlag::AlgorithmError_WeightBalancerRejectedOperation, "Move/Load", containerId});
+    }
+
+    // Load back the container we unloaded
+    ship.getCargo().loadContainerOnTop(unloadFrom.X(), unloadFrom.Y(), container);
+
 }
 
 void AlgorithmValidation::validateRejectOperation(const PackingOperation &op) {
