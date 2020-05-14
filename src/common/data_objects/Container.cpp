@@ -59,6 +59,10 @@ bool Container::operator!=(const Container &rhs) const {
 // region Functions
 
 bool Container::isIdInIsoFormat() const {
+    #ifdef SOFT_ISO_CHECK
+    return id.length() == 11;
+    #endif
+
     std::map<char, int> mymap = {{'A',10}, {'B',12}, {'C',13}, {'D',14}, {'E',15}, {'F',16}, {'G',17},
                                  {'H',18}, {'I',19}, {'J',20}, {'K',21}, {'L',23}, {'M',24}, {'N',25},
                                  {'O',26}, {'P',27}, {'Q',28}, {'R',29}, {'S',30}, {'T',31}, {'U',32},
@@ -84,11 +88,9 @@ bool Container::isIdInIsoFormat() const {
 }
 
 Error Container::isContainerLegal() const {
-#ifndef SKIP_ISO_CHECK
     if (!isIdInIsoFormat()) {
         return {ErrorFlag::ContainersAtPort_BadContainerID, id};
     }
-#endif
 
     if (weight <= 0) {
         return {ErrorFlag::ContainersAtPort_MissingOrBadWeight, intToStr(weight)};

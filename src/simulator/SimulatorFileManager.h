@@ -2,15 +2,15 @@
 // Created by t-yabeny on 5/2/2020.
 //
 
-#ifndef SHIP_STOWAGE_MODEL_SIMULATORDATAMANAGER_H
-#define SHIP_STOWAGE_MODEL_SIMULATORDATAMANAGER_H
-
+#ifndef SHIP_STOWAGE_MODEL_SIMULATORFILEMANAGER_H
+#define SHIP_STOWAGE_MODEL_SIMULATORFILEMANAGER_H
 
 #include <string>
 #include "../common/utils/Errors.h"
 
+
 /// Handles all path generation and work against files.
-class SimulatorDataManager {
+class SimulatorFileManager {
 private:
     std::string shipPlanFilepath;
     std::string shipRouteFilepath;
@@ -23,7 +23,7 @@ public:
 
     // region Constructor
 
-    SimulatorDataManager(const std::string &outputDir, const std::string &travelRootDir);
+    SimulatorFileManager(const std::string &outputDir, const std::string &travelRootDir);
 
     // endregion
 
@@ -104,4 +104,4 @@ public:
 };
 
 
-#endif //SHIP_STOWAGE_MODEL_SIMULATORDATAMANAGER_H
+#endif //SHIP_STOWAGE_MODEL_SIMULATORFILEMANAGER_H

@@ -89,6 +89,8 @@ Error::Error(ErrorFlag errorFlag, const std::string &param1, const std::string &
 Error::Error(const std::string &errorMsg) : errorMsg(errorMsg) {}
 
 Error::Error(int errorFlags) {
+    this->errorFlags = errorFlags;
+
     IntVector errorNumbers;
     for (int i = 0; i <= MAX_ERROR_BIT; i++) {
         int isBitEnabled = errorFlags & (1 << i);
@@ -265,20 +267,20 @@ std::string Error::toString() {
     return "TO STRING ERROR";
 }
 
-bool Error::isFlag(ErrorFlag flag) {
-    return errorFlag & flag;
+bool Error::isCertainFlag(ErrorFlag other) {
+    return errorFlag & other;
 }
 
 bool Error::isFatalError() {
-    return errorFlag & c_initFatalError;
+    return errorFlag & errorFlags & c_initFatalError;
 }
 
 bool Error::isAlgorithmError() {
-    return errorFlag & c_algorithmErrors;
+    return errorFlag & errorFlags & c_algorithmErrors;
 }
 
 bool Error::isSuccess() {
-    return errorFlag == ErrorFlag::Success;
+    return errorFlag == ErrorFlag::Success && errorFlags == 0;
 }
 
 // endregion

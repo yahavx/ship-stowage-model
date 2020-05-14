@@ -38,7 +38,7 @@ enum ErrorFlag : longUInt {
     ContainersAtPort_ContainerNotOnRoute = 1 << 19,
     ContainersAtPort_ContainerDestinationIsCurrentPort = 1 << 20,
 
-    // our errors TODO: make sure the algorithm can't receive any by mistake
+    // our errors
     SimulationInit_OutputDirectoriesCreationFailed = 1 << 21,
     SimulationInit_InvalidTravelPath = 1 << 22,
     SimulationInit_AllTravelsAreInvalid = 1ULL << 23,
@@ -50,7 +50,7 @@ enum ErrorFlag : longUInt {
     Travel_CargoData_PortNotInRoute = 1 << 28,
     Travel_CargoData_RemainingFilesAfterFinish = 1 << 29,
 
-    AlgorithmError_CraneOperationWithInvalidId = 1 << 30,  // TODO: this should be mapped to error 32/33
+    AlgorithmError_CraneOperationWithInvalidId = 1 << 30,
     AlgorithmError_InvalidCraneOperation = 1ULL << 31,
     AlgorithmError_LeftContainersAtPort = 1ULL << 32,
     AlgorithmError_ContainerIdAlreadyOnShip = 1ULL << 33,
@@ -96,6 +96,7 @@ class Error {
 public:
     ErrorFlag errorFlag = ErrorFlag::Success;
     std::string errorMsg;
+    int errorFlags = 0;  // bitwise OR between multiple errorFlags
     std::string param1 = "<>";  // Can be for example a container ID, a port name, etc.
     std::string param2 = "<>";
     std::string param3 = "<>";
@@ -123,7 +124,7 @@ public:
 
     std::string toString();
 
-    bool isFlag(ErrorFlag flag);  // kind of equality operator
+    bool isCertainFlag(ErrorFlag other);  // kind of lazy equality operator
 
     bool isFatalError();
 

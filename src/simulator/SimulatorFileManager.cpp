@@ -2,7 +2,7 @@
 // Created by t-yabeny on 5/2/2020.
 //
 
-#include "SimulatorDataManager.h"
+#include "SimulatorFileManager.h"
 #include <algorithm>
 #include "../common/utils/UtilFunctions.h"
 #include "../common/io/FileReader.h"
@@ -10,36 +10,36 @@
 
 // region Constructors
 
-SimulatorDataManager::SimulatorDataManager(const std::string &outputDir, const std::string &travelRootDir) : outputDir(outputDir),
+SimulatorFileManager::SimulatorFileManager(const std::string &outputDir, const std::string &travelRootDir) : outputDir(outputDir),
                                                                                                              travelRootDir(travelRootDir) {}
 
 // endregion
 
 // region Getters and setters
 
-void SimulatorDataManager::setTravelName(const std::string &travelName) {
-    SimulatorDataManager::travelName = travelName;
+void SimulatorFileManager::setTravelName(const std::string &travelName) {
+    SimulatorFileManager::travelName = travelName;
     shipPlanFilepath = "";  // reset
     shipRouteFilepath = "";
 }
 
-void SimulatorDataManager::setAlgorithmName(const std::string &algorithmName) {
-    SimulatorDataManager::algorithmName = algorithmName;
+void SimulatorFileManager::setAlgorithmName(const std::string &algorithmName) {
+    SimulatorFileManager::algorithmName = algorithmName;
 }
 
 // endregion
 
 // region Paths generator
 
-std::string SimulatorDataManager::tempFolder() {
+std::string SimulatorFileManager::tempFolder() {
     return outputDir + "/" + "temp";
 }
 
-std::string SimulatorDataManager::errorsFolder() {
+std::string SimulatorFileManager::errorsFolder() {
     return outputDir + "/" + "errors";
 }
 
-std::string SimulatorDataManager::shipPlanPath() {
+std::string SimulatorFileManager::shipPlanPath() {
     if (shipPlanFilepath != "") {  // already calculated
         return shipPlanFilepath;
     }
@@ -56,7 +56,7 @@ std::string SimulatorDataManager::shipPlanPath() {
     return "";  // not found
 }
 
-std::string SimulatorDataManager::shipRoutePath() {
+std::string SimulatorFileManager::shipRoutePath() {
     if (shipRouteFilepath != "") {  // already calculated
         return shipRouteFilepath;
     }
@@ -73,25 +73,25 @@ std::string SimulatorDataManager::shipRoutePath() {
     return "";
 }
 
-std::string SimulatorDataManager::craneInstructionsRootFolder() {  // TODO: maybe we need to remove the /crane_instructions (generate under outputDir directly)
+std::string SimulatorFileManager::craneInstructionsRootFolder() {  // TODO: maybe we need to remove the /crane_instructions (generate under outputDir directly)
     return outputDir + "/crane_instructions";
 }
 
-std::string SimulatorDataManager::craneInstructionsSimulationFolder() {
+std::string SimulatorFileManager::craneInstructionsSimulationFolder() {
     return craneInstructionsRootFolder() + "/" + algorithmName + "_" + travelName + "_crane_instructions";
 }
 
-std::string SimulatorDataManager::craneInstructionsOutputPath(const std::string &portId, int i) {
+std::string SimulatorFileManager::craneInstructionsOutputPath(const std::string &portId, int i) {
     return craneInstructionsSimulationFolder() + "/" + portId + "_" + intToStr(i) + ".crane_instructions";
 }
 
-std::string SimulatorDataManager::createCargoDataTempFilePath(const std::string &portId) {
+std::string SimulatorFileManager::createCargoDataTempFilePath(const std::string &portId) {
     std::string filePath = tempFolder() + "/" + portId + "_dummy";
     createEmptyFile(filePath);
     return filePath;
 }
 
-std::string SimulatorDataManager::cargoFilePath(const std::string &cargoFileName) {
+std::string SimulatorFileManager::cargoFilePath(const std::string &cargoFileName) {
     if (endsWith(cargoFileName, "dummy")) {
         std::string fileName = extractFilenameFromPath(cargoFileName);  // TODO: isn't that already the name only?
         return tempFolder() + "/" + fileName;
@@ -99,7 +99,7 @@ std::string SimulatorDataManager::cargoFilePath(const std::string &cargoFileName
     return travelFolder() + "/" + cargoFileName;
 }
 
-std::string SimulatorDataManager::travelFolder() {
+std::string SimulatorFileManager::travelFolder() {
     return travelRootDir + "/" + travelName;
 }
 
@@ -107,7 +107,7 @@ std::string SimulatorDataManager::travelFolder() {
 
 // region Functions
 
-bool SimulatorDataManager::isTravelValid(Errors &errors) {
+bool SimulatorFileManager::isTravelValid(Errors &errors) {
     if (!isDirectoryExists(travelFolder())) {
         errors.addError({ErrorFlag::Travel_InvalidDirectory, travelName});
         return false;
@@ -132,7 +132,7 @@ bool SimulatorDataManager::isTravelValid(Errors &errors) {
     return true;
 }
 
-StringVector SimulatorDataManager::collectLegalTravels(Errors &errors) {
+StringVector SimulatorFileManager::collectLegalTravels(Errors &errors) {
     StringVector legalTravels;
 
     if (travelRootDir == "") {  // no travel path supplied
@@ -170,7 +170,7 @@ void sortCargoFilesByNumber(StringVector &stringVector) {
          });
 }
 
-StringToStringVectorMap SimulatorDataManager::getCargoDataFiles(Errors &errors) {
+StringToStringVectorMap SimulatorFileManager::getCargoDataFiles(Errors &errors) {
     StringToStringVectorMap map;
 
     StringVector files = getFilesFromDirectory(travelFolder());
@@ -209,31 +209,31 @@ StringToStringVectorMap SimulatorDataManager::getCargoDataFiles(Errors &errors) 
 
 // region Files
 
-void SimulatorDataManager::saveErrorsFile(const std::string &fileName, const Errors &errorsToWrite) {
+void SimulatorFileManager::saveErrorsFile(const std::string &fileName, const Errors &errorsToWrite) {
     StringVector errorMessages = errorsToWrite.toString();
 
     std::string filePath = errorsFolder() + "/" + fileName;
     writeFile(filePath, errorMessages);
 }
 
-void SimulatorDataManager::saveGeneralErrors(const Errors &errorsToWrite) {
+void SimulatorFileManager::saveGeneralErrors(const Errors &errorsToWrite) {
     saveErrorsFile("GeneralErrors", errorsToWrite);
 }
 
-void SimulatorDataManager::saveSimulationErrors(const Errors &errorsToWrite) {
+void SimulatorFileManager::saveSimulationErrors(const Errors &errorsToWrite) {
     std::string fileName = algorithmName + "_" + travelName + "_errors";
     saveErrorsFile(fileName, errorsToWrite);
 }
 
-void SimulatorDataManager::saveSimulationResults(const StringStringVector &results) {
+void SimulatorFileManager::saveSimulationResults(const StringStringVector &results) {
     writeFile(outputDir + "/simulation.results.csv", results);
 }
 
-void SimulatorDataManager::createTravelCraneFolder() {
+void SimulatorFileManager::createTravelCraneFolder() {
     createFolder(craneInstructionsSimulationFolder());
 }
 
-void SimulatorDataManager::createOutputFolders(Errors &errors) {
+void SimulatorFileManager::createOutputFolders(Errors &errors) {
     bool res = createFolder(craneInstructionsRootFolder());
     bool res2 = createFolder(tempFolder());
     bool res3 = createFolder(errorsFolder());
@@ -242,7 +242,7 @@ void SimulatorDataManager::createOutputFolders(Errors &errors) {
     }
 }
 
-void SimulatorDataManager::cleanOutputFolders() {
+void SimulatorFileManager::cleanOutputFolders() {
     Errors errors;
     bool res = removeFolder(tempFolder());
 

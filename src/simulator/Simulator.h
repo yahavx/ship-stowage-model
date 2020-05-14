@@ -8,7 +8,7 @@
 #include "../interfaces/AbstractAlgorithm.h"
 #include "../common/actors/ContainerShip.h"
 #include "../common/utils/Errors.h"
-#include "SimulatorDataManager.h"
+#include "SimulatorFileManager.h"
 #include "../common/data_objects/Operations.h"
 #include <memory>
 #include <functional>
@@ -18,7 +18,7 @@ class Simulator {
     std::string travelRootDir;
     std::string algorithmsDir;
     std::string outputDir;
-    SimulatorDataManager dataManager;
+    SimulatorFileManager fileDataManager;
     std::vector<std::function<std::unique_ptr<AbstractAlgorithm>()>> algorithmFactories;
     StringVector algorithmNames;  // the entry i corresponds to the name of the algorithm of factory i
 
@@ -52,7 +52,7 @@ private:
     // region Simulation init
 
     /// Inits the algorithm in a single simulation. Returns the error return value of the algorithm.
-    void initAlgorithm(AbstractAlgorithm *algorithm, WeightBalanceCalculator &calculator, Errors &errors);
+    int initAlgorithm(AbstractAlgorithm *algorithm, WeightBalanceCalculator &calculator);
 
     /// Inits the ship of a single simulation. Assume no fatal errors are in the plan and route.
     ContainerShip initSimulation(WeightBalanceCalculator &calculator, Errors &errors);
@@ -68,6 +68,12 @@ private:
 
     /// Perform operations on the ship, received by the algorithm. Returns true if there was an algorithm error in any of the operations.
     bool performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const;
+
+    // endregion
+
+    // region Simulation finish
+
+    void reportSimulationError(Errors &errors);
 
     // endregion
 

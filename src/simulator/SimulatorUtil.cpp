@@ -34,7 +34,7 @@ int getVisitNum(StringToIntMap &portsVisits, const PortId &portId) {
     return ++portsVisits[portId];
 }
 
-std::string getNextFileForPort(StringToStringVectorMap &cargoData, StringToIntMap &portVisits, const PortId &portId, SimulatorDataManager &manager, int isLast) {
+std::string getNextFileForPort(StringToStringVectorMap &cargoData, StringToIntMap &portVisits, const PortId &portId, SimulatorFileManager &manager, int isLast) {
     std::string portCode = portId;
     StringVector &filesForPort = cargoData[portCode];
 
@@ -105,36 +105,32 @@ void initResultsTable(StringStringVector &results, StringVector &travels, String
     // init results table
     StringVector &resultsFirstRow = results.emplace_back();
 
-    resultsFirstRow.push_back(Simulator::s_resultsTableTitle);  // set table title
+    resultsFirstRow.push_back(Simulator::s_resultsTableTitle);  // Set table title
 
-    for (auto &travel : travels) {  // first row init (column names)
+    for (auto &travel : travels) {  // First row init (column names)
         auto travelName = extractFilenameFromPath(travel);
         resultsFirstRow.push_back(travelName);
     }
     resultsFirstRow.push_back(Simulator::s_sumColumnTitle);
     resultsFirstRow.push_back(Simulator::s_errorsColumnTitle);
 
-    for (auto &algorithmsName : algorithmsNames) {  // init a row for each algorithm
-//        std::cout << "Added row for " + algorithmsName << std::endl;
+    for (auto &algorithmsName : algorithmsNames) {  // Init a row for each algorithm
         results.emplace_back();
         results.back().push_back(algorithmsName);
     }
-
-//    std::cout << "Number of rows in results table: " << results.size() << std::endl;
 }
 
 void addSimulationResultToTable(StringStringVector &simulationResults, int totalCraneInstructions, int rowNum) {
-//    std::cout << "Adding results to row " << rowNum << " in results table" << std::endl;
-    simulationResults[rowNum].push_back(intToStr(totalCraneInstructions));
+    simulationResults[rowNum].push_back(intToStr(totalCraneInstructions));  // TODO: make it less ugly..
 }
 
 void finalizeResultsTable(StringStringVector &results) {
-    for (longUInt i = 1; i < results.size(); i++) {  // for each algorithm
+    for (longUInt i = 1; i < results.size(); i++) {  // For each algorithm
         auto &rowEntry = results[i];
         int totalOps = 0;
         int errors = 0;
 
-        for (longUInt j = 1; j < rowEntry.size(); j++) {  // sum his operations/errors from all the travels
+        for (longUInt j = 1; j < rowEntry.size(); j++) {  // Sum his operations/errors from all the travels
             int ops = strToInt(rowEntry[j]);
 
             if (ops == -1) {
@@ -153,14 +149,15 @@ void finalizeResultsTable(StringStringVector &results) {
 }
 
 void sortResultsTable(StringStringVector &results) {
-    if (results.size() <= 2)  // nothing to sort
+    if (results.size() <= 2)  // Nothing to sort
         return;
 
     std::sort(results.begin() + 1, results.end(), [](StringVector &row1, StringVector &row2) -> bool {
-        int n = row1.size();  // should be same size for both
+        int n = row1.size();  // Should be same size for both
         int errors1 = strToInt(row1[n - 1]), steps1 = strToInt(row1[n - 2]);
         int errors2 = strToInt(row2[n - 1]), steps2 = strToInt(row2[n - 2]);
 
+        // Sort by number of errors, break ties with number of steps
         if (errors1 == errors2) {
             return steps1 < steps2;
         }

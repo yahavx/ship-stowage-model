@@ -68,7 +68,6 @@ int Errors::compareReports(int otherErrorFlag) {
     return 0;
 }
 
-
 // endregion
 
 // region Logging

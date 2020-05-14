@@ -62,7 +62,7 @@ add_executable(ship_stowage_model
         src/simulator/AlgorithmRegistrar.cpp src/simulator/AlgorithmRegistrar.h
         src/simulator/AlgorithmValidation.cpp src/simulator/AlgorithmValidation.h
         src/simulator/Simulator.cpp src/simulator/Simulator.h
-        src/simulator/SimulatorDataManager.cpp src/simulator/SimulatorDataManager.h
+        src/simulator/SimulatorFileManager.cpp src/simulator/SimulatorFileManager.h
         src/simulator/SimulatorUtil.cpp src/simulator/SimulatorUtil.h
 
     # tests

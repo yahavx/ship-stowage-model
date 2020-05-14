@@ -10,7 +10,7 @@
 #include "../common/data_objects/ShipRoute.h"
 #include "../interfaces/AbstractAlgorithm.h"
 #include "../common/utils/Errors.h"
-#include "SimulatorDataManager.h"
+#include "SimulatorFileManager.h"
 
 // region Simulation utils
 
@@ -21,7 +21,7 @@ StringToIntMap initPortsVisits(ShipRoute &shipRoute);
 int getVisitNum(StringToIntMap &portsVisits, const PortId &portId);
 
 /// Returns the next .cargo_data file of the port with portId. Generates one if needed (inside tempDir).
-std::string getNextFileForPort(StringToStringVectorMap &cargoData, StringToIntMap &portVisits, const PortId &portId, SimulatorDataManager &manager, int isLast);
+std::string getNextFileForPort(StringToStringVectorMap &cargoData, StringToIntMap &portVisits, const PortId &portId, SimulatorFileManager &manager, int isLast);
 
 /// Removes from map ports that doesn't appear in the route.
 void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute, Errors &errors);
