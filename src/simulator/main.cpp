@@ -39,14 +39,9 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    bool created = createFolder(outputPath);
-    if (!created) {
-        std::cerr << "Couldn't initialize output directory." << std::endl;
-        return EXIT_FAILURE;
-    }
-
 //    travelPath = "../input-examples/single-travel-difference";
 //    travelPath = "../input-examples/error-proud";
+//    removeFolder(outputPath);
 
     Simulator simulator(travelPath, algorithmPath, outputPath);
 

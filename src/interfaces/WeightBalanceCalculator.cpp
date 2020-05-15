@@ -9,11 +9,11 @@ int WeightBalanceCalculator::readShipPlan(const std::string &full_path_and_file_
     (void)full_path_and_file_name;
 }
 
-WeightBalanceCalculator::BalanceStatus WeightBalanceCalculator::tryOperation(char loadUnload, int kg, int X, int Y) {
+WeightBalanceCalculator::BalanceStatus WeightBalanceCalculator::tryOperation(char loadUnload, int kg, int x, int y) {
     return APPROVED;
     (void)loadUnload;
     (void)kg;
-    (void)X;
-    (void)Y;
+    (void)x;
+    (void)y;
 }
 

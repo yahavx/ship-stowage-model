@@ -19,7 +19,7 @@ public:
 
     int readShipPlan(const std::string& full_path_and_file_name);
 
-    BalanceStatus tryOperation(char loadUnload, int kg, int X, int Y);
+    BalanceStatus tryOperation(char loadUnload, int kg, int x, int y);
 };
 
 #endif //SHIP_STOWAGE_MODEL_WEIGHTBALANCECALCULATOR_H

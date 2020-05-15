@@ -226,7 +226,7 @@ void SimulatorFileManager::saveSimulationErrors(const Errors &errorsToWrite) {
 }
 
 void SimulatorFileManager::saveSimulationResults(const StringStringVector &results) {
-    writeFile(outputDir + "/simulation.results.csv", results);
+    writeFile(outputDir + "/simulation.results", results);
 }
 
 void SimulatorFileManager::createTravelCraneFolder() {
@@ -235,9 +235,10 @@ void SimulatorFileManager::createTravelCraneFolder() {
 
 void SimulatorFileManager::createOutputFolders(Errors &errors) {
 //    bool res = createFolder(craneInstructionsRootFolder());
+    bool res = createFolder(outputDir);
     bool res2 = createFolder(tempFolder());
     bool res3 = createFolder(errorsFolder());
-    if (!(res2 && res3)) {
+    if (!(res && res2 && res3)) {
         errors.addError(ErrorFlag::SimulationInit_OutputDirectoriesCreationFailed);
     }
 }
