@@ -46,6 +46,7 @@ int main(int argc, char **argv) {
     }
 
 //    travelPath = "../input-examples/single-travel-difference";
+//    travelPath = "../input-examples/error-proud";
 
     Simulator simulator(travelPath, algorithmPath, outputPath);
 

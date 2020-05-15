@@ -33,11 +33,14 @@ std::string craneOperationToString(const PackingOperation &op) {
     return opString;
 }
 
-IntVector convertRowToInt(const StringVector &row) {
+IntVector convertRowToInt(const StringVector &row, longUInt limit) {
     IntVector intRow;
 
-    for (auto &token : row) {
-        intRow.push_back(strToInt(token));  // add tokens to row
+    if (limit == 0)
+        limit = row.size();
+
+    for (longUInt i = 0; i < row.size() && i < limit; i++) {
+        intRow.push_back(strToInt(row[i]));  // add tokens to row
     }
 
     return intRow;

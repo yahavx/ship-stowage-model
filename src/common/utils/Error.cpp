@@ -171,7 +171,7 @@ std::string Error::toString() {
         case SimulationInit_OutputDirectoriesCreationFailed:
             return simulatorFatalError + "Couldn't initialize output folders";
         case SimulationInit_InvalidTravelPath:
-            return simulatorFatalError + "Travel path not supplied, or couldn't find any travel directories";
+            return simulatorFatalError + "Travel path not supplied, or couldn't find any travel directories inside it";
         case SimulationInit_AllTravelsAreInvalid:
             return simulatorFatalError + "All travels in the travel directory supplied are invalid";
         case SimulationCleanup_OutputDirectoriesCleaningFailed:

@@ -72,6 +72,10 @@ int Errors::compareReports(int otherErrorFlag) {
 
 // region Logging
 
+void Errors::addSimulatorInitLog() {
+    addLog("The following errors were detected during the simulator initialization:");
+}
+
 void Errors::addSimulationInitLog() {
     addLog("The following errors were detected during the initialization of the Simulator and the Algorithm:");
 }
@@ -89,10 +93,6 @@ void Errors::addSimulationErrorLog() {
 
 void Errors::addTravelLog(const std::string &travelName) {
     addLog("The following errors were detected on travel '" + travelName +"':");
-}
-
-void Errors::addDynamicLoadErrorLog() {
-    addLog("The following errors were detected during the algorithms dynamic loading:");
 }
 
 void Errors::addLog(const std::string &logMessage) {

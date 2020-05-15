@@ -150,7 +150,7 @@ StringVector SimulatorFileManager::collectLegalTravels(Errors &errors) {
         if (isTravelValid(errors)) {
             legalTravels.push_back(travel);
         }
-        errors.addTravelLog(travelName);
+        errors.addTravelLog(travelName);  // Adds if needed
     }
 
     if (legalTravels.empty()) {

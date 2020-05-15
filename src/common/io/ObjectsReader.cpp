@@ -25,12 +25,13 @@ const std::string operationsWarning = "\t[Algorithm Warning] ";  // this relates
  * @param dataRow a data row, represented by a vector of tokens.
  * @param errorPrefix since this is used by each of the functions below, the error prefix can't be hard coded, so this will indicate it.
  * @param expected number of parameters expected.
+ * @param lineNum line number to document if there's an error.
  * @param errors the error will be appended to this, if needed.
  */
 void addExtraParametersWarningIfNeeded(const StringVector &dataRow, const std::string &errorPrefix, int expected, int lineNum, Errors &errors) {
     int actual = dataRow.size();
     if (actual > expected) {
-        errors.addError({FileInput_TooManyParameters, errorPrefix, intToStr(lineNum), intToStr(expected), intToStr(actual)});
+        errors.addError({FileInput_TooManyParameters, errorPrefix, intToStr(lineNum + 1), intToStr(expected), intToStr(actual)});
     }
 }
 
@@ -48,12 +49,13 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors) {
     }
 
     StringVector &firstRow = data[i];  // First row with actual data
-    if (firstRow.size() < 3 || !isRowOnlyIntegers(firstRow)) {
+    if (firstRow.size() < 3 || !isRowOnlyIntegers(firstRow, 3)) {
         errors.addError({ErrorFlag::ShipPlan_FatalError_NoFileOrInvalidFirstLine, intToStr(i)});
         return shipPlan;
     }
 
-    IntVector firstIntRow = convertRowToInt(firstRow);
+    addExtraParametersWarningIfNeeded(firstRow, shipPlanWarning, 3, i, errors);
+    IntVector firstIntRow = convertRowToInt(firstRow, 3);
 
     int z = firstIntRow[0], x = firstIntRow[1], y = firstIntRow[2];
     shipPlan.setDimensions({x, y, z});

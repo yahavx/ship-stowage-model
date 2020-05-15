@@ -20,7 +20,7 @@ std::string intToStr(int num);
 std::string craneOperationToString(const PackingOperation &op);
 
 /// Converts a string vector to an int vector. Doesn't validate the strings are actual numbers.
-IntVector convertRowToInt(const StringVector &row);
+IntVector convertRowToInt(const StringVector &row, longUInt limit = 0);
 
 /// Converts 2-dim string vector to 2-dim ints vector. Doesn't validate the strings are actual numbers.
 IntIntVector convertDataToInt(const StringStringVector &data);

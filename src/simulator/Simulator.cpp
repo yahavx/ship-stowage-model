@@ -54,9 +54,11 @@ void Simulator::runSimulations() {
     StringStringVector resultsTable;  // table of results
     Errors generalErrors;
 
-    fileDataManager.createOutputFolders(generalErrors);
     StringVector travels = fileDataManager.collectLegalTravels(generalErrors);
-    loadAlgorithmsDynamically(generalErrors);  // We may have no travels to run at this point - but we still may collect errors
+    fileDataManager.createOutputFolders(generalErrors);
+    loadAlgorithmsDynamically(generalErrors);  // We may have no travels to run at this point - but we can collect errors
+    generalErrors.addSimulatorInitLog();
+
     initResultsTable(resultsTable, travels, algorithmNames);  // add columns names and set table structure
 
     for (auto &travel: travels) {
@@ -218,8 +220,6 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
     if (algorithmFactories.empty()) {
         errors.addError(ErrorFlag::SharedObject_NoAlgorithmsLoaded);
     }
-
-    errors.addDynamicLoadErrorLog();
 }
 
 // endregion
