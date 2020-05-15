@@ -169,7 +169,7 @@ bool AlgorithmValidation::validateMoveOperation(const PackingOperation &op) {
 bool AlgorithmValidation::validateRejectOperation(const PackingOperation &op) {
     auto &containerId = op.getContainerId();
 
-    for (longUInt i = 0; i < badContainerIds.size(); i++) {  // TODO: maybe we need to check if his container is legal first
+    for (longUInt i = 0; i < badContainerIds.size(); i++) {
         if (badContainerIds[i] == containerId) {  // Successful reject
             badContainerIds.erase(badContainerIds.begin() + i);
             return true;

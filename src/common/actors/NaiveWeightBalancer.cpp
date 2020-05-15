@@ -17,7 +17,10 @@ NaiveWeightBalancer::NaiveWeightBalancer(const ShipPlan &plan) : AbstractWeightB
 
 WeightBalanceCalculator::BalanceStatus NaiveWeightBalancer::tryOperation(char loadUnload, int kg, int X, int Y) {
     return BalanceStatus::APPROVED;
-    std::cout << loadUnload << kg << X << Y << cargo;  // TODO: remove
+    (void) loadUnload;
+    (void) kg;
+    (void) X;
+    (void) Y;
 }
 
 // endregion

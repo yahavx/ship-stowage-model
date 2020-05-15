@@ -73,8 +73,8 @@ std::string SimulatorFileManager::shipRoutePath() {
     return "";
 }
 
-std::string SimulatorFileManager::craneInstructionsRootFolder() {  // TODO: maybe we need to remove the /crane_instructions (generate under outputDir directly)
-    return outputDir + "/crane_instructions";
+std::string SimulatorFileManager::craneInstructionsRootFolder() {
+    return outputDir; // +"/crane_instructions"
 }
 
 std::string SimulatorFileManager::craneInstructionsSimulationFolder() {
@@ -234,10 +234,10 @@ void SimulatorFileManager::createTravelCraneFolder() {
 }
 
 void SimulatorFileManager::createOutputFolders(Errors &errors) {
-    bool res = createFolder(craneInstructionsRootFolder());
+//    bool res = createFolder(craneInstructionsRootFolder());
     bool res2 = createFolder(tempFolder());
     bool res3 = createFolder(errorsFolder());
-    if (!(res && res2 && res3)) {
+    if (!(res2 && res3)) {
         errors.addError(ErrorFlag::SimulationInit_OutputDirectoriesCreationFailed);
     }
 }

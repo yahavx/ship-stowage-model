@@ -40,7 +40,6 @@ int SemiAbstractAlgorithm::readShipRoute(const std::string &shipRoutePath) {
 
 int SemiAbstractAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &calculator) {
     this->ship.setBalanceCalculator(calculator);
-//    this->ship.getBalanceCalculator().setPlan(this->ship.getShipPlan());  // TODO: find another way to set ship plan, its not part of the interface
     return 0;
 }
 
@@ -50,7 +49,6 @@ int SemiAbstractAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &c
 
 int SemiAbstractAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
     if (hasFatalError()) {  // Not initialized, or bad plan/route
-        createEmptyFile(outputFile);
         return algoErrors;
     }
 

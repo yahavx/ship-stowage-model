@@ -37,8 +37,13 @@ std::string packingTypeFromString(PackingType type);
 /// Checks if string is an integer.
 bool isInteger(const std::string &str);
 
-/// Checks if a string vector contains only integers.
-bool isRowOnlyIntegers(const StringVector &row);
+/**
+ * Checks if a string vector contains integers.
+ *
+ * @param if limit is not -1, will check the first <limit> entries.
+ */
+
+bool isRowOnlyIntegers(const StringVector &row, longUInt limit = 0);
 
 /// Checks if 2-dimensional vector string contains only integers.
 bool isDataOnlyIntegers(const StringStringVector &data);
@@ -47,6 +52,7 @@ bool isDataOnlyIntegers(const StringStringVector &data);
 bool isEnglishWord(const std::string &str);
 
 bool isLegalCategoryIdentifier(const std::string &str);
+
 // endregion
 
 // region Files

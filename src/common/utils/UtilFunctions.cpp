@@ -91,9 +91,13 @@ bool isInteger(const std::string &str) {
                                         str.end(), [](unsigned char c) { return !std::isdigit(c); }) == str.end();
 }
 
-bool isRowOnlyIntegers(const StringVector &row) {
-    for (auto &token : row) {
-        if (!isInteger(token))
+bool isRowOnlyIntegers(const StringVector &row, longUInt limit) {
+    if (limit == 0) {
+        limit = row.size();
+    }
+
+    for (longUInt i = 0; i < limit && i < row.size(); i++) {
+        if (!isInteger(row[i]))
             return false;
     }
     return true;

@@ -19,12 +19,6 @@ const std::string containersAtPortWarning = "\t[Containers At Port Warning] ";
 const std::string operationsWarning = "\t[Algorithm Warning] ";  // this relates to the file that the algorithm writes
 
 
-// general for this module:
-// TODO: remove all prints when we are sure we don't need them
-// TODO: check if we need to have in each data row exactly X tokens, or we can have extra and ignore them
-// TODO: match the correctness checks accordingly
-
-
 /**
  * Adds a warning if a data row has too many parameters.
  *
@@ -33,28 +27,29 @@ const std::string operationsWarning = "\t[Algorithm Warning] ";  // this relates
  * @param expected number of parameters expected.
  * @param errors the error will be appended to this, if needed.
  */
-void addExtraParametersWarningIfNeeded(const StringVector &dataRow, const std::string &errorPrefix, int expected, Errors &errors) {
+void addExtraParametersWarningIfNeeded(const StringVector &dataRow, const std::string &errorPrefix, int expected, int lineNum, Errors &errors) {
     int actual = dataRow.size();
     if (actual > expected) {
-        errors.addError({FileInput_TooManyParameters, errorPrefix, intToStr(expected), intToStr(actual)});
+        errors.addError({FileInput_TooManyParameters, errorPrefix, intToStr(lineNum), intToStr(expected), intToStr(actual)});
     }
 }
-
 
 ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors) {
     StringStringVector data = readFile(filePath);
     ShipPlan shipPlan;
-    std::unordered_set<std::string> positionsWithData;  // To track duplicates
+    std::map<std::pair<int, int>, int> positionsWithData;  // To track duplicates
 
-    if (data.size() == 0) {
-        errors.addError(ErrorFlag::ShipPlan_FatalError_NoFileOrInvalidFirstLine);  // no data read, or couldn't open file
+    longUInt i;
+    for (i = 0; i < data.size() && data[i].empty(); i++);  // Find first non empty line
+
+    if (i >= data.size()) {  // No data rows (only white space lines, or starting with #)
+        errors.addError(ErrorFlag::ShipPlan_FatalError_NoFileOrInvalidFirstLine);
         return shipPlan;
     }
 
-    StringVector &firstRow = data[0];
+    StringVector &firstRow = data[i];  // First row with actual data
     if (firstRow.size() < 3 || !isRowOnlyIntegers(firstRow)) {
-        errors.addError(ErrorFlag::ShipPlan_FatalError_NoFileOrInvalidFirstLine);
-//        std::cerr << "Error: insufficient number of arguments for ship dimensions, exiting" << std::endl;
+        errors.addError({ErrorFlag::ShipPlan_FatalError_NoFileOrInvalidFirstLine, intToStr(i)});
         return shipPlan;
     }
 
@@ -65,19 +60,21 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors) {
 
     IntIntVector heights(x, IntVector(y, 0));  // init matrix of size (x,y) with zeroes
 
-    for (longUInt i = 1; i < data.size(); i++) {  // iterate on rows
+    for (i = i + 1; i < data.size(); i++) {  // iterate on rows
         StringVector &dataRow = data[i];
 
+        if (dataRow.size() == 0)
+            continue;
+
         if (dataRow.size() < 3) {
-            errors.addError(ErrorFlag::ShipPlan_BadLineFormat);
-//            std::cout << "Warning: data row contains less than 3 arguments, ignoring" << std::endl;
+            errors.addError({ErrorFlag::ShipPlan_BadLineFormat, intToStr(i)});
             continue;
         }
 
-        addExtraParametersWarningIfNeeded(dataRow, shipPlanWarning, 3, errors);
+        addExtraParametersWarningIfNeeded(dataRow, shipPlanWarning, 3, i, errors);
 
-        if (!isRowOnlyIntegers(dataRow)) {
-            errors.addError(ErrorFlag::ShipPlan_BadLineFormat);
+        if (!isRowOnlyIntegers(dataRow, 3)) {  // Check the first 3
+            errors.addError({ErrorFlag::ShipPlan_BadLineFormat, intToStr(i)});
             continue;
         }
 
@@ -88,26 +85,30 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors) {
         int availableContainers = intDataRow[2];
 
         if (n < 0 || n >= x || m < 0 || m >= y) {
-            errors.addError({ErrorFlag::ShipPlan_InvalidXYCoordinates, intToStr(n), intToStr(m)});
-//            std::cout << "Warning: data row exceeds the ship dimensions, ignoring" << std::endl;
+            errors.addError({ErrorFlag::ShipPlan_InvalidXYCoordinates, intToStr(i), intToStr(n), intToStr(m)});
             continue;
         }
-        std::string pos = intToStr(n) +"," +intToStr(m);
 
-        if (positionsWithData.find(pos) != positionsWithData.end()) {
-            errors.addError({ErrorFlag::ShipPlan_FatalError_DuplicateData, intToStr(n), intToStr(m)});
+        auto it = positionsWithData.find({n, m});
+
+        if (it != positionsWithData.end()) {
+            if (it->second == availableContainers) {  // Duplicate data about (x,y), but with same z
+                errors.addError({ErrorFlag::ShipPlan_BadLineFormat, intToStr(i)});
+                continue;
+            }
+            // else
+            errors.addError({ErrorFlag::ShipPlan_FatalError_DuplicateData, intToStr(i), intToStr(n), intToStr(m)});
             return shipPlan;
         }
 
-        positionsWithData.insert(pos);
+        positionsWithData.insert({{n, m}, availableContainers});  // Add position to hash table, to later check for duplicates
 
         if (availableContainers >= z) {
-            errors.addError(ErrorFlag::ShipPlan_InvalidFloorHeight);
-//            std::cout << "Warning: data row exceeds the maximum available containers, ignoring" << std::endl;
+            errors.addError({ErrorFlag::ShipPlan_InvalidFloorHeight, intToStr(i), intToStr(z), intToStr(availableContainers)});
             continue;
         }
 
-        heights[n][m] = z - availableContainers;  // we save the minimum available floor (z is the top)
+        heights[n][m] = z - availableContainers;  // We save the minimum available floor (z is the top)
     }
 
     shipPlan.setHeights(heights);
@@ -118,7 +119,7 @@ ShipRoute readShipRouteFromFile(const std::string &filePath, Errors &errors) {
     StringStringVector data = readFile(filePath);
     ShipRoute shipRoute;
 
-    if (data.size() == 0) {
+    if (data.empty()) {
         errors.addError(ErrorFlag::ShipRoute_FatalError_NoFileOrNoLegalPorts);  // no data read, or couldn't open file
         return shipRoute;
     }
@@ -127,19 +128,24 @@ ShipRoute readShipRouteFromFile(const std::string &filePath, Errors &errors) {
 
     std::string previousPort;
 
-    for (StringVector &dataRow : data) {
+    for (longUInt i = 0; i < data.size(); i++) {
+        StringVector &dataRow = data[i];
+
+        if (dataRow.empty()){
+            continue;
+        }
+
         std::string &token = dataRow[0];
 
-        addExtraParametersWarningIfNeeded(dataRow, shipRouteWarning, 1, errors);
+        addExtraParametersWarningIfNeeded(dataRow, shipRouteWarning, 1, i, errors);
 
         if (!isEnglishWord(token) || token.length() != 5) {
             errors.addError(ErrorFlag::ShipRoute_BadPortSymbol);
-//            std::cout << "Warning: invalid port format (" << token << "), ignoring" << std::endl;
             continue;
         }
 
         if (token == previousPort) {
-            errors.addError(ErrorFlag::ShipRoute_TwoConsecutiveSamePort);
+            errors.addError({ErrorFlag::ShipRoute_TwoConsecutiveSamePort, intToStr(i), token});
 //            std::cout << "Warning: same port appears twice in a row, ignoring" << std::endl;
             continue;
         }
@@ -150,7 +156,7 @@ ShipRoute readShipRouteFromFile(const std::string &filePath, Errors &errors) {
     }
 
     if (ports.size() == 1) {
-        errors.addError(ErrorFlag::ShipRoute_FatalError_SinglePort);
+        errors.addError({ErrorFlag::ShipRoute_FatalError_SinglePort, ports[0]});
         return shipRoute;
     }
 
@@ -173,7 +179,12 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &erro
 
     StringStringVector data = readFile(filePath);
 
-    for (StringVector dataRow : data) {
+    for (longUInt i = 0; i < data.size(); i++) {
+        auto &dataRow = data[i];
+
+        if (dataRow.empty())
+            continue;
+
         std::string id, weight, destPort;
 
         if (dataRow.size() > 0) {
@@ -187,11 +198,11 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &erro
         }
 
         if (data.size() > 2) {
-            addExtraParametersWarningIfNeeded(dataRow, containersAtPortWarning, 3, errors);
+            addExtraParametersWarningIfNeeded(dataRow, containersAtPortWarning, 3, i, errors);
         }
 
         if (id == "") {
-            errors.addError(ErrorFlag::CargoData_MissingContainerID);
+            errors.addError({ErrorFlag::CargoData_MissingContainerID, intToStr(i)});
             continue;
         }
 
@@ -212,7 +223,12 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
 
     StringStringVector data = readFile(filePath);
 
-    for (StringVector dataRow : data) {
+    for (longUInt i = 0; i < data.size(); i++) {
+        auto &dataRow = data[i];
+
+        if (dataRow.empty())
+            continue;
+
         if (dataRow.size() < 5) {
             errors.addError(ErrorFlag::ReadOperations_InsufficientRowData);
             continue;
@@ -229,18 +245,18 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
 
         if (packingType == PackingType::reject) {
             operations.addOperation({packingType, containerId});
-            addExtraParametersWarningIfNeeded(dataRow, operationsWarning, 5, errors);
+            addExtraParametersWarningIfNeeded(dataRow, operationsWarning, 5, i, errors);
             // The last 3 are also redundant in this case, but we don't warn because the format isn't very clear
             continue;
+        }
+
+        if (packingType != PackingType::move) {  // Load or Unload
+            addExtraParametersWarningIfNeeded(dataRow, operationsWarning, 5, i, errors);
         }
 
         if (packingType == PackingType::move && dataRow.size() < 8) {
             errors.addError(ErrorFlag::ReadOperations_InsufficientRowData_MoveOp);
             continue;
-        }
-
-        if (packingType != PackingType::move) {  // Load or Unload
-            addExtraParametersWarningIfNeeded(dataRow, operationsWarning, 5, errors);
         }
 
         if (!isInteger(floorStr) || !isInteger(xStr) || !isInteger(yStr)) {
@@ -265,7 +281,7 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
 
         // It's a move operation
 
-        addExtraParametersWarningIfNeeded(dataRow, operationsWarning, 8, errors);
+        addExtraParametersWarningIfNeeded(dataRow, operationsWarning, 8, i, errors);
         std::string floorStr2 = dataRow[5], xStr2 = dataRow[6], yStr2 = dataRow[7];
 
         if (!isInteger(floorStr2) || !isInteger(xStr2) || !isInteger(yStr2)) {

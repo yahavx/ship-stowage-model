@@ -1,0 +1,16 @@
+Command line arguments handling:
+- We except to receive 2, 4, or 6 arguments (according to number of flags supplied). Anything besides that is an error.
+- If an invalid flag is supplied (i.e. parameter 1/3/5 is not one of -travel_path, -algorithm_path, -output), it is an error.
+
+Any command line argument error prevents the simulator from running, an error is printed to the screen (using cerr), and the program is terminated.
+Note that if an invalid path is supplied (of any type), it is not a command line argument error (the simulator will handle that, and it will be treated just like any other simulator error).
+
+General error handling:
+The error documentation is as follows:
+- One file named GeneralErrors, that contains errors such as bad algorithm loading, invalid paths, invalid travels, etc.
+- A file for each algorithm-travel pair, with errors that occured during the run.
+
+An error file (general or travel-algorithm pair specific) is created only if at least one error was found. The folder is created if at least one file was created (i.e. at least one error, anywhere).
+Our full list of errors can be viewed in common/utils/Error.h. The messages format is under the toString method of the Error class.
+
+For errors related to input files (plan, route, cargo_data, algorithm instructions), we also report the line numbers.

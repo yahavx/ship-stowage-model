@@ -9,9 +9,14 @@
 #include "../../tests/SimulationTests.h"
 #endif
 
+/**
+ * Parses command line arguments, stores them in the function parameters accordingly.
+ *
+ * @return empty string if successful, invalid flag if found one.
+ */
 std::string parseCmdArguments(int argc, char **argv, std::string &travelPath, std::string &algorithmPath, std::string &outputPath);
 
-void printFormat();
+const std::string cmdFormat = "Format: ./simulator [-travel_path <path>] [-algorithm_path <algorithm path>] [-output <output path>]";
 
 int main(int argc, char **argv) {
 //    runIOTests();
@@ -20,17 +25,17 @@ int main(int argc, char **argv) {
 
     if (argc != 3 && argc != 5 && argc != 7) {
         std::cerr << "Insufficient arguments supplied." << std::endl;
-        printFormat();
+        std::cerr << cmdFormat << std::endl;
         return EXIT_FAILURE;
     }
 
     std::string travelPath = "", algorithmPath = "", outputPath = "";
 
-    std::string error = parseCmdArguments(argc, argv, travelPath, algorithmPath, outputPath);
+    std::string invalidFlag = parseCmdArguments(argc, argv, travelPath, algorithmPath, outputPath);
 
-    if (error != "") {
-        std::cerr << "Invalid flag received: '" << error << "'" << std::endl;
-        printFormat();
+    if (invalidFlag != "") {
+        std::cerr << "Invalid flag received: '" << invalidFlag << "'" << std::endl;
+        std::cerr << cmdFormat << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -68,9 +73,4 @@ std::string parseCmdArguments(int argc, char **argv, std::string &travelPath, st
     }
 
     return "";  // success
-}
-
-void printFormat() {
-
-    std::cout << "Format: ./simulator [-travel_path <path>] [-algorithm_path <algorithm path>] [-output <output path>]" << std::endl;
 }

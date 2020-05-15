@@ -28,6 +28,12 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
                                                                                                                          outputDir(outputDir),
                                                                                                                          fileDataManager(outputDir,
                                                                                                                                          travelRootDir) {
+    // We search those in cwd if not supplied
+    if (algorithmsDir == "")
+        this->algorithmsDir = ".";
+    if (outputDir == "")
+        this->outputDir = ".";
+
 #ifndef RUNNING_ON_NOVA
     algorithmFactories.emplace_back([](){return std::make_unique<NaiveStowageAlgorithm>();});
     algorithmNames.push_back("Naive");
@@ -50,7 +56,7 @@ void Simulator::runSimulations() {
 
     fileDataManager.createOutputFolders(generalErrors);
     StringVector travels = fileDataManager.collectLegalTravels(generalErrors);
-    loadAlgorithmsDynamically(generalErrors);
+    loadAlgorithmsDynamically(generalErrors);  // We may have no travels to run at this point - but we still may collect errors
     initResultsTable(resultsTable, travels, algorithmNames);  // add columns names and set table structure
 
     for (auto &travel: travels) {
@@ -87,10 +93,10 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
     std::cout << "Starting simulation (Algorithm = " << fileDataManager.algorithmName << ", Travel = " << fileDataManager.travelName << ")" << std::endl;
 
     WeightBalanceCalculator simWeightBalancer;
-    ContainerShip ship = initSimulation(simWeightBalancer, errors);
+    ContainerShip ship = initSimulationShip(simWeightBalancer, errors);
 
     WeightBalanceCalculator algoWeightBalancer;
-    Error algorithmReport = initAlgorithm(algorithm.get(), algoWeightBalancer);
+    Error algorithmReport = initAlgorithmShip(algorithm.get(), algoWeightBalancer);
 
     if (algorithmReport.isFatalError()) {  // Algorithm bad report - the travel wouldn't run if it was the case
 
@@ -165,10 +171,6 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
 }
 
 void Simulator::loadAlgorithmsDynamically(Errors &errors) {
-    if (algorithmsDir == "") {
-        algorithmsDir = ".";  // We search in current directory if no path supplied
-    }
-
 #ifndef RUNNING_ON_NOVA
     return;
 #endif
@@ -224,14 +226,16 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
 
 // region Simulation Init
 
-int Simulator::initAlgorithm(AbstractAlgorithm *algorithm, WeightBalanceCalculator &calculator) {
+
+
+int Simulator::initAlgorithmShip(AbstractAlgorithm *algorithm, WeightBalanceCalculator &calculator) {
     int ret = algorithm->readShipPlan(fileDataManager.shipPlanPath());
     int ret2 = algorithm->readShipRoute(fileDataManager.shipRoutePath());
     int ret3 = algorithm->setWeightBalanceCalculator(calculator);
 
     return ret | ret2 | ret3;
 
-    // TODO: its too risky for now, consider it in ex3
+    // TODO: below we check if algorithm report matches to what we except, and penalise him if yes. Decided to abandon it for this exercise (risky).
 //    int errorsDiff = errors.compareReports(algorithmErrors);
 //
 //    if (errorsDiff > 0) {
@@ -243,7 +247,7 @@ int Simulator::initAlgorithm(AbstractAlgorithm *algorithm, WeightBalanceCalculat
 //    }
 }
 
-ContainerShip Simulator::initSimulation(WeightBalanceCalculator &calculator, Errors &errors) {
+ContainerShip Simulator::initSimulationShip(WeightBalanceCalculator &calculator, Errors &errors) {
     ShipPlan shipPlan = readShipPlanFromFile(fileDataManager.shipPlanPath(), errors);
     ShipRoute shipRoute = readShipRouteFromFile(fileDataManager.shipRoutePath(), errors);
 

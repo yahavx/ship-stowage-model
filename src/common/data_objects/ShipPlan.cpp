@@ -21,8 +21,8 @@ ShipPlan::ShipPlan(const Dimensions &dimensions, const std::vector<std::vector<i
 // region Functions
 
 int ShipPlan::getMinimumHeight(int x, int y) {
-    return 0;
-    std::cout << x << y;  // TODO: remove
+    int allowed = heights[x][y];
+    return dimensions.Z() - allowed;
 }
 
 // endregion

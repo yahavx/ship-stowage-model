@@ -53,7 +53,6 @@ WeightBalanceCalculator &ContainerShip::getBalanceCalculator() const {
 
 void ContainerShip::setBalanceCalculator(WeightBalanceCalculator &balanceCalculator) {
     ContainerShip::balanceCalculator = &balanceCalculator;
-//    balanceCalculator.setCargo(cargo);  // TODO: need to find a way to pass the cargo using the interface
 }
 
 // endregion
@@ -129,7 +128,7 @@ Operations ContainerShip::loadContainerToLowestPositionAvailable(Port &port, con
     } else {
         auto op = PackingOperation(PackingType::load, container.getId(), {minX, minY, minZ});
         auto result = crane.preformOperation(op);
-        if (result == CraneOperationResult::SUCCESS) { /// Successfully loaded
+        if (result == CraneOperationResult::SUCCESS) { // Successfully loaded
             ops.addOperation(op);
         } else {
 //            std::cout << "Error loading container, crane operation failed to load container: " << op << "\n";

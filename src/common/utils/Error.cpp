@@ -89,8 +89,6 @@ Error::Error(ErrorFlag errorFlag, const std::string &param1, const std::string &
 Error::Error(const std::string &errorMsg) : errorMsg(errorMsg) {}
 
 Error::Error(int errorFlags) {
-    this->errorFlags = errorFlags;
-
     IntVector errorNumbers;
     for (int i = 0; i <= MAX_ERROR_BIT; i++) {
         int isBitEnabled = errorFlags & (1 << i);
@@ -119,27 +117,30 @@ std::string Error::toString() {
 
     switch (errorFlag) {
         case Success:
-            return "Success (this shouldn't appear)";
+            return "Success";  // This should not happen
 
         case ShipPlan_InvalidFloorHeight:
-            return shipPlanError + "Data row exceeds the maximum available containers in a spot, ignoring (E0)";
+            return shipPlanError + "Line " + param1 +": number of floors (" + param2 + ") is equal, or greater, than the number of floors provided in the first line (" + param3 + "), ignoring (E0)";
         case ShipPlan_InvalidXYCoordinates:
-            return shipPlanError + "Data row exceeds the ship dimensions, ignoring (E1)";
+            return shipPlanError + "Line " + param1 +": the position exceeds the ship dimensions, ignoring (E1)";
         case ShipPlan_BadLineFormat:
-            return shipPlanError + "Data row is in invalid format, ignoring (E2)";
+            return shipPlanError + "Line " + param1 + ": data row is in invalid format (insufficient parameters, not integers, etc), or duplicate similar data, ignoring (E2)";
         case ShipPlan_FatalError_NoFileOrInvalidFirstLine:
-            return shipPlanFatalError + "Invalid first line, or couldn't read file (E3)";
+            if (param1 == "<>")
+                return shipPlanFatalError + "File contains no data, or couldn't be read (E3)";
+            else
+                return shipPlanFatalError + "Line " + param1 + ": invalid ship dimensions (E3)";
         case ShipPlan_FatalError_DuplicateData:
-            return shipPlanFatalError + "Duplicate data rows, about position (" + param1 + ", " + param2 + ") (E4)";
+            return shipPlanFatalError + "Line " + param1 + ": duplicate data about position (" + param2 + ", " + param3 + ") (E4)";
 
         case ShipRoute_TwoConsecutiveSamePort:
-            return shipRouteError + "Port '" + param1 + "' appeared twice in a row, ignoring the latter (E5)";
+            return shipRouteError + "Line " + param1 + ": port '" + param2 + "' appeared twice in a row, ignoring the latter (E5)";
         case ShipRoute_BadPortSymbol:
-            return shipRouteError + "Invalid port symbol format '" + param1 + "' (E6)";
+            return shipRouteError + "Line " + param1 + ": invalid port symbol ('" + param2 + "'), ignoring (E6)";
         case ShipRoute_FatalError_NoFileOrNoLegalPorts:
-            return shipRouteFatalError + "No ports in the route, or couldn't read file (E7)";
+            return shipRouteFatalError + "No legal ports in the route, or couldn't read file (E7)";
         case ShipRoute_FatalError_SinglePort:
-            return shipRouteFatalError + "Only one port appears in the route (8)";
+            return shipRouteFatalError + "Port '" + param1 + "' is the only legal port in the route (E8)";
 
         case ContainersAtPort_DuplicateID:
             return containersAtPortError + "Container with the same ID ('" + param1 + "') was already found on port, rejecting (E10)";
@@ -148,13 +149,13 @@ std::string Error::toString() {
         case ContainersAtPort_MissingOrBadWeight:
             return containersAtPortError + "Missing or bad weight, rejecting (E12)";
         case ContainersAtPort_MissingOrBadPortDest:
-            return containersAtPortError + "Missing or bad destination port, ignoring (E13)";
+            return containersAtPortError + "Missing or bad destination port, rejecting (E13)";
         case CargoData_MissingContainerID:
-            return cargoDataError + "Container has no ID, ignoring (E14)";
+            return cargoDataError + "Line " + param1 +": container has no ID, ignoring (E14)";
         case ContainersAtPort_BadContainerID:
             return containersAtPortError + "Container '" + param1 + "' ID is not in ISO 6346 format, rejecting (E15)";
         case CargoData_InvalidFile:
-            return cargoDataError + "Couldn't read any container from file '" + param1 + "', cargo will only be loaded (E16)";
+            return cargoDataError + "Couldn't read file '" + param1 + "', cargo will only be loaded (E16)";
         case ContainersAtPort_LastPortHasContainers:
             return containersAtPortError + "Last port has awaiting containers, ignoring (E17)";
         case ContainersAtPort_ContainersExceedsShipCapacity:
@@ -217,7 +218,7 @@ std::string Error::toString() {
             return algorithmError + "Received unload operation of container with ID '" + param1 +
                    "', at (" + param2 + +", " + param3 + ")" + " but there are no containers";
         case AlgorithmError_InvalidXYCoordinates:
-            return algorithmError + "Received operation on container with ID '" + param2 + "', using an illegal position: (" + param3 + +", " + param4 + ")";
+            return algorithmError + "Received operation on container with ID '" + param1 + "', using an illegal position: (" + param2 + +", " + param3 + ")";
         case AlgorithmError_MoveNoContainersAtPosition:
             break;
         case AlgorithmError_MoveBadId:
@@ -247,7 +248,7 @@ std::string Error::toString() {
             return algorithmOutputError + "Received invalid ship " + param1 + " position: '" + param2 + "' (should be an integer)";
 
         case FileInput_TooManyParameters:
-            return param1 + "Too many parameters: expected " + param2 +", but received " + param3 +", ignoring the extra parameters";
+            return param1 + "Line " + param2 +": too many parameters - expected " + param3 +", but received " + param4 +", ignoring the extra parameters";
 
         case SharedObject_CantLoadSoFile:
             return dynamicLoadError + "Error while loading SO file: '" + param1 + "'";
@@ -272,15 +273,15 @@ bool Error::isCertainFlag(ErrorFlag other) {
 }
 
 bool Error::isFatalError() {
-    return errorFlag & errorFlags & c_initFatalError;
+    return errorFlag & c_initFatalError;
 }
 
 bool Error::isAlgorithmError() {
-    return errorFlag & errorFlags & c_algorithmErrors;
+    return errorFlag & c_algorithmErrors;
 }
 
 bool Error::isSuccess() {
-    return errorFlag == ErrorFlag::Success && errorFlags == 0;
+    return errorFlag == ErrorFlag::Success;
 }
 
 // endregion

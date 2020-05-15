@@ -10,7 +10,7 @@
 #define MAX_ERROR_BIT 18  // highest bit that is used by the algorithm (rest are for us)
 
 
-/// Each entry represnets a possible error/warning in the program.
+/// Each entry represents a possible error/warning in the program.
 enum ErrorFlag : longUInt {
     Success = 0,
 
@@ -94,10 +94,12 @@ enum ErrorFlag : longUInt {
  */
 class Error {
 public:
-    ErrorFlag errorFlag = ErrorFlag::Success;
+    // A custom error message
     std::string errorMsg;
-    int errorFlags = 0;  // bitwise OR between multiple errorFlags
-    std::string param1 = "<>";  // Can be for example a container ID, a port name, etc.
+
+    // A formatted error message - combine of an error flag with params (to give more indicative error - params can be port, container ID, line number, etc)
+    ErrorFlag errorFlag = ErrorFlag::Success;
+    std::string param1 = "<>";
     std::string param2 = "<>";
     std::string param3 = "<>";
     std::string param4 = "<>";

@@ -37,10 +37,10 @@ StringStringVector readFile(const std::string &path) {
     SkipBOM(fin);  // we can ignore the return value
 
     while (getline(fin, line)) {  // reads a row
+        data.emplace_back();  // adds a new empty vector (data row), may be empty
+
         if (line[0] == '#' || startsWith(line, "\xEF\xBB\xBF#") || std::all_of(line.begin(), line.end(), isspace))  // skip lines with # or empty lines
             continue;
-
-        data.emplace_back();  // adds a new empty vector (data row)
 
         std::stringstream s(line);  // used to split line to tokens
 

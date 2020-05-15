@@ -68,12 +68,7 @@ int PackingOperation::getSecondPositionFloor() const {
 // region Printer
 
 std::ostream &operator<<(std::ostream &os, const PackingOperation &operation) {
-    os << "Op('" << packingTypeFromString(operation.type) << "', ContainerID=" << operation.containerId;
-    os << ", Position=" << operation.pos1;
-    if (operation.pos2.X() != -1) {  // TODO: make adaptions after we add move operation
-        os << " To " << operation.pos2;
-    }
-    os << ")";
+    os << operation.toString();
     return os;
 }
 
