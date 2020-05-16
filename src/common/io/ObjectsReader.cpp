@@ -13,9 +13,9 @@
 
 
 // This is a bit ugly, but will carry on for now
-const std::string shipPlanWarning = "\t[Ship Route Warning] ";
-const std::string shipRouteWarning = "\t[Ship Route Warning] ";
-const std::string containersAtPortWarning = "\t[Containers At Port Warning] ";
+const std::string shipPlanWarning = "\t[Ship Plan Error] ";
+const std::string shipRouteWarning = "\t[Ship Route Error] ";
+const std::string containersAtPortWarning = "\t[Containers At Port Error] ";
 const std::string operationsWarning = "\t[Algorithm Warning] ";  // this relates to the file that the algorithm writes
 
 
@@ -69,14 +69,14 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors) {
             continue;
 
         if (dataRow.size() < 3) {
-            errors.addError({ErrorFlag::ShipPlan_BadLineFormat, intToStr(i)});
+            errors.addError({ErrorFlag::ShipPlan_BadLineFormat, intToStr(i+1)});
             continue;
         }
 
         addExtraParametersWarningIfNeeded(dataRow, shipPlanWarning, 3, i, errors);
 
         if (!isRowOnlyIntegers(dataRow, 3)) {  // Check the first 3
-            errors.addError({ErrorFlag::ShipPlan_BadLineFormat, intToStr(i)});
+            errors.addError({ErrorFlag::ShipPlan_BadLineFormat, intToStr(i+1)});
             continue;
         }
 
@@ -87,7 +87,7 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors) {
         int availableContainers = intDataRow[2];
 
         if (n < 0 || n >= x || m < 0 || m >= y) {
-            errors.addError({ErrorFlag::ShipPlan_InvalidXYCoordinates, intToStr(i), intToStr(n), intToStr(m)});
+            errors.addError({ErrorFlag::ShipPlan_InvalidXYCoordinates, intToStr(i+1), intToStr(n), intToStr(m)});
             continue;
         }
 
@@ -95,18 +95,18 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors) {
 
         if (it != positionsWithData.end()) {
             if (it->second == availableContainers) {  // Duplicate data about (x,y), but with same z
-                errors.addError({ErrorFlag::ShipPlan_BadLineFormat, intToStr(i)});
+                errors.addError({ErrorFlag::ShipPlan_BadLineFormat, intToStr(i+1), intToStr(n), intToStr(m)});
                 continue;
             }
             // else
-            errors.addError({ErrorFlag::ShipPlan_FatalError_DuplicateData, intToStr(i), intToStr(n), intToStr(m)});
+            errors.addError({ErrorFlag::ShipPlan_FatalError_DuplicateData, intToStr(i+1), intToStr(n), intToStr(m)});
             return shipPlan;
         }
 
         positionsWithData.insert({{n, m}, availableContainers});  // Add position to hash table, to later check for duplicates
 
         if (availableContainers >= z) {
-            errors.addError({ErrorFlag::ShipPlan_InvalidFloorHeight, intToStr(i), intToStr(z), intToStr(availableContainers)});
+            errors.addError({ErrorFlag::ShipPlan_InvalidFloorHeight, intToStr(i+1), intToStr(z), intToStr(availableContainers)});
             continue;
         }
 
@@ -137,17 +137,17 @@ ShipRoute readShipRouteFromFile(const std::string &filePath, Errors &errors) {
             continue;
         }
 
-        std::string &token = dataRow[0];
+        std::string token = toUpper(dataRow[0]);
 
         addExtraParametersWarningIfNeeded(dataRow, shipRouteWarning, 1, i, errors);
 
         if (!isEnglishWord(token) || token.length() != 5) {
-            errors.addError(ErrorFlag::ShipRoute_BadPortSymbol);
+            errors.addError({ErrorFlag::ShipRoute_BadPortSymbol, intToStr(i+1), token});
             continue;
         }
 
         if (token == previousPort) {
-            errors.addError({ErrorFlag::ShipRoute_TwoConsecutiveSamePort, intToStr(i), token});
+            errors.addError({ErrorFlag::ShipRoute_TwoConsecutiveSamePort, intToStr(i+1), token});
 //            std::cout << "Warning: same port appears twice in a row, ignoring" << std::endl;
             continue;
         }
@@ -204,7 +204,7 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &erro
         }
 
         if (id == "") {
-            errors.addError({ErrorFlag::CargoData_MissingContainerID, intToStr(i)});
+            errors.addError({ErrorFlag::CargoData_MissingContainerID, intToStr(i+1)});
             continue;
         }
 
@@ -310,7 +310,7 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
 bool writePackingOperationsToFile(const std::string &filePath, Operations &operations) {
     StringStringVector data;
 
-    for (PackingOperation op : operations.ops) {
+    for (PackingOperation &op : operations.ops) {
         data.emplace_back();  // add new row
         StringVector &currRow = data.back();
 

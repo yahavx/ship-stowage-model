@@ -1,1 +1,19 @@
-,
+5, 2, 2, d
+# floors, x, y
+
+2, 1, 2
+# exceeds dimensions
+
+0, 2, 2, 2
+# exceeds dimensions + extra parameter
+
+-1
+2, 2
+# bad format
+
+1, 1, 5, 10
+1, 1, 5
+# duplicate similar data
+
+1, 0, 1
+

@@ -87,7 +87,7 @@ void inline readShipRouteTest() {
     string path = "../input-examples/test-files/Route";
 
     ShipRoute shipRoute = readShipRouteFromFile(path, errors);
-    assert(!containsFatalError(errors));
+    assert(!errors.hasFatalError());
 
     cout << "Ship route" << endl;
     cout << shipRoute;

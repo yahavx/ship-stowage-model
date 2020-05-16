@@ -99,10 +99,10 @@ Error::Error(int errorFlags) {
     }
 
     if (!errorNumbers.empty()) {
-        errorMsg = "\t[Algorithm Report] The algorithm reported the following errors: " + intToStr(errorNumbers[0]);
+        errorMsg = "\t[Algorithm Report] The algorithm reported the following errors: E" + intToStr(errorNumbers[0]);
 
         for (longUInt i = 1; i < errorNumbers.size(); i++) {
-            errorMsg += ", " + intToStr(errorNumbers[i]);
+            errorMsg += ", E" + intToStr(errorNumbers[i]);
         }
     }
 }
@@ -120,11 +120,19 @@ std::string Error::toString() {
             return "Success";  // This should not happen
 
         case ShipPlan_InvalidFloorHeight:
-            return shipPlanError + "Line " + param1 +": number of floors (" + param2 + ") is equal, or greater, than the number of floors provided in the first line (" + param3 + "), ignoring (E0)";
+            if (param2 == param3)
+                return shipPlanError + "Line " + param1 +": number of floors (" + param2 + ") is equal to the number of floors provided in the first line, this data is redundant (E0)";
+            else
+                return shipPlanError + "Line " + param1 +": number of floors (" + param2 + ") is greater than the number of floors provided in the first line (" + param3 + "), ignoring (E0)";
+
         case ShipPlan_InvalidXYCoordinates:
-            return shipPlanError + "Line " + param1 +": the position exceeds the ship dimensions, ignoring (E1)";
+            return shipPlanError + "Line " + param1 +": position (" + param2 + ", " + param3 + ") exceeds the ship dimensions, ignoring (E1)";
         case ShipPlan_BadLineFormat:
-            return shipPlanError + "Line " + param1 + ": data row is in invalid format (insufficient parameters, not integers, etc), or duplicate similar data, ignoring (E2)";
+            if (param2 == "<>")
+                return shipPlanError + "Line " + param1 + ": data row is in invalid format (insufficient parameters, not integers, etc), ignoring (E2)";
+            else
+                return shipPlanError + "Line " + param1 + ": data row contains similar data about position (" + param2 + ", " + param3 + "), ignoring (E2)";
+
         case ShipPlan_FatalError_NoFileOrInvalidFirstLine:
             if (param1 == "<>")
                 return shipPlanFatalError + "File contains no data, or couldn't be read (E3)";

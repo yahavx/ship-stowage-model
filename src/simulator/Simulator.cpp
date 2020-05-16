@@ -59,7 +59,7 @@ void Simulator::runSimulations() {
     loadAlgorithmsDynamically(generalErrors);  // We may have no travels to run at this point - but we can collect errors
     generalErrors.addSimulatorInitLog();
 
-    initResultsTable(resultsTable, travels, algorithmNames);  // add columns names and set table structure
+    initResultsTable(resultsTable, travels, algorithmNames);  // Add columns names and set table structure
 
     for (auto &travel: travels) {
         fileDataManager.setTravelName(extractFilenameFromPath(travel));
@@ -92,13 +92,16 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
 
     // region Init
 
+    #ifdef DEBUG_PRINTS
     std::cout << "Starting simulation (Algorithm = " << fileDataManager.algorithmName << ", Travel = " << fileDataManager.travelName << ")" << std::endl;
+    #endif
 
     WeightBalanceCalculator simWeightBalancer;
     ContainerShip ship = initSimulationShip(simWeightBalancer, errors);
 
     WeightBalanceCalculator algoWeightBalancer;
     Error algorithmReport = initAlgorithmShip(algorithm.get(), algoWeightBalancer);
+    errors.addError(algorithmReport);
 
     if (algorithmReport.isFatalError()) {  // Algorithm bad report - the travel wouldn't run if it was the case
 

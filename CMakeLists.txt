@@ -8,7 +8,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}" )
 # Keep this order when you add a file
 
 add_executable(ship_stowage_model
-        src/simulator/main.cpp
     # src
         # algorithms
         src/algorithms/_305170987_a.cpp src/algorithms/_305170987_a.h
@@ -61,6 +60,7 @@ add_executable(ship_stowage_model
         # simulator
         src/simulator/AlgorithmRegistrar.cpp src/simulator/AlgorithmRegistrar.h
         src/simulator/AlgorithmValidation.cpp src/simulator/AlgorithmValidation.h
+        src/simulator/main.cpp
         src/simulator/Simulator.cpp src/simulator/Simulator.h
         src/simulator/SimulatorFileManager.cpp src/simulator/SimulatorFileManager.h
         src/simulator/SimulatorUtil.cpp src/simulator/SimulatorUtil.h

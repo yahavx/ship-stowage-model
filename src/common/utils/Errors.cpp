@@ -88,7 +88,7 @@ void Errors::addSimulationPortVisitLog(int portVisitNum, const std::string &port
 void Errors::addSimulationErrorLog() {
     addSeparator(errorsList.size());
     std::string logMsg = "The simulation has been terminated due to an algorithm error.";
-    errorsList.push_back(logMsg);
+    errorsList.emplace_back(logMsg);
 }
 
 void Errors::addTravelLog(const std::string &travelName) {
