@@ -80,7 +80,7 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors) {
             continue;
         }
 
-        IntVector intDataRow = convertRowToInt(dataRow);
+        IntVector intDataRow = convertRowToInt(dataRow, 3);
 
         int n = intDataRow[0];
         int m = intDataRow[1];

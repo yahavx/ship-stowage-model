@@ -1,5 +1,0 @@
-# Last port and bad ID, should reject containers (E17), (E15)
-AALU1234560, 6, CCCCC
-
-# Last port and destination port does not appear in route, should reject containers (E17) (E19)
-AAMU1234567, 6, CCCCC

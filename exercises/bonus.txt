@@ -1,0 +1,16 @@
+Our travel main directory (that contains some travel sub-directories) that shows our error handling mechanism, is called travels-error-handling.
+We have a few travels:
+- Travel-No-Errors: a clean run, no errors folder is generated.
+- Travel-Diverse-Errors: show many different errors.
+- Travel-Diverse-Errors-2: similar to the one before, shows many Plan and Route errors.
+- Travel-Not-Enough-Storage: example when the ship becomes full.
+- Travel-Bad-Input, Travel-Bad-Input-2: travels that can't be executed.
+
+Note: 2 common errors of cargo_data files weren't addressed in the requirements:
+- Container's port destination is the current port
+- Container's port destination is not in the route
+
+We decided to assign them numbers 19 and 20, respectively. The algorithm doesn't report that when happen, of course.
+
+What makes our error handling special is that it is very informative and well organized, and allows to debug problems very easily.
+Without further explaining, just run our examples and see the results.

@@ -156,27 +156,27 @@ std::string Error::toString() {
             return shipRouteFatalError + "Port '" + param1 + "' is the only legal port in the route (E8)";
 
         case ContainersAtPort_DuplicateID:
-            return containersAtPortError + "Container with the same ID ('" + param1 + "') was already found on port, rejecting (E10)";
+            return containersAtPortError + "Container with the same ID ('" + param1 + "') was already found on port, should be rejected (E10)";
         case ContainersAtPort_IDAlreadyOnShip:
-            return containersAtPortError + "Container with the same ID ('" + param1 + "') is already on the ship, rejecting (E11)";
+            return containersAtPortError + "Container with the same ID ('" + param1 + "') is already on the ship, should be rejected (E11)";
         case ContainersAtPort_MissingOrBadWeight:
-            return containersAtPortError + "Container with ID '" + param1 + "' has missing or bad weight, rejecting (E12)";
+            return containersAtPortError + "Container with ID '" + param1 + "' has missing or bad weight, should be rejected (E12)";
         case ContainersAtPort_MissingOrBadPortDest:
-            return containersAtPortError + "Container with ID '" + param1 + "' has missing or bad destination port, rejecting (E13)";
+            return containersAtPortError + "Container with ID '" + param1 + "' has missing or bad destination port, should be rejected (E13)";
         case CargoData_MissingContainerID:
             return cargoDataError + "Line " + param1 +": container has no ID, ignoring (E14)";
         case ContainersAtPort_BadContainerID:
-            return containersAtPortError + "Container '" + param1 + "' ID is not in ISO 6346 format, rejecting (E15)";
+            return containersAtPortError + "Container with ID '" + param1 + "', ID is not in ISO 6346 format, should be rejected (E15)";
         case CargoData_InvalidFile:
             return cargoDataError + "Couldn't read file '" + param1 + "', cargo will only be loaded (E16)";
         case ContainersAtPort_LastPortHasContainers:
             return containersAtPortError + "Last port in route has awaiting containers, ignoring (E17)";
         case ContainersAtPort_ContainersExceedsShipCapacity:
-            return containersAtPortError + "Ship is at full capacity, container '" + param1 + "' was rejected (E18)";
+            return containersAtPortError + "Ship is at full capacity, container with ID '" + param1 + "' was rejected (E18)";
         case ContainersAtPort_ContainerNotOnRoute:
-            return containersAtPortError + "Container '" + param1 + "' destination port is '" + param2 + "', which is not on the ship route, rejecting (E19)";
+            return containersAtPortError + "Container with ID '" + param1 + "' destination port is '" + param2 + "', which is not on the ship route, should be rejected (E19)";
         case ContainersAtPort_ContainerDestinationIsCurrentPort:
-            return containersAtPortError + "Container '" + param1 + "' destination is the current port, rejecting (E20)";
+            return containersAtPortError + "Container with ID '" + param1 + "' destination is the current port, should be rejected (E20)";
 
             // Our errors
 
@@ -204,7 +204,7 @@ std::string Error::toString() {
 
             // Algorithm
         case AlgorithmError_CraneOperationWithInvalidId:
-            return algorithmError + "Didn't find container " + param1 + " while at port " + param2 + ", and executing crane operation " + param3;
+            return algorithmError + "Didn't find container with ID " + param1 + " while at port " + param2 + ", and executing crane operation " + param3;
         case AlgorithmError_InvalidCraneOperation:
             return algorithmError + "Received the following invalid crane instruction: " + param1;
         case AlgorithmError_LeftContainersAtPort:
@@ -245,7 +245,7 @@ std::string Error::toString() {
         case AlgorithmError_MissingReport:
             return algorithmError + "Algorithm didn't report error E" + param1 + ", but it should have been";
         case AlgorithmError_WeightBalancerRejectedOperation:
-            return algorithmError + param1 + " operation on container '" + param2 + "' was rejected by the ship's weight balance calculator";
+            return algorithmError + param1 + " operation on container with ID '" + param2 + "' was rejected by the ship's weight balance calculator";
         case AlgorithmError_FailedToInitialize:
             return algorithmError + "Algorithm failed to initialize, although the Ship Plan and Route files are valid";
 
