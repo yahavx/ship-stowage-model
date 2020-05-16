@@ -50,10 +50,7 @@ public:
 
     // region Logging
 
-    /// If errors were added (checking against the last call to log functions), it will add an informative line about the simulator init.
-    void addSimulatorInitLog();
-
-    /// Same as above, but for a simulation init (travel-algorithm pair).
+    /// If errors were added (checking against the last call to log functions), it will add an informative line about the simulation init.
     void addSimulationInitLog();
 
     /// If errors were added, it will add an informative line about the state of the simulation.
@@ -63,6 +60,8 @@ public:
 
     /// If errors were added, it will add an informative line about the travel.
     void addTravelLog(const std::string &travelName);
+
+    void addDynamicLoadErrorLog();
 
 private:
     /// Adds a log message if errors were added since the last call.
