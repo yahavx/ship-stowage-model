@@ -1,0 +1,8 @@
+﻿# Legal containers
+AADU1234560, 6, DDDDD
+AAEU1234564, 6, DDDDD
+AAFU1234568, 6, DDDDD
+
+# Destination port does not appear in route, should reject containers (E19)
+AACU1234567, 5, BBBBB
+

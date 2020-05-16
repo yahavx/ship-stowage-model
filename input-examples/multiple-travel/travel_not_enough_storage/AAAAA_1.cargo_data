@@ -1,0 +1,25 @@
+﻿# Legal containers
+MSKU2666542, 5, DDDDD
+AANU1234560, 5, DDDDD
+AAOU1234564, 5, DDDDD
+NYKU3086856, 6, CCCCC
+AAAU7575430, 6, CCCCC
+
+AARU1234565, 6, CCCCC
+BAAU7575432, 6, DDDDD
+AASU1234569, 6, DDDDD
+
+# Bad input, no weight, should reject (E13)
+AAPU1234568, , DDDDD
+
+# Bad input, no destination port, should reject (E13)
+AAQU1234561, 6,
+
+# Bad input, no ID (E14)
+, 6, DDDDD
+
+# Bad container ID, should reject (E15)
+AATU1234555, 6, DDDDD
+
+# Bad container to the current port, should reject (E20)
+AATU1234562, 6, AAAAA

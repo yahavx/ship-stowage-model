@@ -66,6 +66,8 @@ public:
     /// If errors were added, it will add an informative line about the travel.
     void addTravelLog(const std::string &travelName);
 
+    void addDynamicLoadErrorLog();
+
 private:
     /// Adds a log message if errors were added since the last call.
     void addLog(const std::string &logMessage);
