@@ -13,6 +13,9 @@
 #include "NaiveWeightBalancer.h"
 #include "../data_structures/Cargo.h"
 #include "../data_objects/Operations.h"
+#include "../strategies/LoadContainerStrategy.h"
+
+class LoadContainerStrategy;
 
 class ContainerShip {
     ShipPlan shipPlan;
@@ -71,6 +74,8 @@ public:
      * @return legal PackingOperation or NULL if none was found
      */
     Operations loadContainerToLowestPositionAvailable(Port &port, const Container &container, Errors &errors);
+
+    Operations loadContainer(LoadContainerStrategy* strategy, Port &port, const Container &container, Errors &errors);
 
     /**
     * returns legal series of PackingOperation's for unloading container.

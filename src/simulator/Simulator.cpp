@@ -41,8 +41,8 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
 //    algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
 //    algorithmNames.push_back("Bad");
 //
-//    algorithmFactories.emplace_back([](){return std::make_unique<RobustStowageAlgorithm>();});
-//    algorithmNames.push_back("Robust");
+    algorithmFactories.emplace_back([](){return std::make_unique<RobustStowageAlgorithm>();});
+    algorithmNames.push_back("Robust");
 #endif
 }
 

@@ -7,6 +7,7 @@
 #include "../common/actors/CranesManagement.h"
 #include "../common/io/ObjectsReader.h"
 #include "../common/utils/UtilFunctions.h"
+#include "../common/strategies/LoadContainerToArbitraryPosition.h"
 #include <unordered_set>
 
 
@@ -25,10 +26,12 @@ Operations NaiveStowageAlgorithm::generateOperations(ContainerShip &ship, Port &
         operations.addOperations(unloadOps);
     }
 
+    std::unique_ptr<LoadContainerStrategy> strategy = std::make_unique<LoadContainerToArbitraryPosition>();
     // Load all required containers
     for (const Container &container: containersToLoad) {
+        
         // Get instructions for adding the container
-        Operations loadOps = ship.loadContainerToArbitraryPosition(port, container, errors);
+        Operations loadOps = ship.loadContainer(strategy.get(), port, container, errors);
 
         // Add load operations to set of all instructions
         operations.addOperations(loadOps);

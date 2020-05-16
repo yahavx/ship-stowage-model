@@ -7,6 +7,7 @@
 #include "../common/io/ObjectsReader.h"
 #include "../common/utils/UtilFunctions.h"
 #include "RobustStowageAlgorithm.h"
+#include "../common/strategies/LoadContainerToLowestPositionAvailable.h"
 
 
 Operations RobustStowageAlgorithm::generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad, Errors &errors) {
@@ -23,11 +24,13 @@ Operations RobustStowageAlgorithm::generateOperations(ContainerShip &ship, Port 
         operations.addOperations(unloadOps);
     }
 
+    std::unique_ptr<LoadContainerStrategy> strategy = std::make_unique<LoadContainerToLowestPositionAvailable>();
+
     if((int)containersToLoad.size() <= ship.getCargo().numberOfEmptyPositions()) {
         // There is space for all required containers, so load them from furthest port to nearest
         for (const Container &container: containersToLoad) {
             // Get instructions for adding the container
-            Operations loadOps = ship.loadContainerToLowestPositionAvailable(port, container, errors);
+            Operations loadOps = ship.loadContainer(strategy.get(), port, container, errors);
 
             // Add load operations to set of all instructions
             operations.addOperations(loadOps);
@@ -38,7 +41,7 @@ Operations RobustStowageAlgorithm::generateOperations(ContainerShip &ship, Port 
             const Container &container = containersToLoad[i];
 
             // Get instructions for adding the container
-            Operations loadOps = ship.loadContainerToLowestPositionAvailable(port, container, errors);
+            Operations loadOps = ship.loadContainer(strategy.get(), port, container, errors);
 
             // Add load operations to set of all instructions
             operations.addOperations(loadOps);

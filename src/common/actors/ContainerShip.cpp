@@ -16,8 +16,8 @@ ContainerShip::ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRout
 
 ContainerShip::ContainerShip(const ShipPlan &shipPlan, const ShipRoute &shipRoute,
                              WeightBalanceCalculator &balanceCalculator) : shipPlan(shipPlan), shipRoute(shipRoute),
-                                                                       cargo(shipPlan),
-                                                                       balanceCalculator(&balanceCalculator) {}
+                                                                           cargo(shipPlan),
+                                                                           balanceCalculator(&balanceCalculator) {}
 // endregion
 
 // region Getters and setters
@@ -106,7 +106,7 @@ Operations ContainerShip::loadContainerToLowestPositionAvailable(Port &port, con
     Operations ops = Operations();
     const Dimensions &dims = this->shipPlan.getDimensions();
 
-    int minZ = dims.Z()+1, minX = -1, minY = -1;
+    int minZ = dims.Z() + 1, minX = -1, minY = -1;
     // Loop over all possible ship matrix cells and try to load the container on top, until success
     for (int x = 0; (x < dims.X()); x++) {
         for (int y = 0; (y < dims.Y()); y++) {
@@ -120,7 +120,7 @@ Operations ContainerShip::loadContainerToLowestPositionAvailable(Port &port, con
         }
     }
 
-    if (minZ >= dims.Z()+1) {
+    if (minZ >= dims.Z() + 1) {
         ops = Operations();
         ops.addOperation({PackingType::reject, container.getId()});
         errors.addError({ErrorFlag::ContainersAtPort_ContainersExceedsShipCapacity, container.getId()});
@@ -236,5 +236,10 @@ OptionalContainer ContainerShip::getContainerById(const std::string &id) {
 bool ContainerShip::isContainerOnShip(const std::string &containerId) {
     return cargo.hasContainer(containerId);
 }
+
+Operations ContainerShip::loadContainer(LoadContainerStrategy *strategy, Port &port, const Container &container, Errors &errors) {
+    return strategy->loadContainer(port, *this, container, errors);
+}
+
 
 // endregion
