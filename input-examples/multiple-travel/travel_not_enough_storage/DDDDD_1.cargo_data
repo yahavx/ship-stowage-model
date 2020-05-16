@@ -1,0 +1,9 @@
+# Legal containers
+MSKU2666542, 5, AAAAA
+NYKU3086856, 5, AAAAA
+
+# Destination port does not appear in route, should reject containers (E19)
+GAAU7575437, 6, CCCCC
+
+# Destination port does not appear in route, should reject containers (E19)
+AABU1234563, 6, CCCCC
