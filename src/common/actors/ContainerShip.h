@@ -62,22 +62,14 @@ public:
     /// Returns the current (first) port in the route. If there is no port, it is an error.
     PortId getCurrentPortId();
 
+
     /**
-     * returns legal PackingOperation for loading the container to an arbitrary position.
+     * returns legal PackingOperation for loading the container to an arbitrary position,
+     * using the given strategy
      *
      * @param container - container to load
      * @return legal PackingOperation or NULL if none was found
      */
-    Operations loadContainerToArbitraryPosition(Port &port, const Container &container, Errors &errors);
-
-    /**
-     * returns legal PackingOperation for loading the container to position with minimum height from available positions
-     *
-     * @param container - container to load
-     * @return legal PackingOperation or NULL if none was found
-     */
-    Operations loadContainerToLowestPositionAvailable(Port &port, const Container &container, Errors &errors);
-
     Operations loadContainer(LoadContainerStrategy* strategy, Port &port, const Container &container, Errors &errors);
 
     /**
