@@ -20,7 +20,7 @@ int Position::Y() const {
     return y;
 }
 
-int Position::Z() const {
+int Position::floor() const {
     return z;
 }
 

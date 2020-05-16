@@ -44,7 +44,7 @@ int PackingOperation::getFirstPositionY() const {
 }
 
 int PackingOperation::getFirstPositionFloor() const {
-    return pos1.Z();
+    return pos1.floor();
 }
 
 const Position &PackingOperation::getSecondPosition() const {
@@ -60,7 +60,7 @@ int PackingOperation::getSecondPositionY() const {
 }
 
 int PackingOperation::getSecondPositionFloor() const {
-    return pos2.Z();
+    return pos2.floor();
 }
 
 // endregion
@@ -88,8 +88,8 @@ std::string PackingOperation::operationToString() const {
 }
 
 std::string PackingOperation::toString() const {
-    int x1 = pos1.X(), y1 = pos1.Y(), z1 = pos1.Z();
-    int x2 = pos2.X(), y2 = pos2.Y(), z2 = pos2.Z();
+    int x1 = pos1.X(), y1 = pos1.Y(), z1 = pos1.floor();
+    int x2 = pos2.X(), y2 = pos2.Y(), z2 = pos2.floor();
 
     std::string p1 = "(" + intToStr(x1) + ", " + intToStr(y1) + "), floor " + intToStr(z1);
     std::string p2 = "(" + intToStr(x2) + ", " + intToStr(y2) + "), floor " + intToStr(z2);

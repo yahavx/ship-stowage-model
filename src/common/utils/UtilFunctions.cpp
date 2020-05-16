@@ -25,7 +25,7 @@ std::string craneOperationToString(const PackingOperation &op) {
     auto& pos = op.getFirstPosition();
     x = intToStr(pos.X());
     y = intToStr(pos.Y());
-    z = intToStr(pos.Z());
+    z = intToStr(pos.floor());
 
     auto opString = "Op('" + packingTypeFromString(op.getType()) + "', ContainerID=" + op.getContainerId() +
                     ", Position=[" + x + ", " + y + ", " + z + "]";

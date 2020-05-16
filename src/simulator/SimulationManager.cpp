@@ -117,10 +117,12 @@ std::string SimulationManager::getNextFileForPort() {
     PortId portId = ship.getCurrentPortId();
     StringVector &filesForPort = cargoData[portId];
 
+    int portVisitNum = currentPortVisitNum(true);
+
     if (!filesForPort.empty()) {
         std::string portCargoFile = filesForPort[0];  // retrieve cargo_data with smallest index
 
-        if (extractNumberFromCargoFile(portCargoFile) == currentPortVisitNum(true)) {  // it matches the port visit number, pop it and return
+        if (extractNumberFromCargoFile(portCargoFile) == portVisitNum) {  // it matches the port visit number, pop it and return
             filesForPort.erase(filesForPort.begin());
             return fileManager.cargoFilePath(portCargoFile);
         }

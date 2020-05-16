@@ -72,7 +72,7 @@ bool AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
 
 bool AlgorithmValidation::validateUnloadOperation(const PackingOperation &op) {
     auto &pos = op.getFirstPosition();
-    int x = pos.X(), y = pos.Y(), z = pos.Z();
+    int x = pos.X(), y = pos.Y(), z = pos.floor();
 
     int currentHeight = ship.getCargo().currentTopHeight(x, y);
 
