@@ -9,10 +9,10 @@
 #include "Definitions.h"
 #include "Error.h"
 
-
 //#define RUNNING_ON_NOVA  // this will turn on all sections in code that work only on nova - disable note when on nova
 //#define SOFT_ISO_CHECK  // only check that ID is 11 characters long
 #define DEBUG_PRINTS  // print logs during simulation
+#define _unused(x) ((void)(x))  // ignore compiler warning
 
 
 /**
@@ -34,7 +34,7 @@ public:
 
     StringVector toString() const;
 
-    /// Returns an int that represents all the errors in the list. If an error appears multiple times, it is treated as once.
+    /// Returns an int that represents all the errors in the list. If an error appears multiple times, it is treated as once. Collects errors that are up to MAX_ERROR_BIT.
     int toErrorFlag();
 
     /// Like the one above, but only takes into account errors since the last log (see logging section for reference).
@@ -60,6 +60,8 @@ public:
     void addSimulationPortVisitLog(int portVisitNum, const std::string &portId, int totalStops);
 
     void addSimulationErrorLog();
+
+    void addSimulationFinishLog();
 
     /// If errors were added, it will add an informative line about the travel.
     void addTravelLog(const std::string &travelName);

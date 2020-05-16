@@ -14,18 +14,6 @@
 
 // region Simulation utils
 
-/// Inits a map from each port id to zero (will be incremented each time we visit this port)
-StringToIntMap initPortsVisits(ShipRoute &shipRoute);
-
-/// Returns the visit number at the specified port. Port must exist in portsVisits - otherwise might throw an exception.
-int getVisitNum(StringToIntMap &portsVisits, const PortId &portId);
-
-/// Returns the next .cargo_data file of the port with portId. Generates one if needed (inside tempDir).
-std::string getNextFileForPort(StringToStringVectorMap &cargoData, StringToIntMap &portVisits, const PortId &portId, SimulatorFileManager &manager, int isLast);
-
-/// Removes from map ports that doesn't appear in the route.
-void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute, Errors &errors);
-
 /// Checks if there are any remaining ports in the map, which still have files. Prints warning if yes.
 void validateNoCargoFilesLeft(StringToStringVectorMap &map, Errors &errors);
 

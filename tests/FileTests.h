@@ -13,7 +13,7 @@
 using namespace std;
 
 void inline isFileOrDirectory() {
-    std::string path = "../main.cp";
+    std::string path = "../main.cpp";
     bool isExists = isFileExist(path);
     bool isExists2 = isDirectoryExists(path);
     StringVector files = getFilesFromDirectory(path);

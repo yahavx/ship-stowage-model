@@ -37,6 +37,10 @@ void ContainerStorage::addContainer(const Container &container) {
     containers.push_back(container);
 }
 
+void ContainerStorage::addBadContainer(const std::string &id) {
+    badContainers.push_back(id);
+}
+
 void ContainerStorage::addContainers(const Containers &newContainers) {
     this->containers.insert(this->containers.end(), newContainers.begin(), newContainers.end());
 }

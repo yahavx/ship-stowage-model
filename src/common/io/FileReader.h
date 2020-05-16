@@ -24,8 +24,4 @@ bool writeFile(const std::string &path, const StringStringVector &data);
 /// Writes a string vector to a file, each entry is a line.
 bool writeFile(const std::string &path, const StringVector &data);
 
-/// Checks if a file is in cargo format: ABCDE_<num>.cargo_data.
-bool isCargoDataFileFormat(const std::string &fileName);
-
-
 #endif //SHIP_STOWAGE_MODEL_FILEREADER_H

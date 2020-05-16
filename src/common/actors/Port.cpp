@@ -36,6 +36,11 @@ const ContainerStorage &Port::getStorage() const {
 void Port::setStorage(const ContainerStorage &storage) {
     Port::storage = storage;
 }
+
+void Port::setStorage(ContainerStorage &&storage) {
+    Port::storage = storage;
+}
+
 // endregion
 
 // region Functions
@@ -58,7 +63,7 @@ OptionalContainer Port::removeContainer(const std::string &containerId) {
 
 StringVector Port::removeBadContainers(const ShipRoute &route, Errors &errors) {
     std::unordered_set<std::string> portsSet = route.getNextPortsSet();  // All next ports in the route
-    std::vector<std::string> invalidContainersIds;
+    StringVector invalidContainersIds;
     std::unordered_set<std::string> containerIds;  // Collect all ids to detect duplicates
 
     for (auto &container : storage.getContainers()) {
@@ -98,6 +103,7 @@ StringVector Port::removeBadContainers(const ShipRoute &route, Errors &errors) {
 
     for (auto& badContainerId : invalidContainersIds) {
         storage.removeContainerFromEnd(badContainerId);  // Remove from end to keep the first copy in case of duplicates
+        storage.addBadContainer(badContainerId);  // add to bad list
     }
 
     return invalidContainersIds;

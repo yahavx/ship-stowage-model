@@ -20,7 +20,7 @@ const std::string cmdFormat = "Format: ./simulator [-travel_path <path>] [-algor
 
 int main(int argc, char **argv) {
 //    runIOTests();
-//    tableResultSortTest();
+//    simulationTests();
 //    return 0;
 
     if (argc != 3 && argc != 5 && argc != 7) {
@@ -40,8 +40,8 @@ int main(int argc, char **argv) {
     }
 
 //    travelPath = "../input-examples/single-travel-difference";
-//    travelPath = "../input-examples/error-proud";
-//    removeFolder(outputPath);
+    travelPath = "../input-examples/error-proud";
+    removeFolder(outputPath);  // remove old output before starting
 
     Simulator simulator(travelPath, algorithmPath, outputPath);
 

@@ -10,26 +10,59 @@
 #include "../src/algorithms/NaiveStowageAlgorithm.h"
 #include "IOTests.h"
 #include "../src/simulator/SimulatorUtil.h"
+#include "assert.h"
+#undef NDEBUG
+
+#define _unused(x) ((void)(x))
+
+void inline tableResultSortTest();
+
+void inline testSimulation(std::string travelPath, std::string algorithmPath, std::string outputPath, StringStringVector expected);
+
+void inline simulationTests() {
+    tableResultSortTest();
+    printSeparator(1, 1);
+
+    StringStringVector expected =
+            {{"RESULTS", "LongTrip", "Sum", "Num Errors"},
+             {"Naive", "10", "10", "0"}};
+    testSimulation("../input-examples/single-travel", "", "../simulation-test-output", expected);
+}
 
 
 void inline tableResultSortTest(){
-
-    StringStringVector d = {
+    StringStringVector actual = {
             {"title", "row1", "row2", "row3", "sum", "errors"},
             {"algo1", "2", "-1", "15", "17", "1"},
             {"algo2", "10", "2", "18", "30", "0"},
             {"algo3", "2", "12", "-1", "14", "1"}
     };
 
-    cout << d;
+    cout << actual;
 
-    sortResultsTable(d);
+    sortResultsTable(actual);
+
+    StringStringVector expected = {
+            {"title", "row1", "row2", "row3", "sum", "errors"},
+            {"algo2", "10", "2", "18", "30", "0"},
+            {"algo3", "2", "12", "-1", "14", "1"},
+            {"algo1", "2", "-1", "15", "17", "1"}
+    };
 
     cout << "Sorting..." << endl;
 
-    cout << d;
+    cout << actual;
 
+    assert(actual == expected);
+}
 
+void inline testSimulation(std::string travelPath, std::string algorithmPath, std::string outputPath, StringStringVector expected) {
+    Simulator simulator(travelPath, algorithmPath, outputPath);
+    simulator.runSimulations();
+
+    StringStringVector actual = readFile(outputPath + "/simulation.results");
+    assert(actual == expected);
+    _unused(expected);
 }
 
 
