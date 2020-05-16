@@ -4,8 +4,6 @@
 #include "NaiveStowageAlgorithm.h"
 #include <algorithm>
 #include "../common/actors/CranesManagement.h"
-#include "../common/io/ObjectsReader.h"
-#include "../common/utils/UtilFunctions.h"
 #include "RobustStowageAlgorithm.h"
 #include "../common/strategies/LoadContainerToLowestPositionAvailable.h"
 
