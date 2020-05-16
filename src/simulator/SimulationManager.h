@@ -82,14 +82,15 @@ public:
 
     /**
     * Perform packing operations received from algorithm, on simulator's ship. Validates each operation is legal.
-    * @param operationsPath path to a list of operations (output path of the algorithm).
+     *
+    * @param operationsPath path to read a list of operations from (output path of the algorithm).
     * @return true if no algorithm errors were encountered.
     */
     bool performPackingOperations(const std::string &operationsPath);
 
 private:
 
-    /// Checks the crane result is okay, adds an error if needd.
+    /// Checks the crane result is okay, adds an error if needed.
     void checkCraneResult(const PackingOperation &op, CraneOperationResult opResult);
 
     // endregion

@@ -93,11 +93,11 @@ Error Container::isContainerLegal() const {
     }
 
     if (weight <= 0) {
-        return {ErrorFlag::ContainersAtPort_MissingOrBadWeight, intToStr(weight)};
+        return {ErrorFlag::ContainersAtPort_MissingOrBadWeight, id};
     }
 
     if (!destPort.isValid()) {
-        return {ErrorFlag::ContainersAtPort_MissingOrBadPortDest, destPort};
+        return {ErrorFlag::ContainersAtPort_MissingOrBadPortDest, id};
     }
 
     return ErrorFlag::Success;

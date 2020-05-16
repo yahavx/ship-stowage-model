@@ -16,6 +16,7 @@
 #include "AlgorithmRegistrar.h"
 
 #ifndef RUNNING_ON_NOVA
+
 #include "../algorithms/NaiveStowageAlgorithm.h"
 #include "../algorithms/BadAlgorithm.h"
 #include "../algorithms/RobustStowageAlgorithm.h"
@@ -37,7 +38,7 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
         this->outputDir = ".";
 
 #ifndef RUNNING_ON_NOVA
-    algorithmFactories.emplace_back([](){return std::make_unique<NaiveStowageAlgorithm>();});
+    algorithmFactories.emplace_back([]() { return std::make_unique<NaiveStowageAlgorithm>(); });
     algorithmNames.push_back("Naive");
 
 //    algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
@@ -49,7 +50,8 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
 }
 
 Simulator::Simulator(const std::string &travelRootDir, const std::vector<std::function<std::unique_ptr<AbstractAlgorithm>()>> &algorithmFactories,
-        const std::string &outputDir) : travelRootDir(travelRootDir), outputDir(outputDir), fileManager(outputDir, travelRootDir), algorithmFactories(algorithmFactories) {}
+                     const std::string &outputDir) : travelRootDir(travelRootDir), outputDir(outputDir), fileManager(outputDir, travelRootDir),
+                                                     algorithmFactories(algorithmFactories) {}
 
 
 // endregion
@@ -98,9 +100,9 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
 
     // region Init
 
-    #ifdef DEBUG_PRINTS
+#ifdef DEBUG_PRINTS
     std::cout << "Starting simulation (Algorithm = " << fileManager.algorithmName << ", Travel = " << fileManager.travelName << ")" << std::endl;
-    #endif
+#endif
 
     WeightBalanceCalculator weightBalancer, algoWeightBalancer;
 
@@ -116,15 +118,15 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
 
     // endregion
 
-    #ifdef DEBUG_PRINTS
+#ifdef DEBUG_PRINTS
     std::cout << "The ship has started its journey!" << std::endl;
     printSeparator(1, 1);
-    #endif
+#endif
 
     for (auto &portId : simManager.getRoutePorts()) {  // Start the journey
-        #ifdef DEBUG_PRINTS
+#ifdef DEBUG_PRINTS
         std::cout << "The ship has docked at port " << portId << "." << std::endl;
-        #endif
+#endif
 
         std::string cargoDataFile = simManager.getNextFileForPort();
         std::string instructionsOutputPath = fileManager.craneInstructionsOutputPath(portId, simManager.currentPortVisitNum());
@@ -139,20 +141,20 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
             return -1;
         }
 
-        #ifdef DEBUG_PRINTS
+#ifdef DEBUG_PRINTS
         if (!simManager.isCurrentLastPort()) {
             std::cout << "The ship is continuing to the next port..." << std::endl;
         } else { std::cout << "The ship is going into maintenance..." << std::endl; }
         printSeparator(1, 1);
-        #endif
+#endif
     }
 
     int totalNumberOfOps = simManager.finishSimulation();
 
-    #ifdef DEBUG_PRINTS
+#ifdef DEBUG_PRINTS
     std::cout << "The ship has completed its journey. Total number of operations: " << totalNumberOfOps << std::endl;
     printSeparator(1, 3);
-    #endif
+#endif
 
     return totalNumberOfOps;
 }

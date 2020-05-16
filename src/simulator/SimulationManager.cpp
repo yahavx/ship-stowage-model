@@ -152,7 +152,7 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
 
     StringVector badContainers;
     if (!isCurrentLastPort()) {
-        currentPort.removeBadContainers(ship.getShipRoute(), errors);  // Removes from port and returns the ids of the bad containers
+        badContainers = currentPort.removeBadContainers(ship.getShipRoute(), errors);  // Removes from port and returns the ids of the bad containers
     }
 
     AlgorithmValidation validation(ship, currentPort, badContainers, errors);
@@ -161,6 +161,8 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
     for (const PackingOperation &op : ops.ops) {
 
         if (!validation.validatePackingOperation(op)) {
+            errors.addSimulationPortVisitLog(currentPortVisitNum(), ship.getCurrentPortId(), ++portsVisited);
+            reportSimulationError();
             return false;
         }
 

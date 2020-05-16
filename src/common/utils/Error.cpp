@@ -160,9 +160,9 @@ std::string Error::toString() {
         case ContainersAtPort_IDAlreadyOnShip:
             return containersAtPortError + "Container with the same ID ('" + param1 + "') is already on the ship, rejecting (E11)";
         case ContainersAtPort_MissingOrBadWeight:
-            return containersAtPortError + "Missing or bad weight, rejecting (E12)";
+            return containersAtPortError + "Container with ID '" + param1 + "' has missing or bad weight, rejecting (E12)";
         case ContainersAtPort_MissingOrBadPortDest:
-            return containersAtPortError + "Missing or bad destination port, rejecting (E13)";
+            return containersAtPortError + "Container with ID '" + param1 + "' has missing or bad destination port, rejecting (E13)";
         case CargoData_MissingContainerID:
             return cargoDataError + "Line " + param1 +": container has no ID, ignoring (E14)";
         case ContainersAtPort_BadContainerID:
