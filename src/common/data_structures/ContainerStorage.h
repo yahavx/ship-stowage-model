@@ -13,6 +13,7 @@
 
 class ContainerStorage {
     Containers containers;
+    StringVector badContainers;  // ids of bad containers
 
 public:
 
@@ -21,6 +22,7 @@ public:
     ContainerStorage();
 
     ContainerStorage(const Containers &containers);
+
     // endregion
 
     // region Getters and setters
@@ -42,6 +44,9 @@ public:
      * @param container - container to add
      */
     void addContainer(const Container &container);
+
+    /// Add a container to the list of bad ids.
+    void addBadContainer(const std::string &id);
 
     /**
      * Add all given container to this storage

@@ -85,25 +85,5 @@ bool writeFile(const std::string &path, const StringVector &data) {
 }
 
 
-bool isCargoDataFileFormat(const std::string &fileName) {
-    if (!endsWith(fileName, ".cargo_data")) {
-        return false;
-    }
 
-    if (!isEnglishWord(fileName.substr(0, 5))) {  // no port name at start
-        return false;
-    }
-
-    if (fileName[5] != '_') {
-        return false;
-    }
-
-    int size = fileName.length();
-    std::string num = fileName.substr(6, size - 17);  // gets the supposed number from the file name
-
-    if (!isInteger(num))
-        return false;
-
-    return true;
-}
 

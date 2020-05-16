@@ -61,6 +61,8 @@ public:
 
     void addSimulationErrorLog();
 
+    void addSimulationFinishLog();
+
     /// If errors were added, it will add an informative line about the travel.
     void addTravelLog(const std::string &travelName);
 

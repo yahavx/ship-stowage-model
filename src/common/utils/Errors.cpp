@@ -91,6 +91,10 @@ void Errors::addSimulationErrorLog() {
     errorsList.emplace_back(logMsg);
 }
 
+void Errors::addSimulationFinishLog() {
+    addLog("The following errors were detected after the travel was finished:");
+}
+
 void Errors::addTravelLog(const std::string &travelName) {
     addLog("The following errors were detected on travel '" + travelName +"':");
 }

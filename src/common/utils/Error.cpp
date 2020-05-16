@@ -13,6 +13,9 @@ int c_initFatalError =
         | ShipRoute_FatalError_NoFileOrNoLegalPorts
         | ShipRoute_FatalError_SinglePort;
 
+longUInt c_algorithmInitErrors =
+        AlgorithmError_FailedToInitialize;
+
 longUInt c_algorithmInstructionErrors =
         AlgorithmError_CraneOperationWithInvalidId
         | AlgorithmError_InvalidCraneOperation
@@ -43,7 +46,7 @@ longUInt c_algorithmFileErrors =
         | ReadOperations_InvalidOperationType
         | ReadOperations_InvalidShipPosition;
 
-longUInt c_algorithmErrors = c_algorithmInstructionErrors | c_algorithmFileErrors;
+longUInt c_algorithmErrors = c_algorithmInitErrors | c_algorithmInstructionErrors | c_algorithmFileErrors;
 
 // endregion
 
@@ -89,6 +92,8 @@ Error::Error(ErrorFlag errorFlag, const std::string &param1, const std::string &
 Error::Error(const std::string &errorMsg) : errorMsg(errorMsg) {}
 
 Error::Error(int errorFlags) {
+    this->error = errorFlags;
+
     IntVector errorNumbers;
     for (int i = 0; i <= MAX_ERROR_BIT; i++) {
         int isBitEnabled = errorFlags & (1 << i);
@@ -165,7 +170,7 @@ std::string Error::toString() {
         case CargoData_InvalidFile:
             return cargoDataError + "Couldn't read file '" + param1 + "', cargo will only be loaded (E16)";
         case ContainersAtPort_LastPortHasContainers:
-            return containersAtPortError + "Last port has awaiting containers, ignoring (E17)";
+            return containersAtPortError + "Last port in route has awaiting containers, ignoring (E17)";
         case ContainersAtPort_ContainersExceedsShipCapacity:
             return containersAtPortError + "Ship is at full capacity, container '" + param1 + "' is rejected (E18)";
         case ContainersAtPort_ContainerNotOnRoute:
@@ -193,9 +198,9 @@ std::string Error::toString() {
         case Travel_UnknownFile:
             return travelError + "Travel '" + param1 + "' has an invalid file ('" + param2 + "'), ignoring";
         case Travel_CargoData_PortNotInRoute:
-            return travelError + "Port '" + param1 + "' has cargo_data files, but doesn't appear in the Route, ignoring";
+            return cargoDataError + "Port '" + param1 + "' has cargo_data files, but doesn't appear in the Route, ignoring";
         case Travel_CargoData_RemainingFilesAfterFinish:
-            return travelError + "Port '" + param1 + "' has " + param2 + " cargo_data files remaining, after travel is finished, ignoring";
+            return cargoDataError + "Port '" + param1 + "' has " + param2 + " cargo_data files remaining, ignoring";
 
             // Algorithm
         case AlgorithmError_CraneOperationWithInvalidId:
@@ -241,6 +246,8 @@ std::string Error::toString() {
             return algorithmError + "Algorithm didn't report error E" + param1 + ", but it should have been";
         case AlgorithmError_WeightBalancerRejectedOperation:
             return algorithmError + param1 + " operation on container '" + param2 + "' was rejected by the ship's weight balance calculator";
+        case AlgorithmError_FailedToInitialize:
+            return algorithmError + "Algorithm failed to initialize, although the Ship Plan and Route files are valid";
 
             // Read packing operations (produced by algorithm)
         case ReadOperations_InvalidFile:
@@ -281,7 +288,7 @@ bool Error::isCertainFlag(ErrorFlag other) {
 }
 
 bool Error::isFatalError() {
-    return errorFlag & c_initFatalError;
+    return (errorFlag & c_initFatalError) | (error & c_initFatalError);
 }
 
 bool Error::isAlgorithmError() {

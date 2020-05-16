@@ -65,6 +65,13 @@ void ContainerShip::advanceToNextPort() {
     }
 }
 
+PortId ContainerShip::getCurrentPortId() {
+    if (!shipRoute.getPorts().empty()) {
+        return shipRoute.getPorts()[0];
+    }
+    return PortId("ERROR");
+}
+
 Operations ContainerShip::loadContainerToArbitraryPosition(Port &port, const Container &container, Errors &errors) {
     CranesManagement crane(*this, port);
     Operations ops = Operations();

@@ -89,6 +89,11 @@ public:
     */
     StringToStringVectorMap getCargoDataFiles(Errors &errors);
 
+private:
+
+/// Checks if a file is in cargo format: ABCDE_<num>.cargo_data.
+    bool isCargoDataFileFormat(const std::string &fileName);
+
     // endregion
 
     // region Files IO

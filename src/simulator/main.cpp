@@ -20,8 +20,8 @@ const std::string cmdFormat = "Format: ./simulator [-travel_path <path>] [-algor
 
 int main(int argc, char **argv) {
 //    runIOTests();
-//    simulationTests();
-//    return 0;
+    simulationTests();
+    return 0;
 
     if (argc != 3 && argc != 5 && argc != 7) {
         std::cerr << "Insufficient arguments supplied." << std::endl;

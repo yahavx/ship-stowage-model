@@ -38,6 +38,8 @@ public:
 
     void setStorage(const ContainerStorage &storage);
 
+    void setStorage(ContainerStorage &&storage);
+
     // endregion
 
     // region Functions

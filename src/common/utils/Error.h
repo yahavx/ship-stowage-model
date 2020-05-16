@@ -70,6 +70,7 @@ enum ErrorFlag : longUInt {
     AlgorithmError_ExtraReport = 1ULL << 47,
     AlgorithmError_MissingReport = 1ULL << 48,
     AlgorithmError_WeightBalancerRejectedOperation = 1ULL << 49,
+    AlgorithmError_FailedToInitialize = 1ULL << 61,
 
     // These are also kind of algorithm errors (they write the file)
     ReadOperations_InvalidFile = 1ULL << 50,
@@ -103,6 +104,9 @@ public:
     std::string param2 = "<>";
     std::string param3 = "<>";
     std::string param4 = "<>";
+
+    // Combination of few error flags
+    longUInt error = 0;
 
     // region Constructors
 

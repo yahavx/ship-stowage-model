@@ -210,7 +210,7 @@ bool AlgorithmValidation::validatePackingOperation(const PackingOperation &op) {
         }
     }
 
-    // Validate the opeartion
+    // Validate the operation
     switch (opType) {
         case PackingType::load:
             return validateLoadOperation(op);

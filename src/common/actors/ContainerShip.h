@@ -56,6 +56,9 @@ public:
 
     void advanceToNextPort();
 
+    /// Returns the current (first) port in the route. If there is no port, it is an error.
+    PortId getCurrentPortId();
+
     /**
      * returns legal PackingOperation for loading the container to an arbitrary position.
      *

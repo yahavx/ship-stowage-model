@@ -55,21 +55,27 @@ int SemiAbstractAlgorithm::getInstructionsForCargo(const std::string &inputFile,
     Operations ops;
     Errors errors;
 
-    PortId id = ship.getShipRoute().getFirstPort();
+    Port port(ship.getShipRoute().getFirstPort());
     ContainerStorage storage = readPortCargoFromFile(inputFile, errors);
-    Port port(id, storage);
+    bool isLastPort = ship.getShipRoute().isLastPort() ;
 
-    StringVector toReject = port.removeBadContainers(ship.getShipRoute(), errors);  // Get ids of all rejected containers (can contain duplicates)
-    ops.addRejectOperations(toReject);  // If its empty, nothing will be added
-
-    Containers containersToLoad;
-    if (!port.getStorage().isEmpty()) {
-        containersToLoad = getContainersToLoad(port);
+    if (isLastPort && !storage.isEmpty()) {
+        errors.addError({ErrorFlag::ContainersAtPort_LastPortHasContainers});
     }
 
-    if (ship.getShipRoute().isLastPort() && !containersToLoad.empty()) {
-        errors.addError({ErrorFlag::ContainersAtPort_LastPortHasContainers});
-        containersToLoad = Containers();
+    if (!isLastPort) {  // we ignore storage in the last port
+        port.setStorage(std::move(storage));
+    }
+
+    Containers containersToLoad;
+
+    if (!isLastPort) {
+        StringVector toReject = port.removeBadContainers(ship.getShipRoute(), errors);  // Get ids of all rejected containers (can contain duplicates)
+        ops.addRejectOperations(toReject);  // If its empty, nothing will be added
+
+        if (!port.getStorage().isEmpty()) {
+            containersToLoad = getContainersToLoad(port);
+        }
     }
 
     ops.addOperations(this->generateOperations(ship, port, containersToLoad, errors));  // Get ops for unloading and loading from ship

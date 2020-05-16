@@ -18,7 +18,7 @@ class Simulator {
     std::string travelRootDir;
     std::string algorithmsDir;
     std::string outputDir;
-    SimulatorFileManager fileDataManager;
+    SimulatorFileManager fileManager;
     std::vector<std::function<std::unique_ptr<AbstractAlgorithm>()>> algorithmFactories;
     StringVector algorithmNames;  // the entry i corresponds to the name of the algorithm of factory i
 
@@ -27,6 +27,8 @@ public:
     // region Constructors
 
     Simulator(const std::string &travelRootDir, const std::string &algorithmsDir, const std::string &outputDir);
+
+    Simulator(const std::string &travelRootDir, const std::vector<std::function<std::unique_ptr<AbstractAlgorithm>()>> &algorithmFactories, const std::string &outputDir);  // for tests
 
     // endregion
 
@@ -44,43 +46,6 @@ private:
 
     /// Loads algorithms dynamically, returns false if no algorithm was loaded.
     void loadAlgorithmsDynamically(Errors &errors);
-
-    // endregion
-
-private:
-
-    // region Simulation init
-
-    /**
-     * Inits algorithm and simulator ships.
-     *
-     * @return true if algorithm initialized successfully, false otherwise.
-     */
-    bool initSimulation(Errors &errors);
-
-    /// Inits the algorithm in a single simulation. Returns the error return value of the algorithm.
-    int initAlgorithmShip(AbstractAlgorithm *algorithm, WeightBalanceCalculator &calculator);
-
-    /// Inits the ship of a single simulation. Assume no fatal errors are in the plan and route.
-    ContainerShip initSimulationShip(WeightBalanceCalculator &calculator, Errors &errors);
-
-    /**
-     * Perform packing operations received from algorithm, on simulator's ship. Validates each operation is legal.
-     * @param errors empty vector, to fill with errors, one per each entry
-     */
-
-    // endregion
-
-    // region Perform operations
-
-    /// Perform operations on the ship, received by the algorithm. Returns true if there was an algorithm error in any of the operations.
-    bool performPackingOperations(ContainerShip &ship, Port &port, const Operations &ops, Errors &errors) const;
-
-    // endregion
-
-    // region Simulation finish
-
-    void reportSimulationError(Errors &errors);
 
     // endregion
 

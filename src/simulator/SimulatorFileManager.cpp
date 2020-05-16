@@ -92,10 +92,10 @@ std::string SimulatorFileManager::createCargoDataTempFilePath(const std::string 
 }
 
 std::string SimulatorFileManager::cargoFilePath(const std::string &cargoFileName) {
-    if (endsWith(cargoFileName, "dummy")) {
-        std::string fileName = extractFilenameFromPath(cargoFileName);  // TODO: isn't that already the name only?
-        return tempFolder() + "/" + fileName;
-    }
+//    if (endsWith(cargoFileName, "dummy")) {
+//        std::string fileName = extractFilenameFromPath(cargoFileName);  // TODO: isn't that already the name only?
+//        return tempFolder() + "/" + fileName;
+//    }
     return travelFolder() + "/" + cargoFileName;
 }
 
@@ -170,7 +170,7 @@ void sortCargoFilesByNumber(StringVector &stringVector) {
          });
 }
 
-StringToStringVectorMap SimulatorFileManager::getCargoDataFiles(Errors &errors) {
+StringToStringVectorMap SimulatorFileManager::getCargoDataFiles(Errors &errors) {  // TODO: this should only return the list of files
     StringToStringVectorMap map;
 
     StringVector files = getFilesFromDirectory(travelFolder());
@@ -183,7 +183,7 @@ StringToStringVectorMap SimulatorFileManager::getCargoDataFiles(Errors &errors) 
                 continue;  // we except to see this, so just ignore
             }
 
-            std::cout << "Warning: invalid file in travel folder: " << fileName << std::endl;
+//            std::cout << "Warning: invalid file in travel folder: " << fileName << std::endl;
             errors.addError({ErrorFlag::Travel_UnknownFile, travelName, fileName});
             continue;
         }
@@ -194,7 +194,7 @@ StringToStringVectorMap SimulatorFileManager::getCargoDataFiles(Errors &errors) 
             map[portId] = StringVector();
         }
 
-        map[portId].push_back(fileName);  // we push in correct order because files are sorted
+        map[portId].push_back(fileName);
     }
 
     // now we have mapping from AAAAA -> AAAAA_17, AAAAA_2 (unsorted because 17 < 2 but alphabetically 2 < 17)
@@ -203,6 +203,28 @@ StringToStringVectorMap SimulatorFileManager::getCargoDataFiles(Errors &errors) 
     }
 
     return map;
+}
+
+bool SimulatorFileManager::isCargoDataFileFormat(const std::string &fileName) {
+    if (!endsWith(fileName, ".cargo_data")) {
+        return false;
+    }
+
+    if (!isEnglishWord(fileName.substr(0, 5))) {  // no port name at start
+        return false;
+    }
+
+    if (fileName[5] != '_') {
+        return false;
+    }
+
+    int size = fileName.length();
+    std::string num = fileName.substr(6, size - 17);  // gets the supposed number from the file name
+
+    if (!isInteger(num))
+        return false;
+
+    return true;
 }
 
 // endregion
