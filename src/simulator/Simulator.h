@@ -38,14 +38,14 @@ public:
     void runSimulations();
 
 private:
+    /// Loads algorithms dynamically, returns false if no algorithm was loaded.
+    void loadAlgorithmsDynamically(Errors &errors);
+
     /**
      * Simulates an algorithm on a single travel.
      * @return number of steps took to simulate, or -1 if the algorithm made at least 1 error.
      */
     int runSimulation(std::unique_ptr<AbstractAlgorithm> algorithmPtr);
-
-    /// Loads algorithms dynamically, returns false if no algorithm was loaded.
-    void loadAlgorithmsDynamically(Errors &errors);
 
     // endregion
 

@@ -131,6 +131,19 @@ std::string SimulationManager::getNextFileForPort() {
     return filePath;
 }
 
+std::string SimulationManager::getInstructionsForCargo(AbstractAlgorithm *algorithm) {
+    std::string cargoDataFile = this->getNextFileForPort();
+    this->initPort(cargoDataFile);  // init self port
+
+    std::string instructionsOutputPath = fileManager.craneInstructionsOutputPath(currentPort.getId(), this->currentPortVisitNum());
+    int algorithmReport = algorithm->getInstructionsForCargo(cargoDataFile, instructionsOutputPath);
+    if (algorithmReport != 0) {
+        errors.addError(algorithmReport);
+    }
+
+    return instructionsOutputPath;
+}
+
 void SimulationManager::initPort(const std::string& cargoDataPath) {
     auto portId = ship.getCurrentPortId();
     auto storage = readPortCargoFromFile(cargoDataPath, errors);
@@ -182,7 +195,9 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
         return false;
     }
 
+#ifdef DEBUG_PRINTS
     std::cout << ops;
+#endif
     totalNumberOfOps = totalNumberOfOps + ops.size(true);
     return true;
 }

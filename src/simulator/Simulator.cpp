@@ -95,70 +95,6 @@ void Simulator::runSimulations() {
     fileManager.cleanOutputFolders();  // remove temp and errors (if empty)
 }
 
-int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
-    SimulationManager simManager(fileManager);
-
-    // region Init
-
-#ifdef DEBUG_PRINTS
-    std::cout << "Starting simulation (Algorithm = " << fileManager.algorithmName << ", Travel = " << fileManager.travelName << ")" << std::endl;
-#endif
-
-    WeightBalanceCalculator weightBalancer, algoWeightBalancer;
-
-    simManager.initSimulationShip(weightBalancer);
-    bool success = simManager.initAlgorithmShip(algorithm.get(), algoWeightBalancer);
-
-    if (!success) {  // Algorithm failed to initialize
-        simManager.saveErrors();
-        return -1;
-    }
-
-    simManager.initCargoData();
-
-    // endregion
-
-#ifdef DEBUG_PRINTS
-    std::cout << "The ship has started its journey!" << std::endl;
-    printSeparator(1, 1);
-#endif
-
-    for (auto &portId : simManager.getRoutePorts()) {  // Start the journey
-#ifdef DEBUG_PRINTS
-        std::cout << "The ship has docked at port " << portId << "." << std::endl;
-#endif
-
-        std::string cargoDataFile = simManager.getNextFileForPort();
-        std::string instructionsOutputPath = fileManager.craneInstructionsOutputPath(portId, simManager.currentPortVisitNum());
-        algorithm->getInstructionsForCargo(cargoDataFile, instructionsOutputPath);
-
-        simManager.initPort(cargoDataFile);
-
-        success = simManager.performPackingOperations(instructionsOutputPath);
-
-        if (!success) {
-            simManager.saveErrors();
-            return -1;
-        }
-
-#ifdef DEBUG_PRINTS
-        if (!simManager.isCurrentLastPort()) {
-            std::cout << "The ship is continuing to the next port..." << std::endl;
-        } else { std::cout << "The ship is going into maintenance..." << std::endl; }
-        printSeparator(1, 1);
-#endif
-    }
-
-    int totalNumberOfOps = simManager.finishSimulation();
-
-#ifdef DEBUG_PRINTS
-    std::cout << "The ship has completed its journey. Total number of operations: " << totalNumberOfOps << std::endl;
-    printSeparator(1, 3);
-#endif
-
-    return totalNumberOfOps;
-}
-
 void Simulator::loadAlgorithmsDynamically(Errors &errors) {
 #ifndef RUNNING_ON_NOVA
     return;
@@ -207,6 +143,65 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
     if (algorithmFactories.empty()) {
         errors.addError(ErrorFlag::SharedObject_NoAlgorithmsLoaded);
     }
+}
+
+int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
+    SimulationManager simManager(fileManager);
+
+    // region Init
+
+#ifdef DEBUG_PRINTS
+    std::cout << "Starting simulation (Algorithm = " << fileManager.algorithmName << ", Travel = " << fileManager.travelName << ")" << std::endl;
+#endif
+
+    WeightBalanceCalculator weightBalancer, algoWeightBalancer;
+
+    simManager.initSimulationShip(weightBalancer);
+    bool success = simManager.initAlgorithmShip(algorithm.get(), algoWeightBalancer);
+
+    if (!success) {  // Algorithm failed to initialize
+        simManager.saveErrors();
+        return -1;
+    }
+
+    simManager.initCargoData();
+
+    // endregion
+
+#ifdef DEBUG_PRINTS
+    std::cout << "The ship has started its journey!" << std::endl;
+    printSeparator(1, 1);
+#endif
+
+    for (auto &portId : simManager.getRoutePorts()) {  // Start the journey
+#ifdef DEBUG_PRINTS
+        std::cout << "The ship has docked at port " << portId << "." << std::endl;
+#endif
+
+        std::string instructionsOutputPath = simManager.getInstructionsForCargo(algorithm.get());
+        success = simManager.performPackingOperations(instructionsOutputPath);
+
+        if (!success) {
+            simManager.saveErrors();
+            return -1;
+        }
+
+#ifdef DEBUG_PRINTS
+        if (!simManager.isCurrentLastPort()) {
+            std::cout << "The ship is continuing to the next port..." << std::endl;
+        } else { std::cout << "The ship is going into maintenance..." << std::endl; }
+        printSeparator(1, 1);
+#endif
+    }
+
+    int totalNumberOfOps = simManager.finishSimulation();
+
+#ifdef DEBUG_PRINTS
+    std::cout << "The ship has completed its journey. Total number of operations: " << totalNumberOfOps << std::endl;
+    printSeparator(1, 3);
+#endif
+
+    return totalNumberOfOps;
 }
 
 // endregion

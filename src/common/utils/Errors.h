@@ -34,7 +34,7 @@ public:
 
     StringVector toString() const;
 
-    /// Returns an int that represents all the errors in the list. If an error appears multiple times, it is treated as once.
+    /// Returns an int that represents all the errors in the list. If an error appears multiple times, it is treated as once. Collects errors that are up to MAX_ERROR_BIT.
     int toErrorFlag();
 
     /// Like the one above, but only takes into account errors since the last log (see logging section for reference).

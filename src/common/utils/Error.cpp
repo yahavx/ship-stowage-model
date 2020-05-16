@@ -172,7 +172,7 @@ std::string Error::toString() {
         case ContainersAtPort_LastPortHasContainers:
             return containersAtPortError + "Last port in route has awaiting containers, ignoring (E17)";
         case ContainersAtPort_ContainersExceedsShipCapacity:
-            return containersAtPortError + "Ship is at full capacity, container '" + param1 + "' is rejected (E18)";
+            return containersAtPortError + "Ship is at full capacity, container '" + param1 + "' was rejected (E18)";
         case ContainersAtPort_ContainerNotOnRoute:
             return containersAtPortError + "Container '" + param1 + "' destination port is '" + param2 + "', which is not on the ship route, rejecting (E19)";
         case ContainersAtPort_ContainerDestinationIsCurrentPort:

@@ -81,8 +81,15 @@ public:
     void initPort(const std::string& cargoDataPath);
 
     /**
-    * Perform packing operations received from algorithm, on simulator's ship. Validates each operation is legal.
+     * Triggers algorithm getInstructionsForCargo, and inits self port.
      *
+     * @return path to the algorithm output.
+     */
+    std::string getInstructionsForCargo(AbstractAlgorithm *algorithm);
+
+    /**
+    * Perform packing operations received from algorithm, on simulator's ship. Validates each operation is legal.
+    *
     * @param operationsPath path to read a list of operations from (output path of the algorithm).
     * @return true if no algorithm errors were encountered.
     */
