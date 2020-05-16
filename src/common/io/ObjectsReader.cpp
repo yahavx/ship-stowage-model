@@ -277,7 +277,7 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
         int floor = strToInt(floorStr), x = strToInt(xStr), y = strToInt(yStr);
 
         if (packingType != PackingType::move) {  // Load or Unload, We have all the arguments needed
-            operations.addOperation({packingType, containerId, {floor, x, y}});  // TODO: floor, x, y is passed in reverse order. check it is fine.
+            operations.addOperation({packingType, containerId, {x, y, floor}});
             continue;
         }
 
@@ -301,7 +301,7 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
 
         int floor2 = strToInt(floorStr2), x2 = strToInt(xStr2), y2 = strToInt(yStr2);
 
-        operations.addOperation({packingType, containerId, {floor, x, y}, {floor2, x2, y2}});
+        operations.addOperation({packingType, containerId, {x, y, floor}, {x2, y2, floor2}});
     }
 
     return operations;
@@ -318,15 +318,15 @@ bool writePackingOperationsToFile(const std::string &filePath, Operations &opera
         currRow.push_back(op.getContainerId());  // add container id
 
         const Position &fromPos = op.getFirstPosition();  // add pos1
+        currRow.push_back(intToStr(fromPos.floor()));
         currRow.push_back(intToStr(fromPos.X()));
         currRow.push_back(intToStr(fromPos.Y()));
-        currRow.push_back(intToStr(fromPos.Z()));
 
         if (op.getType() == PackingType::move) {
             const Position &toPos = op.getSecondPosition();  // add pos2
+            currRow.push_back(intToStr(toPos.floor()));
             currRow.push_back(intToStr(toPos.X()));
             currRow.push_back(intToStr(toPos.Y()));
-            currRow.push_back(intToStr(toPos.Z()));
         }
     }
 

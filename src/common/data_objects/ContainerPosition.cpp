@@ -39,7 +39,7 @@ int ContainerPosition::y() const {
 }
 
 int ContainerPosition::z() const {
-    return position.Z();
+    return position.floor();
 }
 
 // endregion

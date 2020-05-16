@@ -26,7 +26,7 @@ public:
 
     int Y() const;
 
-    int Z() const;
+    int floor() const;
 
     // endregion
 
