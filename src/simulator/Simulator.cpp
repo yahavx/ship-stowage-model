@@ -14,6 +14,7 @@
 #include "../common/utils/UtilFunctions.h"
 #include "../interfaces/AbstractAlgorithm.h"
 #include "AlgorithmRegistrar.h"
+#include "SimulationManager.h"
 
 #ifndef RUNNING_ON_NOVA
 
@@ -83,7 +84,7 @@ void Simulator::runSimulations() {
         }
     }
 
-    if (!travels.empty()) {
+    if (!travels.empty() && !algorithmFactories.empty()) {  // at least one travel and algorithmk
         finalizeResultsTable(resultsTable);
         fileManager.saveSimulationResults(resultsTable);
     }
@@ -177,7 +178,6 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
 #ifdef DEBUG_PRINTS
         std::cout << "The ship has docked at port " << portId << "." << std::endl;
 #endif
-
         std::string instructionsOutputPath = simManager.getInstructionsForCargo(algorithm.get());
         success = simManager.performPackingOperations(instructionsOutputPath);
 
@@ -192,6 +192,7 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
         } else { std::cout << "The ship is going into maintenance..." << std::endl; }
         printSeparator(0, 0);
 #endif
+        _unused(portId);
     }
 
     int totalNumberOfOps = simManager.finishSimulation();
