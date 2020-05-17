@@ -226,19 +226,28 @@ bool AlgorithmValidation::validatePackingOperation(const PackingOperation &op) {
 }
 
 bool AlgorithmValidation::validateNoContainersLeftOnPort() {
-    bool success = true;
     if (!temporaryContainersOnPort.empty()) {
         errors.addError(ErrorFlag::AlgorithmError_UnloadedAndDidntLoadBack);
-        success = true;  // We don't return now, to collect more errors if possible
+        return false;
     }
 
+    if (ship.getCargo().isFull()) {  // We can't load anymore
+        return true;
+    }
+
+    bool success = true;
+
+    // There is space on the ship, if we find any container on port (whose destination is not this port) its not okay
     for (auto &portId : ship.getShipRoute().getNextPortsSet()) {
         PortId id(portId);
         if (id == currentPort.getId())
             continue;
-        if (!currentPort.getContainersForDestination(id).empty() && !ship.getCargo().isFull()) {
-            errors.addError({ErrorFlag::AlgorithmError_LeftContainersAtPort, portId, currentPort.getId()});
-            success = true;
+        const auto &containersLeftOnPort = currentPort.getContainersForDestination(id);
+        if (!containersLeftOnPort.empty()) {
+            for (auto &container : containersLeftOnPort) {
+                errors.addError({ErrorFlag::AlgorithmError_LeftContainersAtPort, container.getId(), portId, currentPort.getId()});
+            }
+            success = false;
         }
     }
 

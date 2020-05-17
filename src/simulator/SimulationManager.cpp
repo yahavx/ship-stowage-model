@@ -198,12 +198,12 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
 
     addPortErrorReport();  // and simulation and algorithm reports summary, if needed
 
-    ship.advanceToNextPort();
-
     if (!validation.validateNoContainersLeftOnPort()) {
         reportSimulationError();
         return false;
     }
+
+    ship.advanceToNextPort();
 
 #ifdef DEBUG_PRINTS
     std::cout << ops;

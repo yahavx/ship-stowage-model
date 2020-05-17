@@ -191,7 +191,7 @@ std::string Error::toString() {
         case AlgorithmError_InvalidCraneOperation:
             return algorithmError + "Received the following invalid crane instruction: " + param1 + " (E31)";
         case AlgorithmError_LeftContainersAtPort:
-            return algorithmError + "At least one container to port '" + param1 + "' was left on port '" + param2 + "', although ship isn't full (E32)";
+            return algorithmError + "Container with ID " + param1+ " (to port '" + param2+ "'),  was left on the current port ('"+ param3+"'), although ship isn't full (E32)";
         case AlgorithmError_ContainerIdAlreadyOnShip:
             return algorithmError + "Tried to load container with ID '" + param1 + "', which is already on the ship (E33)";
         case AlgorithmError_ContainerIdNotExistsOnPort:

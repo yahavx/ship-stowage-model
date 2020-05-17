@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
 //    travelPath = "../input-examples/multiple-travel";
     travelPath = "../input-examples/test";
 
-    removeFolder(outputPath);  // remove old output before starting
+//    removeFolder(outputPath);  // remove old output before starting
 
     Simulator simulator(travelPath, algorithmPath, outputPath);
 
