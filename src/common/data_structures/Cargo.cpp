@@ -115,7 +115,7 @@ int Cargo::currentTopHeight(int x, int y) const {
     return height;
 }
 
-bool Cargo::hasContainer(std::string containerId) {
+bool Cargo::hasContainer(std::string containerId) const {
     return containersMapping.find(containerId) != containersMapping.end();
 }
 

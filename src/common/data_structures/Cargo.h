@@ -74,7 +74,7 @@ public:
     /**
      * Returns true if the container with the given id exists
      */
-    bool hasContainer(std::string containerId);
+    bool hasContainer(std::string containerId) const;
 
     /**
      * Returns the container if exists, or null.

@@ -175,7 +175,13 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
 
     StringVector badContainers;
     if (!isCurrentLastPort()) {
-        badContainers = currentPort.removeBadContainers(errors);  // Removes from port and returns the ids of the bad containers
+        // Removes invalid containers from port (invalid format, etc)
+        badContainers = currentPort.removeBadContainers(errors);
+
+        // Remove invalid containers from port, according to ship (not on route, duplicate ID)
+        StringVector moreBadContainers = ship.filterContainers(currentPort.getStorage().getContainers(), errors);
+        currentPort.removeContainers(moreBadContainers);
+        badContainers.insert(badContainers.begin(), moreBadContainers.begin(), moreBadContainers.end());
     }
 
     AlgorithmValidation validation(ship, currentPort, badContainers, errors);
@@ -196,9 +202,11 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
         checkCraneResult(op, opResult);
     }
 
+    bool allRelevantContainersLoaded = validation.validateNoContainersLeftOnPort();
+
     addPortErrorReport();  // and simulation and algorithm reports summary, if needed
 
-    if (!validation.validateNoContainersLeftOnPort()) {
+    if (!allRelevantContainersLoaded) {
         reportSimulationError();
         return false;
     }

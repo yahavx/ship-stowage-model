@@ -172,10 +172,10 @@ Operations ContainerShip::loadContainer(LoadContainerStrategy *strategy, Port &p
     return strategy->loadContainer(port, *this, container, errors);
 }
 
-StringVector ContainerShip::filterContainers(Containers &containersToLoad, Errors &errors) {
+StringVector ContainerShip::filterContainers(const Containers &containersToLoad, Errors &errors) {
     std::unordered_set<std::string> portsSet = this->shipRoute.getNextPortsSet();  // All next ports in the route
-    IntVector invalidContainersIndexes;
     StringVector invalidContainersIds;
+
     for (std::size_t i = 0; i < containersToLoad.size(); i++) {
         auto &container = containersToLoad[i];
 
@@ -184,7 +184,6 @@ StringVector ContainerShip::filterContainers(Containers &containersToLoad, Error
 
         if (this->cargo.hasContainer(contId)) {  // Already seen this id
             errors.addError({ErrorFlag::ContainersAtPort_IDAlreadyOnShip, contId});
-            invalidContainersIndexes.push_back(i);
             invalidContainersIds.push_back(contId);
             std::cout << "DUPLICATE ID: " << contId << std::endl;
             continue;
@@ -195,28 +194,15 @@ StringVector ContainerShip::filterContainers(Containers &containersToLoad, Error
         // Illegal containers
         if (!err.isSuccess()) {
             errors.addError(err);
-            invalidContainersIndexes.push_back(i);
             invalidContainersIds.push_back(contId);
             continue;
         }
 
-        // Container destination is not on rou
+        // Container destination is not on route
         if (portsSet.find(container.getDestPort()) == portsSet.end()) {
             errors.addError({ContainersAtPort_ContainerNotOnRoute, container.getId(), container.getDestPort()});
-            invalidContainersIndexes.push_back(i);
             invalidContainersIds.push_back(contId);
         }
-    }
-
-    for (auto &badContainerId : invalidContainersIds) {
-        int index;
-        for (std::size_t i = 0; i < containersToLoad.size(); i++) {
-            if (containersToLoad[i].getId() == badContainerId) {
-                index = i;
-            }
-        }
-
-        containersToLoad.erase(containersToLoad.begin() + index);
     }
 
     return invalidContainersIds;

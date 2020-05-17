@@ -15,7 +15,7 @@ ContainerStorage::ContainerStorage(const Containers &containers) : containers(co
 
 // region Getters and setters
 
-Containers &ContainerStorage::getContainers() {
+const Containers & ContainerStorage::getContainers() const {
     return containers;
 }
 
@@ -62,6 +62,19 @@ OptionalContainer ContainerStorage::removeContainer(const std::string &container
     }
 
     return {};
+}
+
+Containers ContainerStorage::removeContainers(const StringVector &containersIds) {
+    Containers removedContainers;
+
+    for (auto &badContainerId : containersIds) {
+        auto cont = this->removeContainer(badContainerId);
+        if (cont.has_value()) {
+            removedContainers.push_back(*cont);
+        }
+    }
+
+    return removedContainers;
 }
 
 OptionalContainer ContainerStorage::getContainer(const std::string& containerId) {

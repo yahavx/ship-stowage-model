@@ -141,7 +141,7 @@ std::string Error::toString() {
         case ContainersAtPort_DuplicateID:
             return containersAtPortError + "Container with the same ID ('" + param1 + "') was already found on port, should be rejected (E10)";
         case ContainersAtPort_IDAlreadyOnShip:
-            return containersAtPortError + "Container with the same ID ('" + param1 + "') is already on the ship, should be rejected (E11)";
+            return containersAtPortError + "Container with the same ID ('" + param1 + "') is already on the ship, rejected (E11)";
         case ContainersAtPort_MissingOrBadWeight:
             return containersAtPortError + "Container with ID '" + param1 + "' has missing or bad weight, should be rejected (E12)";
         case ContainersAtPort_MissingOrBadPortDest:
@@ -222,7 +222,7 @@ std::string Error::toString() {
         case AlgorithmError_TriedToLoadButShouldReject:
             return algorithmError + "Try to load container with ID '" + param1 + "' from port '" + param2 + "', but it should have been rejected (E44)";
         case AlgorithmError_UnloadedAndDidntLoadBack:
-            return algorithmError + "Unloaded containers to port, with a different destination, and didn't load them back to ship (E46)";
+            return algorithmError + "Container with ID '" + param1 + "' was left on current port, but its not his destination (E46)";
         case AlgorithmError_ExtraReport:
             return algorithmError + "Algorithm mistakenly reported error E" + param1 +" (E47)";
         case AlgorithmError_MissingReport:

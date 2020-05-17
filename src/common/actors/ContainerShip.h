@@ -82,12 +82,12 @@ public:
 
 
     /**
-     * Filter containers that can't be loaded to that ship (duplicate ID, not on route, etc).
+     * Returns all ids of containers that can't be loaded to that ship (ID already on ship, not on route, etc).
      *
      * @param errors all errors found, in each container, will be added to this
      * @return list of id's, one per each illegal container.
      */
-    StringVector filterContainers(Containers &containersToLoad, Errors &errors);
+    StringVector filterContainers(const Containers &containersToLoad, Errors &errors);
 
     /// Returns the container with the matching id. If not exists, return null.
     OptionalContainer getContainerById(const std::string &id);

@@ -227,7 +227,9 @@ bool AlgorithmValidation::validatePackingOperation(const PackingOperation &op) {
 
 bool AlgorithmValidation::validateNoContainersLeftOnPort() {
     if (!temporaryContainersOnPort.empty()) {
-        errors.addError(ErrorFlag::AlgorithmError_UnloadedAndDidntLoadBack);
+        for (auto &containerId : temporaryContainersOnPort) {
+            errors.addError(ErrorFlag::AlgorithmError_UnloadedAndDidntLoadBack, containerId);
+        }
         return false;
     }
 
@@ -237,7 +239,7 @@ bool AlgorithmValidation::validateNoContainersLeftOnPort() {
 
     bool success = true;
 
-    // There is space on the ship, if we find any container on port (whose destination is not this port) its not okay
+    // There is still space on ship - the only excuse left for a container to be on port, is that his ID is on the ship (otherwise - error)
     for (auto &portId : ship.getShipRoute().getNextPortsSet()) {
         PortId id(portId);
         if (id == currentPort.getId())
@@ -245,7 +247,12 @@ bool AlgorithmValidation::validateNoContainersLeftOnPort() {
         const auto &containersLeftOnPort = currentPort.getContainersForDestination(id);
         if (!containersLeftOnPort.empty()) {
             for (auto &container : containersLeftOnPort) {
+//                if (ship.getCargo().hasContainer(container.getId())) {  // Not an algorithm error - but we document this
+//                    errors.addError({ContainersAtPort_IDAlreadyOnShip, container.getId()});
+//                }
+//                else {
                 errors.addError({ErrorFlag::AlgorithmError_LeftContainersAtPort, container.getId(), portId, currentPort.getId()});
+//                }
             }
             success = false;
         }

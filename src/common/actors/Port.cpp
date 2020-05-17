@@ -57,12 +57,15 @@ void Port::addContainers(const Containers &containers) {
     return storage.addContainers(containers);
 }
 
+Containers Port::removeContainers(const StringVector &containersIds) {
+    return storage.removeContainers(containersIds);
+}
+
 OptionalContainer Port::removeContainer(const std::string &containerId) {
     return storage.removeContainer(containerId);
 }
 
 StringVector Port::removeBadContainers(Errors &errors) {
-    std::unordered_set<std::string> portsSet = route.getNextPortsSet();  // All next ports in the route
     StringVector invalidContainersIds;
     std::unordered_set<std::string> containerIds;  // Collect all ids to detect duplicates
 

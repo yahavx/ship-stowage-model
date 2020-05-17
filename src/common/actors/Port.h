@@ -50,6 +50,9 @@ public:
 
     void addContainers(const Containers &containers);
 
+    /// Removes from port all ids that are in containersIds. If an id doesn't exist, it is ignored.
+    Containers removeContainers(const StringVector &containersIds);
+
     OptionalContainer removeContainer(const std::string &containerId);
 
     /**
