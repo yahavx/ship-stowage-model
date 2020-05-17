@@ -92,24 +92,7 @@ Error::Error(ErrorFlag errorFlag, const std::string &param1, const std::string &
 Error::Error(const std::string &errorMsg) : errorMsg(errorMsg) {}
 
 Error::Error(int errorFlags) {
-    this->error = errorFlags;
-
-    IntVector errorNumbers;
-    for (int i = 0; i <= MAX_ERROR_BIT; i++) {
-        int isBitEnabled = errorFlags & (1 << i);
-
-        if (isBitEnabled) {
-            errorNumbers.push_back(i);
-        }
-    }
-
-    if (!errorNumbers.empty()) {
-        errorMsg = "\t[Algorithm Report] The algorithm reported the following errors: E" + intToStr(errorNumbers[0]);
-
-        for (longUInt i = 1; i < errorNumbers.size(); i++) {
-            errorMsg += ", E" + intToStr(errorNumbers[i]);
-        }
-    }
+    this->errors = errorFlags;
 }
 
 // endregion
@@ -126,7 +109,7 @@ std::string Error::toString() {
 
         case ShipPlan_InvalidFloorHeight:
             if (param2 == param3)
-                return shipPlanError + "Line " + param1 +": number of floors (" + param2 + ") is equal to the number of floors provided in the first line, this data is redundant (E0)";
+                return shipPlanError + "Line " + param1 +": number of floors (" + param2 + ") is equal to the number of floors provided in the first line, this data is redundant, ignoring (E0)";
             else
                 return shipPlanError + "Line " + param1 +": number of floors (" + param2 + ") is greater than the number of floors provided in the first line (" + param3 + "), ignoring (E0)";
 
@@ -182,99 +165,99 @@ std::string Error::toString() {
 
             // Simulation
         case SimulationInit_OutputDirectoriesCreationFailed:
-            return simulatorFatalError + "Couldn't initialize output folders";
+            return simulatorFatalError + "Couldn't initialize output folders (E21)";
         case SimulationInit_InvalidTravelPath:
-            return simulatorFatalError + "Travel path not supplied, or couldn't find any travel directories inside it";
+            return simulatorFatalError + "Travel path not supplied, or couldn't find any travel directories inside it (E22)";
         case SimulationInit_AllTravelsAreInvalid:
-            return simulatorFatalError + "All travels in the travel directory supplied are invalid";
+            return simulatorFatalError + "All travels in the travel directory supplied are invalid (E23)";
         case SimulationCleanup_OutputDirectoriesCleaningFailed:
-            return simulatorError + "Couldn't remove temporary directories";
+            return simulatorError + "Couldn't remove temporary directories (E24)";
 
             // Travel
         case Travel_InvalidDirectory:
-            return travelFatalError + "Travel '" + param1 + "' is not a directory, skipping travel";
+            return travelFatalError + "Travel '" + param1 + "' is not a directory, skipping travel (E25)";
         case Travel_FatalInput:
-            return travelFatalError + "Travel '" + param1 + "' has an invalid " + param2 + ", or it doesn't exists, skipping travel";
+            return travelFatalError + "Travel '" + param1 + "' has an invalid " + param2 + ", or it doesn't exists, skipping travel (E26)";
         case Travel_UnknownFile:
-            return travelError + "Travel '" + param1 + "' has an invalid file ('" + param2 + "'), ignoring";
+            return travelError + "Travel '" + param1 + "' has an invalid file ('" + param2 + "'), ignoring (E27)";
         case Travel_CargoData_PortNotInRoute:
-            return cargoDataError + "Port '" + param1 + "' has cargo_data files, but doesn't appear in the Route, ignoring";
+            return cargoDataError + "Port '" + param1 + "' has cargo_data files, but doesn't appear in the Route, ignoring (E28)";
         case Travel_CargoData_RemainingFilesAfterFinish:
-            return cargoDataError + "Port '" + param1 + "' has " + param2 + " cargo_data files remaining, ignoring";
+            return cargoDataError + "Port '" + param1 + "' has " + param2 + " cargo_data files remaining, ignoring (E29)";
 
             // Algorithm
         case AlgorithmError_CraneOperationWithInvalidId:
-            return algorithmError + "Didn't find container with ID " + param1 + " while at port " + param2 + ", and executing crane operation " + param3;
+            return algorithmError + "Didn't find container with ID " + param1 + " while at port " + param2 + ", and executing crane operation " + param3 + " (E30)";
         case AlgorithmError_InvalidCraneOperation:
-            return algorithmError + "Received the following invalid crane instruction: " + param1;
+            return algorithmError + "Received the following invalid crane instruction: " + param1 + " (E31)";
         case AlgorithmError_LeftContainersAtPort:
-            return algorithmError + "At least one container to port '" + param1 + "' was left on port '" + param2 + "', although ship isn't full";
+            return algorithmError + "At least one container to port '" + param1 + "' was left on port '" + param2 + "', although ship isn't full (E32)";
         case AlgorithmError_ContainerIdAlreadyOnShip:
-            return algorithmError + "Tried to load container with ID '" + param1 + "', which is already on the ship";
+            return algorithmError + "Tried to load container with ID '" + param1 + "', which is already on the ship (E33)";
         case AlgorithmError_ContainerIdNotExistsOnPort:
-            return algorithmError + "Received a load operation on container ID '" + param1 + "', which doesn't exist on the current port";
+            return algorithmError + "Received a load operation on container ID '" + param1 + "', which doesn't exist on the current port (E34)";
         case AlgorithmError_ContainerIdNotExistsOnShip:
-            return algorithmError + "Received a move/unload operation on container with ID '" + param1 + "', which doesn't exist on the ship";
+            return algorithmError + "Received a move/unload operation on container with ID '" + param1 + "', which doesn't exist on the ship (E35)";
         case AlgorithmError_RejectedGoodContainer:
             return algorithmError + "Received a reject operation on container with ID '" + param1 +
-                   "', but apparently it should have been loaded to the ship";
+                   "', but apparently it should have been loaded to the ship (E36)";
         case AlgorithmError_LoadAboveNotLegal:
             return algorithmError + "Received loading operation of container with ID '" + param1 +
-                   "', at (" + param2 + +", " + param3 + ")" + " but there is no space on top";
-        case AlgorithmError_UnloadBadId:
-            return algorithmError + "Received unload operation of container with ID '" + param1 +
-                   "', at (" + param2 + +", " + param3 + ")" + " but there is container with non matching ID on top";
-        case AlgorithmError_UnloadBadPosition:
-            return algorithmError + "Received unload operation of container with ID '" + param1 +
-                   "', at (" + param2 + +", " + param3 + ")" + " but the floor specified is not legal";
+                   "', at (" + param2 + +", " + param3 + ")" + " but there is no space on top (E37)";
         case AlgorithmError_UnloadNoContainersAtPosition:
             return algorithmError + "Received unload operation of container with ID '" + param1 +
-                   "', at (" + param2 + +", " + param3 + ")" + " but there are no containers";
+                   "', at (" + param2 + +", " + param3 + ")" + " but there are no containers (E38)";
+        case AlgorithmError_UnloadBadId:
+            return algorithmError + "Received unload operation of container with ID '" + param1 +
+                   "', at (" + param2 + +", " + param3 + ")" + " but there is container with non matching ID on top (E39)";
+        case AlgorithmError_UnloadBadPosition:
+            return algorithmError + "Received unload operation of container with ID '" + param1 +
+                   "', at (" + param2 + +", " + param3 + ")" + " but the floor specified is not legal (E40)";
         case AlgorithmError_InvalidXYCoordinates:
-            return algorithmError + "Received operation on container with ID '" + param1 + "', using an illegal position: (" + param2 + +", " + param3 + ")";
+            return algorithmError + "Received operation on container with ID '" + param1 + "', using an illegal position: (" + param2 + +", " + param3 + ") (E41)";
         case AlgorithmError_MoveNoContainersAtPosition:
             break;
         case AlgorithmError_MoveBadId:
             break;
         case AlgorithmError_TriedToLoadButShouldReject:
-            return algorithmError + "Try to load container with ID '" + param1 + "' from port '" + param2 + "', but it should have been rejected";
+            return algorithmError + "Try to load container with ID '" + param1 + "' from port '" + param2 + "', but it should have been rejected (E44)";
         case AlgorithmError_UnloadedAndDidntLoadBack:
-            return algorithmError + "Unloaded containers to port, with a different destination, and didn't load them back to ship";
+            return algorithmError + "Unloaded containers to port, with a different destination, and didn't load them back to ship (E46)";
         case AlgorithmError_ExtraReport:
-            return algorithmError + "Algorithm mistakenly reported error E" + param1;
+            return algorithmError + "Algorithm mistakenly reported error E" + param1 +" (E47)";
         case AlgorithmError_MissingReport:
-            return algorithmError + "Algorithm didn't report error E" + param1 + ", but it should have been";
+            return algorithmError + "Algorithm didn't report error E" + param1 + ", but it should have been (E48)";
         case AlgorithmError_WeightBalancerRejectedOperation:
-            return algorithmError + param1 + " operation on container with ID '" + param2 + "' was rejected by the ship's weight balance calculator";
+            return algorithmError + param1 + " operation on container with ID '" + param2 + "' was rejected by the ship's weight balance calculator (E49)";
         case AlgorithmError_FailedToInitialize:
-            return algorithmError + "Algorithm failed to initialize, although the Ship Plan and Route files are valid";
+            return algorithmError + "Algorithm failed to initialize, although the Ship Plan and Route files are valid (E50)";
 
             // Read packing operations (produced by algorithm)
         case ReadOperations_InvalidFile:
-            return algorithmOutputError + "Operations output file was not created by the algorithm";
+            return algorithmOutputError + "Operations output file was not created by the algorithm (E51)";
         case ReadOperations_InsufficientRowData:
-            return algorithmOutputError + "Data row contains less than 5 arguments (format: <L/U/M/R> <container id>, <floor>, <X>, <Y>";
+            return algorithmOutputError + "Data row contains less than 5 arguments (format: <L/U/M/R> <container id>, <floor>, <X>, <Y> (E52)";
         case ReadOperations_InsufficientRowData_MoveOp:
             return algorithmOutputError + "Data row contains less than 8 arguments, in a move operation " // strings are concatenated
-                                          "(format: M, <container id>, <floor>, <X>, <Y>, <floor>, <X>, <Y>)";
+                                          "(format: M, <container id>, <floor>, <X>, <Y>, <floor>, <X>, <Y>) (E53)";
         case ReadOperations_InvalidOperationType:
-            return algorithmOutputError + "Operation is invalid: '" + param1 + "' (should be L/U/M/R)";
+            return algorithmOutputError + "Operation is invalid: '" + param1 + "' (should be L/U/M/R) (E54)";
         case ReadOperations_InvalidShipPosition:
-            return algorithmOutputError + "Received invalid ship " + param1 + " position: '" + param2 + "' (should be an integer)";
+            return algorithmOutputError + "Received invalid ship " + param1 + " position: '" + param2 + "' (should be an integer) (E55)";
 
         case FileInput_TooManyParameters:
-            return param1 + "Line " + param2 +": too many parameters - expected " + param3 +", but received " + param4 +", ignoring the extra parameters";
+            return param1 + "Line " + param2 +": too many parameters - expected " + param3 +", but received " + param4 +", ignoring the extra parameters (E56)";
 
         case SharedObject_CantLoadSoFile:
-            return dynamicLoadError + "Error while loading SO file: '" + param1 + "'";
+            return dynamicLoadError + "Error while loading SO file: '" + param1 + "' (E57)";
         case SharedObject_InvalidDirectory:
-            return dynamicLoadFatalError + "Couldn't load any algorithm, the directory is empty or invalid: '" + param1 + "'";
+            return dynamicLoadFatalError + "Couldn't load any algorithm, the directory is empty or invalid: '" + param1 + "' (E58)";
         case SharedObject_AlgorithmDidntSelfRegister:
-            return dynamicLoadError + "Algorithm '" + param1 + "' didn't register himself, and is unavailable";
+            return dynamicLoadError + "Algorithm '" + param1 + "' didn't register himself, and is unavailable (E59)";
         case SharedObject_LoadedMoreThanOneAlgorithm:
-            return dynamicLoadFatalError + "Algorithm '" + param1 + "' registered more than once";
+            return dynamicLoadFatalError + "Algorithm '" + param1 + "' registered more than once (E60)";
         case SharedObject_NoAlgorithmsLoaded:
-            return dynamicLoadFatalError + "No algorithm was loaded successfully";
+            return dynamicLoadFatalError + "No algorithm was loaded successfully (E61)";
 
         default:
             return "ERROR NOT SUPPORTED YET";
@@ -288,7 +271,7 @@ bool Error::isCertainFlag(ErrorFlag other) {
 }
 
 bool Error::isFatalError() {
-    return (errorFlag & c_initFatalError) | (error & c_initFatalError);
+    return (errorFlag & c_initFatalError) | (errors & c_initFatalError);
 }
 
 bool Error::isAlgorithmError() {

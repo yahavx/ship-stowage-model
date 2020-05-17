@@ -44,8 +44,8 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
 //    algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
 //    algorithmNames.push_back("Bad");
 //
-//    algorithmFactories.emplace_back([](){return std::make_unique<RobustStowageAlgorithm>();});
-//    algorithmNames.push_back("Robust");
+    algorithmFactories.emplace_back([](){return std::make_unique<RobustStowageAlgorithm>();});
+    algorithmNames.push_back("Robust");
 #endif
 }
 
@@ -164,13 +164,13 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
         return -1;
     }
 
-    simManager.initCargoData();
+    simManager.initCargoData();  // order the files for each port, filter irrelevant files
 
     // endregion
 
 #ifdef DEBUG_PRINTS
     std::cout << "The ship has started its journey!" << std::endl;
-    printSeparator(1, 1);
+    printSeparator(0, 0);
 #endif
 
     for (auto &portId : simManager.getRoutePorts()) {  // Start the journey
@@ -190,7 +190,7 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
         if (!simManager.isCurrentLastPort()) {
             std::cout << "The ship is continuing to the next port..." << std::endl;
         } else { std::cout << "The ship is going into maintenance..." << std::endl; }
-        printSeparator(1, 1);
+        printSeparator(0, 0);
 #endif
     }
 
@@ -198,7 +198,7 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
 
 #ifdef DEBUG_PRINTS
     std::cout << "The ship has completed its journey. Total number of operations: " << totalNumberOfOps << std::endl;
-    printSeparator(1, 3);
+    printSeparator(0, 3);
 #endif
 
     return totalNumberOfOps;

@@ -21,6 +21,10 @@ SimulationManager::SimulationManager(SimulatorFileManager &manager) : fileManage
 void SimulationManager::initSimulationShip(WeightBalanceCalculator &calculator) {
     ShipPlan shipPlan = readShipPlanFromFile(fileManager.shipPlanPath(), errors);
     ShipRoute shipRoute = readShipRouteFromFile(fileManager.shipRoutePath(), errors);
+    longUInt errorSummarize = errors.toErrorFlag(false, true);
+    if (errorSummarize != 0) {
+        errors.addError(errorSummarize, "Simulator");
+    }
 
     ship = ContainerShip(shipPlan, shipRoute, calculator);
 }
@@ -41,11 +45,11 @@ int SimulationManager::initAlgorithmShip(AbstractAlgorithm *algorithm, WeightBal
 //        errors.addError({ErrorFlag::AlgorithmError_ExtraReport, intToStr(-errorsDiff)});
 //    }
 
-    Error algorithmReport = ret | ret2 | ret3;
+    longUInt algorithmReport = ret | ret2 | ret3;
 
-    errors.addError(algorithmReport);
+    errors.addError(algorithmReport, "Algorithm");
 
-    bool algorithmError = algorithmReport.isFatalError();
+    bool algorithmError = Error(algorithmReport).isFatalError();
 
     if (algorithmError) { // failed to initialize
         errors.addError(ErrorFlag::AlgorithmError_FailedToInitialize);

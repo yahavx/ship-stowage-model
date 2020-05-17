@@ -6,12 +6,36 @@
 #include "Errors.h"
 #include "UtilFunctions.h"
 
+#define ULL_MAX_BIT 61  // max bit at unsigned long long (almost)
 
 // region Functions
 
 void Errors::addError(const Error &error) {
     if (error.errorFlag != ErrorFlag::Success || error.errorMsg != "") {  // actual error
         errorsList.push_back(error);
+    }
+}
+
+void Errors::addError(longUInt report, const std::string &reporter) {
+
+
+    IntVector errorNumbers;
+    for (int i = 0; i <= ULL_MAX_BIT; i++) {
+        longUInt isBitEnabled = report & (1ULL << i);
+
+        if (isBitEnabled) {
+            errorNumbers.push_back(i);
+        }
+    }
+
+    if (!errorNumbers.empty()) {
+        std::string errorMsg = "\t[" + reporter + " Report] The " + reporter + " reported the following errors: E" + intToStr(errorNumbers[0]);
+
+        for (longUInt i = 1; i < errorNumbers.size(); i++) {
+            errorMsg += ", E" + intToStr(errorNumbers[i]);
+        }
+
+        errorsList.emplace_back(errorMsg);
     }
 }
 
@@ -28,10 +52,11 @@ StringVector Errors::toString() const {
     return errors;
 }
 
-int Errors::toErrorFlag() {
-    int errors;
-    for (Error error : errorsList) {
-        if (error.errorFlag <= 1 << MAX_ERROR_BIT) {  // We want to collect only errors relevant to the algorithm
+longUInt Errors::toErrorFlag(bool limitErrorNum, bool sinceLastCheckPoint) {
+    longUInt errors = 0;
+    for (longUInt i = sinceLastCheckPoint ? checkpoint : 0; i <errorsList.size(); i++) {
+        Error& error = errorsList[i];
+        if (!limitErrorNum || error.errorFlag <= 1 << MAX_ERROR_BIT) {  // If limit is on, we collect errors up to MAX_ERROR_BIT
             errors |= error.errorFlag;
         }
     }
@@ -39,34 +64,23 @@ int Errors::toErrorFlag() {
     return errors;
 }
 
-int Errors::toErrorFlagSinceLastCheckpoint() {
-    int errors;
-    for (longUInt i = checkpoint ; i < errorsList.size(); i++) {
-        if (errorsList[i].errorFlag <= 1 << MAX_ERROR_BIT) {  // We want to collect only errors relevant to the algorithm
-            errors |= errorsList[i].errorFlag;
-        }
-    }
-
-    return errors;
-}
-
-int Errors::compareReports(int otherErrorFlag) {
-    int selfFlag = this ->toErrorFlagSinceLastCheckpoint();
-
-    for (int i = 0 ; i <= MAX_ERROR_BIT; i++) {
-        bool errorAtSelf = (1 << i) & selfFlag;
-        bool errorAtOther = (1 << i) & otherErrorFlag;
-        if (errorAtSelf && !errorAtOther) {
-            return i;
-        }
-
-        if (errorAtOther && !errorAtSelf) {
-            return -i;
-        }
-    }
-
-    return 0;
-}
+//int Errors::compareReports(int otherErrorFlag) {
+//    int selfFlag = this ->toErrorFlagSinceLastCheckpoint();
+//
+//    for (int i = 0 ; i <= MAX_ERROR_BIT; i++) {
+//        bool errorAtSelf = (1 << i) & selfFlag;
+//        bool errorAtOther = (1 << i) & otherErrorFlag;
+//        if (errorAtSelf && !errorAtOther) {
+//            return i;
+//        }
+//
+//        if (errorAtOther && !errorAtSelf) {
+//            return -i;
+//        }
+//    }
+//
+//    return 0;
+//}
 
 // endregion
 

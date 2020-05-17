@@ -64,28 +64,28 @@ enum ErrorFlag : longUInt {
     AlgorithmError_InvalidXYCoordinates = 1ULL << 41,
     AlgorithmError_MoveNoContainersAtPosition = 1ULL << 42,
     AlgorithmError_MoveBadId = 1ULL << 43,
-    AlgorithmError_MoveAboveNotLegal = 1ULL << 44,
-    AlgorithmError_TriedToLoadButShouldReject = 1ULL << 45,
+    AlgorithmError_TriedToLoadButShouldReject = 1ULL << 44,
+    AlgorithmError_MoveAboveNotLegal = 1ULL << 45,
     AlgorithmError_UnloadedAndDidntLoadBack = 1ULL << 46,
     AlgorithmError_ExtraReport = 1ULL << 47,
     AlgorithmError_MissingReport = 1ULL << 48,
     AlgorithmError_WeightBalancerRejectedOperation = 1ULL << 49,
-    AlgorithmError_FailedToInitialize = 1ULL << 61,
+    AlgorithmError_FailedToInitialize = 1ULL << 50,
 
     // These are also kind of algorithm errors (they write the file)
-    ReadOperations_InvalidFile = 1ULL << 50,
-    ReadOperations_InsufficientRowData = 1ULL << 51,
-    ReadOperations_InsufficientRowData_MoveOp = 1ULL << 52,
-    ReadOperations_InvalidOperationType = 1ULL << 53,
-    ReadOperations_InvalidShipPosition = 1ULL << 54,
+    ReadOperations_InvalidFile = 1ULL << 51,
+    ReadOperations_InsufficientRowData = 1ULL << 52,
+    ReadOperations_InsufficientRowData_MoveOp = 1ULL << 53,
+    ReadOperations_InvalidOperationType = 1ULL << 54,
+    ReadOperations_InvalidShipPosition = 1ULL << 55,
 
-    FileInput_TooManyParameters = 1ULL << 55,  // This is a general error for all inputs (plan, route, cargo data, operations)
+    FileInput_TooManyParameters = 1ULL << 56,  // This is a general error for all inputs (plan, route, cargo data, operations)
 
-    SharedObject_CantLoadSoFile = 1ULL << 56,
-    SharedObject_InvalidDirectory = 1ULL << 57,
-    SharedObject_AlgorithmDidntSelfRegister = 1ULL << 58,
-    SharedObject_LoadedMoreThanOneAlgorithm = 1ULL << 59,
-    SharedObject_NoAlgorithmsLoaded = 1ULL << 60,
+    SharedObject_CantLoadSoFile = 1ULL << 57,
+    SharedObject_InvalidDirectory = 1ULL << 58,
+    SharedObject_AlgorithmDidntSelfRegister = 1ULL << 59,
+    SharedObject_LoadedMoreThanOneAlgorithm = 1ULL << 60,
+    SharedObject_NoAlgorithmsLoaded = 1ULL << 61,
 };
 
 /**
@@ -106,7 +106,7 @@ public:
     std::string param4 = "<>";
 
     // Combination of few error flags
-    longUInt error = 0;
+    longUInt errors = 0;
 
     // region Constructors
 

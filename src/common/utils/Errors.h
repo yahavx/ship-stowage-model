@@ -30,21 +30,28 @@ public:
     /// Adds an error to the list, only if its an actual error (i.e. contains message, or flag is not Success).
     void addError(const Error &error);
 
+    /**
+     * Adds the list of errors represented by the report, as a single error, in a report format.
+     * @param reporter the name of the reporter (algorithm, simulator for example).
+     */
+    void addError(longUInt report, const std::string &reporter);
+
     void addErrors(const Errors &errors);
 
     StringVector toString() const;
 
-    /// Returns an int that represents all the errors in the list. If an error appears multiple times, it is treated as once. Collects errors that are up to MAX_ERROR_BIT.
-    int toErrorFlag();
-
-    /// Like the one above, but only takes into account errors since the last log (see logging section for reference).
-    int toErrorFlagSinceLastCheckpoint();
-
     /**
-     * Compares the errors list to the list of errors represented by the flag.
-     * @return 0 if they are equal. i (greater than zero) if i'th bit is turned only onself. -i if i'th bit is turned only on other.
+     *  Returns an int that represents all the errors in the list. If an error appears multiple times, it is treated as once. Collects errors that are up to MAX_ERROR_BIT.
+     *  @param limitErrorNum limits errors collected to be from 0 to MAX_ERROR_BIT.
+     *  @param sinceLastCheckPoint only collect errors since the last checkpoint (see logging section for reference)
      */
-    int compareReports(int otherErrorFlag);
+    longUInt toErrorFlag(bool limitErrorNum = true, bool sinceLastCheckPoint = false);
+
+//    /**
+//     * Compares the errors list to the list of errors represented by the flag.
+//     * @return 0 if they are equal. i (greater than zero) if i'th bit is turned only onself. -i if i'th bit is turned only on other.
+//     */
+//    int compareReports(int otherErrorFlag);
 
     // region
 

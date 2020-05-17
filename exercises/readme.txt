@@ -7,10 +7,11 @@ Note that if an invalid path is supplied (of any type), it is not a command line
 
 General error handling:
 We have an "errors" folder (under the output folder) that contains all the error files, and the error documentation is as follows:
-- One file named GeneralErrors, that contains (general) errors such as bad algorithm loading, invalid paths, invalid travels, etc.
+- One file named GeneralErrors, that contains (general) errors such as bad algorithm loading, invalid paths, invalid travels (that cannot be run), etc.
 - A file for each algorithm-travel pair, with errors that occurred during the run (input errors may be repeated, we will improve that in ex3 probably).
 
-An error file (general or travel-algorithm pair specific) is created only if at least one error was found. The folder is created if at least one file was created (i.e. at least one error, anywhere).
+An error file (general or travel-algorithm pair specific) is created only if at least one error was found.
+The folder is created if at least one file was created (i.e. at least one error, anywhere).
 
 Our full list of errors can be viewed in common/utils/Error.h, the messages format is under the toString method of this class.
 For errors related to input files (plan, route, cargo_data, algorithm instructions), we also report a line number for each error.

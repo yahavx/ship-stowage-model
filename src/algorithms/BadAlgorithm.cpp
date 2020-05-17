@@ -8,10 +8,10 @@
 
 Operations BadAlgorithm::generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad, Errors &errors) {
     return Operations();
-    (void) ship;
-    (void) port;
-    (void) containersToLoad;
-    (void)errors;
+    _unused(ship);
+    _unused(port);
+    _unused(containersToLoad);
+    _unused(errors);
 }
 
 int BadAlgorithm::readShipPlan(const std::string &shipPlanPath) {
