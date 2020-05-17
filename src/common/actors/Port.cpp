@@ -61,7 +61,7 @@ OptionalContainer Port::removeContainer(const std::string &containerId) {
     return storage.removeContainer(containerId);
 }
 
-StringVector Port::removeBadContainers(const ShipRoute &route, Errors &errors) {
+StringVector Port::removeBadContainers(Errors &errors) {
     std::unordered_set<std::string> portsSet = route.getNextPortsSet();  // All next ports in the route
     StringVector invalidContainersIds;
     std::unordered_set<std::string> containerIds;  // Collect all ids to detect duplicates
@@ -88,7 +88,7 @@ StringVector Port::removeBadContainers(const ShipRoute &route, Errors &errors) {
         }
 
         // Container destination is current port
-        if (container.getDestPort() == route.getFirstPort()) {
+        if (container.getDestPort() == id) {
             errors.addError({ContainersAtPort_ContainerDestinationIsCurrentPort, container.getId()});
             invalidContainersIds.push_back(contId);
             continue;

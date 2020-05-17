@@ -70,7 +70,7 @@ int SemiAbstractAlgorithm::getInstructionsForCargo(const std::string &inputFile,
     Containers containersToLoad;
 
     if (!isLastPort) {
-        StringVector toReject = port.removeBadContainers(ship.getShipRoute(), errors);  // Get ids of all rejected containers (can contain duplicates)
+        StringVector toReject = port.removeBadContainers(errors);  // Get ids of all rejected containers (can contain duplicates)
         ops.addRejectOperations(toReject);  // If its empty, nothing will be added
 
         if (!port.getStorage().isEmpty()) {

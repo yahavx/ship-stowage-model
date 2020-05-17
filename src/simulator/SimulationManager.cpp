@@ -175,7 +175,7 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
 
     StringVector badContainers;
     if (!isCurrentLastPort()) {
-        badContainers = currentPort.removeBadContainers(ship.getShipRoute(), errors);  // Removes from port and returns the ids of the bad containers
+        badContainers = currentPort.removeBadContainers(errors);  // Removes from port and returns the ids of the bad containers
     }
 
     AlgorithmValidation validation(ship, currentPort, badContainers, errors);
