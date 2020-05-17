@@ -179,7 +179,7 @@ std::string Error::toString() {
         case Travel_FatalInput:
             return travelFatalError + "Travel '" + param1 + "' has an invalid " + param2 + ", or it doesn't exists, skipping travel (E26)";
         case Travel_UnknownFile:
-            return travelError + "Travel '" + param1 + "' has an invalid file ('" + param2 + "'), ignoring (E27)";
+            return travelError + "Travel contains an invalid file ('" + param2 + "'), ignoring (E27)";
         case Travel_CargoData_PortNotInRoute:
             return cargoDataError + "Port '" + param1 + "' has cargo_data files, but doesn't appear in the Route, ignoring (E28)";
         case Travel_CargoData_RemainingFilesAfterFinish:

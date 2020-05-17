@@ -225,7 +225,7 @@ bool SimulatorFileManager::isCargoDataFileFormat(const std::string &fileName) {
     if (!isInteger(num))
         return false;
 
-    return true;
+    return strToInt(num) != 0;
 }
 
 // endregion

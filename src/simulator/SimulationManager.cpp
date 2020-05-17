@@ -21,11 +21,6 @@ SimulationManager::SimulationManager(SimulatorFileManager &manager) : fileManage
 void SimulationManager::initSimulationShip(WeightBalanceCalculator &calculator) {
     ShipPlan shipPlan = readShipPlanFromFile(fileManager.shipPlanPath(), errors);
     ShipRoute shipRoute = readShipRouteFromFile(fileManager.shipRoutePath(), errors);
-    longUInt errorSummarize = errors.toErrorFlag(false, true);
-    if (errorSummarize != 0) {
-        errors.addError(errorSummarize, "Simulator");
-    }
-
     ship = ContainerShip(shipPlan, shipRoute, calculator);
 }
 
@@ -45,9 +40,7 @@ int SimulationManager::initAlgorithmShip(AbstractAlgorithm *algorithm, WeightBal
 //        errors.addError({ErrorFlag::AlgorithmError_ExtraReport, intToStr(-errorsDiff)});
 //    }
 
-    longUInt algorithmReport = ret | ret2 | ret3;
-
-    errors.addError(algorithmReport, "Algorithm");
+    algorithmReport = ret | ret2 | ret3;
 
     bool algorithmError = Error(algorithmReport).isFatalError();
 
@@ -61,9 +54,9 @@ int SimulationManager::initAlgorithmShip(AbstractAlgorithm *algorithm, WeightBal
 void SimulationManager::initCargoData() {
     cargoData = fileManager.getCargoDataFiles(errors);  // get list of .cargo_data files, ordered for each port
     initPortsVisits(ship.getShipRoute());
-    filterUnusedPorts(cargoData, ship.getShipRoute());  // remove the port files which are not on the ship route
+    filterUnusedPorts();  // remove the port files which are not on the ship route
 
-    errors.addSimulationInitLog();
+    addInitReport();  // initCargoData happens last in the init
 }
 
 void SimulationManager::initPortsVisits(ShipRoute &shipRoute) {
@@ -72,14 +65,14 @@ void SimulationManager::initPortsVisits(ShipRoute &shipRoute) {
     }
 }
 
-void SimulationManager::filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute) {
+void SimulationManager::filterUnusedPorts() {
     StringVector toErase;
 
-    for (auto &entry: map) {
+    for (auto &entry: cargoData) {
         std::string currPortCode = entry.first;  // get a port id
 
         bool found = false;  // indicates if we found this port in the route
-        for (const PortId &portId : shipRoute.getPorts()) {
+        for (const PortId &portId : ship.getShipRoute().getPorts()) {
             if (portId.getCode() == currPortCode) {
                 found = true;
                 break;
@@ -87,17 +80,31 @@ void SimulationManager::filterUnusedPorts(StringToStringVectorMap &map, ShipRout
         }
 
         if (!found) {  // port is not in the route, remove it
+#ifdef DEBUG_PRINTS
             std::cout << "Warning: port " << currPortCode << " has cargo files but doesn't appear in the route, ignoring" << std::endl;
+#endif
             errors.addError({ErrorFlag::Travel_CargoData_PortNotInRoute, currPortCode});
             toErase.push_back(currPortCode);  // we don't erase in-place because it will crash the map iterator
         }
     }
 
     for (std::string &port : toErase) {
-        map.erase(port);
+        cargoData.erase(port);
     }
 }
 
+void SimulationManager::addInitReport() {
+    longUInt simulationReport = errors.toErrorFlag(false, true);
+    if (simulationReport != 0) {
+        errors.addError(simulationReport, "Simulator");
+    }
+
+    if (algorithmReport != 0) {
+        errors.addError(algorithmReport, "Algorithm");
+    }
+
+    errors.addSimulationInitLog();
+}
 // endregion
 
 // region Simulation

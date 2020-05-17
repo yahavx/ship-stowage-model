@@ -1,6 +1,7 @@
 Our travel main directory (that contains some travel sub-directories) that shows our error handling mechanism, is called travels-error-handling.
 There is one travel that demonstrates the different kind of errors format and handling:
 - Travel-Very-Diverse-Errors
+There is also a readme inside that explains (and is ignored by the travel, ofcourse).
 
 Several other travels in that directory:
 - Travel-No-Errors: a clean run, no errors folder is generated.

@@ -54,7 +54,9 @@ private:
     void initPortsVisits(ShipRoute &shipRoute);
 
     /// Removes from map ports that doesn't appear in the route.
-    void filterUnusedPorts(StringToStringVectorMap &map, ShipRoute &shipRoute);
+    void filterUnusedPorts();
+
+    void addInitReport();
 
     // endregion
 

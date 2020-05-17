@@ -158,13 +158,13 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
 
     simManager.initSimulationShip(weightBalancer);
     bool success = simManager.initAlgorithmShip(algorithm.get(), algoWeightBalancer);
+    simManager.initCargoData();  // order the files for each port, filter irrelevant files
+
 
     if (!success) {  // Algorithm failed to initialize
         simManager.saveErrors();
         return -1;
     }
-
-    simManager.initCargoData();  // order the files for each port, filter irrelevant files
 
     // endregion
 

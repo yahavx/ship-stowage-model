@@ -10,6 +10,8 @@
 
 class ContainerShip;
 
+
+/// Defines a strategy to load a container to the ship (arbitrary position, lowest floor available, etc).
 class LoadContainerStrategy {
 
 public:
