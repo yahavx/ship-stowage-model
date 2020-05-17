@@ -14,7 +14,12 @@ Note: 2 common errors of cargo_data files weren't addressed in the requirements:
 
 We decided to assign them numbers 19 and 20, respectively. The algorithm doesn't report that when happen, of course.
 
-What makes our error handling special, is that it is very informative and well organized, and allows to debug problems very easily.
+What makes our error handling special:
+- It is very informative and well organized, and allows to debug problems very easily
+- Each error has a number, that is always printed at the end
+- During the simulation, at the end of each error section (initialization, port visit), there is a summary of which errors
+  were reported by the simulator, and which by the algorithm (we decided not to penalize the algorithm for difference,
+  because its risky - but its very easy to compare. Note that the algorithm can report errors which are up to 18, as defined).
 
 The readme.txt describes how we handle certain things.
 Without further explaining, just run our examples and see the results.

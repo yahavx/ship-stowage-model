@@ -40,7 +40,8 @@ int main(int argc, char **argv) {
     }
 
 //    travelPath = "../input-examples/single-travel-difference";
-    travelPath = "../input-examples/error-proud";
+//    travelPath = "../input-examples/error-proud";
+    travelPath = "../input-examples/multiple-travel";
     removeFolder(outputPath);  // remove old output before starting
 
     Simulator simulator(travelPath, algorithmPath, outputPath);

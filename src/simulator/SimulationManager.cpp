@@ -142,10 +142,7 @@ std::string SimulationManager::getInstructionsForCargo(AbstractAlgorithm *algori
     this->initPort(cargoDataFile);  // init self port
 
     std::string instructionsOutputPath = fileManager.craneInstructionsOutputPath(currentPort.getId(), this->currentPortVisitNum());
-    int algorithmReport = algorithm->getInstructionsForCargo(cargoDataFile, instructionsOutputPath);
-    if (algorithmReport != 0) {
-        errors.addError(algorithmReport);
-    }
+    this->algorithmReport = algorithm->getInstructionsForCargo(cargoDataFile, instructionsOutputPath);
 
     return instructionsOutputPath;
 }
@@ -192,7 +189,7 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
         checkCraneResult(op, opResult);
     }
 
-    errors.addSimulationPortVisitLog(currentPortVisitNum(), ship.getCurrentPortId(), ++portsVisited);
+    addPortErrorReport();  // and simulation and algorithm reports summary, if needed
 
     ship.advanceToNextPort();
 
@@ -204,8 +201,22 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
 #ifdef DEBUG_PRINTS
     std::cout << ops;
 #endif
+
     totalNumberOfOps = totalNumberOfOps + ops.size(true);
     return true;
+}
+
+void SimulationManager::addPortErrorReport() {
+    longUInt simulationReport = errors.toErrorFlag(false, true);
+    if (simulationReport != 0) {
+        errors.addError(simulationReport, "Simulator");
+    }
+
+    if (algorithmReport != 0) {
+        errors.addError(algorithmReport, "Algorithm");
+    }
+
+    errors.addSimulationPortVisitLog(currentPortVisitNum(), ship.getCurrentPortId(), ++portsVisited);
 }
 
 void SimulationManager::checkCraneResult(const PackingOperation &op, CraneOperationResult opResult) {

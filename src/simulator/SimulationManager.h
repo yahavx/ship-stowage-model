@@ -24,6 +24,7 @@ class SimulationManager {
     int portsVisited = 0;  // since the start of the journey
     StringToStringVectorMap cargoData;  // cargo_data files of each port
     StringToIntMap portsVisits;  // number of visits in each port
+    longUInt algorithmReport;  // latest algorithm report
 
 public:
 
@@ -96,6 +97,9 @@ public:
     bool performPackingOperations(const std::string &operationsPath);
 
 private:
+
+    /// Adds report log for this port, and algorithm/simulation summary.
+    void addPortErrorReport();
 
     /// Checks the crane result is okay, adds an error if needed.
     void checkCraneResult(const PackingOperation &op, CraneOperationResult opResult);
