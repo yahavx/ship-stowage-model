@@ -177,16 +177,16 @@ StringVector ContainerShip::filterContainers(Containers &containersToLoad, Error
     IntVector invalidContainersIndexes;
     StringVector invalidContainersIds;
     for (std::size_t i = 0; i < containersToLoad.size(); i++) {
-        auto& container = containersToLoad[i];
+        auto &container = containersToLoad[i];
 
-        auto& contId = container.getId();
+        auto &contId = container.getId();
 
 
-        if(this->cargo.hasContainer(contId)) {  // Already seen this id
+        if (this->cargo.hasContainer(contId)) {  // Already seen this id
             errors.addError({ErrorFlag::ContainersAtPort_IDAlreadyOnShip, contId});
             invalidContainersIndexes.push_back(i);
             invalidContainersIds.push_back(contId);
-            std::cout << "DUPLICATE ID: " << contId <<  std::endl;
+            std::cout << "DUPLICATE ID: " << contId << std::endl;
             continue;
         }
 
@@ -197,7 +197,6 @@ StringVector ContainerShip::filterContainers(Containers &containersToLoad, Error
             errors.addError(err);
             invalidContainersIndexes.push_back(i);
             invalidContainersIds.push_back(contId);
-            std::cout << "CONTAINER NOT LEGAL: "  << contId << std::endl;
             continue;
         }
 
@@ -206,12 +205,18 @@ StringVector ContainerShip::filterContainers(Containers &containersToLoad, Error
             errors.addError({ContainersAtPort_ContainerNotOnRoute, container.getId(), container.getDestPort()});
             invalidContainersIndexes.push_back(i);
             invalidContainersIds.push_back(contId);
-            std::cout << "CONTAINER NOT ON ROUTE: "  << contId << std::endl;
         }
     }
 
-    for (auto& badContainerIdx : invalidContainersIndexes) {
-       containersToLoad.erase(containersToLoad.begin() + badContainerIdx);
+    for (auto &badContainerId : invalidContainersIds) {
+        int index;
+        for (std::size_t i = 0; i < containersToLoad.size(); i++) {
+            if (containersToLoad[i].getId() == badContainerId) {
+                index = i;
+            }
+        }
+
+        containersToLoad.erase(containersToLoad.begin() + index);
     }
 
     return invalidContainersIds;
