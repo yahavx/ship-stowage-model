@@ -172,5 +172,50 @@ Operations ContainerShip::loadContainer(LoadContainerStrategy *strategy, Port &p
     return strategy->loadContainer(port, *this, container, errors);
 }
 
+StringVector ContainerShip::filterContainers(Containers &containersToLoad, Errors &errors) {
+    std::unordered_set<std::string> portsSet = this->shipRoute.getNextPortsSet();  // All next ports in the route
+    IntVector invalidContainersIndexes;
+    StringVector invalidContainersIds;
+    for (std::size_t i = 0; i < containersToLoad.size(); i++) {
+        auto& container = containersToLoad[i];
+
+        auto& contId = container.getId();
+
+
+        if(this->cargo.hasContainer(contId)) {  // Already seen this id
+            errors.addError({ErrorFlag::ContainersAtPort_IDAlreadyOnShip, contId});
+            invalidContainersIndexes.push_back(i);
+            invalidContainersIds.push_back(contId);
+            std::cout << "DUPLICATE ID: " << contId <<  std::endl;
+            continue;
+        }
+
+        Error err = container.isContainerLegal();
+
+        // Illegal containers
+        if (!err.isSuccess()) {
+            errors.addError(err);
+            invalidContainersIndexes.push_back(i);
+            invalidContainersIds.push_back(contId);
+            std::cout << "CONTAINER NOT LEGAL: "  << contId << std::endl;
+            continue;
+        }
+
+        // Container destination is not on rou
+        if (portsSet.find(container.getDestPort()) == portsSet.end()) {
+            errors.addError({ContainersAtPort_ContainerNotOnRoute, container.getId(), container.getDestPort()});
+            invalidContainersIndexes.push_back(i);
+            invalidContainersIds.push_back(contId);
+            std::cout << "CONTAINER NOT ON ROUTE: "  << contId << std::endl;
+        }
+    }
+
+    for (auto& badContainerIdx : invalidContainersIndexes) {
+       containersToLoad.erase(containersToLoad.begin() + badContainerIdx);
+    }
+
+    return invalidContainersIds;
+}
+
 
 // endregion

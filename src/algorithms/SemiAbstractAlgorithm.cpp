@@ -75,6 +75,10 @@ int SemiAbstractAlgorithm::getInstructionsForCargo(const std::string &inputFile,
 
         if (!port.getStorage().isEmpty()) {
             containersToLoad = getContainersToLoad(port);
+
+            // Filter containers and keep only valid ones
+            toReject = ship.filterContainers(containersToLoad, errors);
+            ops.addRejectOperations(toReject);  // If its empty, nothing will be added
         }
     }
 
