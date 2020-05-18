@@ -19,8 +19,15 @@ SimulationManager::SimulationManager(SimulatorFileManager &manager, Tracer &trac
 // region Init
 
 void SimulationManager::initSimulationShip(WeightBalanceCalculator &calculator) {
+    tracer.traceVerbose("Initializing simulator ship...");
     ShipPlan shipPlan = readShipPlanFromFile(fileManager.shipPlanPath(), errors);
     ShipRoute shipRoute = readShipRouteFromFile(fileManager.shipRoutePath(), errors);
+
+    tracer.traceVerbose("Ship Plan and Route:");
+    tracer.traceVerbose(genericToString(shipPlan));
+    tracer.traceVerbose(genericToString(shipRoute));
+    tracer.separator(TraceVerbosity::Verbose, 0, 0);
+
     ship = ContainerShip(shipPlan, shipRoute, calculator);
 }
 
@@ -80,9 +87,7 @@ void SimulationManager::filterUnusedPorts() {
         }
 
         if (!found) {  // port is not in the route, remove it
-#ifdef DEBUG_PRINTS
-            std::cout << "Warning: port " << currPortCode << " has cargo files but doesn't appear in the route, ignoring" << std::endl;
-#endif
+            tracer.traceVerbose("Warning: port " + currPortCode + " has cargo files but doesn't appear in the route, ignoring");
             errors.addError({ErrorFlag::Travel_CargoData_PortNotInRoute, currPortCode});
             toErase.push_back(currPortCode);  // we don't erase in-place because it will crash the map iterator
         }
@@ -131,6 +136,10 @@ int SimulationManager::currentPortVisitNum(bool increment) {
     return portsVisits[ship.getCurrentPortId()];
 }
 
+bool SimulationManager::isRouteFinished() {
+    return ship.getShipRoute().getPorts().empty();
+}
+
 bool SimulationManager::isCurrentLastPort() {
     return ship.getShipRoute().getPorts().size() == 1;
 }
@@ -165,7 +174,7 @@ std::string SimulationManager::getInstructionsForCargo(AbstractAlgorithm *algori
     return instructionsOutputPath;
 }
 
-void SimulationManager::initPort(const std::string& cargoDataPath) {
+void SimulationManager::initPort(const std::string &cargoDataPath) {
     auto portId = ship.getCurrentPortId();
     auto storage = readPortCargoFromFile(cargoDataPath, errors);
     currentPort = Port(portId, storage);
@@ -182,6 +191,7 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
     tracer.traceInfo(genericToString(ops));
 
     if (errors.hasAlgorithmErrors()) {
+        tracer.traceInfo("Error after the algorithm");
         errors.addSimulationPortVisitLog(currentPortVisitNum(), ship.getCurrentPortId(), ++portsVisited);
         reportSimulationError();
         return false;
@@ -261,7 +271,7 @@ void SimulationManager::checkCraneResult(const PackingOperation &op, CraneOperat
 
 void SimulationManager::reportSimulationError() {
     tracer.traceInfo("Found an error in the algorithm, terminating");
-    tracer.separator(TraceVerbosity::Info,1,3);
+    tracer.separator(TraceVerbosity::Info, 1, 3);
 
     setTotalNumberOfOps(-1);
     errors.addSimulationErrorLog();
@@ -281,7 +291,7 @@ int SimulationManager::finishSimulation() {
     return totalNumberOfOps;
 }
 
-void SimulationManager::saveErrors(){
+void SimulationManager::saveErrors() {
     if (errors.hasErrors()) {
         fileManager.saveSimulationErrors(errors);
     }

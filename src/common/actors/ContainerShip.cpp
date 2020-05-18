@@ -185,9 +185,6 @@ StringVector ContainerShip::filterContainers(const Containers &containersToLoad,
         if (this->cargo.hasContainer(contId)) {  // Already seen this id
             errors.addError({ErrorFlag::ContainersAtPort_IDAlreadyOnShip, contId});
             invalidContainersIds.push_back(contId);
-#ifdef DEBUG_PRINTS
-            std::cout << "DUPLICATE ID: " << contId << std::endl;
-#endif
             continue;
         }
 

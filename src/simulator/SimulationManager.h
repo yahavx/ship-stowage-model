@@ -82,6 +82,9 @@ public:
 
     int currentPortVisitNum(bool increment = false);
 
+    /// Returns true if there are no more ports in the route.
+    bool isRouteFinished();
+
     /// Returns true if the current port is last in the route.
     bool isCurrentLastPort();
 

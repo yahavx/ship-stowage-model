@@ -9,15 +9,15 @@
 
 std::ostream &operator<<(std::ostream &os, const StringVector &stringVector) {
     if (stringVector.size() == 0) {
-        std::cout << "[]" << std::endl;
+        os << "[]" << std::endl;
         return os;
     }
 
     std::cout << '[';
     for (longUInt i = 0; i < stringVector.size() - 1; i++) {
-        std::cout << stringVector[i] << ", \t\t";
+        os << stringVector[i] << ", \t\t";
     }
-    std::cout << stringVector.back() << "]" << std::endl;
+    os << stringVector.back() << "]" << std::endl;
     return os;
 }
 
@@ -29,18 +29,18 @@ std::ostream &operator<<(std::ostream &os, const StringStringVector &stringStrin
 }
 
 std::ostream &operator<<(std::ostream &os, const IntVector &intVector) {
-    std::cout << "\t[";
+    os << "\t[";
     for (longUInt i = 0; i < intVector.size() - 1; i++) {
-        std::cout << intVector[i] << ", \t";
+        os << intVector[i] << ", \t";
     }
-    std::cout << intVector.back() << "]" << std::endl;
+    os << intVector.back() << "]" << std::endl;
     return os;
 }
 
 
 std::ostream &operator<<(std::ostream &os, const IntIntVector &intIntVector) {
     for (longUInt i = 0; i < intIntVector.size(); i++) {
-        std::cout << '\t' << intIntVector[i];
+        os << '\t' << intIntVector[i];
     }
     return os;
 }
@@ -52,15 +52,15 @@ std::ostream &operator<<(std::ostream &os, const std::tuple<int, int, int> &tup)
 }
 
 std::ostream &operator<<(std::ostream &os, const StringToStringVectorMap &map) {
-    std::cout << "StringToStringStringVector map {" << std::endl;
+    os << "StringToStringStringVector map {" << std::endl;
     for (auto key : map) {
-        std::cout << "\t\"" << key.first << "\":" << std::endl;
+        os << "\t\"" << key.first << "\":" << std::endl;
         for (auto &val : key.second) {
-            std::cout <<"\t\t" << val << std::endl;
+            os <<"\t\t" << val << std::endl;
         }
     }
 
-    std::cout << "}" << std::endl;
+    os << "}" << std::endl;
 
     return os;
 }

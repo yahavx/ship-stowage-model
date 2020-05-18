@@ -15,6 +15,10 @@ $\
 $\
 ../common/io/FileReader.o ../common/io/ObjectsReader.o $\
 $\
+../common/loggers/Tracer.o $\
+$\
+../common/strategies/LoadContainerToArbitraryPosition.o ../common/strategies/LoadContainerToLowestPositionAvailable.o $\
+$\
 ../common/utils/Error.o ../common/utils/Errors.o $\
 ../common/utils/Printers.o ../common/utils/UtilFunctions.o ../common/utils/Vector3.o $\
 $\
@@ -39,6 +43,6 @@ $(OBJS):
 clean:
 	rm -f $(OBJS) $(EXEC)
 
-# ./simulator -travel_path ../input-examples/single-travel -algorithm_path ../algorithms -output ../output
+# ./simulator -travel_path ../test -algorithm_path ../algorithms -output ../output
 
 # valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all ./simulator -travel_path ../input-examples/single-travel -algorithm_path ../algorithms -output ../output

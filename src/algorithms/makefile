@@ -20,6 +20,8 @@ $\
 $\
 ../common/io/FileReader.o ../common/io/ObjectsReader.o $\
 $\
+../common/loggers/Tracer.o $\
+$\
 ../common/strategies/LoadContainerToArbitraryPosition.o ../common/strategies/LoadContainerToLowestPositionAvailable.o $\
 $\
 ../common/utils/Error.o ../common/utils/Errors.o $\

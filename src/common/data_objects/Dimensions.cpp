@@ -30,7 +30,7 @@ int Dimensions::Z() const {
 // region Printer
 
 std::ostream &operator<<(std::ostream &os, const Dimensions &dimensions) {
-    os << "(" << dimensions.x << ", " << dimensions.y << ", " << dimensions.z << ")";
+    os << "(X: " << dimensions.x << ", Y: " << dimensions.y << "), Floors: " << dimensions.z;
     return os;
 }
 
