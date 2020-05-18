@@ -241,16 +241,16 @@ std::string Error::toString() {
 
             // Read packing operations (produced by algorithm)
         case ReadOperations_InvalidFile:
-            return algorithmOutputError + "Operations output file was not created by the algorithm (E51)";
+            return algorithmOutputError + "Line " + param1 + " operations output file was not created by the algorithm (E51)";
         case ReadOperations_InsufficientRowData:
-            return algorithmOutputError + "Data row contains less than 5 arguments (format: <L/U/M/R> <container id>, <floor>, <X>, <Y> (E52)";
+            return algorithmOutputError + "Line " + param1 + " Data row should contain at least 2 arguments for a reject operation, 5 for a load/unload, and 8 for a move (E52)";
         case ReadOperations_InsufficientRowData_MoveOp:
             return algorithmOutputError + "Data row contains less than 8 arguments, in a move operation " // strings are concatenated
                                           "(format: M, <container id>, <floor>, <X>, <Y>, <floor>, <X>, <Y>) (E53)";
         case ReadOperations_InvalidOperationType:
-            return algorithmOutputError + "Operation is invalid: '" + param1 + "' (should be L/U/M/R) (E54)";
+            return algorithmOutputError + "Line " + param1 + " operation is invalid: '" + param2 + "' (should be L/U/M/R) (E54)";
         case ReadOperations_InvalidShipPosition:
-            return algorithmOutputError + "Received invalid ship " + param1 + " position: '" + param2 + "' (should be an integer) (E55)";
+            return algorithmOutputError + "Line " + param1 + " received invalid ship " + param2 + " position: '" + param3 + "' (should be an integer) (E55)";
 
         case FileInput_TooManyParameters:
             return param1 + "Line " + param2 +": too many parameters - expected " + param3 +", but received " + param4 +", ignoring the extra parameters (E56)";

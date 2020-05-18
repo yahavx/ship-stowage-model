@@ -204,7 +204,7 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
     for (const PackingOperation &op : ops.ops) {
 
         if (!validation.validatePackingOperation(op)) {
-            tracer.traceInfo("Operation '" + op.toString() + "' is invalid, the simulation will be stopped due to an algorithm error");
+            tracer.traceInfo("Operation '" + op.toString() + "' is invalid");
             errors.addSimulationPortVisitLog(currentPortVisitNum(), ship.getCurrentPortId(), ++portsVisited);
             reportSimulationError();
             return false;
@@ -247,15 +247,11 @@ void SimulationManager::addPortErrorReport() {
 
 void SimulationManager::checkCraneResult(const PackingOperation &op, CraneOperationResult opResult) {
     if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND) {
-#ifdef DEBUG_PRINTS
-        std::cout << "crane received illegal operation, didn't find container with ID: " << op.getContainerId() << std::endl;
-#endif
+        tracer.traceInfo("Crane received illegal operation, didn't find container with ID: " + op.getContainerId());
         errors.addError({ErrorFlag::AlgorithmError_CraneOperationWithInvalidId, op.getContainerId(), currentPort.getId(), op.toString()});
     }
     if (opResult == CraneOperationResult::FAIL_ILLEGAL_OP) {
-#ifdef DEBUG_PRINTS
-        std::cout << "Illegal crane operation: " << op << std::endl;
-#endif
+        tracer.traceInfo("Illegal crane operation: " + op.toString());
         errors.addError({ErrorFlag::AlgorithmError_InvalidCraneOperation, op.toString()});
     }
 }
@@ -264,10 +260,9 @@ void SimulationManager::checkCraneResult(const PackingOperation &op, CraneOperat
 // region Finish
 
 void SimulationManager::reportSimulationError() {
-#ifdef DEBUG_PRINTS
-    std::cout << "Found an error in the algorithm, terminating" << std::endl << errors;
-    printSeparator(1, 3);
-#endif
+    tracer.traceInfo("Found an error in the algorithm, terminating");
+    tracer.separator(TraceVerbosity::Info,1,3);
+
     setTotalNumberOfOps(-1);
     errors.addSimulationErrorLog();
 //    fileManager.saveSimulationErrors(errors);
@@ -296,9 +291,7 @@ void SimulationManager::validateNoCargoFilesLeft() {
     for (auto &entry: cargoData) {
         std::string portId = entry.first;
         if (!cargoData[portId].empty()) {
-#ifdef DEBUG_PRINTS
-            std::cout << "Warning: finished the route, but port " << portId << " have cargo files that were not used" << std::endl;
-#endif
+            tracer.traceVerbose("Warning: finished the route, but port " + portId + " have cargo files that were not used");
             errors.addError({ErrorFlag::Travel_CargoData_RemainingFilesAfterFinish, portId, intToStr(cargoData[portId].size())});
         }
     }

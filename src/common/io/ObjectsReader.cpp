@@ -231,70 +231,74 @@ Operations readPackingOperationsFromFile(const std::string &filePath, Errors &er
         if (dataRow.empty())
             continue;
 
-        if (dataRow.size() < 5) {
-            errors.addError(ErrorFlag::ReadOperations_InsufficientRowData);
+        if (dataRow.size() < 2) {
+            errors.addError({ErrorFlag::ReadOperations_InsufficientRowData, intToStr(i)});
             continue;
         }
 
-        std::string opStr = dataRow[0], containerId = dataRow[1];  // Str suffix indicates its string representation
-        std::string floorStr = dataRow[2], xStr = dataRow[3], yStr = dataRow[4];
+        std::string opStr = dataRow[0];
 
         if (opStr.size() != 1 || (opStr[0] != 'L' && opStr[0] != 'U' && opStr[0] != 'M' && opStr[0] != 'R')) {
-            errors.addError({ErrorFlag::ReadOperations_InvalidOperationType, opStr});
+            errors.addError({ErrorFlag::ReadOperations_InvalidOperationType, intToStr(i), opStr});
             continue;
         }
         PackingType packingType = packingTypeToString(opStr[0]);
+        std::string containerId = dataRow[1];  // Str suffix indicates its string representation
 
         if (packingType == PackingType::reject) {
             operations.addOperation({packingType, containerId});
-            addExtraParametersWarningIfNeeded(dataRow, operationsWarning, 5, i, errors);
-            // The last 3 are also redundant in this case, but we don't warn because the format isn't very clear
+//            addExtraParametersWarningIfNeeded(dataRow, operationsWarning, 5, i, errors);  // not sure what to except
             continue;
         }
 
-        if (packingType != PackingType::move) {  // Load or Unload
+        if (dataRow.size() < 5) {
+            errors.addError({ErrorFlag::ReadOperations_InsufficientRowData, intToStr(i)});
+            continue;
+        }
+
+        if (packingType == PackingType::load || packingType == PackingType::unload) {
             addExtraParametersWarningIfNeeded(dataRow, operationsWarning, 5, i, errors);
         }
 
-        if (packingType == PackingType::move && dataRow.size() < 8) {
-            errors.addError(ErrorFlag::ReadOperations_InsufficientRowData_MoveOp);
-            continue;
-        }
+        std::string floorStr = dataRow[2], xStr = dataRow[3], yStr = dataRow[4];
 
         if (!isInteger(floorStr) || !isInteger(xStr) || !isInteger(yStr)) {
             if (!isInteger(floorStr)) {
-                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, "floor", floorStr});
+                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition,  intToStr(i), "floor", floorStr});
             }
             if (!isInteger(xStr)) {
-                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, "x", xStr});
+                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, intToStr(i), "x", xStr});
             }
             if (!isInteger(yStr)) {
-                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, "y", yStr});
+                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, intToStr(i), "y", yStr});
             }
             continue;
         }
 
         int floor = strToInt(floorStr), x = strToInt(xStr), y = strToInt(yStr);
 
-        if (packingType != PackingType::move) {  // Load or Unload, We have all the arguments needed
+        if (packingType == PackingType::load || packingType == PackingType::unload) {  // Load or Unload, we have all the arguments needed
             operations.addOperation({packingType, containerId, {x, y, floor}});
             continue;
         }
 
-        // It's a move operation
+        if (dataRow.size() < 8) {
+            errors.addError({ErrorFlag::ReadOperations_InsufficientRowData, intToStr(i)});
+            continue;
+        }
 
         addExtraParametersWarningIfNeeded(dataRow, operationsWarning, 8, i, errors);
         std::string floorStr2 = dataRow[5], xStr2 = dataRow[6], yStr2 = dataRow[7];
 
         if (!isInteger(floorStr2) || !isInteger(xStr2) || !isInteger(yStr2)) {
             if (!isInteger(floorStr2)) {
-                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, "floor", floorStr2});
+                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, intToStr(i),"floor", floorStr2});
             }
             if (!isInteger(xStr2)) {
-                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, "x", xStr2});
+                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, intToStr(i), "x", xStr2});
             }
             if (!isInteger(yStr2)) {
-                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, "y", yStr2});
+                errors.addError({ErrorFlag::ReadOperations_InvalidShipPosition, intToStr(i), "y", yStr2});
             }
             continue;
         }
