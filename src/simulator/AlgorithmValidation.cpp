@@ -239,7 +239,7 @@ bool AlgorithmValidation::validateNoContainersLeftOnPort() {
 
     bool success = true;
 
-    // There is still space on ship - the only excuse left for a container to be on port, is that his ID is on the ship (otherwise - error)
+
     for (auto &portId : ship.getShipRoute().getNextPortsSet()) {
         PortId id(portId);
         if (id == currentPort.getId())
@@ -247,6 +247,7 @@ bool AlgorithmValidation::validateNoContainersLeftOnPort() {
         const auto &containersLeftOnPort = currentPort.getContainersForDestination(id);
         if (!containersLeftOnPort.empty()) {
             for (auto &container : containersLeftOnPort) {
+                // TODO: this should not happen here (we filter duplicate ID at start), remove after sure
 //                if (ship.getCargo().hasContainer(container.getId())) {  // Not an algorithm error - but we document this
 //                    errors.addError({ContainersAtPort_IDAlreadyOnShip, container.getId()});
 //                }

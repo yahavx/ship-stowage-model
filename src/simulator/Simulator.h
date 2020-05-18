@@ -49,8 +49,6 @@ private:
 
     // endregion
 
-public:
-
     // region Constants
 
 public:

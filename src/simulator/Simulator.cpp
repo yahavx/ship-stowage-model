@@ -14,6 +14,7 @@
 #include "../common/utils/UtilFunctions.h"
 #include "../interfaces/AbstractAlgorithm.h"
 #include "AlgorithmRegistrar.h"
+#include "SimulationManager.h"
 
 #ifndef RUNNING_ON_NOVA
 
@@ -160,7 +161,6 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
     bool success = simManager.initAlgorithmShip(algorithm.get(), algoWeightBalancer);
     simManager.initCargoData();  // order the files for each port, filter irrelevant files
 
-
     if (!success) {  // Algorithm failed to initialize
         simManager.saveErrors();
         return -1;
@@ -196,6 +196,7 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
 
     int totalNumberOfOps = simManager.finishSimulation();
 
+    // TODO: add validation, that the ship is empty (inside finishSimulation maybe)
 #ifdef DEBUG_PRINTS
     std::cout << "The ship has completed its journey. Total number of operations: " << totalNumberOfOps << std::endl;
     printSeparator(0, 3);
@@ -216,7 +217,6 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
 
 const std::string Simulator::s_resultsTableTitle = "RESULTS";
 const std::string Simulator::s_sumColumnTitle = "Sum";
-
 const std::string Simulator::s_errorsColumnTitle = "Num Errors";
 
 // endregion
