@@ -247,13 +247,7 @@ bool AlgorithmValidation::validateNoContainersLeftOnPort() {
         const auto &containersLeftOnPort = currentPort.getContainersForDestination(id);
         if (!containersLeftOnPort.empty()) {
             for (auto &container : containersLeftOnPort) {
-                // TODO: this should not happen here (we filter duplicate ID at start), remove after sure
-//                if (ship.getCargo().hasContainer(container.getId())) {  // Not an algorithm error - but we document this
-//                    errors.addError({ContainersAtPort_IDAlreadyOnShip, container.getId()});
-//                }
-//                else {
                 errors.addError({ErrorFlag::AlgorithmError_LeftContainersAtPort, container.getId(), portId, currentPort.getId()});
-//                }
             }
             success = false;
         }

@@ -147,13 +147,11 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
 }
 
 int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
-    SimulationManager simManager(fileManager);
+    SimulationManager simManager(fileManager, tracer);
 
     // region Init
 
-#ifdef DEBUG_PRINTS
-    std::cout << "Starting simulation (Algorithm = " << fileManager.algorithmName << ", Travel = " << fileManager.travelName << ")" << std::endl;
-#endif
+    tracer.traceInfo("Starting simulation (Algorithm = " + fileManager.algorithmName +", Travel = " + fileManager.travelName + ")");
 
     WeightBalanceCalculator weightBalancer, algoWeightBalancer;
 
@@ -168,15 +166,11 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
 
     // endregion
 
-#ifdef DEBUG_PRINTS
-    std::cout << "The ship has started its journey!" << std::endl;
-    printSeparator(0, 0);
-#endif
+    tracer.traceInfo("The ship has started its journey!");
+    tracer.separator(TraceVerbosity::Info, 0, 0);
 
     for (auto &portId : simManager.getRoutePorts()) {  // Start the journey
-#ifdef DEBUG_PRINTS
-        std::cout << "The ship has docked at port " << portId << "." << std::endl;
-#endif
+        tracer.traceInfo("The ship has docked at port " + portId.getCode());
 
         std::string instructionsOutputPath = simManager.getInstructionsForCargo(algorithm.get());
         success = simManager.performPackingOperations(instructionsOutputPath);
@@ -186,21 +180,16 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
             return -1;
         }
 
-#ifdef DEBUG_PRINTS
-        if (!simManager.isCurrentLastPort()) {
-            std::cout << "The ship is continuing to the next port..." << std::endl;
-        } else { std::cout << "The ship is going into maintenance..." << std::endl; }
-        printSeparator(0, 0);
-#endif
+        std::string message = simManager.isCurrentLastPort() ? "The ship is going into maintenance..." : "The ship is continuing to the next port...";
+        tracer.traceInfo(message);
+        tracer.separator(TraceVerbosity::Info, 0,0);
     }
 
     int totalNumberOfOps = simManager.finishSimulation();
 
     // TODO: add validation, that the ship is empty (inside finishSimulation maybe)
-#ifdef DEBUG_PRINTS
-    std::cout << "The ship has completed its journey. Total number of operations: " << totalNumberOfOps << std::endl;
-    printSeparator(0, 3);
-#endif
+    tracer.traceInfo("The ship has completed its journey. Total number of operations: " + intToStr(totalNumberOfOps));
+    tracer.separator(TraceVerbosity::Info, 0,3);
 
     return totalNumberOfOps;
 }

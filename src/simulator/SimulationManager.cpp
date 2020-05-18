@@ -12,7 +12,7 @@
 
 // region Constructor
 
-SimulationManager::SimulationManager(SimulatorFileManager &manager) : fileManager(manager), totalNumberOfOps(0) {}
+SimulationManager::SimulationManager(SimulatorFileManager &manager, Tracer &tracer) : fileManager(manager), totalNumberOfOps(0), tracer(tracer) {}
 
 // endregion
 
@@ -167,6 +167,9 @@ void SimulationManager::initPort(const std::string& cargoDataPath) {
 bool SimulationManager::performPackingOperations(const std::string &operationsPath) { // Perform operations on local ship and port
     Operations ops = readPackingOperationsFromFile(operationsPath, errors);
 
+    tracer.traceInfo("Operations from the algorithm:");
+    tracer.traceInfo(genericToString(ops));
+
     if (errors.hasAlgorithmErrors()) {
         errors.addSimulationPortVisitLog(currentPortVisitNum(), ship.getCurrentPortId(), ++portsVisited);
         reportSimulationError();
@@ -190,6 +193,7 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
     for (const PackingOperation &op : ops.ops) {
 
         if (!validation.validatePackingOperation(op)) {
+            tracer.traceInfo("Operation '" + op.toString() + "' is invalid, the simulation will be stopped due to an algorithm error");
             errors.addSimulationPortVisitLog(currentPortVisitNum(), ship.getCurrentPortId(), ++portsVisited);
             reportSimulationError();
             return false;
@@ -212,10 +216,6 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
     }
 
     ship.advanceToNextPort();
-
-#ifdef DEBUG_PRINTS
-    std::cout << ops;
-#endif
 
     totalNumberOfOps = totalNumberOfOps + ops.size(true);
     return true;

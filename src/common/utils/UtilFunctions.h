@@ -7,9 +7,18 @@
 
 #include <ostream>
 #include <map>
+#include <sstream>
 #include "Definitions.h"
 
 // region Type Conversions
+
+/// Converts an object to its string representation (using <<).
+template <typename T>
+inline std::string genericToString(const T& object) {
+        std::ostringstream ss;
+        ss << object;
+        return ss.str();
+}
 
 /// Converts string to int. Doesn't validate its legal.
 int strToInt(const std::string &str);

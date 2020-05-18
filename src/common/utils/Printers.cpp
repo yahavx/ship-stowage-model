@@ -67,6 +67,7 @@ std::ostream &operator<<(std::ostream &os, const StringToStringVectorMap &map) {
 
 
 void printSeparator(int linesBefore, int linesAfter) {
+#ifdef DEBUG_PRINTS
     for (int i = 0; i < linesBefore; i++) {
         std::cout << std::endl;
     }
@@ -74,6 +75,7 @@ void printSeparator(int linesBefore, int linesAfter) {
     for (int i = 0; i < linesAfter; i++) {
         std::cout << std::endl;
     }
+#endif
 }
 
 void printEmptyLines(int amount) {

@@ -92,10 +92,6 @@ std::string SimulatorFileManager::createCargoDataTempFilePath(const std::string 
 }
 
 std::string SimulatorFileManager::cargoFilePath(const std::string &cargoFileName) {
-//    if (endsWith(cargoFileName, "dummy")) {
-//        std::string fileName = extractFilenameFromPath(cargoFileName);  // TODO: isn't that already the name only?
-//        return tempFolder() + "/" + fileName;
-//    }
     return travelFolder() + "/" + cargoFileName;
 }
 

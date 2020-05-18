@@ -44,6 +44,9 @@ add_executable(ship_stowage_model
             src/common/io/FileReader.cpp src/common/io/FileReader.h
             src/common/io/ObjectsReader.cpp src/common/io/ObjectsReader.h
 
+            # loggers
+            src/common/loggers/Tracer.cpp src/common/loggers/Tracer.h
+
             # strategies
             src/common/strategies/LoadContainerStrategy.h
             src/common/strategies/LoadContainerToArbitraryPosition.cpp
