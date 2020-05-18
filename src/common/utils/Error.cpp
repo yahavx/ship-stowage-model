@@ -34,7 +34,9 @@ longUInt c_algorithmInstructionErrors =
         | AlgorithmError_MoveAboveNotLegal
         | AlgorithmError_TriedToLoadButShouldReject
         | AlgorithmError_UnloadedAndDidntLoadBack
-        | AlgorithmError_WeightBalancerRejectedOperation;
+        | AlgorithmError_ShipNotEmptyAtEndOfRoute
+        | AlgorithmError_WeightBalancerRejectedOperation
+        | AlgorithmError_FailedToInitialize;
         // | AlgorithmError_ExtraReport
         // | AlgorithmError_MissingReport
         // TODO: decide if we count it as algorithm errors (may be dangerous)
@@ -228,8 +230,10 @@ std::string Error::toString() {
             return algorithmError + "Container with ID '" + param1 + "' was left on current port, but its not his destination (E46)";
         case AlgorithmError_ExtraReport:
             return algorithmError + "Algorithm mistakenly reported error E" + param1 +" (E47)";
-        case AlgorithmError_MissingReport:
-            return algorithmError + "Algorithm didn't report error E" + param1 + ", but it should have been (E48)";
+//        case AlgorithmError_MissingReport:
+//            return algorithmError + "Algorithm didn't report error E" + param1 + ", but it should have been (E48)";
+    case AlgorithmError_ShipNotEmptyAtEndOfRoute:
+        return algorithmError + "Ship was not empty at the end of the travel (E48)";
         case AlgorithmError_WeightBalancerRejectedOperation:
             return algorithmError + param1 + " operation on container with ID '" + param2 + "' was rejected by the ship's weight balance calculator (E49)";
         case AlgorithmError_FailedToInitialize:

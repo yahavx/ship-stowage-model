@@ -85,6 +85,12 @@ public:
      * Returns true if this cargo is completely full
      */
     bool isFull();
+
+    /**
+     * Returns true if this cargo is completely full
+     */
+    bool isEmpty();
+
     // endregion
 
     /**

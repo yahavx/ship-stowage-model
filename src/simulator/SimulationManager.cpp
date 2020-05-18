@@ -107,6 +107,17 @@ void SimulationManager::addInitReport() {
 }
 // endregion
 
+// region Setter
+
+void SimulationManager::setTotalNumberOfOps(int totalNumberOfOps) {
+    if (SimulationManager::totalNumberOfOps == -1) {  // If the algorithm is shit there is no way back
+        return;
+    }
+    SimulationManager::totalNumberOfOps = totalNumberOfOps;
+}
+
+// endregion
+
 // region Simulation
 
 std::vector<PortId> SimulationManager::getRoutePorts() {
@@ -217,7 +228,7 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
 
     ship.advanceToNextPort();
 
-    totalNumberOfOps = totalNumberOfOps + ops.size(true);
+    this->setTotalNumberOfOps(totalNumberOfOps + ops.size(true));
     return true;
 }
 
@@ -257,12 +268,19 @@ void SimulationManager::reportSimulationError() {
     std::cout << "Found an error in the algorithm, terminating" << std::endl << errors;
     printSeparator(1, 3);
 #endif
+    setTotalNumberOfOps(-1);
     errors.addSimulationErrorLog();
 //    fileManager.saveSimulationErrors(errors);
 }
 
 int SimulationManager::finishSimulation() {
-    validateNoCargoFilesLeft();
+    this->validateNoCargoFilesLeft();
+
+    if (!ship.getCargo().isEmpty()) {
+        errors.addError(AlgorithmError_ShipNotEmptyAtEndOfRoute);
+        setTotalNumberOfOps(-1);
+    }
+
     errors.addSimulationFinishLog();
     saveErrors();
     return totalNumberOfOps;

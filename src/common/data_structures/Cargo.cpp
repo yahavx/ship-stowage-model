@@ -140,6 +140,10 @@ bool Cargo::isFull() {
     return true;
 }
 
+bool Cargo::isEmpty() {
+    return containersMapping.empty();
+}
+
 int Cargo::numberOfEmptyPositions() {
     const Dimensions &dims = shipPlan.getDimensions();
     int sum = 0;

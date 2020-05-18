@@ -68,7 +68,8 @@ enum ErrorFlag : longUInt {
     AlgorithmError_MoveAboveNotLegal = 1ULL << 45,
     AlgorithmError_UnloadedAndDidntLoadBack = 1ULL << 46,
     AlgorithmError_ExtraReport = 1ULL << 47,
-    AlgorithmError_MissingReport = 1ULL << 48,
+//    AlgorithmError_MissingReport = 1ULL << 48,
+    AlgorithmError_ShipNotEmptyAtEndOfRoute = 1ULL << 48,
     AlgorithmError_WeightBalancerRejectedOperation = 1ULL << 49,
     AlgorithmError_FailedToInitialize = 1ULL << 50,
 

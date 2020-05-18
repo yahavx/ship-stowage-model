@@ -62,6 +62,12 @@ private:
 
     // endregion
 
+    // region Setter
+
+    void setTotalNumberOfOps(int totalNumberOfOps);
+
+    // endregion
+
     // region Simulation
 
 public:

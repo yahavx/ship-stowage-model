@@ -187,7 +187,6 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
 
     int totalNumberOfOps = simManager.finishSimulation();
 
-    // TODO: add validation, that the ship is empty (inside finishSimulation maybe)
     tracer.traceInfo("The ship has completed its journey. Total number of operations: " + intToStr(totalNumberOfOps));
     tracer.separator(TraceVerbosity::Info, 0,3);
 
