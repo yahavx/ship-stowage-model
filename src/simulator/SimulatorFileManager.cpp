@@ -136,12 +136,12 @@ StringVector SimulatorFileManager::collectLegalTravels(Errors &errors) {
     StringVector legalTravels;
 
     if (travelRootDir == "") {  // no travel path supplied
-        errors.addError(ErrorFlag::SimulationInit_InvalidTravelPath);
+        errors.addError({ErrorFlag::SimulationInit_InvalidTravelPath, travelRootDir});
         return legalTravels;
     }
     StringVector travels = getFilesFromDirectory(travelRootDir);
     if (travels.empty()) {
-        errors.addError(ErrorFlag::SimulationInit_InvalidTravelPath);
+        errors.addError({ErrorFlag::SimulationInit_InvalidTravelPath, travelRootDir});
         return legalTravels;
     }
 

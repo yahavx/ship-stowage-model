@@ -71,7 +71,7 @@ const std::string algorithmError = "\t[Algorithm Error] ";
 const std::string algorithmOutputError = "\t[Algorithm Output Error] ";
 
 const std::string dynamicLoadError = "\t[Dynamic Load Error] ";
-const std::string dynamicLoadFatalError = "\t[Dynamic Load Error] ";
+const std::string dynamicLoadFatalError = "\t[Dynamic Load Fatal Error] ";
 
 // endregion
 
@@ -167,7 +167,10 @@ std::string Error::toString() {
         case SimulationInit_OutputDirectoriesCreationFailed:
             return simulatorFatalError + "Couldn't initialize output folders (E21)";
         case SimulationInit_InvalidTravelPath:
-            return simulatorFatalError + "Travel path not supplied, or couldn't find any travel directories inside it (E22)";
+            if (param1 == "")
+                return simulatorFatalError + "Travel path not supplied (E22)";
+            else
+                return simulatorFatalError + "Couldn't find any travel directories inside the the travel path supplied: '" + param1 + "' (E22)";
         case SimulationInit_AllTravelsAreInvalid:
             return simulatorFatalError + "All travels in the travel directory supplied are invalid (E23)";
         case SimulationCleanup_OutputDirectoriesCleaningFailed:
@@ -249,13 +252,13 @@ std::string Error::toString() {
             return param1 + "Line " + param2 +": too many parameters - expected " + param3 +", but received " + param4 +", ignoring the extra parameters (E56)";
 
         case SharedObject_CantLoadSoFile:
-            return dynamicLoadError + "Error while loading SO file: '" + param1 + "' (E57)";
+            return dynamicLoadError + "Error while loading SO file: '" + param1 + "', can't load algorithm (E57)";
         case SharedObject_InvalidDirectory:
             return dynamicLoadFatalError + "Couldn't load any algorithm, the directory is empty or invalid: '" + param1 + "' (E58)";
         case SharedObject_AlgorithmDidntSelfRegister:
             return dynamicLoadError + "Algorithm '" + param1 + "' didn't register himself, and is unavailable (E59)";
         case SharedObject_LoadedMoreThanOneAlgorithm:
-            return dynamicLoadFatalError + "Algorithm '" + param1 + "' registered more than once (E60)";
+            return dynamicLoadError + "Algorithm '" + param1 + "' registered more than once (E60)";
         case SharedObject_NoAlgorithmsLoaded:
             return dynamicLoadFatalError + "No algorithm was loaded successfully (E61)";
 

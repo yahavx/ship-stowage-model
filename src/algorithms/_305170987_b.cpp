@@ -6,6 +6,4 @@
 #include "../interfaces/AlgorithmRegistration.h"
 
 
-#ifdef RUNNING_ON_NOVA
 REGISTER_ALGORITHM(_305170987_b)
-#endif
