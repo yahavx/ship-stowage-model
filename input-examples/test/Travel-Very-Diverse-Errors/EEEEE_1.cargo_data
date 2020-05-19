@@ -1,17 +1,19 @@
 # ship is empty
 
-BAAU7575432, 5, BBBBB
-CAAU7575433, 10, FFFFF
+EEEU0000009, 5, BBBBB
+EEEU0000014, 10, FFFFF
 # reject - not on route
 
-DAAU7575434, 3, AFG
+EEEU0000020, 3, AFG
 # reject - bad port
 
-AAEU1234564, 10
+EEEU0000035, 10
 # reject - bad port format (or no port)
 
 , 10, AAAAA
 # ignore (not reject) - no ID
 
-
+EEEU0000040, 10, AAAAA
+EEEU0000056, 14, AAAAA
+EEEU0000061, 12, AAAAA
 # load 3 (ship capacity now: 3/6)

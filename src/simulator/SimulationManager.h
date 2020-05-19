@@ -79,7 +79,6 @@ public:
      *
      * @param increment increment the visit number before returning.
      */
-
     int currentPortVisitNum(bool increment = false);
 
     /// Returns true if there are no more ports in the route.
