@@ -24,8 +24,9 @@ int main(int argc, char **argv) {
 //    return 0;
 
     if (argc != 3 && argc != 5 && argc != 7) {
-        std::cerr << "Insufficient arguments supplied." << std::endl;
+        std::cerr << "Incorrect number of arguments supplied: should be 2, 4 or 6 (according to the number of flags)" << std::endl;
         std::cerr << cmdFormat << std::endl;
+        std::cerr << "Program is terminated." << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -34,22 +35,24 @@ int main(int argc, char **argv) {
     std::string invalidFlag = parseCmdArguments(argc, argv, travelPath, algorithmPath, outputPath);
 
     if (invalidFlag != "") {
-        std::cerr << "Invalid flag received: '" << invalidFlag << "', , program is terminated" << std::endl;
+        std::cerr << "Invalid flag received: '" << invalidFlag << "'" << std::endl;
         std::cerr << cmdFormat << std::endl;
+        std::cerr << "Program is terminated." << std::endl;
         return EXIT_FAILURE;
     }
 
     bool created = createFolder(outputPath);
 
     if (!created) {
-        std::cerr << "Couldn't create output directory: '" << outputPath << "', program is terminated" << std::endl;
+        std::cerr << "Couldn't create output directory: '" << outputPath << "'" << std::endl;
+        std::cerr << "Program is terminated." << std::endl;
+        return EXIT_FAILURE;
     }
 
 //    travelPath = "../input-examples/single-travel-difference";
 //    travelPath = "../input-examples/error-proud";
 //    travelPath = "../input-examples/multiple-travel";
 //    travelPath = "../input-examples/test";
-
 //    removeFolder(outputPath);  // remove old output before starting
 
     Simulator simulator(travelPath, algorithmPath, outputPath);

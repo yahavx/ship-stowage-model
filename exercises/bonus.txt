@@ -13,7 +13,7 @@ Note: 2 common errors of cargo_data files weren't addressed in the requirements:
 - Container's port destination is the current port
 - Container's port destination is not in the route
 
-We decided to assign them numbers 19 and 20, respectively. The algorithm doesn't report that when happen, of course.
+We decided to assign them numbers 19 and 20, respectively (just for our documentation - it is invisible to the algorithm, and he doesn't report that when happen, of course).
 
 What makes our error handling special:
 - It is very informative and well organized, and allows to debug problems very easily

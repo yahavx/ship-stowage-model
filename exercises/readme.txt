@@ -4,7 +4,7 @@ Command line arguments handling:
 
 Any command line argument error prevents the simulator from running, an error is printed to the screen.
 Also, if an invalid output directory is supplied (doesn't exist and cannot be created), an error is printed to the screen.
-In all above cases the program is terminated, any other error is handled inside the simulator.
+In all above cases the program is terminated, any other error is handled inside the simulator (and files are generated).
 
 General error handling:
 We have an "errors" folder (under the output folder) that contains all the error files, and the error documentation is as follows:

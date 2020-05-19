@@ -1,4 +1,4 @@
-COMP = g++-8.3.0
+COMP = g++-9.3.0
 
 SHARED_OBJS = $(NAIVE_SO) $(ROBUST_SO)
 NAIVE_SO = _305170987_a.so

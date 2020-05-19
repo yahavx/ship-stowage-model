@@ -32,12 +32,6 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
                                                                                                                          outputDir(outputDir),
                                                                                                                          fileManager(outputDir,
                                                                                                                                      travelRootDir) {
-    // We search those in cwd if not supplied
-    if (algorithmsDir == "")
-        this->algorithmsDir = ".";
-    if (outputDir == "")
-        this->outputDir = ".";
-
 #ifndef RUNNING_ON_NOVA
     algorithmFactories.emplace_back([]() { return std::make_unique<NaiveStowageAlgorithm>(); });
     algorithmNames.push_back("Naive");

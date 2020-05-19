@@ -1,4 +1,4 @@
-COMP = g++-8.3.0
+COMP = g++-9.3.0
 
 OBJS = main.o AlgorithmRegistrar.o AlgorithmValidation.o SimulationManager.o $\
 Simulator.o SimulatorFileManager.o SimulatorUtil.o $\

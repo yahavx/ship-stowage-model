@@ -322,6 +322,10 @@ bool writePackingOperationsToFile(const std::string &filePath, Operations &opera
         currRow.push_back(packingTypeFromString(op.getType()));  // add operation type (L, U, M, R)
         currRow.push_back(op.getContainerId());  // add container id
 
+        if (op.getType() == PackingType::reject) {  // we need 2 parameters
+            continue;
+        }
+
         const Position &fromPos = op.getFirstPosition();  // add pos1
         currRow.push_back(intToStr(fromPos.floor()));
         currRow.push_back(intToStr(fromPos.X()));

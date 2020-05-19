@@ -7,9 +7,11 @@
 
 #include <fstream>
 
+
 enum class TraceVerbosity {
     Disabled = 0, Fatal = 1, Warning = 2, Info = 3, Verbose = 4
 };
+
 
 class Tracer {
 
@@ -19,7 +21,7 @@ public:
 
     // region Constructors
 
-    Tracer();  // Disabled tracer
+    Tracer();  // Default - disabled tracer
 
     Tracer(TraceVerbosity verbosity);
 
