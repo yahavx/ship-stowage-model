@@ -29,14 +29,20 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    std::string travelPath = "", algorithmPath = "", outputPath = "";
+    std::string travelPath = "", algorithmPath = ".", outputPath = ".";  // default is cwd
 
     std::string invalidFlag = parseCmdArguments(argc, argv, travelPath, algorithmPath, outputPath);
 
     if (invalidFlag != "") {
-        std::cerr << "Invalid flag received: '" << invalidFlag << "'" << std::endl;
+        std::cerr << "Invalid flag received: '" << invalidFlag << "', , program is terminated" << std::endl;
         std::cerr << cmdFormat << std::endl;
         return EXIT_FAILURE;
+    }
+
+    bool created = createFolder(outputPath);
+
+    if (!created) {
+        std::cerr << "Couldn't create output directory: '" << outputPath << "', program is terminated" << std::endl;
     }
 
 //    travelPath = "../input-examples/single-travel-difference";
