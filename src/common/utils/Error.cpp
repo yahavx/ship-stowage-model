@@ -217,7 +217,7 @@ std::string Error::toString() const {
                    "', from (" + param2 + +", " + param3 + ")," + " but there is container with non matching ID on top (E39)";
         case AlgorithmError_UnloadBadPosition:
             return algorithmError + "Received an unload operation of container with ID '" + param1 +
-                   "', from (" + param2 + +", " + param3 + "), but the floor specified is not legal (E40)";
+                   "', from (" + param2 + +", " + param3 + "), but the floor specified is incorrect (not the top floor at this position) (E40)";
         case AlgorithmError_InvalidXYCoordinates:
             return algorithmError + "Received an operation on container with ID '" + param1 + "', using an illegal position (out of range): (" + param2 + +", " + param3 + ") (E41)";
         case AlgorithmError_MoveNoContainersAtPosition:
@@ -243,7 +243,7 @@ std::string Error::toString() const {
 
             // Read packing operations (produced by algorithm)
         case ReadOperations_InvalidFile:
-            return algorithmOutputError + "Line " + param1 + ": operations output file was not created by the algorithm (E51)";
+            return algorithmOutputError + "Operations output file was not created by the algorithm (E51)";
         case ReadOperations_InsufficientRowData:
             return algorithmOutputError + "Line " + param1 + ": Data row should contain at least 2 arguments for a reject operation, 5 for a load/unload, and 8 for a move (E52)";
         case ReadOperations_InsufficientRowData_MoveOp:

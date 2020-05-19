@@ -39,8 +39,8 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
 //    algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
 //    algorithmNames.push_back("Bad");
 //
-//    algorithmFactories.emplace_back([](){return std::make_unique<RobustStowageAlgorithm>();});
-//    algorithmNames.push_back("Robust");
+    algorithmFactories.emplace_back([](){return std::make_unique<RobustStowageAlgorithm>();});
+    algorithmNames.push_back("Robust");
 #endif
 }
 
@@ -154,6 +154,8 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
     simManager.initCargoData();  // order the files for each port, filter irrelevant files
 
     if (!success) {  // Algorithm failed to initialize
+        tracer.traceInfo("Algorithm failed to initialize, terminating.");
+        tracer.separator(TraceVerbosity::Info, 0, 3);
         simManager.saveErrors();
         return -1;
     }

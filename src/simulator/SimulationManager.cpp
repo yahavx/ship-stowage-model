@@ -23,6 +23,11 @@ void SimulationManager::initSimulationShip(WeightBalanceCalculator &calculator) 
     ShipPlan shipPlan = readShipPlanFromFile(fileManager.shipPlanPath(), errors);
     ShipRoute shipRoute = readShipRouteFromFile(fileManager.shipRoutePath(), errors);
 
+    if (errors.hasFatalError()) {
+        tracer.traceInfo("Simulation ship failed to initialize.");  // this shouldn't happen (travel should be skipped)
+        return;
+    }
+
     tracer.traceVerbose("Ship Plan and Route:");
     tracer.traceVerbose(genericToString(shipPlan));
     tracer.traceVerbose(genericToString(shipRoute), true);
@@ -190,7 +195,7 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
     tracer.traceInfo(genericToString(ops));
 
     if (errors.hasAlgorithmErrors()) {
-        tracer.traceInfo("Error after the algorithm");
+        tracer.traceInfo("The operations contains an invalid line.");
         errors.addSimulationPortVisitLog(currentPortVisitNum(), ship.getCurrentPortId(), ++portsVisited);
         reportSimulationError();
         return false;
