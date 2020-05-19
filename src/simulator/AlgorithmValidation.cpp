@@ -126,7 +126,7 @@ bool AlgorithmValidation::validateMoveOperation(const PackingOperation &op) {
 
     auto container = containerOptional.value();
     if (container.getId() != op.getContainerId()) { // The top container at given (x,y) has different id
-        errors.addError({ErrorFlag::AlgorithmError_MoveBadId, op.getContainerId(), std::to_string(x), std::to_string(y)});
+        errors.addError({ErrorFlag::AlgorithmError_MoveBadId, std::to_string(x), std::to_string(y), container.getId(), op.getContainerId()});
         return false;
     }
 

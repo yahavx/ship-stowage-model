@@ -141,17 +141,17 @@ std::string Error::toString() const {
             return shipRouteFatalError + "Port '" + param1 + "' is the only legal port in the route (E8)";
 
         case ContainersAtPort_DuplicateID:
-            return containersAtPortError + "Container with the same ID ('" + param1 + "') was already found on port, should be rejected (E10)";
+            return containersAtPortError + "Container with the same ID ('" + param1 + "') was already found on port, expecting to receive a reject (E10)";
         case ContainersAtPort_IDAlreadyOnShip:
             return containersAtPortError + "Container with the same ID ('" + param1 + "') is already on the ship, rejected (E11)";
         case ContainersAtPort_MissingOrBadWeight:
-            return containersAtPortError + "Container with ID '" + param1 + "' has missing or bad weight, should be rejected (E12)";
+            return containersAtPortError + "Container with ID '" + param1 + "' has missing or bad weight, expecting to receive a reject (E12)";
         case ContainersAtPort_MissingOrBadPortDest:
-            return containersAtPortError + "Container with ID '" + param1 + "' has missing or bad destination port, should be rejected (E13)";
+            return containersAtPortError + "Container with ID '" + param1 + "' has missing or bad destination port, expecting to receive a reject (E13)";
         case CargoData_MissingContainerID:
             return cargoDataError + "Line " + param1 +": container has no ID, ignoring (E14)";
         case ContainersAtPort_BadContainerID:
-            return containersAtPortError + "Container with ID '" + param1 + "', ID is not in ISO 6346 format, should be rejected (E15)";
+            return containersAtPortError + "Container with ID '" + param1 + "', ID is not in ISO 6346 format, expecting to receive a reject (E15)";
         case CargoData_InvalidFile:
             return cargoDataError + "Couldn't read file '" + param1 + "', cargo will only be loaded (E16)";
         case ContainersAtPort_LastPortHasContainers:
@@ -159,9 +159,9 @@ std::string Error::toString() const {
         case ContainersAtPort_ContainersExceedsShipCapacity:
             return containersAtPortError + "Ship is at full capacity, container with ID '" + param1 + "' was rejected (E18)";
         case ContainersAtPort_ContainerNotOnRoute:
-            return containersAtPortError + "Container with ID '" + param1 + "' destination port is '" + param2 + "', which is not on the ship route, should be rejected (E19)";
+            return containersAtPortError + "Container with ID '" + param1 + "' destination port is '" + param2 + "', which is not on the ship route, expecting to receive a reject (E19)";
         case ContainersAtPort_ContainerDestinationIsCurrentPort:
-            return containersAtPortError + "Container with ID '" + param1 + "' destination is the current port, should be rejected (E20)";
+            return containersAtPortError + "Container with ID '" + param1 + "' destination is the current port, expecting to receive a reject (E20)";
 
             // Our errors
 
@@ -207,25 +207,27 @@ std::string Error::toString() const {
             return algorithmError + "Received a reject operation on container with ID '" + param1 +
                    "', but apparently it should have been loaded to the ship (E36)";
         case AlgorithmError_LoadAboveNotLegal:
-            return algorithmError + "Received loading operation of container with ID '" + param1 +
-                   "', at (" + param2 + +", " + param3 + ")" + " but there is no space on top (E37)";
+            return algorithmError + "Received a load operation of container with ID '" + param1 +
+                   "', to (" + param2 + +", " + param3 + "), but there is no space on top (E37)";
         case AlgorithmError_UnloadNoContainersAtPosition:
-            return algorithmError + "Received unload operation of container with ID '" + param1 +
-                   "', at (" + param2 + +", " + param3 + ")" + " but there are no containers (E38)";
+            return algorithmError + "Received an unload operation of container with ID '" + param1 +
+                   "', from (" + param2 + +", " + param3 + "), but there are no containers (E38)";
         case AlgorithmError_UnloadBadId:
-            return algorithmError + "Received unload operation of container with ID '" + param1 +
-                   "', at (" + param2 + +", " + param3 + ")" + " but there is container with non matching ID on top (E39)";
+            return algorithmError + "Received an unload operation of container with ID '" + param1 +
+                   "', from (" + param2 + +", " + param3 + ")," + " but there is container with non matching ID on top (E39)";
         case AlgorithmError_UnloadBadPosition:
-            return algorithmError + "Received unload operation of container with ID '" + param1 +
-                   "', at (" + param2 + +", " + param3 + ")" + " but the floor specified is not legal (E40)";
+            return algorithmError + "Received an unload operation of container with ID '" + param1 +
+                   "', from (" + param2 + +", " + param3 + "), but the floor specified is not legal (E40)";
         case AlgorithmError_InvalidXYCoordinates:
-            return algorithmError + "Received operation on container with ID '" + param1 + "', using an illegal position: (" + param2 + +", " + param3 + ") (E41)";
+            return algorithmError + "Received an operation on container with ID '" + param1 + "', using an illegal position (out of range): (" + param2 + +", " + param3 + ") (E41)";
         case AlgorithmError_MoveNoContainersAtPosition:
-            break;
+            return algorithmError + "Received an invalid move operation on container with ID '" + param1+ "': tried to pick him from (" + param2 + +", " + param3 + "), but this position in the ship is empty";
         case AlgorithmError_MoveBadId:
-            break;
+            return algorithmError + "The top container at (" + param1 + +", " + param2 + ") has a different ID ('" +param3 + "') then the ID supplied ('" +param4 +"')";
         case AlgorithmError_TriedToLoadButShouldReject:
-            return algorithmError + "Try to load container with ID '" + param1 + "' from port '" + param2 + "', but it should have been rejected (E44)";
+            return algorithmError + "Tried to load container with ID '" + param1 + "' from port '" + param2 + "', but it should have been rejected (E44)";
+        case AlgorithmError_MoveAboveNotLegal:
+            return algorithmError + "Tried to move container with ID '" + param1 +"' to position (" + param2 + +", " + param3 + "), but there is no space left (all floors are taken) (E45)"
         case AlgorithmError_UnloadedAndDidntLoadBack:
             return algorithmError + "Container with ID '" + param1 + "' was left on current port, but its not his destination (E46)";
         case AlgorithmError_ExtraReport:
@@ -241,16 +243,16 @@ std::string Error::toString() const {
 
             // Read packing operations (produced by algorithm)
         case ReadOperations_InvalidFile:
-            return algorithmOutputError + "Line " + param1 + " operations output file was not created by the algorithm (E51)";
+            return algorithmOutputError + "Line " + param1 + ": operations output file was not created by the algorithm (E51)";
         case ReadOperations_InsufficientRowData:
-            return algorithmOutputError + "Line " + param1 + " Data row should contain at least 2 arguments for a reject operation, 5 for a load/unload, and 8 for a move (E52)";
+            return algorithmOutputError + "Line " + param1 + ": Data row should contain at least 2 arguments for a reject operation, 5 for a load/unload, and 8 for a move (E52)";
         case ReadOperations_InsufficientRowData_MoveOp:
             return algorithmOutputError + "Data row contains less than 8 arguments, in a move operation " // strings are concatenated
                                           "(format: M, <container id>, <floor>, <X>, <Y>, <floor>, <X>, <Y>) (E53)";
         case ReadOperations_InvalidOperationType:
-            return algorithmOutputError + "Line " + param1 + " operation is invalid: '" + param2 + "' (should be L/U/M/R) (E54)";
+            return algorithmOutputError + "Line " + param1 + ": operation is invalid: '" + param2 + "' (should be L/U/M/R) (E54)";
         case ReadOperations_InvalidShipPosition:
-            return algorithmOutputError + "Line " + param1 + " received invalid ship " + param2 + " position: '" + param3 + "' (should be an integer) (E55)";
+            return algorithmOutputError + "Line " + param1 + ": received invalid ship " + param2 + " position: '" + param3 + "' (should be an integer) (E55)";
 
         case FileInput_TooManyParameters:
             return param1 + "Line " + param2 +": too many parameters - expected " + param3 +", but received " + param4 +", ignoring the extra parameters (E56)";
@@ -262,7 +264,7 @@ std::string Error::toString() const {
         case SharedObject_AlgorithmDidntSelfRegister:
             return dynamicLoadError + "Algorithm '" + param1 + "' didn't register himself, and is unavailable (E59)";
         case SharedObject_LoadedMoreThanOneAlgorithm:
-            return dynamicLoadError + "Algorithm '" + param1 + "' registered more than once (E60)";
+            return dynamicLoadError + "Algorithm '" + param1 + "' registered more than once, and therefore is unavailable (E60)";
         case SharedObject_NoAlgorithmsLoaded:
             return dynamicLoadFatalError + "No algorithm was loaded successfully (E61)";
 
