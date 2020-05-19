@@ -12,7 +12,7 @@
 
 // region Constructor
 
-SimulationManager::SimulationManager(SimulatorFileManager &manager, Tracer &tracer) : fileManager(manager), totalNumberOfOps(0), tracer(tracer) {}
+SimulationManager::SimulationManager(SimulatorFileManager &manager, Tracer &tracer) : fileManager(manager),  errors(tracer),  totalNumberOfOps(0), tracer(tracer) {}
 
 // endregion
 

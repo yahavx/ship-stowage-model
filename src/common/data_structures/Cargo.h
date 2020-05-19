@@ -18,16 +18,63 @@ class Cargo {
     std::unordered_map<std::string, const Container&> containersMapping;  // hash of IDs, for quick checking and searching
 
 public:
+
     // region Constructors
+
     Cargo();
 
     explicit Cargo(const ShipPlan &shipPlan);
+
     // endregion
 
-    // region Functions
+    // region Booleans
 
+private:
+    bool validateXY(int x, int y) const;
+
+public:
     /// Returns true if its possible to load the container in the position.
     bool canLoadContainerToPosition(int x, int y) const;
+
+    /**
+     * Returns true if this cargo is completely full
+     */
+    bool isFull();
+
+    /**
+     * Returns true if this cargo is completely full
+     */
+    bool isEmpty();
+
+    /**
+     * Returns true if the container with the given id exists
+     */
+    bool hasContainer(std::string containerId) const;
+
+    // endregion
+
+    // region Load/Unload
+
+
+    /**
+     * Removes and returns the top container in position (x,y)
+     * @param x - row
+     * @param y - col
+     */
+    OptionalContainer removeTopContainer(int x, int y);
+
+    /**
+     * Loads container to position (x,y) of possible, and returns the height it was loaded to
+     * @param x - row
+     * @param y - col
+     * @param container - container to load
+     * @return - if operation succeeded returns the height te container was loaded to, else returns negative integer
+     */
+    int loadContainerOnTop(int x, int y, const Container &container);
+
+    // endregion
+
+    // region Others
 
     /**
      * If possible to load the container on top in this x,y position, returns the height it would be loaded to.
@@ -56,49 +103,22 @@ public:
     std::vector<ContainerPosition> getContainersForPort(const PortId &portId) const;
 
     /**
-     * Removes and returns the top container in position (x,y)
-     * @param x - row
-     * @param y - col
-     */
-    OptionalContainer removeTopContainer(int x, int y);
-
-    /**
-     * Loads container to position (x,y) of possible, and returns the height it was loaded to
-     * @param x - row
-     * @param y - col
-     * @param container - container to load
-     * @return - if operation succeeded returns the height te container was loaded to, else returns negative integer
-     */
-    int loadContainerOnTop(int x, int y, const Container &container);
-
-    /**
-     * Returns true if the container with the given id exists
-     */
-    bool hasContainer(std::string containerId) const;
-
-    /**
      * Returns the container if exists, or null.
      */
     OptionalContainer getContainerById(std::string containerId);
-
-    /**
-     * Returns true if this cargo is completely full
-     */
-    bool isFull();
-
-    /**
-     * Returns true if this cargo is completely full
-     */
-    bool isEmpty();
-
-    // endregion
 
     /**
      * Returns The number of empty positions to load containers to
      */
     int numberOfEmptyPositions();
 
+    // endregion
+
+    // region Printer
+
     friend std::ostream &operator<<(std::ostream &os, const Cargo &cargo);
+
+    // endregion
 };
 
 

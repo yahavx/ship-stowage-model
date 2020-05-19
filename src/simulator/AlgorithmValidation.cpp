@@ -27,7 +27,7 @@ bool AlgorithmValidation::validatePosition(const Position &pos) {
 
 bool AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
     const auto &containerId = op.getContainerId();
-    if (!currentPort.hasContainer(containerId)) {
+    if (!currentPort.hasContainer(containerId)) {  // Container is in port reject list, or never was on port
         if (isBadContainer(containerId)) {
             errors.addError({ErrorFlag::AlgorithmError_TriedToLoadButShouldReject, containerId, currentPort.getId()});
         } else {
@@ -239,7 +239,7 @@ bool AlgorithmValidation::validateNoContainersLeftOnPort() {
 
     bool success = true;
 
-
+    // Ship is not full, check port is empty
     for (auto &portId : ship.getShipRoute().getNextPortsSet()) {
         PortId id(portId);
         if (id == currentPort.getId())

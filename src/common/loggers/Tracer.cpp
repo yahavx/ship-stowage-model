@@ -6,8 +6,14 @@
 #include "Tracer.h"
 #include "../utils/Printers.h"
 
+// region Constructors
 
-Tracer::Tracer(TraceVerbosity verbosity) : verbosity(verbosity) {}
+Tracer::Tracer() : verbosity(TraceVerbosity::Disabled) {}
+
+Tracer::Tracer(TraceVerbosity verbosity) : verbosity(verbosity) {
+}
+
+// endregion
 
 // region Tracing
 
@@ -48,4 +54,3 @@ void Tracer::trace(TraceVerbosity verbosityLevel, const std::string &msg, bool s
 
     #endif
 }
-

@@ -101,7 +101,7 @@ Error::Error(int errorFlags) {
 
 // region Functions
 
-std::string Error::toString() {
+std::string Error::toString() const {
     if (errorMsg != "")
         return errorMsg;
 

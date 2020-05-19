@@ -129,7 +129,7 @@ public:
 
     // region Functions
 
-    std::string toString();
+    std::string toString() const;
 
     bool isCertainFlag(ErrorFlag other);  // kind of lazy equality operator
 

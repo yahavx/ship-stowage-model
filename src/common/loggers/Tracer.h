@@ -5,22 +5,30 @@
 #ifndef SHIP_STOWAGE_MODEL_TRACER_H
 #define SHIP_STOWAGE_MODEL_TRACER_H
 
+#include <fstream>
+
 enum class TraceVerbosity {
-    Fatal = 1, Warning = 2, Info = 3, Verbose = 4
+    Disabled = 0, Fatal = 1, Warning = 2, Info = 3, Verbose = 4
 };
 
 class Tracer {
 
-    TraceVerbosity verbosity;
+    TraceVerbosity verbosity;  // Handle traces with this verbosity or higher.
 
 public:
 
+    // region Constructors
+
+    Tracer();  // Disabled tracer
+
     Tracer(TraceVerbosity verbosity);
+
+    // endregion
 
     // region Tracing
 
     /**
-     * Trace with verbose level.
+     * Trace with verbose (lowest) level.
      * @param msg message to trace.
      * @param separator add separator after.
      */

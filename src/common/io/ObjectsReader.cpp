@@ -15,6 +15,7 @@
 // This is a bit ugly, but will carry on for now
 const std::string shipPlanWarning = "\t[Ship Plan Error] ";
 const std::string shipRouteWarning = "\t[Ship Route Error] ";
+const std::string cargoDataWarning = "\t[Cargo Data Error] ";
 const std::string containersAtPortWarning = "\t[Containers At Port Error] ";
 const std::string operationsWarning = "\t[Algorithm Warning] ";  // this relates to the file that the algorithm writes
 
@@ -200,7 +201,7 @@ ContainerStorage readPortCargoFromFile(const std::string &filePath, Errors &erro
         }
 
         if (data.size() > 2) {
-            addExtraParametersWarningIfNeeded(dataRow, containersAtPortWarning, 3, i, errors);
+            addExtraParametersWarningIfNeeded(dataRow, cargoDataWarning, 3, i, errors);
         }
 
         if (id == "") {

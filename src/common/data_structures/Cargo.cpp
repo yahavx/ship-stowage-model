@@ -17,9 +17,9 @@ Cargo::Cargo(const ShipPlan &shipPlan) : shipPlan(shipPlan) {
 
 // endregion
 
-// region Functions
+// region boolean
 
-bool validateXY(int x, int y, const ShipPlan &shipPlan) {
+bool Cargo::validateXY(int x, int y) const {
     Dimensions dims = shipPlan.getDimensions();
     if (x < 0 || x >= dims.X())
         return false;
@@ -30,19 +30,36 @@ bool validateXY(int x, int y, const ShipPlan &shipPlan) {
     return true;
 }
 
-
-OptionalContainer Cargo::getTopContainer(int x, int y) const {
-    if (!validateXY(x, y, shipPlan))
-        return {};
-    Containers xyContainers = containers[x][y];
-    if (xyContainers.empty())
-        return {};
-
-    return xyContainers.back();
+bool Cargo::canLoadContainerToPosition(int x, int y) const {
+    return getAvailableFloorToLoadContainer(x, y) != -1;
 }
 
+bool Cargo::isFull() {
+    const Dimensions &dims = shipPlan.getDimensions();
+    for (int x = 0; x < dims.X(); x++)
+        for (int y = 0; y < dims.Y(); y++) {
+            Containers xyContainers = containers[x][y];
+            if ((int) xyContainers.size() < dims.Z() - shipPlan.getHeights()[x][y])
+                return false;
+        }
+
+    return true;
+}
+
+bool Cargo::isEmpty() {
+    return containersMapping.empty();
+}
+
+bool Cargo::hasContainer(std::string containerId) const {
+    return containersMapping.find(containerId) != containersMapping.end();
+}
+
+// endregion
+
+// region Load/Unload
+
 OptionalContainer Cargo::removeTopContainer(int x, int y) {
-    if (!validateXY(x, y, shipPlan))
+    if (!validateXY(x, y))
         return {};
     Containers &xyContainers = containers[x][y];
     if (xyContainers.empty())
@@ -54,24 +71,8 @@ OptionalContainer Cargo::removeTopContainer(int x, int y) {
     return container;
 }
 
-bool Cargo::canLoadContainerToPosition(int x, int y) const {
-    return getAvailableFloorToLoadContainer(x, y) != -1;
-}
-
-int Cargo::getAvailableFloorToLoadContainer(int x, int y) const {
-    if (!validateXY(x, y, shipPlan))
-        return -1;
-
-    int maxHeight = shipPlan.getDimensions().Z();
-    int currentHeight = currentTopHeight(x, y);
-    if (currentHeight >= maxHeight)
-        return -1;
-
-    return currentHeight;
-}
-
 int Cargo::loadContainerOnTop(int x, int y, const Container &container) {
-    if (!validateXY(x, y, shipPlan))
+    if (!validateXY(x, y))
         return -1;
 
     int maxHeight = shipPlan.getDimensions().Z();
@@ -84,6 +85,41 @@ int Cargo::loadContainerOnTop(int x, int y, const Container &container) {
 
     containersMapping.insert({container.getId(), container});
     return currentHeight;
+}
+
+// endregion
+
+// region Others
+
+int Cargo::getAvailableFloorToLoadContainer(int x, int y) const {
+    if (!validateXY(x, y))
+        return -1;
+
+    int maxHeight = shipPlan.getDimensions().Z();
+    int currentHeight = currentTopHeight(x, y);
+    if (currentHeight >= maxHeight)
+        return -1;
+
+    return currentHeight;
+}
+
+int Cargo::currentTopHeight(int x, int y) const {
+    if (!validateXY(x, y))
+        return -1;
+
+    const Containers &xyContainers = containers[x][y];
+    auto height = this->shipPlan.getHeights()[x][y] + xyContainers.size();
+    return height;
+}
+
+OptionalContainer Cargo::getTopContainer(int x, int y) const {
+    if (!validateXY(x, y))
+        return {};
+    Containers xyContainers = containers[x][y];
+    if (xyContainers.empty())
+        return {};
+
+    return xyContainers.back();
 }
 
 std::vector<ContainerPosition> Cargo::getContainersForPort(const PortId &portId) const {
@@ -106,19 +142,6 @@ std::vector<ContainerPosition> Cargo::getContainersForPort(const PortId &portId)
     return result;
 }
 
-int Cargo::currentTopHeight(int x, int y) const {
-    if (!validateXY(x, y, shipPlan))
-        return -1;
-
-    const Containers &xyContainers = containers[x][y];
-    auto height = this->shipPlan.getHeights()[x][y] + xyContainers.size();
-    return height;
-}
-
-bool Cargo::hasContainer(std::string containerId) const {
-    return containersMapping.find(containerId) != containersMapping.end();
-}
-
 OptionalContainer Cargo::getContainerById(std::string containerId) {
     auto iter = containersMapping.find(containerId);
     if (iter == containersMapping.end()) {
@@ -126,22 +149,6 @@ OptionalContainer Cargo::getContainerById(std::string containerId) {
     }
 
     return iter->second;
-}
-
-bool Cargo::isFull() {
-    const Dimensions &dims = shipPlan.getDimensions();
-    for (int x = 0; x < dims.X(); x++)
-        for (int y = 0; y < dims.Y(); y++) {
-            Containers xyContainers = containers[x][y];
-            if ((int) xyContainers.size() < dims.Z() - shipPlan.getHeights()[x][y])
-                return false;
-        }
-
-    return true;
-}
-
-bool Cargo::isEmpty() {
-    return containersMapping.empty();
 }
 
 int Cargo::numberOfEmptyPositions() {

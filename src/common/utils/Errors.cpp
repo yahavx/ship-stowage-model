@@ -8,17 +8,18 @@
 
 #define ULL_MAX_BIT 61  // max bit at unsigned long long (almost)
 
+Errors::Errors(Tracer &tracer) : tracer(tracer) {}
+
 // region Functions
 
 void Errors::addError(const Error &error) {
     if (error.errorFlag != ErrorFlag::Success || error.errorMsg != "") {  // actual error
+        tracer.traceVerbose("Error added: " + error.toString());
         errorsList.push_back(error);
     }
 }
 
 void Errors::addError(longUInt report, const std::string &reporter) {
-
-
     IntVector errorNumbers;
     for (int i = 0; i <= ULL_MAX_BIT; i++) {
         longUInt isBitEnabled = report & (1ULL << i);
