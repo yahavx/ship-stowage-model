@@ -10,6 +10,9 @@ CCCCC
 DDDDD
 12
 DDDDD
+
+eeeee
+
 AAAAA
 
-# actual route: AAAAA, BBBBB, CCCCC, DDDDD, AAAAA
+# actual route: AAAAA, BBBBB, CCCCC, DDDDD, EEEEE, AAAAA

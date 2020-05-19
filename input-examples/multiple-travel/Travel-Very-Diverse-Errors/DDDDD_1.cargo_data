@@ -1,13 +1,15 @@
 # ship is empty - last containers unloaded here
 
-# some bad input now
+# some bad input now - all should be rejected
 
-DAAU7575434, -2, AAAAA
-DAAU7575434, 0, AAAAA, dasdaf
-# bad weight, too many parameters
+DDDU0000002, -2, AAAAA
+# bad weight
 
+DDDU0000018, 0, AAAAA, dasdaf
+# duplicate ID (and bad weight), extra parameters
 
+DDDU0003214, 24, AAAAA
+# no ISO format
 
-NYKU3086856, 0
-# not enough parameters
-
+DDDU0000023, 2
+# not enough parameters (can be bad port format)

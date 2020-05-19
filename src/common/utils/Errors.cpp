@@ -19,7 +19,7 @@ void Errors::addError(const Error &error) {
     }
 }
 
-void Errors::addError(longUInt report, const std::string &reporter) {
+void Errors::addErrorReport(longUInt report, const std::string &reporter) {
     IntVector errorNumbers;
     for (int i = 0; i <= ULL_MAX_BIT; i++) {
         longUInt isBitEnabled = report & (1ULL << i);
@@ -56,9 +56,13 @@ StringVector Errors::toString() const {
 longUInt Errors::toErrorFlag(bool limitErrorNum, bool sinceLastCheckPoint) {
     longUInt errors = 0;
     for (longUInt i = sinceLastCheckPoint ? checkpoint : 0; i <errorsList.size(); i++) {
-        Error& error = errorsList[i];
-        if (!limitErrorNum || error.errorFlag <= 1 << MAX_ERROR_BIT) {  // If limit is on, we collect errors up to MAX_ERROR_BIT
-            errors |= error.errorFlag;
+        ErrorFlag error = errorsList[i].errorFlag;
+
+        if (error == ContainersAtPort_ContainerNotOnRoute || error == ContainersAtPort_ContainerDestinationIsCurrentPort)  // Those errors are mapped to error 13 (MissingOrBadDestPort)
+            error = ContainersAtPort_MissingOrBadPortDest;
+
+        if (!limitErrorNum || error <= 1 << MAX_ERROR_BIT) {  // If limit is on, we collect errors up to MAX_ERROR_BIT
+            errors |= error;
         }
     }
 

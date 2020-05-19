@@ -147,7 +147,7 @@ std::string Error::toString() const {
         case ContainersAtPort_MissingOrBadWeight:
             return containersAtPortError + "Container with ID '" + param1 + "' has missing or bad weight, expecting to receive a reject (E12)";
         case ContainersAtPort_MissingOrBadPortDest:
-            return containersAtPortError + "Container with ID '" + param1 + "' has missing or bad destination port, expecting to receive a reject (E13)";
+            return containersAtPortError + "Container with ID '" + param1 + "' has bad destination port: not exists, ot invalid format, expecting to receive a reject (E13)";
         case CargoData_MissingContainerID:
             return cargoDataError + "Line " + param1 +": container has no ID, ignoring (E14)";
         case ContainersAtPort_BadContainerID:
@@ -159,9 +159,9 @@ std::string Error::toString() const {
         case ContainersAtPort_ContainersExceedsShipCapacity:
             return containersAtPortError + "Ship is at full capacity, container with ID '" + param1 + "' was rejected (E18)";
         case ContainersAtPort_ContainerNotOnRoute:
-            return containersAtPortError + "Container with ID '" + param1 + "' destination port is '" + param2 + "', which is not on the ship route, expecting to receive a reject (E19)";
+            return containersAtPortError + "Container with ID '" + param1 + "' has bad destination port: '" + param2 + "', which is not on the ship route, expecting to receive a reject (E13)";
         case ContainersAtPort_ContainerDestinationIsCurrentPort:
-            return containersAtPortError + "Container with ID '" + param1 + "' destination is the current port, expecting to receive a reject (E20)";
+            return containersAtPortError + "Container with ID '" + param1 + "' has bad destination port: it is the current port, expecting to receive a reject (E13)";
 
             // Our errors
 
@@ -227,7 +227,7 @@ std::string Error::toString() const {
         case AlgorithmError_TriedToLoadButShouldReject:
             return algorithmError + "Tried to load container with ID '" + param1 + "' from port '" + param2 + "', but it should have been rejected (E44)";
         case AlgorithmError_MoveAboveNotLegal:
-            return algorithmError + "Tried to move container with ID '" + param1 +"' to position (" + param2 + +", " + param3 + "), but there is no space left (all floors are taken) (E45)"
+            return algorithmError + "Tried to move container with ID '" + param1 +"' to position (" + param2 + +", " + param3 + "), but there is no space left (all floors are taken) (E45)";
         case AlgorithmError_UnloadedAndDidntLoadBack:
             return algorithmError + "Container with ID '" + param1 + "' was left on current port, but its not his destination (E46)";
         case AlgorithmError_ExtraReport:

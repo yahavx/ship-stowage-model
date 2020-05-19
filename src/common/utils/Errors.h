@@ -37,10 +37,11 @@ public:
     void addError(const Error &error);
 
     /**
-     * Adds the list of errors represented by the report, as a single error, in a report format.
+     * Adds a report about a list of errors.
+     * @param report represents a list of errors.
      * @param reporter the name of the reporter (algorithm, simulator for example).
      */
-    void addError(longUInt report, const std::string &reporter);
+    void addErrorReport(longUInt report, const std::string &reporter);
 
     void addErrors(const Errors &errors);
 

@@ -100,11 +100,11 @@ void SimulationManager::filterUnusedPorts() {
 void SimulationManager::addInitReport() {
     longUInt simulationReport = errors.toErrorFlag(false, true);
     if (simulationReport != 0) {
-        errors.addError(simulationReport, "Simulator");
+        errors.addErrorReport(simulationReport, "Simulator");
     }
 
     if (algorithmReport != 0) {
-        errors.addError(algorithmReport, "Algorithm");
+        errors.addErrorReport(algorithmReport, "Algorithm");
     }
 
     errors.addSimulationInitLog();
@@ -244,11 +244,11 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
 void SimulationManager::addPortErrorReport() {
     longUInt simulationReport = errors.toErrorFlag(false, true);
     if (simulationReport != 0) {
-        errors.addError(simulationReport, "Simulator");
+        errors.addErrorReport(simulationReport, "Simulator");
     }
 
     if (algorithmReport != 0) {
-        errors.addError(algorithmReport, "Algorithm");
+        errors.addErrorReport(algorithmReport, "Algorithm");
     }
 
     errors.addSimulationPortVisitLog(currentPortVisitNum(), ship.getCurrentPortId(), ++portsVisited);

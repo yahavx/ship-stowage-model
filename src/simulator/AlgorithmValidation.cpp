@@ -17,8 +17,6 @@ AlgorithmValidation::AlgorithmValidation(ContainerShip &ship, Port &currentPort,
 
 // region Validations
 
-// TODO: check all the validations are ok
-
 bool AlgorithmValidation::validatePosition(const Position &pos) {
     int x = pos.X(), y = pos.Y();
     auto &dims = ship.getShipPlan().getDimensions();
@@ -228,7 +226,7 @@ bool AlgorithmValidation::validatePackingOperation(const PackingOperation &op) {
 bool AlgorithmValidation::validateNoContainersLeftOnPort() {
     if (!temporaryContainersOnPort.empty()) {
         for (auto &containerId : temporaryContainersOnPort) {
-            errors.addError(ErrorFlag::AlgorithmError_UnloadedAndDidntLoadBack, containerId);
+            errors.addErrorReport(ErrorFlag::AlgorithmError_UnloadedAndDidntLoadBack, containerId);
         }
         return false;
     }
