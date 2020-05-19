@@ -24,6 +24,9 @@ bool AlgorithmValidation::validatePosition(const Position &pos) {
 }
 
 bool AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
+    auto &pos = op.getFirstPosition();
+    int x = pos.X(), y = pos.Y(), z = pos.floor();
+
     const auto &containerId = op.getContainerId();
     if (!currentPort.hasContainer(containerId)) {  // Container is in port reject list, or never was on port
         if (isBadContainer(containerId)) {
@@ -41,11 +44,16 @@ bool AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
         return false;
     }
 
-    auto pos = op.getFirstPosition();
     // Check if it is possible to load container to given position
-    if (!ship.getCargo().canLoadContainerToPosition(pos.X(), pos.Y())) {
-        int x = pos.X(), y = pos.Y();
+    if (!ship.getCargo().canLoadContainerToPosition(x, y)) {
         errors.addError({ErrorFlag::AlgorithmError_LoadAboveNotLegal, op.getContainerId(), std::to_string(x), std::to_string(y)});
+        return false;
+    }
+
+    int currentHeight = ship.getCargo().currentTopHeight(x, y);
+
+    if (currentHeight != z) {
+        errors.addError({ErrorFlag::AlgorithmError_LoadInvalidFloor, op.getContainerId(), std::to_string(x), std::to_string(y), std::to_string(z)});
         return false;
     }
 

@@ -4,6 +4,7 @@
 
 #include "Printers.h"
 #include "Errors.h"
+#include "UtilFunctions.h"
 #include <tuple>
 
 
@@ -23,7 +24,7 @@ std::ostream &operator<<(std::ostream &os, const StringVector &stringVector) {
 
 std::ostream &operator<<(std::ostream &os, const StringStringVector &stringStringVector) {
     for (longUInt i = 0; i < stringStringVector.size(); i++) {
-        std::cout << ' ' << stringStringVector[i];
+        os << ' ' << stringStringVector[i];
     }
     return os;
 }
@@ -36,7 +37,6 @@ std::ostream &operator<<(std::ostream &os, const IntVector &intVector) {
     os << intVector.back() << "]" << std::endl;
     return os;
 }
-
 
 std::ostream &operator<<(std::ostream &os, const IntIntVector &intIntVector) {
     for (longUInt i = 0; i < intIntVector.size(); i++) {
@@ -65,7 +65,6 @@ std::ostream &operator<<(std::ostream &os, const StringToStringVectorMap &map) {
     return os;
 }
 
-
 void printSeparator(int linesBefore, int linesAfter) {
 #ifdef DEBUG_PRINTS
     for (int i = 0; i < linesBefore; i++) {
@@ -87,4 +86,8 @@ void printEmptyLines(int amount) {
 void printErrorsFromFlag(int errorsFlag) {
     std::string errors = Error(errorsFlag).toString();
     std::cout << errors << std::endl;
+}
+
+std::string positionToString(int x, int y) {
+    return "(" + intToStr(x) + ", " + intToStr(y) + ")";
 }

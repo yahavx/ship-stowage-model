@@ -210,8 +210,7 @@ std::string Error::toString() const {
             return algorithmError + "Received a load operation of container with ID '" + param1 +
                    "', to (" + param2 + +", " + param3 + "), but there is no space on top (E37)";
         case AlgorithmError_UnloadNoContainersAtPosition:
-            return algorithmError + "Received an unload operation of container with ID '" + param1 +
-                   "', from (" + param2 + +", " + param3 + "), but there are no containers (E38)";
+            return algorithmError + "Received an invalid unload operation on container with ID '" + param1+ "': tried to pick him from (" + param2 + +", " + param3 + "), but this position in the ship is empty";
         case AlgorithmError_UnloadBadId:
             return algorithmError + "Received an unload operation of container with ID '" + param1 +
                    "', from (" + param2 + +", " + param3 + ")," + " but there is container with non matching ID on top (E39)";
@@ -225,17 +224,16 @@ std::string Error::toString() const {
         case AlgorithmError_MoveBadId:
             return algorithmError + "The top container at (" + param1 + +", " + param2 + ") has a different ID ('" +param3 + "') then the ID supplied ('" +param4 +"')";
         case AlgorithmError_TriedToLoadButShouldReject:
-            return algorithmError + "Tried to load container with ID '" + param1 + "' from port '" + param2 + "', but it should have been rejected (E44)";
+            return algorithmError + "Received a load operation on container with ID '" + param1 + "' from port '" + param2 + "', but it should have been rejected (E44)";
         case AlgorithmError_MoveAboveNotLegal:
-            return algorithmError + "Tried to move container with ID '" + param1 +"' to position (" + param2 + +", " + param3 + "), but there is no space left (all floors are taken) (E45)";
+            return algorithmError + "Received a move operation on container with ID '" + param1 +"' to position (" + param2 + +", " + param3 + "), but there is no space left (all floors are taken) (E45)";
         case AlgorithmError_UnloadedAndDidntLoadBack:
             return algorithmError + "Container with ID '" + param1 + "' was left on current port, but its not his destination (E46)";
-        case AlgorithmError_ExtraReport:
-            return algorithmError + "Algorithm mistakenly reported error E" + param1 +" (E47)";
-//        case AlgorithmError_MissingReport:
-//            return algorithmError + "Algorithm didn't report error E" + param1 + ", but it should have been (E48)";
-    case AlgorithmError_ShipNotEmptyAtEndOfRoute:
-        return algorithmError + "Ship was not empty at the end of the travel (E48)";
+        case AlgorithmError_LoadInvalidFloor:
+            return algorithmError +  "Received a load operation of container with ID '" + param1 +
+                                     "', to (" + param2 + +", " + param3 + "), but floor specified (" + param4 +") is incorrect (not the lowest available at this position) (E47)";
+        case AlgorithmError_ShipNotEmptyAtEndOfRoute:
+            return algorithmError + "Ship was not empty at the end of the travel (E48)";
         case AlgorithmError_WeightBalancerRejectedOperation:
             return algorithmError + param1 + " operation on container with ID '" + param2 + "' was rejected by the ship's weight balance calculator (E49)";
         case AlgorithmError_FailedToInitialize:

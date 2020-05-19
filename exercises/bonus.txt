@@ -1,26 +1,26 @@
+### Bonus
+
 Our travel main directory (that contains some travel sub-directories) that shows our error handling mechanism, is called travels-error-handling.
 There is one travel that demonstrates the different kind of errors format and handling:
-- Travel-Very-Diverse-Errors
+- `Travel-Very-Diverse-Errors`
 There is also a readme inside that explains (and is ignored by the travel, ofcourse).
 
 Several other travels in that directory:
-- Travel-No-Errors: a clean run, no errors folder is generated.
-- Travel-Diverse-Errors: also show many different errors.
-- Travel-Not-Enough-Storage: example when the ship becomes full.
-- Travel-Bad-Input, Travel-Bad-Input-2: travels that can't be executed.
-
-Note: 2 common errors of cargo_data files weren't addressed in the requirements:
-- Container's port destination is the current port
-- Container's port destination is not in the route
-
-We decided to assign them numbers 19 and 20, respectively (just for our documentation - it is invisible to the algorithm, and he doesn't report that when happen, of course).
+- `Travel-No-Errors`: a clean run, no errors folder is generated.
+- `Travel-Diverse-Errors`: also show many different errors.
+- `Travel-Bad-Input`, `Travel-Bad-Input-2`: travels that can't be executed.
 
 What makes our error handling special:
-- It is very informative and well organized, and allows to debug problems very easily
-- Each error has a number, that is always printed at the end
+- It is very informative and well organized, and allows to debug problems very easily.
+- Each error has a number, that is always printed at the end.
 - During the simulation, at the end of each error section (initialization, port visit), there is a summary of which errors
-  were reported by the simulator, and which by the algorithm (we decided not to penalize the algorithm for difference,
-  because its risky - but its very easy to compare. Note that the algorithm can report errors which are up to 18, as defined).
+  were reported by the simulator, and which by the algorithm (algorithm is not penalized for mismatch, but its easy to compare).
 
 The readme.txt describes how we handle certain things.
-Without further explaining, just run our examples and see the results.
+Without further explaining, run our examples and see the results.
+
+### Validation example
+
+We have another travel directory which consists of 1 travel, named `Validation`, that shows how our simulation validates the algorithm,
+and in this case faults him for bad behaviour.
+This folder (`Validation`) also contains an `.so` file of the relevant algorithm to run it with (not one of our 2 algorithms, of course).
