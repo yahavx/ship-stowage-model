@@ -44,10 +44,10 @@ std::unordered_set<std::string> ShipRoute::getNextPortsSet() const {
 // region Printer
 
 std::ostream &operator<<(std::ostream &os, const ShipRoute &route) {
-    std::cout << "ShipRoute {" << std::endl;
+    os << "ShipRoute {" << std::endl;
     for (auto port : route.ports)
-        std::cout << "\t" << port << std::endl;
-    std::cout << "}" << std::endl;
+        os << "\t" << port << std::endl;
+    os << "}" << std::endl;
     return os;
 }
 

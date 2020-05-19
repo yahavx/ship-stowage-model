@@ -25,8 +25,7 @@ void SimulationManager::initSimulationShip(WeightBalanceCalculator &calculator) 
 
     tracer.traceVerbose("Ship Plan and Route:");
     tracer.traceVerbose(genericToString(shipPlan));
-    tracer.traceVerbose(genericToString(shipRoute));
-    tracer.separator(TraceVerbosity::Verbose, 0, 0);
+    tracer.traceVerbose(genericToString(shipRoute), true);
 
     ship = ContainerShip(shipPlan, shipRoute, calculator);
 }
@@ -214,7 +213,7 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
     for (const PackingOperation &op : ops.ops) {
 
         if (!validation.validatePackingOperation(op)) {
-            tracer.traceInfo("Operation '" + op.toString() + "' is invalid");
+            tracer.traceInfo("Operation '" + op.toString() + "' is illegal");
             errors.addSimulationPortVisitLog(currentPortVisitNum(), ship.getCurrentPortId(), ++portsVisited);
             reportSimulationError();
             return false;

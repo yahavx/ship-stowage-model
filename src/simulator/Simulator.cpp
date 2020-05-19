@@ -151,8 +151,7 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
 
     // region Init
 
-    tracer.traceInfo("Starting simulation (Algorithm = " + fileManager.algorithmName + ", Travel = " + fileManager.travelName + ")");
-    tracer.separator(TraceVerbosity::Info, 0, 0);
+    tracer.traceInfo("Starting simulation (Algorithm = " + fileManager.algorithmName + ", Travel = " + fileManager.travelName + ")", true);
 
     WeightBalanceCalculator weightBalancer, algoWeightBalancer;
 
@@ -167,8 +166,7 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
 
     // endregion
 
-    tracer.traceInfo("The ship has started its journey!");
-    tracer.separator(TraceVerbosity::Info, 0, 0);
+    tracer.traceInfo("The ship has started its journey!", true);
 
     for (auto &portId : simManager.getRoutePorts()) {  // Start the journey
         tracer.traceInfo("The ship has docked at port " + portId.getCode());
@@ -182,8 +180,7 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
         }
 
         std::string message = simManager.isRouteFinished() ? "The ship is going into maintenance..." : "The ship is continuing to the next port...";
-        tracer.traceInfo(message);
-        tracer.separator(TraceVerbosity::Info, 0, 0);
+        tracer.traceInfo(message, true);
     }
 
     int totalNumberOfOps = simManager.finishSimulation();

@@ -11,29 +11,21 @@ Tracer::Tracer(TraceVerbosity verbosity) : verbosity(verbosity) {}
 
 // region Tracing
 
-void Tracer::traceVerbose(const std::string &msg) {
+void Tracer::traceVerbose(const std::string &msg, bool separator) {
 
-    if (this->verbosity >= TraceVerbosity::Verbose) {
-        print(msg);
-    }
+    trace(TraceVerbosity::Verbose, msg, separator);
 }
 
-void Tracer::traceInfo(const std::string &msg) {
-    if (this->verbosity >= TraceVerbosity::Info) {
-        print(msg);
-    }
+void Tracer::traceInfo(const std::string &msg, bool separator) {
+    trace(TraceVerbosity::Info, msg, separator);
 }
 
-void Tracer::traceWarning(const std::string &msg) {
-    if (this->verbosity >= TraceVerbosity::Warning) {
-        print(msg);
-    }
+void Tracer::traceWarning(const std::string &msg, bool separator) {
+    trace(TraceVerbosity::Warning, msg, separator);
 }
 
-void Tracer::traceFatal(const std::string &msg) {
-    if (this->verbosity >= TraceVerbosity::Fatal) {
-        print(msg);
-    }
+void Tracer::traceFatal(const std::string &msg, bool separator) {
+    trace(TraceVerbosity::Fatal, msg, separator);
 }
 
 // endregion
@@ -44,9 +36,16 @@ void Tracer::separator(TraceVerbosity verbosityLevel, int linesBefore, int lines
     }
 }
 
-void Tracer::print(const std::string &msg) {
+void Tracer::trace(TraceVerbosity verbosityLevel, const std::string &msg, bool separator) {
     #ifdef DEBUG_PRINTS
-    std::cout << msg << std::endl;
+
+    if (this->verbosity >= verbosityLevel) {
+        std::cout << msg << std::endl;
+
+        if (separator)
+            this->separator(verbosityLevel, 0, 0);
+    }
+
     #endif
 }
 

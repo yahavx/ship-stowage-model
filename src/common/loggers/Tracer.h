@@ -19,13 +19,18 @@ public:
 
     // region Tracing
 
-    void traceVerbose(const std::string &msg);
+    /**
+     * Trace with verbose level.
+     * @param msg message to trace.
+     * @param separator add separator after.
+     */
+    void traceVerbose(const std::string &msg, bool separator = false);
 
-    void traceInfo(const std::string &msg);
+    void traceInfo(const std::string &msg, bool separator = false);
 
-    void traceWarning(const std::string &msg);
+    void traceWarning(const std::string &msg, bool separator = false);
 
-    void traceFatal(const std::string &msg);
+    void traceFatal(const std::string &msg, bool separator = false);
 
     // endregion
 
@@ -33,7 +38,7 @@ public:
 
 private:
 
-    void print(const std::string &msg);
+    void trace(TraceVerbosity verbosityLevel, const std::string &msg, bool separator);
 };
 
 
