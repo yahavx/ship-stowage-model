@@ -24,6 +24,7 @@ class Simulator {
     std::vector<std::function<std::unique_ptr<AbstractAlgorithm>()>> algorithmFactories;
     StringVector algorithmNames;  // the entry i corresponds to the name of the algorithm of factory i
 
+//    Tracer tracer = Tracer(TraceVerbosity::Disabled);
     Tracer tracer = Tracer(TraceVerbosity::Info);
 //    Tracer tracer = Tracer(TraceVerbosity::Verbose);
 

@@ -75,6 +75,9 @@ void printSeparator(int linesBefore, int linesAfter) {
         std::cout << std::endl;
     }
 #endif
+
+    _unused(linesBefore);
+    _unused(linesAfter);
 }
 
 void printEmptyLines(int amount) {

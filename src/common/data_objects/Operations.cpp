@@ -47,12 +47,12 @@ bool Operations::empty() const {
 std::ostream &operator<<(std::ostream &os, const Operations &ops) {
 
     if (ops.size() == 0) {
-        std::cout << "\t<NoOperations>" << std::endl;
+        os << "\t<NoOperations>" << std::endl;
         return os;
     }
 //    std::cout << "Operations {" << std::endl;
     for (int i = 0; i < ops.size(); i++) {
-        std::cout << '\t' << ops.ops[i].toString() << std::endl;
+        os << '\t' << ops.ops[i].toString() << std::endl;
     }
 //    std::cout << "}" << std::endl;
     return os;

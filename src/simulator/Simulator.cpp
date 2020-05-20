@@ -68,22 +68,24 @@ void Simulator::runSimulations() {
         fileManager.setTravelName(extractFilenameFromPath(travel));
 
         for (longUInt i = 0; i < algorithmFactories.size(); i++) {
+            tracer.traceVerbose("Creating instance of algorithm " + algorithmNames[i]);
             std::unique_ptr<AbstractAlgorithm> algorithm = algorithmFactories[i]();
             fileManager.setAlgorithmName(algorithmNames[i]);
             fileManager.createTravelCraneFolder();
 
+            tracer.traceVerbose("Starting a simulation.");
             int totalCraneInstructions = runSimulation(std::move(algorithm));
 
             addSimulationResultToTable(resultsTable, totalCraneInstructions, i + 1);
         }
     }
 
-    if (!travels.empty()) {
+    if (!travels.empty() && !algorithmFactories.empty()) {
         finalizeResultsTable(resultsTable);
         fileManager.saveSimulationResults(resultsTable);
     }
     else {
-        tracer.traceInfo("No legal travels available.");
+        tracer.traceInfo("No legal travels and/or no algorithms were available (no simulations were ran).");
     }
 
     if (generalErrors.hasErrors()) {
@@ -97,6 +99,8 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
 #ifndef RUNNING_ON_NOVA
     return;
 #endif
+    tracer.traceVerbose("Looking for algorithms...", true);
+
     if (!isDirectoryExists(algorithmsDir)) {
         errors.addError({ErrorFlag::SharedObject_InvalidDirectory, algorithmsDir});
         return;
@@ -115,6 +119,8 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
         if (!endsWith(file, ".so")) {
             continue;
         }
+
+        tracer.traceVerbose("Loading file: " + file);
 
         ErrorFlag soLoadResult = registrar.loadSharedObject(file);
         if (soLoadResult != ErrorFlag::Success) {
@@ -137,6 +143,9 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
                 break;
         }
     }
+
+    tracer.separator(TraceVerbosity::Verbose, 0, 0);
+    tracer.traceVerbose("Finished looking for algorithms.", true);
 
     if (algorithmFactories.empty()) {
         errors.addError(ErrorFlag::SharedObject_NoAlgorithmsLoaded);

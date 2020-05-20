@@ -37,20 +37,28 @@ void Tracer::traceFatal(const std::string &msg, bool separator) {
 // endregion
 
 void Tracer::separator(TraceVerbosity verbosityLevel, int linesBefore, int linesAfter) {
+#ifdef DEBUG_PRINTS
     if (this->verbosity >= verbosityLevel) {
         printSeparator(linesBefore, linesAfter);
     }
+#endif
+
+    _unused(verbosityLevel);
+    _unused(linesBefore);
+    _unused(linesAfter);
 }
 
 void Tracer::trace(TraceVerbosity verbosityLevel, const std::string &msg, bool separator) {
-    #ifdef DEBUG_PRINTS
-
+#ifdef DEBUG_PRINTS
     if (this->verbosity >= verbosityLevel) {
         std::cout << msg << std::endl;
 
         if (separator)
             this->separator(verbosityLevel, 0, 0);
     }
+#endif
 
-    #endif
+    _unused(verbosityLevel);
+    _unused(msg);
+    _unused(separator);
 }
