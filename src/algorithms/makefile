@@ -3,12 +3,10 @@ COMP = g++-9.3.0
 SHARED_OBJS = $(NAIVE_SO) $(ROBUST_SO) $(BAD_SO)
 NAIVE_SO = _305170987_a.so
 ROBUST_SO = _305170987_b.so
-BAD_SO = Not-Unloading.so
 NAIVE = _305170987_a.o
 ROBUST = _305170987_b.o
-BAD = BadAlgorithm.o
 
-OBJS = SemiAbstractAlgorithm.o NaiveStowageAlgorithm.o RobustStowageAlgorithm.o $\
+OBJS = BadAlgorithm.o SemiAbstractAlgorithm.o NaiveStowageAlgorithm.o RobustStowageAlgorithm.o $\
 $\
 ../common/actors/AbstractWeightBalancer.o ../common/actors/ContainerShip.o ../common/actors/CranesManagement.o $\
 ../common/actors/NaiveWeightBalancer.o ../common/actors/Port.o $\
@@ -42,10 +40,7 @@ $(NAIVE_SO): $(OBJS) $(NAIVE)
 $(ROBUST_SO): $(OBJS) $(ROBUST)
 	$(COMP) $(CPP_LINK_FLAG) -o $@ $^
 
-$(BAD_SO): $(OBJS) $(BAD)
-	$(COMP) $(CPP_LINK_FLAG) -o $@ $^
-
-$(OBJS) $(ROBUST) $(NAIVE) $(BAD):
+$(OBJS) $(ROBUST) $(NAIVE):
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp -o $@
 	
 clean:
