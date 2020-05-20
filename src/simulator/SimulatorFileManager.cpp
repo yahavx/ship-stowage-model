@@ -144,9 +144,9 @@ StringVector SimulatorFileManager::collectLegalTravels(Errors &errors) {
     for (auto& travel: travels) {
         setTravelName(extractFilenameFromPath(travel));
 
-//        if (isTravelValid(errors)) {
+        if (isTravelValid(errors)) {
             legalTravels.push_back(travel);
-//        }
+        }
         errors.addTravelLog(travelName);  // Adds if needed
     }
 

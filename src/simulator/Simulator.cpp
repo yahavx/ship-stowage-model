@@ -32,14 +32,14 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
                                                                                                                          fileManager(outputDir,
                                                                                                                                      travelRootDir) {
 #ifndef RUNNING_ON_NOVA
-//    algorithmFactories.emplace_back([]() { return std::make_unique<NaiveStowageAlgorithm>(); });
-//    algorithmNames.push_back("Naive");
-//
-    algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
-    algorithmNames.push_back("Bad");
+    algorithmFactories.emplace_back([]() { return std::make_unique<NaiveStowageAlgorithm>(); });
+    algorithmNames.push_back("Naive");
 
-//    algorithmFactories.emplace_back([](){return std::make_unique<RobustStowageAlgorithm>();});
-//    algorithmNames.push_back("Robust");
+//    algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
+//    algorithmNames.push_back("Bad");
+//
+    algorithmFactories.emplace_back([](){return std::make_unique<RobustStowageAlgorithm>();});
+    algorithmNames.push_back("Robust");
 #endif
 }
 
@@ -53,6 +53,7 @@ Simulator::Simulator(const std::string &travelRootDir, const std::vector<std::fu
 // region Simulation run
 
 void Simulator::runSimulations() {
+    tracer.traceVerbose("Simulator started.", true);
     StringStringVector resultsTable;  // table of results
     Errors generalErrors;
 
@@ -80,6 +81,9 @@ void Simulator::runSimulations() {
     if (!travels.empty()) {
         finalizeResultsTable(resultsTable);
         fileManager.saveSimulationResults(resultsTable);
+    }
+    else {
+        tracer.traceInfo("No legal travels available.");
     }
 
     if (generalErrors.hasErrors()) {

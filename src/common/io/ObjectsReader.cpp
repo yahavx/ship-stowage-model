@@ -107,7 +107,7 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors) {
         positionsWithData.insert({{n, m}, availableContainers});  // Add position to hash table, to later check for duplicates
 
         if (availableContainers >= z) {
-            errors.addError({ErrorFlag::ShipPlan_InvalidFloorHeight, intToStr(i+1), intToStr(z), intToStr(availableContainers)});
+            errors.addError({ErrorFlag::ShipPlan_InvalidFloorHeight, intToStr(i+1), intToStr(availableContainers), intToStr(z)});
             continue;
         }
 
