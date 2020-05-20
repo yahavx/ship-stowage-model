@@ -6,7 +6,7 @@
 #include "Errors.h"
 #include "UtilFunctions.h"
 
-#define ULL_MAX_BIT 61  // max bit at unsigned long long (almost)
+#define SIMULATOR_MAX_ERROR 62  // max bit at )
 
 Errors::Errors(Tracer &tracer) : tracer(tracer) {}
 
@@ -21,7 +21,7 @@ void Errors::addError(const Error &error) {
 
 void Errors::addErrorReport(longUInt report, const std::string &reporter) {
     IntVector errorNumbers;
-    for (int i = 0; i <= ULL_MAX_BIT; i++) {
+    for (int i = 0; i <= SIMULATOR_MAX_ERROR; i++) {
         longUInt isBitEnabled = report & (1ULL << i);
 
         if (isBitEnabled) {
@@ -61,7 +61,7 @@ longUInt Errors::toErrorFlag(bool limitErrorNum, bool sinceLastCheckPoint) {
         if (error == ContainersAtPort_ContainerNotOnRoute || error == ContainersAtPort_ContainerDestinationIsCurrentPort)  // Those errors are mapped to error 13 (MissingOrBadDestPort)
             error = ContainersAtPort_MissingOrBadPortDest;
 
-        if (!limitErrorNum || error <= 1 << MAX_ERROR_BIT) {  // If limit is on, we collect errors up to MAX_ERROR_BIT
+        if (!limitErrorNum || error <= 1 << ALGORITHM_MAX_ERROR) {  // If limit is on, we collect errors up to MAX_ERROR_BIT
             errors |= error;
         }
     }

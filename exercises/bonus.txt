@@ -1,9 +1,13 @@
+
+
 ### Bonus
 
-Our travel main directory (that contains some travel sub-directories) that shows our error handling mechanism, is called travels-error-handling.
-There is one travel that demonstrates the different kind of errors format and handling:
+All the directories referenced below are inside the `bonus` directory.
+
+Our travel main directory (that contains some travel sub-directories) that shows our error handling mechanism, is called `travels-error-handling`.
+There is one travel that demonstrates almost all the different kind of errors formats and handling:
 - `Travel-Very-Diverse-Errors`
-There is also a readme inside that explains (and is ignored by the travel, ofcourse).
+There is also a readme inside this travel directory (`Travel-Very-Diverse-Errors`) that explains it well.
 
 Several other travels in that directory:
 - `Travel-No-Errors`: a clean run, no errors folder is generated.
@@ -16,11 +20,8 @@ What makes our error handling special:
 - During the simulation, at the end of each error section (initialization, port visit), there is a summary of which errors
   were reported by the simulator, and which by the algorithm (algorithm is not penalized for mismatch, but its easy to compare).
 
-The readme.txt describes how we handle certain things.
-Without further explaining, run our examples and see the results.
-
 ### Validation example
 
-We have another travel directory which consists of 1 travel, named `Validation`, that shows how our simulation validates the algorithm,
+We have another travel directory which consists of 1 travel, named `validation`, that shows how our simulation validates the algorithm,
 and in this case faults him for bad behaviour.
-This folder (`Validation`) also contains an `.so` file of the relevant algorithm to run it with (not one of our 2 algorithms, of course).
+This directory (`validation`) also contains an `.so` file of the relevant algorithm to run it with (not one of our 2 algorithms, of course).

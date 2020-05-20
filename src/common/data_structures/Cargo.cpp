@@ -133,11 +133,13 @@ std::vector<ContainerPosition> Cargo::getContainersForPort(const PortId &portId)
             for (int z = xyContainers.size() - 1; z >= 0; z--)
                 if (xyContainers[z].getDestPort() == portId) {
                     auto height = this->shipPlan.getHeights()[x][y] + z;
+
                     Container cont(xyContainers[z]);
+
+                    // TODO: a temporary value is passed to the constructor by reference, and all instances returned are the same one (??)
                     result.push_back(ContainerPosition(cont, {x, y, height}));
                 }
         }
-
 
     return result;
 }

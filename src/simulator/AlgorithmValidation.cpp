@@ -262,6 +262,20 @@ bool AlgorithmValidation::validateNoContainersLeftOnPort() {
     return success;
 }
 
+bool AlgorithmValidation::validateNoContainersLeftOnShip() {
+    std::vector<ContainerPosition> containersForPort = ship.getCargo().getContainersForPort(currentPort.getId());
+
+    if (!containersForPort.empty()) {
+        for (ContainerPosition &container: containersForPort) {
+            errors.addError({AlgorithmError_LeftContainersAtShip, container.getContainer().getId(), currentPort.getId()});
+        }
+
+        return false;
+    }
+
+    return true;
+}
+
 bool AlgorithmValidation::isBadContainer(const std::string &id) {
     for (std::string badId: badContainerIds) {
         if (badId == id) {

@@ -87,6 +87,8 @@ enum ErrorFlag : longUInt {
     SharedObject_AlgorithmDidntSelfRegister = 1ULL << 59,
     SharedObject_LoadedMoreThanOneAlgorithm = 1ULL << 60,
     SharedObject_NoAlgorithmsLoaded = 1ULL << 61,
+
+    AlgorithmError_LeftContainersAtShip = 1ULL << 62,
 };
 
 /**

@@ -36,7 +36,8 @@ longUInt c_algorithmInstructionErrors =
         | AlgorithmError_UnloadedAndDidntLoadBack
         | AlgorithmError_ShipNotEmptyAtEndOfRoute
         | AlgorithmError_WeightBalancerRejectedOperation
-        | AlgorithmError_FailedToInitialize;
+        | AlgorithmError_FailedToInitialize
+        | AlgorithmError_LeftContainersAtShip;
         // | AlgorithmError_ExtraReport
         // | AlgorithmError_MissingReport
         // TODO: decide if we count it as algorithm errors (may be dangerous)
@@ -196,7 +197,7 @@ std::string Error::toString() const {
         case AlgorithmError_InvalidCraneOperation:
             return algorithmError + "Received the following invalid crane instruction: " + param1 + " (E31)";
         case AlgorithmError_LeftContainersAtPort:
-            return algorithmError + "Container with ID " + param1+ " (to port '" + param2+ "'),  was left on the current port ('"+ param3+"'), although ship isn't full (E32)";
+            return algorithmError + "Container with ID " + param1+ " (to port '" + param2 + "'),  was left on the current port ('"+ param3+"'), although ship isn't full (E32)";
         case AlgorithmError_ContainerIdAlreadyOnShip:
             return algorithmError + "Tried to load container with ID '" + param1 + "', which is already on the ship (E33)";
         case AlgorithmError_ContainerIdNotExistsOnPort:
@@ -265,6 +266,9 @@ std::string Error::toString() const {
             return dynamicLoadError + "Algorithm '" + param1 + "' registered more than once, and therefore is unavailable (E60)";
         case SharedObject_NoAlgorithmsLoaded:
             return dynamicLoadFatalError + "No algorithm was loaded successfully (E61)";
+
+        case AlgorithmError_LeftContainersAtShip:
+            return algorithmError + "Container with ID '" + param1 + "' is for current port ('" + param2 + "'), but wasn't unloaded from the ship";
 
         default:
             return "ERROR NOT SUPPORTED YET";

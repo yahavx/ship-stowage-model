@@ -43,6 +43,9 @@ public:
     /// Validates the port is empty upon leaving (all rejected/loaded).
     bool validateNoContainersLeftOnPort();
 
+    /// Validates all the containers for this port were loaded.
+    bool validateNoContainersLeftOnShip();
+
     // endregion
 
     // region Functions

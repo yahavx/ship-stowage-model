@@ -2,19 +2,35 @@
 // Created by t-yabeny on 5/2/2020.
 //
 
+#include <memory>
 #include "BadAlgorithm.h"
-#include "../common/io/ObjectsReader.h"
+
 #include "../common/utils/UtilFunctions.h"
+#include "../common/strategies/LoadContainerToArbitraryPosition.h"
 
 Operations BadAlgorithm::generateOperations(ContainerShip &ship, Port &port, const Containers &containersToLoad, Errors &errors) {
-    return Operations();
-    _unused(ship);
-    _unused(port);
-    _unused(containersToLoad);
-    _unused(errors);
-}
+    Operations operations;
 
-int BadAlgorithm::readShipPlan(const std::string &shipPlanPath) {
-    return SemiAbstractAlgorithm::readShipPlan(shipPlanPath);
-    return 1 << 2;
+    std::vector<ContainerPosition> containersToUnload = ship.getCargo().getContainersForPort(port.getId());
+
+    // Unload all required containers
+    for (const ContainerPosition &containerPos: containersToUnload) {
+        // Get instructions for removing the container
+        Operations unloadOps = ship.unloadContainer(port, containerPos);
+        // Add unload operations to set of all instructions
+        operations.addOperations(unloadOps);
+    }
+
+    std::unique_ptr<LoadContainerStrategy> strategy = std::make_unique<LoadContainerToArbitraryPosition>();
+    // Load all required containers
+    for (const Container &container: containersToLoad) {
+
+        // Get instructions for adding the container
+        Operations loadOps = ship.loadContainer(strategy.get(), port, container, errors);
+
+        // Add load operations to set of all instructions
+        operations.addOperations(loadOps);
+    }
+
+    return operations;
 }
