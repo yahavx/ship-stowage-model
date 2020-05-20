@@ -51,7 +51,7 @@ ShipPlan readShipPlanFromFile(const std::string &filePath, Errors &errors) {
 
     StringVector &firstRow = data[i];  // First row with actual data
     if (firstRow.size() < 3 || !isRowOnlyIntegers(firstRow, 3)) {
-        errors.addError({ErrorFlag::ShipPlan_FatalError_NoFileOrInvalidFirstLine, intToStr(i)});
+        errors.addError({ErrorFlag::ShipPlan_FatalError_NoFileOrInvalidFirstLine, intToStr(i+1)});
         return shipPlan;
     }
 

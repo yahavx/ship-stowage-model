@@ -49,12 +49,6 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-//    travelPath = "../input-examples/single-travel-difference";
-//    travelPath = "../input-examples/error-proud";
-//    travelPath = "../input-examples/multiple-travel";
-//    travelPath = "../input-examples/test";
-//    removeFolder(outputPath);  // remove old output before starting
-
     Simulator simulator(travelPath, algorithmPath, outputPath);
 
     simulator.runSimulations();
