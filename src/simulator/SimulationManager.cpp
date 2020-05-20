@@ -181,10 +181,15 @@ std::string SimulationManager::getInstructionsForCargo(AbstractAlgorithm *algori
 void SimulationManager::initPort(const std::string &cargoDataPath) {
     auto portId = ship.getCurrentPortId();
     auto storage = readPortCargoFromFile(cargoDataPath, errors);
-    currentPort = Port(portId, storage);
+
+    currentPort = Port(portId);
 
     if (isCurrentLastPort() && !storage.isEmpty()) { // Last port has containers
         errors.addError({ErrorFlag::ContainersAtPort_LastPortHasContainers});
+    }
+
+    if (!isCurrentLastPort()) {  // We ignore the storage at the last stop
+        currentPort.setStorage(storage);
     }
 }
 

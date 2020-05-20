@@ -1,5 +1,3 @@
-
-
 ### Bonus
 
 All the directories referenced below are inside the `bonus` directory.
@@ -22,6 +20,6 @@ What makes our error handling special:
 
 ### Validation example
 
-We have another travel directory which consists of 1 travel, named `validation`, that shows how our simulation validates the algorithm,
+We have another travel main directory named `validation` which consists of 1 travel, named `Invalid-Load`, that shows how our simulation validates the algorithm,
 and in this case faults him for bad behaviour.
-This directory (`validation`) also contains an `.so` file of the relevant algorithm to run it with (not one of our 2 algorithms, of course).
+The `validation` directory also contains an `Load-Bad-Position.so`, which is the algorithm to run with it.

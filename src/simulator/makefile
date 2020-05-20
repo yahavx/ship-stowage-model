@@ -33,13 +33,6 @@ $(EXEC): $(OBJS)
 $(OBJS):
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp -o $@
 
-# AlgorithmRegistrar.o: AlgorithmRegistrar.cpp #put dependencies here!
-#	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
-
-# AlgorithmRegistration.o: AlgorithmRegistration.cpp #put dependencies here!
-#	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
-
-
 clean:
 	rm -f $(OBJS) $(EXEC)
 
