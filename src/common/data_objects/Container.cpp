@@ -84,7 +84,15 @@ bool Container::isIdInIsoFormat() const {
     tmp = sum/11;
     tmp = floor(tmp);
     tmp = tmp * 11;
-    return  (sum-tmp) == mymap[(id[n])];
+
+    int actual = sum-tmp;
+    int expected = mymap[(id[n])];
+
+    if (actual == 10) {
+        actual = 0;
+    }
+
+    return  actual == expected;
 }
 
 Error Container::isContainerLegal() const {

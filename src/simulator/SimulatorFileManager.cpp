@@ -92,10 +92,6 @@ std::string SimulatorFileManager::createCargoDataTempFilePath(const std::string 
 }
 
 std::string SimulatorFileManager::cargoFilePath(const std::string &cargoFileName) {
-//    if (endsWith(cargoFileName, "dummy")) {
-//        std::string fileName = extractFilenameFromPath(cargoFileName);  // TODO: isn't that already the name only?
-//        return tempFolder() + "/" + fileName;
-//    }
     return travelFolder() + "/" + cargoFileName;
 }
 
@@ -136,12 +132,12 @@ StringVector SimulatorFileManager::collectLegalTravels(Errors &errors) {
     StringVector legalTravels;
 
     if (travelRootDir == "") {  // no travel path supplied
-        errors.addError(ErrorFlag::SimulationInit_InvalidTravelPath);
+        errors.addError({ErrorFlag::SimulationInit_InvalidTravelPath, travelRootDir});
         return legalTravels;
     }
     StringVector travels = getFilesFromDirectory(travelRootDir);
     if (travels.empty()) {
-        errors.addError(ErrorFlag::SimulationInit_InvalidTravelPath);
+        errors.addError({ErrorFlag::SimulationInit_InvalidTravelPath, travelRootDir});
         return legalTravels;
     }
 

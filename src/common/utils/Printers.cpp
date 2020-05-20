@@ -4,43 +4,43 @@
 
 #include "Printers.h"
 #include "Errors.h"
+#include "UtilFunctions.h"
 #include <tuple>
 
 
 std::ostream &operator<<(std::ostream &os, const StringVector &stringVector) {
     if (stringVector.size() == 0) {
-        std::cout << "[]" << std::endl;
+        os << "[]" << std::endl;
         return os;
     }
 
     std::cout << '[';
     for (longUInt i = 0; i < stringVector.size() - 1; i++) {
-        std::cout << stringVector[i] << ", \t\t";
+        os << stringVector[i] << ", \t\t";
     }
-    std::cout << stringVector.back() << "]" << std::endl;
+    os << stringVector.back() << "]" << std::endl;
     return os;
 }
 
 std::ostream &operator<<(std::ostream &os, const StringStringVector &stringStringVector) {
     for (longUInt i = 0; i < stringStringVector.size(); i++) {
-        std::cout << ' ' << stringStringVector[i];
+        os << ' ' << stringStringVector[i];
     }
     return os;
 }
 
 std::ostream &operator<<(std::ostream &os, const IntVector &intVector) {
-    std::cout << "\t[";
+    os << "\t[";
     for (longUInt i = 0; i < intVector.size() - 1; i++) {
-        std::cout << intVector[i] << ", \t";
+        os << intVector[i] << ", \t";
     }
-    std::cout << intVector.back() << "]" << std::endl;
+    os << intVector.back() << "]" << std::endl;
     return os;
 }
 
-
 std::ostream &operator<<(std::ostream &os, const IntIntVector &intIntVector) {
     for (longUInt i = 0; i < intIntVector.size(); i++) {
-        std::cout << '\t' << intIntVector[i];
+        os << '\t' << intIntVector[i];
     }
     return os;
 }
@@ -52,21 +52,21 @@ std::ostream &operator<<(std::ostream &os, const std::tuple<int, int, int> &tup)
 }
 
 std::ostream &operator<<(std::ostream &os, const StringToStringVectorMap &map) {
-    std::cout << "StringToStringStringVector map {" << std::endl;
+    os << "StringToStringStringVector map {" << std::endl;
     for (auto key : map) {
-        std::cout << "\t\"" << key.first << "\":" << std::endl;
+        os << "\t\"" << key.first << "\":" << std::endl;
         for (auto &val : key.second) {
-            std::cout <<"\t\t" << val << std::endl;
+            os <<"\t\t" << val << std::endl;
         }
     }
 
-    std::cout << "}" << std::endl;
+    os << "}" << std::endl;
 
     return os;
 }
 
-
 void printSeparator(int linesBefore, int linesAfter) {
+#ifdef DEBUG_PRINTS
     for (int i = 0; i < linesBefore; i++) {
         std::cout << std::endl;
     }
@@ -74,6 +74,10 @@ void printSeparator(int linesBefore, int linesAfter) {
     for (int i = 0; i < linesAfter; i++) {
         std::cout << std::endl;
     }
+#endif
+
+    _unused(linesBefore);
+    _unused(linesAfter);
 }
 
 void printEmptyLines(int amount) {
@@ -85,4 +89,8 @@ void printEmptyLines(int amount) {
 void printErrorsFromFlag(int errorsFlag) {
     std::string errors = Error(errorsFlag).toString();
     std::cout << errors << std::endl;
+}
+
+std::string positionToString(int x, int y) {
+    return "(" + intToStr(x) + ", " + intToStr(y) + ")";
 }

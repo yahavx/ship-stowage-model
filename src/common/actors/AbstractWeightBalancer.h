@@ -5,6 +5,7 @@
 #ifndef SHIP_STOWAGE_MODEL_ABSTRACTWEIGHTBALANCER_H
 #define SHIP_STOWAGE_MODEL_ABSTRACTWEIGHTBALANCER_H
 
+#include <string>
 #include "../../interfaces/WeightBalanceCalculator.h"
 #include "../data_objects/ShipPlan.h"
 #include "../data_structures/Cargo.h"

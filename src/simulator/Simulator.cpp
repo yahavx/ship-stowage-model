@@ -21,7 +21,6 @@
 #include "../algorithms/NaiveStowageAlgorithm.h"
 #include "../algorithms/BadAlgorithm.h"
 #include "../algorithms/RobustStowageAlgorithm.h"
-#include "SimulationManager.h"
 
 #endif
 
@@ -32,12 +31,6 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
                                                                                                                          outputDir(outputDir),
                                                                                                                          fileManager(outputDir,
                                                                                                                                      travelRootDir) {
-    // We search those in cwd if not supplied
-    if (algorithmsDir == "")
-        this->algorithmsDir = ".";
-    if (outputDir == "")
-        this->outputDir = ".";
-
 #ifndef RUNNING_ON_NOVA
     algorithmFactories.emplace_back([]() { return std::make_unique<NaiveStowageAlgorithm>(); });
     algorithmNames.push_back("Naive");
@@ -60,6 +53,7 @@ Simulator::Simulator(const std::string &travelRootDir, const std::vector<std::fu
 // region Simulation run
 
 void Simulator::runSimulations() {
+    tracer.traceVerbose("Simulator started.", true);
     StringStringVector resultsTable;  // table of results
     Errors generalErrors;
 
@@ -74,19 +68,24 @@ void Simulator::runSimulations() {
         fileManager.setTravelName(extractFilenameFromPath(travel));
 
         for (longUInt i = 0; i < algorithmFactories.size(); i++) {
+            tracer.traceVerbose("Creating instance of algorithm " + algorithmNames[i]);
             std::unique_ptr<AbstractAlgorithm> algorithm = algorithmFactories[i]();
             fileManager.setAlgorithmName(algorithmNames[i]);
             fileManager.createTravelCraneFolder();
 
+            tracer.traceVerbose("Starting a simulation.");
             int totalCraneInstructions = runSimulation(std::move(algorithm));
 
             addSimulationResultToTable(resultsTable, totalCraneInstructions, i + 1);
         }
     }
 
-    if (!travels.empty() && !algorithmFactories.empty()) {  // at least one travel and algorithmk
+    if (!travels.empty() && !algorithmFactories.empty()) {
         finalizeResultsTable(resultsTable);
         fileManager.saveSimulationResults(resultsTable);
+    }
+    else {
+        tracer.traceInfo("No legal travels and/or no algorithms were available (no simulations were ran).");
     }
 
     if (generalErrors.hasErrors()) {
@@ -100,6 +99,8 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
 #ifndef RUNNING_ON_NOVA
     return;
 #endif
+    tracer.traceVerbose("Looking for algorithms...", true);
+
     if (!isDirectoryExists(algorithmsDir)) {
         errors.addError({ErrorFlag::SharedObject_InvalidDirectory, algorithmsDir});
         return;
@@ -118,6 +119,8 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
         if (!endsWith(file, ".so")) {
             continue;
         }
+
+        tracer.traceVerbose("Loading file: " + file);
 
         ErrorFlag soLoadResult = registrar.loadSharedObject(file);
         if (soLoadResult != ErrorFlag::Success) {
@@ -141,19 +144,20 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
         }
     }
 
+    tracer.separator(TraceVerbosity::Verbose, 0, 0);
+    tracer.traceVerbose("Finished looking for algorithms.", true);
+
     if (algorithmFactories.empty()) {
         errors.addError(ErrorFlag::SharedObject_NoAlgorithmsLoaded);
     }
 }
 
 int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
-    SimulationManager simManager(fileManager);
+    SimulationManager simManager(fileManager, tracer);
 
     // region Init
 
-#ifdef DEBUG_PRINTS
-    std::cout << "Starting simulation (Algorithm = " << fileManager.algorithmName << ", Travel = " << fileManager.travelName << ")" << std::endl;
-#endif
+    tracer.traceInfo("Starting simulation (Algorithm = " + fileManager.algorithmName + ", Travel = " + fileManager.travelName + ")", true);
 
     WeightBalanceCalculator weightBalancer, algoWeightBalancer;
 
@@ -161,23 +165,20 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
     bool success = simManager.initAlgorithmShip(algorithm.get(), algoWeightBalancer);
     simManager.initCargoData();  // order the files for each port, filter irrelevant files
 
-
     if (!success) {  // Algorithm failed to initialize
+        tracer.traceInfo("Algorithm failed to initialize, terminating.");
+        tracer.separator(TraceVerbosity::Info, 0, 3);
         simManager.saveErrors();
         return -1;
     }
 
     // endregion
 
-#ifdef DEBUG_PRINTS
-    std::cout << "The ship has started its journey!" << std::endl;
-    printSeparator(0, 0);
-#endif
+    tracer.traceInfo("The ship has started its journey!", true);
 
     for (auto &portId : simManager.getRoutePorts()) {  // Start the journey
-#ifdef DEBUG_PRINTS
-        std::cout << "The ship has docked at port " << portId << "." << std::endl;
-#endif
+        tracer.traceInfo("The ship has docked at port " + portId.getCode());
+
         std::string instructionsOutputPath = simManager.getInstructionsForCargo(algorithm.get());
         success = simManager.performPackingOperations(instructionsOutputPath);
 
@@ -186,21 +187,14 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
             return -1;
         }
 
-#ifdef DEBUG_PRINTS
-        if (!simManager.isCurrentLastPort()) {
-            std::cout << "The ship is continuing to the next port..." << std::endl;
-        } else { std::cout << "The ship is going into maintenance..." << std::endl; }
-        printSeparator(0, 0);
-#endif
-        _unused(portId);
+        std::string message = simManager.isRouteFinished() ? "The ship is going into maintenance..." : "The ship is continuing to the next port...";
+        tracer.traceInfo(message, true);
     }
 
     int totalNumberOfOps = simManager.finishSimulation();
 
-#ifdef DEBUG_PRINTS
-    std::cout << "The ship has completed its journey. Total number of operations: " << totalNumberOfOps << std::endl;
-    printSeparator(0, 3);
-#endif
+    tracer.traceInfo("The ship has completed its journey. Total number of operations: " + intToStr(totalNumberOfOps));
+    tracer.separator(TraceVerbosity::Info, 0, 3);
 
     return totalNumberOfOps;
 }
@@ -217,7 +211,6 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
 
 const std::string Simulator::s_resultsTableTitle = "RESULTS";
 const std::string Simulator::s_sumColumnTitle = "Sum";
-
 const std::string Simulator::s_errorsColumnTitle = "Num Errors";
 
 // endregion

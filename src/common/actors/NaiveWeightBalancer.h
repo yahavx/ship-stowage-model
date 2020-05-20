@@ -6,6 +6,7 @@
 #define SHIP_STOWAGE_MODEL_NAIVEWEIGHTBALANCER_H
 
 #include "../data_structures/Cargo.h"
+#include <string>
 #include "../../interfaces/WeightBalanceCalculator.h"
 #include "AbstractWeightBalancer.h"
 

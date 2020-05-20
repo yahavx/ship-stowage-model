@@ -2,6 +2,7 @@
 // Created by t-yabeny on 5/5/2020.
 //
 
+#include <iostream>
 #include "AlgorithmRegistration.h"
 #include "../simulator/AlgorithmRegistrar.h"
 

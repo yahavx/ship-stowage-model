@@ -8,10 +8,11 @@
 #include <ostream>
 #include "Definitions.h"
 #include "Error.h"
+#include "../loggers/Tracer.h"
 
-//#define RUNNING_ON_NOVA  // this will turn on all sections in code that work only on nova - disable note when on nova
+#define RUNNING_ON_NOVA  // this will turn on all sections in code that work only on nova - disable note when on nova
 //#define SOFT_ISO_CHECK  // only check that ID is 11 characters long
-#define DEBUG_PRINTS  // print logs during simulation
+//#define DEBUG_PRINTS  // print logs during simulation
 #define _unused(x) ((void)(x))  // ignore compiler warning
 
 
@@ -22,8 +23,13 @@
 class Errors {
     std::vector<Error> errorsList;
     longUInt checkpoint = 0;
+    Tracer tracer;
 
 public:
+
+    Errors() = default;
+
+    Errors(Tracer &tracer);
 
     // region Functions
 
@@ -31,10 +37,11 @@ public:
     void addError(const Error &error);
 
     /**
-     * Adds the list of errors represented by the report, as a single error, in a report format.
+     * Adds a report about a list of errors.
+     * @param report represents a list of errors.
      * @param reporter the name of the reporter (algorithm, simulator for example).
      */
-    void addError(longUInt report, const std::string &reporter);
+    void addErrorReport(longUInt report, const std::string &reporter);
 
     void addErrors(const Errors &errors);
 

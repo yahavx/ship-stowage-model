@@ -1,4 +1,4 @@
-COMP = g++-8.3.0
+COMP = g++-9.3.0
 
 OBJS = main.o AlgorithmRegistrar.o AlgorithmValidation.o SimulationManager.o $\
 Simulator.o SimulatorFileManager.o SimulatorUtil.o $\
@@ -15,6 +15,10 @@ $\
 $\
 ../common/io/FileReader.o ../common/io/ObjectsReader.o $\
 $\
+../common/loggers/Tracer.o $\
+$\
+../common/strategies/LoadContainerToArbitraryPosition.o ../common/strategies/LoadContainerToLowestPositionAvailable.o $\
+$\
 ../common/utils/Error.o ../common/utils/Errors.o $\
 ../common/utils/Printers.o ../common/utils/UtilFunctions.o ../common/utils/Vector3.o $\
 $\
@@ -29,16 +33,7 @@ $(EXEC): $(OBJS)
 $(OBJS):
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp -o $@
 
-# AlgorithmRegistrar.o: AlgorithmRegistrar.cpp #put dependencies here!
-#	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
-
-# AlgorithmRegistration.o: AlgorithmRegistration.cpp #put dependencies here!
-#	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
-
-
 clean:
 	rm -f $(OBJS) $(EXEC)
 
-# ./simulator -travel_path ../input-examples/single-travel -algorithm_path ../algorithms -output ../output
-
-# valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all ./simulator -travel_path ../input-examples/single-travel -algorithm_path ../algorithms -output ../output
+# ./simulator -travel_path ../Tests -algorithm_path ../algorithms -output ../output

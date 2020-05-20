@@ -40,7 +40,11 @@ private:
 public:
     bool validatePackingOperation(const PackingOperation &op);
 
+    /// Validates the port is empty upon leaving (all rejected/loaded).
     bool validateNoContainersLeftOnPort();
+
+    /// Validates all the containers for this port were loaded.
+    bool validateNoContainersLeftOnShip();
 
     // endregion
 

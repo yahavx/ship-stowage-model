@@ -50,7 +50,7 @@ void initResultsTable(StringStringVector &results, StringVector &travels, String
 }
 
 void addSimulationResultToTable(StringStringVector &simulationResults, int totalCraneInstructions, int rowNum) {
-    simulationResults[rowNum].push_back(intToStr(totalCraneInstructions));  // TODO: make it less ugly..
+    simulationResults[rowNum].push_back(intToStr(totalCraneInstructions));
 }
 
 void finalizeResultsTable(StringStringVector &results) {

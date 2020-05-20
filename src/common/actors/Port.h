@@ -50,6 +50,9 @@ public:
 
     void addContainers(const Containers &containers);
 
+    /// Removes from port all ids that are in containersIds. If an id doesn't exist, it is ignored.
+    Containers removeContainers(const StringVector &containersIds);
+
     OptionalContainer removeContainer(const std::string &containerId);
 
     /**
@@ -58,7 +61,7 @@ public:
      * @param errors all errors found, in each container, will be added to this
      * @return list of id's, one per each removed container.
      */
-    StringVector removeBadContainers(const ShipRoute& route, Errors &errors);
+    StringVector removeBadContainers(Errors &errors);
 
     bool isDuplicateIdOnPort(const std::string &containerId);
 

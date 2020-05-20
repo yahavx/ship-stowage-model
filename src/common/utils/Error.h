@@ -7,7 +7,7 @@
 
 #include "Definitions.h"
 
-#define MAX_ERROR_BIT 18  // highest bit that is used by the algorithm (rest are for us)
+#define ALGORITHM_MAX_ERROR 18  // highest bit that is used by the algorithm (rest are for us)
 
 
 /// Each entry represents a possible error/warning in the program.
@@ -67,8 +67,9 @@ enum ErrorFlag : longUInt {
     AlgorithmError_TriedToLoadButShouldReject = 1ULL << 44,
     AlgorithmError_MoveAboveNotLegal = 1ULL << 45,
     AlgorithmError_UnloadedAndDidntLoadBack = 1ULL << 46,
-    AlgorithmError_ExtraReport = 1ULL << 47,
-    AlgorithmError_MissingReport = 1ULL << 48,
+    AlgorithmError_LoadInvalidFloor = 1ULL << 47,
+//    AlgorithmError_MissingReport = 1ULL << 48,
+    AlgorithmError_ShipNotEmptyAtEndOfRoute = 1ULL << 48,
     AlgorithmError_WeightBalancerRejectedOperation = 1ULL << 49,
     AlgorithmError_FailedToInitialize = 1ULL << 50,
 
@@ -86,6 +87,8 @@ enum ErrorFlag : longUInt {
     SharedObject_AlgorithmDidntSelfRegister = 1ULL << 59,
     SharedObject_LoadedMoreThanOneAlgorithm = 1ULL << 60,
     SharedObject_NoAlgorithmsLoaded = 1ULL << 61,
+
+    AlgorithmError_LeftContainersAtShip = 1ULL << 62,
 };
 
 /**
@@ -128,7 +131,7 @@ public:
 
     // region Functions
 
-    std::string toString();
+    std::string toString() const;
 
     bool isCertainFlag(ErrorFlag other);  // kind of lazy equality operator
 

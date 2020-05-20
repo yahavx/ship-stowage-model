@@ -2,6 +2,7 @@
 // Created by t-yabeny on 5/5/2020.
 //
 
+#include <string>
 #include "WeightBalanceCalculator.h"
 
 int WeightBalanceCalculator::readShipPlan(const std::string &full_path_and_file_name) {

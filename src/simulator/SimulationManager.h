@@ -10,6 +10,7 @@
 #include "../interfaces/AbstractAlgorithm.h"
 #include "../common/actors/ContainerShip.h"
 #include "../common/actors/CranesManagement.h"
+#include "../common/loggers/Tracer.h"
 
 
 /// Manages a single simulation (algorithm-travel pair).
@@ -18,19 +19,20 @@ class SimulationManager {
     Errors errors;
     ContainerShip ship;
     int totalNumberOfOps;
+    Tracer &tracer;
 
     // internal
     Port currentPort;  // this will hold the current port (with storage) in each visit
     int portsVisited = 0;  // since the start of the journey
     StringToStringVectorMap cargoData;  // cargo_data files of each port
     StringToIntMap portsVisits;  // number of visits in each port
-    longUInt algorithmReport;  // latest algorithm report
+    longUInt algorithmReport{};  // latest algorithm report
 
 public:
 
     // region Constructor
 
-    explicit SimulationManager(SimulatorFileManager &manager);
+    explicit SimulationManager(SimulatorFileManager &manager, Tracer &tracer);
 
     // endregion
 
@@ -60,6 +62,12 @@ private:
 
     // endregion
 
+    // region Setter
+
+    void setTotalNumberOfOps(int totalNumberOfOps);
+
+    // endregion
+
     // region Simulation
 
 public:
@@ -71,8 +79,10 @@ public:
      *
      * @param increment increment the visit number before returning.
      */
-
     int currentPortVisitNum(bool increment = false);
+
+    /// Returns true if there are no more ports in the route.
+    bool isRouteFinished();
 
     /// Returns true if the current port is last in the route.
     bool isCurrentLastPort();

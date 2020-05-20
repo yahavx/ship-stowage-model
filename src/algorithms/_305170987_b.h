@@ -8,7 +8,7 @@
 #include "RobustStowageAlgorithm.h"
 
 
-/// The algorithm implementation is in the parent class. This is just a dummy to match the format.
+/// The algorithm implementation is in the parent class.
 class _305170987_b : public RobustStowageAlgorithm {
 
 };

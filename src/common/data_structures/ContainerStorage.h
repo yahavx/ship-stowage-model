@@ -27,7 +27,7 @@ public:
 
     // region Getters and setters
 
-    Containers &getContainers();
+    const Containers & getContainers() const;
 
     // endregion
 
@@ -59,6 +59,9 @@ public:
      * @param container - container to add
      */
     OptionalContainer removeContainer(const std::string& containerId);
+
+    /// Removes from port all ids that are in containersIds. If an id doesn't exist, it is ignored.
+    Containers removeContainers(const StringVector &containersIds);
 
     /**
      * Returns a container from this storage, by his id.

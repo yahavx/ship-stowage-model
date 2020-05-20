@@ -12,15 +12,26 @@
 
 // region Constructor
 
-SimulationManager::SimulationManager(SimulatorFileManager &manager) : fileManager(manager), totalNumberOfOps(0) {}
+SimulationManager::SimulationManager(SimulatorFileManager &manager, Tracer &tracer) : fileManager(manager),  errors(tracer),  totalNumberOfOps(0), tracer(tracer) {}
 
 // endregion
 
 // region Init
 
 void SimulationManager::initSimulationShip(WeightBalanceCalculator &calculator) {
+    tracer.traceVerbose("Initializing simulator ship...");
     ShipPlan shipPlan = readShipPlanFromFile(fileManager.shipPlanPath(), errors);
     ShipRoute shipRoute = readShipRouteFromFile(fileManager.shipRoutePath(), errors);
+
+    if (errors.hasFatalError()) {
+        tracer.traceInfo("Simulation ship failed to initialize.");  // this shouldn't happen (travel should be skipped)
+        return;
+    }
+
+    tracer.traceVerbose("Ship Plan and Route:");
+    tracer.traceVerbose(genericToString(shipPlan));
+    tracer.traceVerbose(genericToString(shipRoute), true);
+
     ship = ContainerShip(shipPlan, shipRoute, calculator);
 }
 
@@ -80,9 +91,7 @@ void SimulationManager::filterUnusedPorts() {
         }
 
         if (!found) {  // port is not in the route, remove it
-#ifdef DEBUG_PRINTS
-            std::cout << "Warning: port " << currPortCode << " has cargo files but doesn't appear in the route, ignoring" << std::endl;
-#endif
+            tracer.traceVerbose("Warning: port " + currPortCode + " has cargo files but doesn't appear in the route, ignoring");
             errors.addError({ErrorFlag::Travel_CargoData_PortNotInRoute, currPortCode});
             toErase.push_back(currPortCode);  // we don't erase in-place because it will crash the map iterator
         }
@@ -96,15 +105,26 @@ void SimulationManager::filterUnusedPorts() {
 void SimulationManager::addInitReport() {
     longUInt simulationReport = errors.toErrorFlag(false, true);
     if (simulationReport != 0) {
-        errors.addError(simulationReport, "Simulator");
+        errors.addErrorReport(simulationReport, "Simulator");
     }
 
     if (algorithmReport != 0) {
-        errors.addError(algorithmReport, "Algorithm");
+        errors.addErrorReport(algorithmReport, "Algorithm");
     }
 
     errors.addSimulationInitLog();
 }
+// endregion
+
+// region Setter
+
+void SimulationManager::setTotalNumberOfOps(int totalNumberOfOps) {
+    if (SimulationManager::totalNumberOfOps == -1) {  // If the algorithm is shit there is no way back
+        return;
+    }
+    SimulationManager::totalNumberOfOps = totalNumberOfOps;
+}
+
 // endregion
 
 // region Simulation
@@ -118,6 +138,10 @@ int SimulationManager::currentPortVisitNum(bool increment) {
     if (increment)
         return ++portsVisits[ship.getCurrentPortId()];
     return portsVisits[ship.getCurrentPortId()];
+}
+
+bool SimulationManager::isRouteFinished() {
+    return ship.getShipRoute().getPorts().empty();
 }
 
 bool SimulationManager::isCurrentLastPort() {
@@ -154,20 +178,29 @@ std::string SimulationManager::getInstructionsForCargo(AbstractAlgorithm *algori
     return instructionsOutputPath;
 }
 
-void SimulationManager::initPort(const std::string& cargoDataPath) {
+void SimulationManager::initPort(const std::string &cargoDataPath) {
     auto portId = ship.getCurrentPortId();
     auto storage = readPortCargoFromFile(cargoDataPath, errors);
-    currentPort = Port(portId, storage);
+
+    currentPort = Port(portId);
 
     if (isCurrentLastPort() && !storage.isEmpty()) { // Last port has containers
         errors.addError({ErrorFlag::ContainersAtPort_LastPortHasContainers});
+    }
+
+    if (!isCurrentLastPort()) {  // We ignore the storage at the last stop
+        currentPort.setStorage(storage);
     }
 }
 
 bool SimulationManager::performPackingOperations(const std::string &operationsPath) { // Perform operations on local ship and port
     Operations ops = readPackingOperationsFromFile(operationsPath, errors);
 
+    tracer.traceInfo("Operations from the algorithm:");
+    tracer.traceInfo(genericToString(ops));
+
     if (errors.hasAlgorithmErrors()) {
+        tracer.traceInfo("The operations from the algorithm contains an invalid line.");
         errors.addSimulationPortVisitLog(currentPortVisitNum(), ship.getCurrentPortId(), ++portsVisited);
         reportSimulationError();
         return false;
@@ -175,7 +208,13 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
 
     StringVector badContainers;
     if (!isCurrentLastPort()) {
-        badContainers = currentPort.removeBadContainers(ship.getShipRoute(), errors);  // Removes from port and returns the ids of the bad containers
+        // Removes invalid containers from port (invalid format, etc)
+        badContainers = currentPort.removeBadContainers(errors);
+
+        // Remove invalid containers from port, according to ship (not on route, duplicate ID)
+        StringVector moreBadContainers = ship.filterContainers(currentPort.getStorage().getContainers(), errors);
+        currentPort.removeContainers(moreBadContainers);
+        badContainers.insert(badContainers.begin(), moreBadContainers.begin(), moreBadContainers.end());
     }
 
     AlgorithmValidation validation(ship, currentPort, badContainers, errors);
@@ -184,6 +223,7 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
     for (const PackingOperation &op : ops.ops) {
 
         if (!validation.validatePackingOperation(op)) {
+            tracer.traceInfo("Operation '" + op.toString() + "' is illegal");
             errors.addSimulationPortVisitLog(currentPortVisitNum(), ship.getCurrentPortId(), ++portsVisited);
             reportSimulationError();
             return false;
@@ -196,31 +236,37 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
         checkCraneResult(op, opResult);
     }
 
+    bool allRelevantContainersLoaded = validation.validateNoContainersLeftOnPort();
+    bool allRelevantContainersUnloaded = validation.validateNoContainersLeftOnShip();
+
     addPortErrorReport();  // and simulation and algorithm reports summary, if needed
 
-    ship.advanceToNextPort();
-
-    if (!validation.validateNoContainersLeftOnPort()) {
+    if (!allRelevantContainersLoaded) {
+        tracer.traceInfo("A good container wasn't loaded from the port, while the ship isn't full.");
         reportSimulationError();
         return false;
     }
 
-#ifdef DEBUG_PRINTS
-    std::cout << ops;
-#endif
+    if (!allRelevantContainersUnloaded) {
+        tracer.traceInfo("A container that his destination is this port, wasn't unloaded from the ship.");
+        reportSimulationError();
+        return false;
+    }
 
-    totalNumberOfOps = totalNumberOfOps + ops.size(true);
+    ship.advanceToNextPort();
+
+    this->setTotalNumberOfOps(totalNumberOfOps + ops.size(true));
     return true;
 }
 
 void SimulationManager::addPortErrorReport() {
     longUInt simulationReport = errors.toErrorFlag(false, true);
     if (simulationReport != 0) {
-        errors.addError(simulationReport, "Simulator");
+        errors.addErrorReport(simulationReport, "Simulator");
     }
 
     if (algorithmReport != 0) {
-        errors.addError(algorithmReport, "Algorithm");
+        errors.addErrorReport(algorithmReport, "Algorithm");
     }
 
     errors.addSimulationPortVisitLog(currentPortVisitNum(), ship.getCurrentPortId(), ++portsVisited);
@@ -228,15 +274,11 @@ void SimulationManager::addPortErrorReport() {
 
 void SimulationManager::checkCraneResult(const PackingOperation &op, CraneOperationResult opResult) {
     if (opResult == CraneOperationResult::FAIL_CONTAINER_NOT_FOUND) {
-#ifdef DEBUG_PRINTS
-        std::cout << "crane received illegal operation, didn't find container with ID: " << op.getContainerId() << std::endl;
-#endif
+        tracer.traceInfo("Crane received illegal operation, didn't find container with ID: " + op.getContainerId());
         errors.addError({ErrorFlag::AlgorithmError_CraneOperationWithInvalidId, op.getContainerId(), currentPort.getId(), op.toString()});
     }
     if (opResult == CraneOperationResult::FAIL_ILLEGAL_OP) {
-#ifdef DEBUG_PRINTS
-        std::cout << "Illegal crane operation: " << op << std::endl;
-#endif
+        tracer.traceInfo("Illegal crane operation: " + op.toString());
         errors.addError({ErrorFlag::AlgorithmError_InvalidCraneOperation, op.toString()});
     }
 }
@@ -245,22 +287,29 @@ void SimulationManager::checkCraneResult(const PackingOperation &op, CraneOperat
 // region Finish
 
 void SimulationManager::reportSimulationError() {
-#ifdef DEBUG_PRINTS
-    std::cout << "Found an error in the algorithm, terminating" << std::endl << errors;
-    printSeparator(1, 3);
-#endif
+    tracer.traceInfo("Found an error in the algorithm, terminating");
+    tracer.separator(TraceVerbosity::Info, 1, 3);
+
+    setTotalNumberOfOps(-1);
     errors.addSimulationErrorLog();
 //    fileManager.saveSimulationErrors(errors);
 }
 
 int SimulationManager::finishSimulation() {
-    validateNoCargoFilesLeft();
+    this->validateNoCargoFilesLeft();
+
+    if (!ship.getCargo().isEmpty()) {
+        tracer.traceInfo("The travel is finished, but the ship is not empty (algorithm error)", true);
+        errors.addError(AlgorithmError_ShipNotEmptyAtEndOfRoute);
+        setTotalNumberOfOps(-1);
+    }
+
     errors.addSimulationFinishLog();
     saveErrors();
     return totalNumberOfOps;
 }
 
-void SimulationManager::saveErrors(){
+void SimulationManager::saveErrors() {
     if (errors.hasErrors()) {
         fileManager.saveSimulationErrors(errors);
     }
@@ -270,9 +319,7 @@ void SimulationManager::validateNoCargoFilesLeft() {
     for (auto &entry: cargoData) {
         std::string portId = entry.first;
         if (!cargoData[portId].empty()) {
-#ifdef DEBUG_PRINTS
-            std::cout << "Warning: finished the route, but port " << portId << " have cargo files that were not used" << std::endl;
-#endif
+            tracer.traceVerbose("Warning: finished the route, but port " + portId + " have cargo files that were not used");
             errors.addError({ErrorFlag::Travel_CargoData_RemainingFilesAfterFinish, portId, intToStr(cargoData[portId].size())});
         }
     }

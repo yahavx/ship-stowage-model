@@ -1,6 +1,6 @@
-COMP = g++-8.3.0
+COMP = g++-9.3.0
 
-SHARED_OBJS = $(NAIVE_SO) $(ROBUST_SO)
+SHARED_OBJS = $(NAIVE_SO) $(ROBUST_SO) $(BAD_SO)
 NAIVE_SO = _305170987_a.so
 ROBUST_SO = _305170987_b.so
 NAIVE = _305170987_a.o
@@ -20,6 +20,8 @@ $\
 $\
 ../common/io/FileReader.o ../common/io/ObjectsReader.o $\
 $\
+../common/loggers/Tracer.o $\
+$\
 ../common/strategies/LoadContainerToArbitraryPosition.o ../common/strategies/LoadContainerToLowestPositionAvailable.o $\
 $\
 ../common/utils/Error.o ../common/utils/Errors.o $\
@@ -27,7 +29,7 @@ $\
 # $\
 # ../interfaces/WeightBalanceCalculator.o
 
-CPP_COMP_FLAG = -std=c++2a -Wall -Wextra -Werror -pedantic-errors -DNDEBUG -fPIC -fvisibility=hidden
+CPP_COMP_FLAG = -std=c++2a -Wall -Wextra -Werror -pedantic-errors -DNDEBUG -fPIC -fvisibility=hidden -fvisibility-inlines-hidden
 CPP_LINK_FLAG = -shared
 
 all: $(SHARED_OBJS)
@@ -37,7 +39,7 @@ $(NAIVE_SO): $(OBJS) $(NAIVE)
 
 $(ROBUST_SO): $(OBJS) $(ROBUST)
 	$(COMP) $(CPP_LINK_FLAG) -o $@ $^
-	
+
 $(OBJS) $(ROBUST) $(NAIVE):
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp -o $@
 	

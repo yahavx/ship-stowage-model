@@ -10,6 +10,7 @@
 #include "../common/utils/Errors.h"
 #include "SimulatorFileManager.h"
 #include "../common/data_objects/Operations.h"
+#include "../common/loggers/Tracer.h"
 #include <memory>
 #include <functional>
 
@@ -18,9 +19,14 @@ class Simulator {
     std::string travelRootDir;
     std::string algorithmsDir;
     std::string outputDir;
+
     SimulatorFileManager fileManager;
     std::vector<std::function<std::unique_ptr<AbstractAlgorithm>()>> algorithmFactories;
     StringVector algorithmNames;  // the entry i corresponds to the name of the algorithm of factory i
+
+//    Tracer tracer = Tracer(TraceVerbosity::Disabled);
+    Tracer tracer = Tracer(TraceVerbosity::Info);
+//    Tracer tracer = Tracer(TraceVerbosity::Verbose);
 
 public:
 
@@ -48,8 +54,6 @@ private:
     int runSimulation(std::unique_ptr<AbstractAlgorithm> algorithmPtr);
 
     // endregion
-
-public:
 
     // region Constants
 

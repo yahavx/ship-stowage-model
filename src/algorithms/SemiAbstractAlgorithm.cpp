@@ -13,11 +13,11 @@
 int SemiAbstractAlgorithm::readShipPlan(const std::string &shipPlanPath) {
     Errors errors;
     auto shipPlan = readShipPlanFromFile(shipPlanPath, errors);
-    this->ship.setShipPlan(shipPlan);
 
     if (errors.hasFatalError()) {
         this->algoErrors = errors.toErrorFlag();
     } else {
+        this->ship.setShipPlan(shipPlan);
         this->algoErrors &= (~ErrorFlag::ShipPlan_FatalError_NoFileOrInvalidFirstLine);  // turn off the flag
     }
 
@@ -27,11 +27,11 @@ int SemiAbstractAlgorithm::readShipPlan(const std::string &shipPlanPath) {
 int SemiAbstractAlgorithm::readShipRoute(const std::string &shipRoutePath) {
     Errors errors;
     ShipRoute route = readShipRouteFromFile(shipRoutePath, errors);
-    this->ship.setShipRoute(route);
 
     if (errors.hasFatalError()) {
         this->algoErrors = errors.toErrorFlag();
     } else {
+        this->ship.setShipRoute(route);
         this->algoErrors &= (~ErrorFlag::ShipRoute_FatalError_NoFileOrNoLegalPorts);  // turn off the flag
     }
 
@@ -49,6 +49,7 @@ int SemiAbstractAlgorithm::setWeightBalanceCalculator(WeightBalanceCalculator &c
 
 int SemiAbstractAlgorithm::getInstructionsForCargo(const std::string &inputFile, const std::string &outputFile) {
     if (hasFatalError()) {  // Not initialized, or bad plan/route
+        createEmptyFile(outputFile);
         return algoErrors;
     }
 
@@ -70,10 +71,15 @@ int SemiAbstractAlgorithm::getInstructionsForCargo(const std::string &inputFile,
     Containers containersToLoad;
 
     if (!isLastPort) {
-        StringVector toReject = port.removeBadContainers(ship.getShipRoute(), errors);  // Get ids of all rejected containers (can contain duplicates)
+        StringVector toReject = port.removeBadContainers(errors);  // Get ids of all rejected containers (can contain duplicates)
         ops.addRejectOperations(toReject);  // If its empty, nothing will be added
 
         if (!port.getStorage().isEmpty()) {
+            // Filter containers and keep only valid ones
+            toReject = ship.filterContainers(port.getStorage().getContainers(), errors);
+            ops.addRejectOperations(toReject);
+            port.removeContainers(toReject);
+
             containersToLoad = getContainersToLoad(port);
         }
     }

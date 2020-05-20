@@ -17,8 +17,6 @@ AlgorithmValidation::AlgorithmValidation(ContainerShip &ship, Port &currentPort,
 
 // region Validations
 
-// TODO: check all the validations are ok
-
 bool AlgorithmValidation::validatePosition(const Position &pos) {
     int x = pos.X(), y = pos.Y();
     auto &dims = ship.getShipPlan().getDimensions();
@@ -26,8 +24,11 @@ bool AlgorithmValidation::validatePosition(const Position &pos) {
 }
 
 bool AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
+    auto &pos = op.getFirstPosition();
+    int x = pos.X(), y = pos.Y(), z = pos.floor();
+
     const auto &containerId = op.getContainerId();
-    if (!currentPort.hasContainer(containerId)) {
+    if (!currentPort.hasContainer(containerId)) {  // Container is in port reject list, or never was on port
         if (isBadContainer(containerId)) {
             errors.addError({ErrorFlag::AlgorithmError_TriedToLoadButShouldReject, containerId, currentPort.getId()});
         } else {
@@ -43,11 +44,16 @@ bool AlgorithmValidation::validateLoadOperation(const PackingOperation &op) {
         return false;
     }
 
-    auto pos = op.getFirstPosition();
     // Check if it is possible to load container to given position
-    if (!ship.getCargo().canLoadContainerToPosition(pos.X(), pos.Y())) {
-        int x = pos.X(), y = pos.Y();
+    if (!ship.getCargo().canLoadContainerToPosition(x, y)) {
         errors.addError({ErrorFlag::AlgorithmError_LoadAboveNotLegal, op.getContainerId(), std::to_string(x), std::to_string(y)});
+        return false;
+    }
+
+    int currentHeight = ship.getCargo().currentTopHeight(x, y);
+
+    if (currentHeight != z) {
+        errors.addError({ErrorFlag::AlgorithmError_LoadInvalidFloor, op.getContainerId(), std::to_string(x), std::to_string(y), std::to_string(z)});
         return false;
     }
 
@@ -126,7 +132,7 @@ bool AlgorithmValidation::validateMoveOperation(const PackingOperation &op) {
 
     auto container = containerOptional.value();
     if (container.getId() != op.getContainerId()) { // The top container at given (x,y) has different id
-        errors.addError({ErrorFlag::AlgorithmError_MoveBadId, op.getContainerId(), std::to_string(x), std::to_string(y)});
+        errors.addError({ErrorFlag::AlgorithmError_MoveBadId, std::to_string(x), std::to_string(y), container.getId(), op.getContainerId()});
         return false;
     }
 
@@ -226,23 +232,48 @@ bool AlgorithmValidation::validatePackingOperation(const PackingOperation &op) {
 }
 
 bool AlgorithmValidation::validateNoContainersLeftOnPort() {
-    bool success = true;
     if (!temporaryContainersOnPort.empty()) {
-        errors.addError(ErrorFlag::AlgorithmError_UnloadedAndDidntLoadBack);
-        success = true;  // We don't return now, to collect more errors if possible
+        for (auto &containerId : temporaryContainersOnPort) {
+            errors.addErrorReport(ErrorFlag::AlgorithmError_UnloadedAndDidntLoadBack, containerId);
+        }
+        return false;
     }
 
+    if (ship.getCargo().isFull()) {  // We can't load anymore
+        return true;
+    }
+
+    bool success = true;
+
+    // Ship is not full, check port is empty
     for (auto &portId : ship.getShipRoute().getNextPortsSet()) {
         PortId id(portId);
         if (id == currentPort.getId())
             continue;
-        if (!currentPort.getContainersForDestination(id).empty() && !ship.getCargo().isFull()) {
-            errors.addError({ErrorFlag::AlgorithmError_LeftContainersAtPort, portId, currentPort.getId()});
-            success = true;
+        const auto &containersLeftOnPort = currentPort.getContainersForDestination(id);
+        if (!containersLeftOnPort.empty()) {
+            for (auto &container : containersLeftOnPort) {
+                errors.addError({ErrorFlag::AlgorithmError_LeftContainersAtPort, container.getId(), portId, currentPort.getId()});
+            }
+            success = false;
         }
     }
 
     return success;
+}
+
+bool AlgorithmValidation::validateNoContainersLeftOnShip() {
+    std::vector<ContainerPosition> containersForPort = ship.getCargo().getContainersForPort(currentPort.getId());
+
+    if (!containersForPort.empty()) {
+        for (ContainerPosition &container: containersForPort) {
+            errors.addError({AlgorithmError_LeftContainersAtShip, container.getContainer().getId(), currentPort.getId()});
+        }
+
+        return false;
+    }
+
+    return true;
 }
 
 bool AlgorithmValidation::isBadContainer(const std::string &id) {

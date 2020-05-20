@@ -41,5 +41,6 @@ void printEmptyLines(int amount);
 /// Prints list of errors represented by the flag.
 void printErrorsFromFlag(int errorsFlag);
 
+std::string positionToString(int x, int y);
 
 #endif //SHIP_STOWAGE_MODEL_PRINTERS_H

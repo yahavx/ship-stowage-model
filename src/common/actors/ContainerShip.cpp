@@ -172,5 +172,40 @@ Operations ContainerShip::loadContainer(LoadContainerStrategy *strategy, Port &p
     return strategy->loadContainer(port, *this, container, errors);
 }
 
+StringVector ContainerShip::filterContainers(const Containers &containersToLoad, Errors &errors) {
+    std::unordered_set<std::string> portsSet = this->shipRoute.getNextPortsSet();  // All next ports in the route
+    StringVector invalidContainersIds;
+
+    for (std::size_t i = 0; i < containersToLoad.size(); i++) {
+        auto &container = containersToLoad[i];
+
+        auto &contId = container.getId();
+
+
+        if (this->cargo.hasContainer(contId)) {  // Already seen this id
+            errors.addError({ErrorFlag::ContainersAtPort_IDAlreadyOnShip, contId});
+            invalidContainersIds.push_back(contId);
+            continue;
+        }
+
+        Error err = container.isContainerLegal();
+
+        // Illegal containers
+        if (!err.isSuccess()) {
+            errors.addError(err);
+            invalidContainersIds.push_back(contId);
+            continue;
+        }
+
+        // Container destination is not on route
+        if (portsSet.find(container.getDestPort()) == portsSet.end()) {
+            errors.addError({ContainersAtPort_ContainerNotOnRoute, container.getId(), container.getDestPort()});
+            invalidContainersIds.push_back(contId);
+        }
+    }
+
+    return invalidContainersIds;
+}
+
 
 // endregion
