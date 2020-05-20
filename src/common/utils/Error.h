@@ -7,7 +7,7 @@
 
 #include "Definitions.h"
 
-#define MAX_ERROR_BIT 18  // highest bit that is used by the algorithm (rest are for us)
+#define ALGORITHM_MAX_ERROR 18  // highest bit that is used by the algorithm (rest are for us)
 
 
 /// Each entry represents a possible error/warning in the program.

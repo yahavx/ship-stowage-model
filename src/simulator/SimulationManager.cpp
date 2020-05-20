@@ -232,12 +232,18 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
     }
 
     bool allRelevantContainersLoaded = validation.validateNoContainersLeftOnPort();
+    bool allRelevantContainersUnloaded = validation.validateNoContainersLeftOnShip();
 
     addPortErrorReport();  // and simulation and algorithm reports summary, if needed
 
     if (!allRelevantContainersLoaded) {
+        tracer.traceInfo("A good container wasn't loaded from the port, while the ship isn't full.");
         reportSimulationError();
         return false;
+    }
+
+    if (!allRelevantContainersUnloaded) {
+        tracer.traceInfo("A container that his destination is this port, wasn't unloaded from the ship.");
     }
 
     ship.advanceToNextPort();
@@ -286,6 +292,7 @@ int SimulationManager::finishSimulation() {
     this->validateNoCargoFilesLeft();
 
     if (!ship.getCargo().isEmpty()) {
+        tracer.traceInfo("The travel is finished, but the ship is not empty (algorithm error)", true);
         errors.addError(AlgorithmError_ShipNotEmptyAtEndOfRoute);
         setTotalNumberOfOps(-1);
     }

@@ -21,7 +21,6 @@
 #include "../algorithms/NaiveStowageAlgorithm.h"
 #include "../algorithms/BadAlgorithm.h"
 #include "../algorithms/RobustStowageAlgorithm.h"
-#include "SimulationManager.h"
 
 #endif
 
@@ -33,14 +32,14 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
                                                                                                                          fileManager(outputDir,
                                                                                                                                      travelRootDir) {
 #ifndef RUNNING_ON_NOVA
-    algorithmFactories.emplace_back([]() { return std::make_unique<NaiveStowageAlgorithm>(); });
-    algorithmNames.push_back("Naive");
-
-//    algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
-//    algorithmNames.push_back("Bad");
+//    algorithmFactories.emplace_back([]() { return std::make_unique<NaiveStowageAlgorithm>(); });
+//    algorithmNames.push_back("Naive");
 //
-    algorithmFactories.emplace_back([](){return std::make_unique<RobustStowageAlgorithm>();});
-    algorithmNames.push_back("Robust");
+    algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
+    algorithmNames.push_back("Bad");
+
+//    algorithmFactories.emplace_back([](){return std::make_unique<RobustStowageAlgorithm>();});
+//    algorithmNames.push_back("Robust");
 #endif
 }
 
