@@ -100,7 +100,7 @@ public:
      * Returns positions for all containers in this cargo that are targeted to the given port
      * @param portId - target port
      */
-    std::vector<ContainerPosition> getContainersForPort(const PortId &portId) const;
+    std::vector<ContainerPosition> getContainersForPort(const PortId &portId);
 
     /**
      * Returns the container if exists, or null.

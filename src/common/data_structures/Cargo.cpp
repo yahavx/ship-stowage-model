@@ -122,22 +122,19 @@ OptionalContainer Cargo::getTopContainer(int x, int y) const {
     return xyContainers.back();
 }
 
-std::vector<ContainerPosition> Cargo::getContainersForPort(const PortId &portId) const {
+std::vector<ContainerPosition> Cargo::getContainersForPort(const PortId &portId) {
     std::vector<ContainerPosition> result = std::vector<ContainerPosition>();
 
     Dimensions dims = shipPlan.getDimensions();
     for (int x = 0; x < dims.X(); x++)
         for (int y = 0; y < dims.Y(); y++) {
-            Containers xyContainers = containers[x][y];
+            Containers &xyContainers = containers[x][y];
 
             for (int z = xyContainers.size() - 1; z >= 0; z--)
                 if (xyContainers[z].getDestPort() == portId) {
                     auto height = this->shipPlan.getHeights()[x][y] + z;
 
-                    Container cont(xyContainers[z]);
-
-                    // TODO: a temporary value is passed to the constructor by reference, and all instances returned are the same one (??)
-                    result.push_back(ContainerPosition(cont, {x, y, height}));
+                    result.push_back(ContainerPosition(xyContainers[z], {x, y, height}));
                 }
         }
 

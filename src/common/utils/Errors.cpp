@@ -61,7 +61,7 @@ longUInt Errors::toErrorFlag(bool limitErrorNum, bool sinceLastCheckPoint) {
         if (error == ContainersAtPort_ContainerNotOnRoute || error == ContainersAtPort_ContainerDestinationIsCurrentPort)  // Those errors are mapped to error 13 (MissingOrBadDestPort)
             error = ContainersAtPort_MissingOrBadPortDest;
 
-        if (!limitErrorNum || error <= 1 << ALGORITHM_MAX_ERROR) {  // If limit is on, we collect errors up to MAX_ERROR_BIT
+        if (!limitErrorNum || error <= 1 << ALGORITHM_MAX_ERROR) {  // If limit is on, we collect only algorithm errors
             errors |= error;
         }
     }

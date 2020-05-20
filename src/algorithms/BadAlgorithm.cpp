@@ -13,13 +13,13 @@ Operations BadAlgorithm::generateOperations(ContainerShip &ship, Port &port, con
 
     std::vector<ContainerPosition> containersToUnload = ship.getCargo().getContainersForPort(port.getId());
 
-    // Unload all required containers
-    for (const ContainerPosition &containerPos: containersToUnload) {
-        // Get instructions for removing the container
-        Operations unloadOps = ship.unloadContainer(port, containerPos);
-        // Add unload operations to set of all instructions
-        operations.addOperations(unloadOps);
-    }
+//    // Unload all required containers
+//    for (const ContainerPosition &containerPos: containersToUnload) {
+//        // Get instructions for removing the container
+//        Operations unloadOps = ship.unloadContainer(port, containerPos);
+//        // Add unload operations to set of all instructions
+//        operations.addOperations(unloadOps);
+//    }
 
     std::unique_ptr<LoadContainerStrategy> strategy = std::make_unique<LoadContainerToArbitraryPosition>();
     // Load all required containers

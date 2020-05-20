@@ -195,7 +195,7 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
     tracer.traceInfo(genericToString(ops));
 
     if (errors.hasAlgorithmErrors()) {
-        tracer.traceInfo("The operations contains an invalid line.");
+        tracer.traceInfo("The operations from the algorithm contains an invalid line.");
         errors.addSimulationPortVisitLog(currentPortVisitNum(), ship.getCurrentPortId(), ++portsVisited);
         reportSimulationError();
         return false;
@@ -244,6 +244,8 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
 
     if (!allRelevantContainersUnloaded) {
         tracer.traceInfo("A container that his destination is this port, wasn't unloaded from the ship.");
+        reportSimulationError();
+        return false;
     }
 
     ship.advanceToNextPort();
