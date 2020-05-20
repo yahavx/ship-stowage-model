@@ -3,14 +3,15 @@
 All the directories referenced below are inside the `bonus` directory.
 
 Our travel main directory (that contains some travel sub-directories) that shows our error handling mechanism, is called `travels-error-handling`.
-There is one travel that demonstrates almost all the different kind of errors formats and handling:
-- `Travel-Very-Diverse-Errors`
-There is also a readme inside this travel directory (`Travel-Very-Diverse-Errors`) that explains it well.
 
-Several other travels in that directory:
+There is one travel that demonstrates almost all the different kind of errors formats and handling, called `Travel-Very-Diverse-Errors`. It contains a `readme` inside that explains the travel.
+
+Several other travels in `travels-error-handling`:
 - `Travel-No-Errors`: a clean run, no errors folder is generated.
 - `Travel-Diverse-Errors`: also show many different errors.
 - `Travel-Bad-Input`, `Travel-Bad-Input-2`: travels that can't be executed.
+
+All those travels should be ran with our algorithms.
 
 What makes our error handling special:
 - It is very informative and well organized, and allows to debug problems very easily.
