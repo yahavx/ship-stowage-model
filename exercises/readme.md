@@ -1,6 +1,6 @@
 ### Makefiles
 
-To use the two `makefile`s successfully, its better to `make` the algorithms first, and than the simulator.
+To use the two `makefile`s successfully, its better to `make` the algorithms first, and then the simulator.
 If you want to `make` the simulator first, make sure you do `make clean` after (from the algorithms), so it will generate all the `.o` files from scratch (and not use `.o` files created by the simulator, which its not capable of).
 
 ### Critical errors
