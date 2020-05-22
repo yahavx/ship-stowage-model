@@ -1,5 +1,10 @@
+### Makefiles
+
+To use the two `makefile`s successfully, its better to `make` the algorithms first, and than the simulator.
+If you want to `make` the simulator first, make sure you do `make clean` after (from the algorithms), so it will generate all the `.o` files from scratch (and not use `.o` files created by the simulator, which its not capable of).
+
 ### Critical errors
-Critical errors prevent the program from running.
+Critical errors prevents the `simulator` program from running.
 - If the output path supplied (when supplied) is invalid (folder doesn't exist and cannot be created), it is a critical error.
 - Command line arguments.  
     - We except to receive 2, 4, or 6 arguments (according to number of flags supplied). Anything besides that is a critical error.
