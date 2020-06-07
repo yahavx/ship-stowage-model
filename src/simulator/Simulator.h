@@ -40,10 +40,23 @@ public:
 
     // region Simulation run
 
-    /// Run a cartesian loop of “travel” X “algorithm”.
-    void runSimulations();
+    /**
+     * Simulator main.
+     * @param threadsNum number of threads (workers) that run simulations.
+     */
+    void runSimulations(int threadsNum);
 
 private:
+
+    /**
+     * Run a cartesian loop of “travel” X “algorithm”.
+     * @param resultsTable table to write algorithm results into (initialized).
+     * @param travels travels to run.
+     * @param algorithms algorithms to run.
+     * @param threadsNum number of threads to run.
+     */
+    void executeCartesianLoop(StringStringVector &resultsTable, StringVector &travels, std::vector<std::function<std::unique_ptr<AbstractAlgorithm>()>> &algorithms, int threadsNum);
+
     /// Loads algorithms dynamically, returns false if no algorithm was loaded.
     void loadAlgorithmsDynamically(Errors &errors);
 

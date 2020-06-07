@@ -52,7 +52,7 @@ Simulator::Simulator(const std::string &travelRootDir, const std::vector<std::fu
 
 // region Simulation run
 
-void Simulator::runSimulations() {
+void Simulator::runSimulations(int threadsNum) {
     tracer.traceVerbose("Simulator started.", true);
     StringStringVector resultsTable;  // table of results
     Errors generalErrors;
@@ -64,21 +64,7 @@ void Simulator::runSimulations() {
 
     initResultsTable(resultsTable, travels, algorithmNames);  // Add columns names and set table structure
 
-    for (auto &travel: travels) {
-        fileManager.setTravelName(extractFilenameFromPath(travel));
-
-        for (longUInt i = 0; i < algorithmFactories.size(); i++) {
-            tracer.traceVerbose("Creating instance of algorithm " + algorithmNames[i]);
-            std::unique_ptr<AbstractAlgorithm> algorithm = algorithmFactories[i]();
-            fileManager.setAlgorithmName(algorithmNames[i]);
-            fileManager.createTravelCraneFolder();
-
-            tracer.traceVerbose("Starting a simulation.");
-            int totalCraneInstructions = runSimulation(std::move(algorithm));
-
-            addSimulationResultToTable(resultsTable, totalCraneInstructions, i + 1);
-        }
-    }
+    executeCartesianLoop(resultsTable, travels, algorithmFactories, threadsNum);
 
     if (!travels.empty() && !algorithmFactories.empty()) {
         finalizeResultsTable(resultsTable);
@@ -93,6 +79,39 @@ void Simulator::runSimulations() {
     }
 
     fileManager.cleanOutputFolders();  // remove temp and errors (if empty)
+}
+
+void Simulator::executeCartesianLoop(StringStringVector &resultsTable, StringVector &travels, std::vector<std::function<std::unique_ptr<AbstractAlgorithm>()>> &algorithms, int threadsNum) {
+
+    // region Single thread
+
+    if (threadsNum == 1) {  // like before
+        for (longUInt i = 0; i < travels.size(); i++) {
+            fileManager.setTravelName(extractFilenameFromPath(travels[i]));
+
+            for (longUInt j = 0; j < algorithms.size(); j++) {
+                tracer.traceVerbose("Creating instance of algorithm " + algorithmNames[j]);
+                std::unique_ptr<AbstractAlgorithm> algorithm = algorithms[j]();
+                fileManager.setAlgorithmName(algorithmNames[j]);
+                fileManager.createTravelCraneFolder();
+
+                tracer.traceVerbose("Starting a simulation.");
+                int totalCraneInstructions = runSimulation(std::move(algorithm));
+
+                addSimulationResultToTable(resultsTable, totalCraneInstructions, i, j);
+            }
+        }
+    }
+
+    // endregion
+
+    // region Multi thread
+
+    else {
+        // TODO
+    }
+
+    // endregion
 }
 
 void Simulator::loadAlgorithmsDynamically(Errors &errors) {

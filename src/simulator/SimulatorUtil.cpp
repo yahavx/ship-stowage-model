@@ -31,35 +31,41 @@ int extractNumberFromCargoFile(const std::string filePath) {
 // region Table data manager
 
 void initResultsTable(StringStringVector &results, StringVector &travels, StringVector &algorithmsNames) {
-    // init results table
-    StringVector &resultsFirstRow = results.emplace_back();
+    int tableHeight = algorithmsNames.size() + 1;
+    int tableWidth = travels.size() + 3;
 
-    resultsFirstRow.push_back(Simulator::s_resultsTableTitle);  // Set table title
+    results = StringStringVector(tableHeight, StringVector(tableWidth));
 
-    for (auto &travel : travels) {  // First row init (column names)
-        auto travelName = extractFilenameFromPath(travel);
-        resultsFirstRow.push_back(travelName);
+    auto& firstRow = results[0];
+
+    firstRow[0] = Simulator::s_resultsTableTitle;  // Set table title
+
+    for (longUInt i = 0; i < travels.size(); i++) {  // First row init (column names)
+        auto travelName = extractFilenameFromPath(travels[i]);
+        firstRow[i + 1] = travelName;
     }
-    resultsFirstRow.push_back(Simulator::s_sumColumnTitle);
-    resultsFirstRow.push_back(Simulator::s_errorsColumnTitle);
 
-    for (auto &algorithmsName : algorithmsNames) {  // Init a row for each algorithm
-        results.emplace_back();
-        results.back().push_back(algorithmsName);
+    firstRow[travels.size() + 1] = Simulator::s_sumColumnTitle;
+    firstRow[travels.size() + 2] = Simulator::s_errorsColumnTitle;
+
+    for (longUInt i = 0; i <algorithmsNames.size(); i++) {  // Init a row for each algorithm
+        results[i + 1][0] = algorithmsNames[i];
     }
 }
 
-void addSimulationResultToTable(StringStringVector &simulationResults, int totalCraneInstructions, int rowNum) {
-    simulationResults[rowNum].push_back(intToStr(totalCraneInstructions));
+void addSimulationResultToTable(StringStringVector &simulationResults, int totalCraneInstructions, int travelNum, int algorithmNum) {
+    simulationResults[algorithmNum + 1][travelNum + 1] = intToStr(totalCraneInstructions);
 }
 
 void finalizeResultsTable(StringStringVector &results) {
+    longUInt rowSize = results[0].size();
+
     for (longUInt i = 1; i < results.size(); i++) {  // For each algorithm
         auto &rowEntry = results[i];
         int totalOps = 0;
         int errors = 0;
 
-        for (longUInt j = 1; j < rowEntry.size(); j++) {  // Sum his operations/errors from all the travels
+        for (longUInt j = 1; j < rowSize - 2; j++) {  // Sum his operations/errors from all the travels
             int ops = strToInt(rowEntry[j]);
 
             if (ops == -1) {
@@ -70,8 +76,8 @@ void finalizeResultsTable(StringStringVector &results) {
         }
 
         // push result
-        rowEntry.push_back(intToStr(totalOps));
-        rowEntry.push_back(intToStr(errors));
+        rowEntry[rowSize - 2] = intToStr(totalOps);
+        rowEntry[rowSize - 1] = intToStr(errors);
     }
 
     sortResultsTable(results);
