@@ -255,7 +255,7 @@ bool SimulationManager::performPackingOperations(const std::string &operationsPa
 
     ship.advanceToNextPort();
 
-    this->setTotalNumberOfOps(totalNumberOfOps + ops.size(true));
+    this->setTotalNumberOfOps(totalNumberOfOps + ops.cost());
     return true;
 }
 

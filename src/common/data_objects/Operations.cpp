@@ -21,6 +21,29 @@ void Operations::addRejectOperations(const StringVector &containerIds) {
     }
 }
 
+int Operations::cost() const {
+    int sum = 0;
+
+    for (auto& op: ops) {
+        switch (op.getType()) {
+            case PackingType::reject:
+                sum += 0;
+                break;
+            case PackingType::move:
+                sum += 3;
+                break;
+            case PackingType::load:
+                sum += 5;
+                break;
+            case PackingType::unload:
+                sum += 5;
+                break;
+        }
+    }
+
+    return sum;
+}
+
 int Operations::size(bool excludeRejects) const {
     if (!excludeRejects)
         return ops.size();

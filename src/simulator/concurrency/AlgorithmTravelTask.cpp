@@ -71,7 +71,7 @@ void AlgorithmTravelTask::run() {
             resultsTable, totalNumberOfOps,
             resultsTableIndices.first + 1, resultsTableIndices.second + 1);
 
-    tracer.traceInfo("The ship has completed its journey. Total number of operations: " + intToStr(totalNumberOfOps));
+    tracer.traceInfo("The ship has completed its journey. Total cost of operations: " + intToStr(totalNumberOfOps));
     tracer.separator(TraceVerbosity::Info, 0, 3);
 
     /*return totalNumberOfOps*/;

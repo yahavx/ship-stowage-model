@@ -25,6 +25,9 @@ public:
 
     int size(bool excludeRejects = false) const;
 
+    /// Returns the price of the operations (5 for load/unload, 3 for move, 0 for reject).
+    int cost() const;
+
     bool empty() const;
 
     // endregion

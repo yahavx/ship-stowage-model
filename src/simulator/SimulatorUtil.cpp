@@ -63,10 +63,8 @@ void initResultsTableWithPlaceholders(StringStringVector &results, StringVector 
     resultsFirstRow.push_back(Simulator::s_errorsColumnTitle);
 
     for (auto &algorithmsName : algorithmsNames) {  // Init a row for each algorithm with placeholders
-        results.emplace_back();
-        results.back().push_back(algorithmsName);
-        for(size_t i = 0; i < travels.size(); i++)
-            results.back().push_back(Simulator::s_resultsTablePlaceholder);
+        results.emplace_back(StringVector(travels.size() + 1, Simulator::s_resultsTablePlaceholder));
+        results.back()[0] = algorithmsName;
     }
 }
 
@@ -75,7 +73,7 @@ void addSimulationResultToTable(StringStringVector &simulationResults, int total
 }
 
 void updateSimulationResultAtPosition(StringStringVector &simulationResults, int totalCraneInstructions, int rowNum, int colNum) {
-    simulationResults[rowNum][colNum] = (intToStr(totalCraneInstructions));
+    simulationResults[rowNum][colNum] = intToStr(totalCraneInstructions);
 }
 
 void finalizeResultsTable(StringStringVector &results) {
