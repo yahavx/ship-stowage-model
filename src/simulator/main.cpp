@@ -54,6 +54,7 @@ int main(int argc, char **argv) {
         std::cerr << "Program is terminated." << std::endl;
     }
 
+
 //    travelPath = "../input-examples/Travel-Roots/single-travel";
 
     Simulator simulator(travelPath, algorithmPath, outputPath);
