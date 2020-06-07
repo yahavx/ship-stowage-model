@@ -19,9 +19,7 @@
  *
  * @return empty string if successful, invalid flag if found one.
  */
-std::string parseCmdArguments(int argc, char **argv,
-                              std::string &travelPath, std::string &algorithmPath, std::string &outputPath,
-                              int &num_threads);
+std::string parseCmdArguments(int argc, char **argv, std::string &travelPath, std::string &algorithmPath, std::string &outputPath, std::string &numThreads);
 
 const std::string cmdFormat = "Format: ./simulator [-travel_path <path>] [-algorithm_path <algorithm path>] [-output <output path>]";
 
@@ -37,16 +35,20 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    std::string travelPath = "", algorithmPath = ".", outputPath = ".";  // default is cwd
-    int num_threads = 1;
+    std::string travelPath = "", algorithmPath = ".", outputPath = ".", numThreads = "1";  // default is cwd
 
-    std::string invalidFlag = parseCmdArguments(argc, argv, travelPath, algorithmPath, outputPath, num_threads);
+    std::string invalidFlag = parseCmdArguments(argc, argv, travelPath, algorithmPath, outputPath, numThreads);
 
     if (invalidFlag != "") {
         std::cerr << "Invalid flag received: '" << invalidFlag << "'" << std::endl;
         std::cerr << cmdFormat << std::endl;
         std::cerr << "Program is terminated." << std::endl;
         return EXIT_FAILURE;
+    }
+
+    if (!isInteger(numThreads) || strToInt(numThreads) == 0) {
+        std::cerr << "Received an invalid number of threads: '" << numThreads << "', should be a positive number" << std::endl;
+        std::cerr << "Program is terminated." << std::endl;
     }
 
     bool created = createFolder(outputPath);
@@ -57,16 +59,14 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    Simulator simulator(travelPath, algorithmPath, outputPath, num_threads);
+    Simulator simulator(travelPath, algorithmPath, outputPath, strToInt(numThreads));
 
     simulator.runSimulations();
 
     return EXIT_SUCCESS;
 }
 
-std::string parseCmdArguments(int argc, char **argv,
-                              std::string &travelPath, std::string &algorithmPath, std::string &outputPath,
-                              int &num_threads) {
+std::string parseCmdArguments(int argc, char **argv, std::string &travelPath, std::string &algorithmPath, std::string &outputPath, std::string &numThreads) {
     for (int i = 1; i < argc - 1; i += 2) {
         std::string flag = argv[i];
 
@@ -77,7 +77,7 @@ std::string parseCmdArguments(int argc, char **argv,
         } else if (flag == "-output") {
             outputPath = argv[i + 1];
         } else if (flag == "-num_threads") {
-            num_threads = atoi(argv[i+1]);
+            numThreads = argv[i + 1];
         } else return flag;  // error
     }
 
