@@ -11,6 +11,8 @@
 #include "SimulatorFileManager.h"
 #include "../common/data_objects/Operations.h"
 #include "../common/loggers/Tracer.h"
+#include "AlgorithmTravelTask.h"
+#include "SimpleTaskProducer.h"
 #include <memory>
 #include <functional>
 
@@ -19,8 +21,9 @@ class Simulator {
     std::string travelRootDir;
     std::string algorithmsDir;
     std::string outputDir;
+    int numThreads;
 
-    SimulatorFileManager fileManager;
+    SimulatorFileManager rootFileManager;
     std::vector<std::function<std::unique_ptr<AbstractAlgorithm>()>> algorithmFactories;
     StringVector algorithmNames;  // the entry i corresponds to the name of the algorithm of factory i
 
@@ -32,9 +35,9 @@ public:
 
     // region Constructors
 
-    Simulator(const std::string &travelRootDir, const std::string &algorithmsDir, const std::string &outputDir);
+    Simulator(const std::string &travelRootDir, const std::string &algorithmsDir, const std::string &outputDir, int numThreads);
 
-    Simulator(const std::string &travelRootDir, const std::vector<std::function<std::unique_ptr<AbstractAlgorithm>()>> &algorithmFactories, const std::string &outputDir);  // for tests
+    Simulator(const std::string &travelRootDir, int numThreads, const std::vector<std::function<std::unique_ptr<AbstractAlgorithm>()>> &algorithmFactories, const std::string &outputDir);  // for tests
 
     // endregion
 
@@ -51,7 +54,9 @@ private:
      * Simulates an algorithm on a single travel.
      * @return number of steps took to simulate, or -1 if the algorithm made at least 1 error.
      */
-    int runSimulation(std::unique_ptr<AbstractAlgorithm> algorithmPtr);
+    int runSimulation(SimulatorFileManager &fileManager, std::unique_ptr<AbstractAlgorithm> algorithmPtr);
+
+    std::vector<AlgorithmTravelTask> createAlgorithmTravelTasksProducer(StringVector &travels, StringStringVector &resultsTable);
 
     // endregion
 
@@ -62,6 +67,8 @@ public:
     static const std::string s_resultsTableTitle;
     static const std::string s_sumColumnTitle;
     static const std::string s_errorsColumnTitle;
+    static const std::string s_resultsTablePlaceholder;
+
 
     // endregion
 };

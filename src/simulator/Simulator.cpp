@@ -21,16 +21,21 @@
 #include "../algorithms/NaiveStowageAlgorithm.h"
 #include "../algorithms/BadAlgorithm.h"
 #include "../algorithms/RobustStowageAlgorithm.h"
+#include "SimpleTaskProducer.h"
+#include "../common/utils/strongTypes.h"
+#include "AlgorithmTravelTask.h"
+#include "ThreadPoolExecuter.h"
 
 #endif
 
 // region Constructors
 
-Simulator::Simulator(const std::string &travelRootDir, const std::string &algorithmsDir, const std::string &outputDir) : travelRootDir(travelRootDir),
+Simulator::Simulator(const std::string &travelRootDir, const std::string &algorithmsDir, const std::string &outputDir, const int numThreads) : travelRootDir(travelRootDir),
                                                                                                                          algorithmsDir(algorithmsDir),
                                                                                                                          outputDir(outputDir),
-                                                                                                                         fileManager(outputDir,
-                                                                                                                                     travelRootDir) {
+                                                                                                                         numThreads(numThreads),
+                                                                                                                         rootFileManager(outputDir,
+                                                                                                                                         travelRootDir) {
 #ifndef RUNNING_ON_NOVA
     algorithmFactories.emplace_back([]() { return std::make_unique<NaiveStowageAlgorithm>(); });
     algorithmNames.push_back("Naive");
@@ -38,13 +43,13 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
 //    algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
 //    algorithmNames.push_back("Bad");
 //
-    algorithmFactories.emplace_back([](){return std::make_unique<RobustStowageAlgorithm>();});
+    algorithmFactories.emplace_back([]() { return std::make_unique<RobustStowageAlgorithm>(); });
     algorithmNames.push_back("Robust");
 #endif
 }
 
-Simulator::Simulator(const std::string &travelRootDir, const std::vector<std::function<std::unique_ptr<AbstractAlgorithm>()>> &algorithmFactories,
-                     const std::string &outputDir) : travelRootDir(travelRootDir), outputDir(outputDir), fileManager(outputDir, travelRootDir),
+Simulator::Simulator(const std::string &travelRootDir, int numThreads, const std::vector<std::function<std::unique_ptr<AbstractAlgorithm>()>> &algorithmFactories,
+                     const std::string &outputDir) : travelRootDir(travelRootDir), outputDir(outputDir), numThreads(numThreads),  rootFileManager(outputDir, travelRootDir),
                                                      algorithmFactories(algorithmFactories) {}
 
 
@@ -57,43 +62,128 @@ void Simulator::runSimulations() {
     StringStringVector resultsTable;  // table of results
     Errors generalErrors;
 
-    StringVector travels = fileManager.collectLegalTravels(generalErrors);
-    fileManager.createOutputFolders(generalErrors);
+    StringVector travels = rootFileManager.collectLegalTravels(generalErrors);
+    rootFileManager.createOutputFolders(generalErrors);
     loadAlgorithmsDynamically(generalErrors);  // We may have no travels to run at this point - but we can collect errors
     generalErrors.addSimulatorInitLog();
 
-    initResultsTable(resultsTable, travels, algorithmNames);  // Add columns names and set table structure
+    initResultsTableWithPlaceholders(resultsTable, travels, algorithmNames);  // Add columns names and set table structure
 
-    for (auto &travel: travels) {
-        fileManager.setTravelName(extractFilenameFromPath(travel));
+    // Create producer for all algorithm-travel pair tasks
+//    SimpleTasksProducer producer = createAlgorithmTravelTasksProducer(travels, resultsTable);
 
-        for (longUInt i = 0; i < algorithmFactories.size(); i++) {
-            tracer.traceVerbose("Creating instance of algorithm " + algorithmNames[i]);
-            std::unique_ptr<AbstractAlgorithm> algorithm = algorithmFactories[i]();
-            fileManager.setAlgorithmName(algorithmNames[i]);
-            fileManager.createTravelCraneFolder();
+    auto tasks = createAlgorithmTravelTasksProducer(travels, resultsTable);
 
-            tracer.traceVerbose("Starting a simulation.");
-            int totalCraneInstructions = runSimulation(std::move(algorithm));
+    ThreadPoolExecuter executor {
+            // Create producer for all algorithm-travel pair tasks
+            SimpleTasksProducer(tasks),
+            NumThreads{numThreads}
+    };
 
-            addSimulationResultToTable(resultsTable, totalCraneInstructions, i + 1);
-        }
-    }
+    // Start running all the tasks
+    executor.start();
+
+    // Wait until all tasks are finished
+    executor.wait_till_finish();
+
+//    for (auto &travel: travels) {
+//        SimulatorFileManager fileManager(outputDir, travelRootDir);
+//        fileManager.setTravelName(extractFilenameFromPath(travel));
+//
+//        for (longUInt i = 0; i < algorithmFactories.size(); i++) {
+//            tracer.traceVerbose("Creating instance of algorithm " + algorithmNames[i]);
+//            std::unique_ptr<AbstractAlgorithm> algorithm = algorithmFactories[i]();
+//            fileManager.setAlgorithmName(algorithmNames[i]);
+//            fileManager.createTravelCraneFolder();
+//
+//            tracer.traceVerbose("Starting a simulation.");
+//            int totalCraneInstructions = runSimulation(fileManager, std::move(algorithm));
+//
+//            addSimulationResultToTable(resultsTable, totalCraneInstructions, i + 1);
+//        }
+//    }
 
     if (!travels.empty() && !algorithmFactories.empty()) {
         finalizeResultsTable(resultsTable);
-        fileManager.saveSimulationResults(resultsTable);
-    }
-    else {
+        rootFileManager.saveSimulationResults(resultsTable);
+    } else {
         tracer.traceInfo("No legal travels and/or no algorithms were available (no simulations were ran).");
     }
 
     if (generalErrors.hasErrors()) {
-        fileManager.saveGeneralErrors(generalErrors);
+        rootFileManager.saveGeneralErrors(generalErrors);
     }
 
-    fileManager.cleanOutputFolders();  // remove temp and errors (if empty)
+    rootFileManager.cleanOutputFolders();  // remove temp and errors (if empty)
 }
+
+std::vector<AlgorithmTravelTask> Simulator::createAlgorithmTravelTasksProducer(StringVector &travels, StringStringVector &resultsTable) {
+    std::vector<AlgorithmTravelTask> tasks;
+
+    for (longUInt t = 0; t < travels.size(); t++) {
+        auto &travel = travels[t];
+        for (longUInt a = 0; a < algorithmFactories.size(); a++) {
+            SimulatorFileManager fileManager(outputDir, travelRootDir);
+            fileManager.setTravelName(extractFilenameFromPath(travel));
+
+            tracer.traceVerbose("Creating instance of algorithm " + algorithmNames[a]);
+
+            fileManager.setAlgorithmName(algorithmNames[a]);
+            fileManager.createTravelCraneFolder();
+
+            AlgorithmTravelTask task(fileManager, tracer, resultsTable, std::pair(a, t), algorithmFactories[a], travel);
+            tasks.push_back(task);
+
+            tracer.traceVerbose("created task: " + algorithmNames[a] + ", " + travel);
+        }
+    }
+
+    return tasks;
+}
+
+//void Simulator::runSimulations() {
+//    tracer.traceVerbose("Simulator started.", true);
+//    StringStringVector resultsTable;  // table of results
+//    Errors generalErrors;
+//
+//    StringVector travels = rootFileManager.collectLegalTravels(generalErrors);
+//    rootFileManager.createOutputFolders(generalErrors);
+//    loadAlgorithmsDynamically(generalErrors);  // We may have no travels to run at this point - but we can collect errors
+//    generalErrors.addSimulatorInitLog();
+//
+//    initResultsTable(resultsTable, travels, algorithmNames);  // Add columns names and set table structure
+//
+//    for (auto &travel: travels) {
+//        SimulatorFileManager fileManager(outputDir, travelRootDir);
+//        fileManager.setTravelName(extractFilenameFromPath(travel));
+//
+//        for (longUInt i = 0; i < algorithmFactories.size(); i++) {
+//            tracer.traceVerbose("Creating instance of algorithm " + algorithmNames[i]);
+//            std::unique_ptr<AbstractAlgorithm> algorithm = algorithmFactories[i]();
+//            fileManager.setAlgorithmName(algorithmNames[i]);
+//            fileManager.createTravelCraneFolder();
+//
+//            tracer.traceVerbose("Starting a simulation.");
+//            int totalCraneInstructions = runSimulation(fileManager, std::move(algorithm));
+//
+//            addSimulationResultToTable(resultsTable, totalCraneInstructions, i + 1);
+//        }
+//    }
+//
+//    if (!travels.empty() && !algorithmFactories.empty()) {
+//        finalizeResultsTable(resultsTable);
+//        rootFileManager.saveSimulationResults(resultsTable);
+//    }
+//    else {
+//        tracer.traceInfo("No legal travels and/or no algorithms were available (no simulations were ran).");
+//    }
+//
+//    if (generalErrors.hasErrors()) {
+//        rootFileManager.saveGeneralErrors(generalErrors);
+//    }
+//
+//    rootFileManager.cleanOutputFolders();  // remove temp and errors (if empty)
+//}
 
 void Simulator::loadAlgorithmsDynamically(Errors &errors) {
 #ifndef RUNNING_ON_NOVA
@@ -152,7 +242,7 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
     }
 }
 
-int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
+int Simulator::runSimulation(SimulatorFileManager &fileManager, std::unique_ptr<AbstractAlgorithm> algorithm) {
     SimulationManager simManager(fileManager, tracer);
 
     // region Init
@@ -212,5 +302,7 @@ int Simulator::runSimulation(std::unique_ptr<AbstractAlgorithm> algorithm) {
 const std::string Simulator::s_resultsTableTitle = "RESULTS";
 const std::string Simulator::s_sumColumnTitle = "Sum";
 const std::string Simulator::s_errorsColumnTitle = "Num Errors";
+const std::string Simulator::s_resultsTablePlaceholder = "-1";
+
 
 // endregion
