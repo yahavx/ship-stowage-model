@@ -4,8 +4,8 @@
 #include "../common/utils/UtilFunctions.h"
 #include "Simulator.h"
 #include "SimulatorUtil.h"
-#include "ThreadPoolExecuter.h"
-#include "SimpleTaskProducer.h"
+#include "concurrency/ThreadPoolExecutor.h"
+#include "concurrency/AlgorithmTravelTaskProducer.h"
 
 #ifndef RUNNING_ON_NOVA
 
@@ -24,28 +24,6 @@ std::string parseCmdArguments(int argc, char **argv,
                               int &num_threads);
 
 const std::string cmdFormat = "Format: ./simulator [-travel_path <path>] [-algorithm_path <algorithm path>] [-output <output path>]";
-
-//int main() {
-//    ThreadPoolExecuter executer1 {
-//            SimpleTasksProducer{NumTasks{8}, IterationsPerTask{200}},
-//            NumThreads{5}
-//    };
-//    std::cout << "first cycle started" << std::endl;
-//    executer1.start();
-//    executer1.wait_till_finish();
-//    std::cout << "first cycle finished" << std::endl;
-//
-//    ThreadPoolExecuter executer2 {
-//            SimpleTasksProducer{NumTasks{5}, IterationsPerTask{500}},
-//            NumThreads{2}
-//    };
-//    std::cout << "second cycle started" << std::endl;
-//    executer2.start();
-//    using namespace std::chrono_literals;
-//    std::this_thread::sleep_for(10ms);
-//    executer2.stop_gracefully();
-//    std::cout << "second cycle stopped" << std::endl;
-//}
 
 int main(int argc, char **argv) {
 //    runIOTests();

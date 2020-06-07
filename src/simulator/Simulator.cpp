@@ -21,10 +21,10 @@
 #include "../algorithms/NaiveStowageAlgorithm.h"
 #include "../algorithms/BadAlgorithm.h"
 #include "../algorithms/RobustStowageAlgorithm.h"
-#include "SimpleTaskProducer.h"
-#include "../common/utils/strongTypes.h"
-#include "AlgorithmTravelTask.h"
-#include "ThreadPoolExecuter.h"
+#include "concurrency/AlgorithmTravelTaskProducer.h"
+#include "../common/utils/StrongTypes.h"
+#include "concurrency/AlgorithmTravelTask.h"
+#include "concurrency/ThreadPoolExecutor.h"
 
 #endif
 
@@ -69,14 +69,11 @@ void Simulator::runSimulations() {
 
     initResultsTableWithPlaceholders(resultsTable, travels, algorithmNames);  // Add columns names and set table structure
 
-    // Create producer for all algorithm-travel pair tasks
-//    SimpleTasksProducer producer = createAlgorithmTravelTasksProducer(travels, resultsTable);
+    auto tasks = createAlgorithmTravelTasks(travels, resultsTable);
 
-    auto tasks = createAlgorithmTravelTasksProducer(travels, resultsTable);
-
-    ThreadPoolExecuter executor {
+    ThreadPoolExecutor executor {
             // Create producer for all algorithm-travel pair tasks
-            SimpleTasksProducer(tasks),
+            AlgorithmTravelTaskProducer(tasks),
             NumThreads{numThreads}
     };
 
@@ -85,23 +82,6 @@ void Simulator::runSimulations() {
 
     // Wait until all tasks are finished
     executor.wait_till_finish();
-
-//    for (auto &travel: travels) {
-//        SimulatorFileManager fileManager(outputDir, travelRootDir);
-//        fileManager.setTravelName(extractFilenameFromPath(travel));
-//
-//        for (longUInt i = 0; i < algorithmFactories.size(); i++) {
-//            tracer.traceVerbose("Creating instance of algorithm " + algorithmNames[i]);
-//            std::unique_ptr<AbstractAlgorithm> algorithm = algorithmFactories[i]();
-//            fileManager.setAlgorithmName(algorithmNames[i]);
-//            fileManager.createTravelCraneFolder();
-//
-//            tracer.traceVerbose("Starting a simulation.");
-//            int totalCraneInstructions = runSimulation(fileManager, std::move(algorithm));
-//
-//            addSimulationResultToTable(resultsTable, totalCraneInstructions, i + 1);
-//        }
-//    }
 
     if (!travels.empty() && !algorithmFactories.empty()) {
         finalizeResultsTable(resultsTable);
@@ -117,7 +97,7 @@ void Simulator::runSimulations() {
     rootFileManager.cleanOutputFolders();  // remove temp and errors (if empty)
 }
 
-std::vector<AlgorithmTravelTask> Simulator::createAlgorithmTravelTasksProducer(StringVector &travels, StringStringVector &resultsTable) {
+std::vector<AlgorithmTravelTask> Simulator::createAlgorithmTravelTasks(StringVector &travels, StringStringVector &resultsTable) {
     std::vector<AlgorithmTravelTask> tasks;
 
     for (longUInt t = 0; t < travels.size(); t++) {
@@ -140,50 +120,6 @@ std::vector<AlgorithmTravelTask> Simulator::createAlgorithmTravelTasksProducer(S
 
     return tasks;
 }
-
-//void Simulator::runSimulations() {
-//    tracer.traceVerbose("Simulator started.", true);
-//    StringStringVector resultsTable;  // table of results
-//    Errors generalErrors;
-//
-//    StringVector travels = rootFileManager.collectLegalTravels(generalErrors);
-//    rootFileManager.createOutputFolders(generalErrors);
-//    loadAlgorithmsDynamically(generalErrors);  // We may have no travels to run at this point - but we can collect errors
-//    generalErrors.addSimulatorInitLog();
-//
-//    initResultsTable(resultsTable, travels, algorithmNames);  // Add columns names and set table structure
-//
-//    for (auto &travel: travels) {
-//        SimulatorFileManager fileManager(outputDir, travelRootDir);
-//        fileManager.setTravelName(extractFilenameFromPath(travel));
-//
-//        for (longUInt i = 0; i < algorithmFactories.size(); i++) {
-//            tracer.traceVerbose("Creating instance of algorithm " + algorithmNames[i]);
-//            std::unique_ptr<AbstractAlgorithm> algorithm = algorithmFactories[i]();
-//            fileManager.setAlgorithmName(algorithmNames[i]);
-//            fileManager.createTravelCraneFolder();
-//
-//            tracer.traceVerbose("Starting a simulation.");
-//            int totalCraneInstructions = runSimulation(fileManager, std::move(algorithm));
-//
-//            addSimulationResultToTable(resultsTable, totalCraneInstructions, i + 1);
-//        }
-//    }
-//
-//    if (!travels.empty() && !algorithmFactories.empty()) {
-//        finalizeResultsTable(resultsTable);
-//        rootFileManager.saveSimulationResults(resultsTable);
-//    }
-//    else {
-//        tracer.traceInfo("No legal travels and/or no algorithms were available (no simulations were ran).");
-//    }
-//
-//    if (generalErrors.hasErrors()) {
-//        rootFileManager.saveGeneralErrors(generalErrors);
-//    }
-//
-//    rootFileManager.cleanOutputFolders();  // remove temp and errors (if empty)
-//}
 
 void Simulator::loadAlgorithmsDynamically(Errors &errors) {
 #ifndef RUNNING_ON_NOVA
@@ -240,53 +176,6 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
     if (algorithmFactories.empty()) {
         errors.addError(ErrorFlag::SharedObject_NoAlgorithmsLoaded);
     }
-}
-
-int Simulator::runSimulation(SimulatorFileManager &fileManager, std::unique_ptr<AbstractAlgorithm> algorithm) {
-    SimulationManager simManager(fileManager, tracer);
-
-    // region Init
-
-    tracer.traceInfo("Starting simulation (Algorithm = " + fileManager.algorithmName + ", Travel = " + fileManager.travelName + ")", true);
-
-    WeightBalanceCalculator weightBalancer, algoWeightBalancer;
-
-    simManager.initSimulationShip(weightBalancer);
-    bool success = simManager.initAlgorithmShip(algorithm.get(), algoWeightBalancer);
-    simManager.initCargoData();  // order the files for each port, filter irrelevant files
-
-    if (!success) {  // Algorithm failed to initialize
-        tracer.traceInfo("Algorithm failed to initialize, terminating.");
-        tracer.separator(TraceVerbosity::Info, 0, 3);
-        simManager.saveErrors();
-        return -1;
-    }
-
-    // endregion
-
-    tracer.traceInfo("The ship has started its journey!", true);
-
-    for (auto &portId : simManager.getRoutePorts()) {  // Start the journey
-        tracer.traceInfo("The ship has docked at port " + portId.getCode());
-
-        std::string instructionsOutputPath = simManager.getInstructionsForCargo(algorithm.get());
-        success = simManager.performPackingOperations(instructionsOutputPath);
-
-        if (!success) {
-            simManager.saveErrors();
-            return -1;
-        }
-
-        std::string message = simManager.isRouteFinished() ? "The ship is going into maintenance..." : "The ship is continuing to the next port...";
-        tracer.traceInfo(message, true);
-    }
-
-    int totalNumberOfOps = simManager.finishSimulation();
-
-    tracer.traceInfo("The ship has completed its journey. Total number of operations: " + intToStr(totalNumberOfOps));
-    tracer.separator(TraceVerbosity::Info, 0, 3);
-
-    return totalNumberOfOps;
 }
 
 // endregion

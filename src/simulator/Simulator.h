@@ -11,8 +11,8 @@
 #include "SimulatorFileManager.h"
 #include "../common/data_objects/Operations.h"
 #include "../common/loggers/Tracer.h"
-#include "AlgorithmTravelTask.h"
-#include "SimpleTaskProducer.h"
+#include "concurrency/AlgorithmTravelTask.h"
+#include "concurrency/AlgorithmTravelTaskProducer.h"
 #include <memory>
 #include <functional>
 
@@ -51,12 +51,9 @@ private:
     void loadAlgorithmsDynamically(Errors &errors);
 
     /**
-     * Simulates an algorithm on a single travel.
-     * @return number of steps took to simulate, or -1 if the algorithm made at least 1 error.
+     * Creates list of all Algorithm-Travel pair tasks
      */
-    int runSimulation(SimulatorFileManager &fileManager, std::unique_ptr<AbstractAlgorithm> algorithmPtr);
-
-    std::vector<AlgorithmTravelTask> createAlgorithmTravelTasksProducer(StringVector &travels, StringStringVector &resultsTable);
+    std::vector<AlgorithmTravelTask> createAlgorithmTravelTasks(StringVector &travels, StringStringVector &resultsTable);
 
     // endregion
 

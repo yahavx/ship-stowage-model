@@ -79,4 +79,4 @@ add_executable(ship_stowage_model
     # tests
     tests/FileTests.h
     tests/IOTests.h
-    tests/SimulationTests.h src/simulator/ThreadPoolExecuter.cpp src/simulator/ThreadPoolExecuter.h src/common/utils/strongTypes.h src/simulator/SimpleTaskProducer.cpp src/simulator/SimpleTaskProducer.h src/simulator/AlgorithmTravelTask.cpp src/simulator/AlgorithmTravelTask.h)
+    tests/SimulationTests.h src/simulator/concurrency/ThreadPoolExecutor.h src/common/utils/StrongTypes.h src/simulator/concurrency/AlgorithmTravelTaskProducer.cpp src/simulator/concurrency/AlgorithmTravelTaskProducer.h src/simulator/concurrency/AlgorithmTravelTask.cpp src/simulator/concurrency/AlgorithmTravelTask.h)

@@ -3,11 +3,13 @@
 //
 
 #include "AlgorithmTravelTask.h"
-#include "SimulationManager.h"
-#include "../common/utils/UtilFunctions.h"
-#include "SimulatorUtil.h"
+#include "../SimulationManager.h"
+#include "../../common/utils/UtilFunctions.h"
+#include "../SimulatorUtil.h"
 
 #include <utility>
+
+// region Constructors
 
 AlgorithmTravelTask::AlgorithmTravelTask(SimulatorFileManager fileManager, Tracer &tracer,
                                          StringStringVector &resultsTable, std::pair<longUInt, longUInt> resultsTableIndices,
@@ -15,6 +17,10 @@ AlgorithmTravelTask::AlgorithmTravelTask(SimulatorFileManager fileManager, Trace
         : fileManager(std::move(fileManager)), tracer(tracer),
           resultsTable(resultsTable), resultsTableIndices(std::move(resultsTableIndices)),
           algorithmFactory(algorithmFactory), travel(travel) {}
+
+// endregion
+
+// region Api
 
 void AlgorithmTravelTask::run() {
     SimulationManager simManager(fileManager, tracer);
@@ -70,3 +76,5 @@ void AlgorithmTravelTask::run() {
 
     /*return totalNumberOfOps*/;
 }
+
+// endregion
