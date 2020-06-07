@@ -57,7 +57,7 @@ void inline tableResultSortTest(){
 }
 
 void inline testSimulation(std::string travelPath, std::string algorithmPath, std::string outputPath, StringStringVector expected) {
-    Simulator simulator(travelPath, algorithmPath, outputPath);
+    Simulator simulator(travelPath, algorithmPath, outputPath, 1);
     simulator.runSimulations();
 
     StringStringVector actual = readFile(outputPath + "/simulation.results");

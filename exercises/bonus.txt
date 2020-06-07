@@ -16,10 +16,10 @@ What makes our error handling special:
 - It is very informative and well organized, and allows to debug problems very easily.
 - Each error has a number, that is always printed at the end.
 - During the simulation, at the end of each error section (initialization, port visit), there is a summary of which errors
-  were reported by the simulator, and which by the algorithm (algorithm is not penalized for mismatch, but its easy to compare).
+  were reported by the simulator, and which by the algorithmFactory (algorithmFactory is not penalized for mismatch, but its easy to compare).
 
 ### Validation example
 
-We have another travel main directory named `validation` which consists of 1 travel, named `Invalid-Load`, that shows how our simulation validates the algorithm,
+We have another travel main directory named `validation` which consists of 1 travel, named `Invalid-Load`, that shows how our simulation validates the algorithmFactory,
 and in this case faults him for bad behaviour.
-The `validation` directory also contains an `Load-Bad-Position.so`, which is the algorithm to run with it.
+The `validation` directory also contains an `Load-Bad-Position.so`, which is the algorithmFactory to run with it.

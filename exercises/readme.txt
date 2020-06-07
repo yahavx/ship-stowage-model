@@ -10,10 +10,10 @@ Any other error is handled by the simulator.
 
 ### Simulator error handling
 The simulator generates an "errors" folder (under the output folder) that contains all the error files, and the error documentation is as follows:
-- One file named `GeneralErrors`, that contains (general) errors such as bad algorithm loading, invalid paths, invalid travels (that cannot be run), etc.
-- A file for each algorithm-travel pair, named `algorithmName_travelName_errors` with errors that occurred during the run.
+- One file named `GeneralErrors`, that contains (general) errors such as bad algorithmFactory loading, invalid paths, invalid travels (that cannot be run), etc.
+- A file for each algorithmFactory-travel pair, named `algorithmName_travelName_errors` with errors that occurred during the run.
 
 Any error file is created only if at least one error was found.
 
 Our full list of errors can be viewed in common/utils/Error.h, the messages format is under the toString method.
-For errors related to input files (plan, route, cargo_data, algorithm instructions), we also report a line number for each error.
+For errors related to input files (plan, route, cargo_data, algorithmFactory instructions), we also report a line number for each error.

@@ -10,14 +10,14 @@ Compile the program using `make`, and run in terminal `./ex1 {arg1} {arg2} ... {
 
 `Travel` directory: consists of `Plan`, `Route`, and `.cargo_data` files, in the format explained [here](https://docs.google.com/document/d/10dw03hb-mj6zL8O08K5YSm4KYTeIv7eTmckcezrzH_E/edit).
 
-The simulator will run all available algorithms on each `Travel` directory. Currently there is one algorithm which we 
+The simulator will run all available algorithms on each `Travel` directory. Currently there is one algorithmFactory which we 
 run twice on each `Travel` (to get a sense of feeling for comparing algorithms).
 
 The following results will be written to the output directory provided:
-* `simulation.results.csv` - number of operations for each algorithm and each travel.  
-* `simulation.errors.csv` - errors the simulator detected in each algorithm.
+* `simulation.results.csv` - number of operations for each algorithmFactory and each travel.  
+* `simulation.errors.csv` - errors the simulator detected in each algorithmFactory.
 * `output.txt` - stdout capture (simulation logging).
-* `error.txt` - stderr capture (non-algorithm errors: missing files, etc).
+* `error.txt` - stderr capture (non-algorithmFactory errors: missing files, etc).
 
 The last two are logging files, and can be ignored.
 
