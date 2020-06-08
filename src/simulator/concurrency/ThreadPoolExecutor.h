@@ -28,6 +28,7 @@ class ThreadPoolExecutor {
     // region Attributes
 
     Producer producer;
+    std::mutex printLock;
     const int numThreads = -1;
     std::vector<std::thread> workers;
     std::atomic_bool running = false;
@@ -51,6 +52,8 @@ class ThreadPoolExecutor {
             ++num_tasks_finished;
             ++total_num_tasks_finished;
         }
+
+        const std::lock_guard<std::mutex> lock(printLock);
         if(stopped) {
             std::cout << std::this_thread::get_id() << " - stopped gracefully after processing " << num_tasks_finished << " task(s)" << std::endl;
         }
