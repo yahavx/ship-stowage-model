@@ -180,6 +180,8 @@ void Simulator::executeSimulationsSingleThread(std::vector<AlgorithmTravelTask> 
     for (auto &task : tasks) {
         task.run();
     }
+
+    threadsTracer.traceInfo("Finished execution on a single thread");
 }
 
 void Simulator::executeSimulationsMultiThread(std::vector<AlgorithmTravelTask> &tasks) {

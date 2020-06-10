@@ -21,7 +21,7 @@
  */
 std::string parseCmdArguments(int argc, char **argv, std::string &travelPath, std::string &algorithmPath, std::string &outputPath, std::string &numThreads);
 
-const std::string cmdFormat = "Format: ./simulator [-travel_path <path>] [-algorithm_path <algorithm path>] [-output <output path>]";
+const std::string cmdFormat = "Format: ./simulator [-travel_path <path>] [-algorithm_path <algorithm path>] [-output <output path>] [-num_threads <num>]";
 
 int main(int argc, char **argv) {
 //    runIOTests();
@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    numThreads = "10";
+    numThreads = "2";
 
     Simulator simulator(travelPath, algorithmPath, outputPath, strToInt(numThreads));
 
