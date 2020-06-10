@@ -35,32 +35,8 @@ const Position &PackingOperation::getFirstPosition() const {
     return pos1;
 }
 
-int PackingOperation::getFirstPositionX() const {
-    return pos1.X();
-}
-
-int PackingOperation::getFirstPositionY() const {
-    return pos1.Y();
-}
-
-int PackingOperation::getFirstPositionFloor() const {
-    return pos1.floor();
-}
-
 const Position &PackingOperation::getSecondPosition() const {
     return pos2;
-}
-
-int PackingOperation::getSecondPositionX() const {
-    return pos2.X();
-}
-
-int PackingOperation::getSecondPositionY() const {
-    return pos2.Y();
-}
-
-int PackingOperation::getSecondPositionFloor() const {
-    return pos2.floor();
 }
 
 // endregion

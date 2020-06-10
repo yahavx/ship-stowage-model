@@ -108,6 +108,8 @@ public:
         for(auto& t : workers) {
             t.join();
         }
+
+        const std::lock_guard<std::mutex> lock(printLock);
         std::cout << "thread pool finished/stopped after processing " << total_num_tasks_finished << " task(s)" << std::endl;
     }
 

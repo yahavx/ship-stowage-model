@@ -18,10 +18,6 @@ AlgorithmTravelTaskProducer::AlgorithmTravelTaskProducer(AlgorithmTravelTaskProd
 
 std::optional<int> AlgorithmTravelTaskProducer::next_task_index() {
     for (int curr_counter = task_counter.load(); curr_counter < numTasks;) {
-        // see: https://en.cppreference.com/w/cpp/atomic/atomic/compare_exchange
-        // note that in case compare_exchange_weak fails because the value of
-        // task_counter != curr_counter than task_counter.load() is copied into curr_counter
-        // in case of spurious failure (value not checked) curr_counter would not change
         if (task_counter.compare_exchange_weak(curr_counter, curr_counter + 1)) {
             return {curr_counter}; // zero based
         }
@@ -34,7 +30,7 @@ std::optional<int> AlgorithmTravelTaskProducer::next_task_index() {
 // region Api
 
 std::optional<AlgorithmTravelTask> AlgorithmTravelTaskProducer::getTask() {
-    auto task_index = next_task_index(); // or: next_task_index_simple();
+    auto task_index = next_task_index();
     if (task_index) {
         AlgorithmTravelTask task = tasks[task_index.value()];
         return task;

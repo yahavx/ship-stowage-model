@@ -35,6 +35,7 @@ public:
     PackingOperation(PackingType type, const std::string &containerId, const Position &pos1);
 
     PackingOperation(PackingType type, const std::string &containerId, const Position &pos1, const Position &pos2);
+
     // endregion
 
     // region Getters and setters
@@ -43,21 +44,10 @@ public:
 
     const Position &getFirstPosition() const;
 
-    int getFirstPositionX() const;
-
-    int getFirstPositionY() const;
-
-    int getFirstPositionFloor() const;
-
     const Position &getSecondPosition() const;
 
-    int getSecondPositionX() const;
-
-    int getSecondPositionY() const;
-
-    int getSecondPositionFloor() const;
-
     PackingType getType() const;
+
     // endregion
 
     // region Printer

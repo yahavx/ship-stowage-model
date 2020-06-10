@@ -47,6 +47,7 @@ public:
     void runSimulations();
 
 private:
+
     /// Loads algorithms dynamically, returns false if no algorithm was loaded.
     void loadAlgorithmsDynamically(Errors &errors);
 
@@ -54,6 +55,12 @@ private:
      * Creates list of all Algorithm-Travel pair tasks
      */
     std::vector<AlgorithmTravelTask> createAlgorithmTravelTasks(StringVector &travels, StringStringVector &resultsTable);
+
+    /// Executes the travel x algorithms in a single thread.
+    void executeSimulationsSingleThread(std::vector<AlgorithmTravelTask> & tasks);
+
+    /// Executes the travel x algorithms with multi threading.
+    void executeSimulationsMultiThread(std::vector<AlgorithmTravelTask> & tasks);
 
     // endregion
 

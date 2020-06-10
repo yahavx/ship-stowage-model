@@ -30,12 +30,17 @@
 
 // region Constructors
 
-Simulator::Simulator(const std::string &travelRootDir, const std::string &algorithmsDir, const std::string &outputDir, const int numThreads) : travelRootDir(travelRootDir),
-                                                                                                                         algorithmsDir(algorithmsDir),
-                                                                                                                         outputDir(outputDir),
-                                                                                                                         numThreads(numThreads),
-                                                                                                                         rootFileManager(outputDir,
-                                                                                                                                         travelRootDir) {
+Simulator::Simulator(const std::string &travelRootDir, const std::string &algorithmsDir, const std::string &outputDir, const int numThreads) : travelRootDir(
+        travelRootDir),
+                                                                                                                                               algorithmsDir(
+                                                                                                                                                       algorithmsDir),
+                                                                                                                                               outputDir(
+                                                                                                                                                       outputDir),
+                                                                                                                                               numThreads(
+                                                                                                                                                       numThreads),
+                                                                                                                                               rootFileManager(
+                                                                                                                                                       outputDir,
+                                                                                                                                                       travelRootDir) {
 #ifndef RUNNING_ON_NOVA
     algorithmFactories.emplace_back([]() { return std::make_unique<NaiveStowageAlgorithm>(); });
     algorithmNames.push_back("Naive");
@@ -48,8 +53,10 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
 #endif
 }
 
-Simulator::Simulator(const std::string &travelRootDir, int numThreads, const std::vector<std::function<std::unique_ptr<AbstractAlgorithm>()>> &algorithmFactories,
-                     const std::string &outputDir) : travelRootDir(travelRootDir), outputDir(outputDir), numThreads(numThreads),  rootFileManager(outputDir, travelRootDir),
+Simulator::Simulator(const std::string &travelRootDir, int numThreads,
+                     const std::vector<std::function<std::unique_ptr<AbstractAlgorithm>()>> &algorithmFactories,
+                     const std::string &outputDir) : travelRootDir(travelRootDir), outputDir(outputDir), numThreads(numThreads),
+                                                     rootFileManager(outputDir, travelRootDir),
                                                      algorithmFactories(algorithmFactories) {}
 
 
@@ -62,27 +69,21 @@ void Simulator::runSimulations() {
     StringStringVector resultsTable;  // table of results
     Errors generalErrors;
 
+    // load algorithms, create output folder
     StringVector travels = rootFileManager.collectLegalTravels(generalErrors);
     rootFileManager.createOutputFolders(generalErrors);
     loadAlgorithmsDynamically(generalErrors);  // We may have no travels to run at this point - but we can collect errors
     generalErrors.addSimulatorInitLog();
 
+    // init data table
     initResultsTableWithPlaceholders(resultsTable, travels, algorithmNames);  // Add columns names and set table structure
 
     auto tasks = createAlgorithmTravelTasks(travels, resultsTable);
 
-    ThreadPoolExecutor executor {
-            // Create producer for all algorithm-travel pair tasks
-            AlgorithmTravelTaskProducer(tasks),
-            NumThreads{numThreads}
-    };
+    // execute travels x algorithms
+    numThreads == 1 ? executeSimulationsSingleThread(tasks) : executeSimulationsMultiThread(tasks);
 
-    // Start running all the tasks
-    executor.start();
-
-    // Wait until all tasks are finished
-    executor.wait_till_finish();
-
+    // save data table
     if (!travels.empty() && !algorithmFactories.empty()) {
         finalizeResultsTable(resultsTable);
         rootFileManager.saveSimulationResults(resultsTable);
@@ -90,35 +91,12 @@ void Simulator::runSimulations() {
         tracer.traceInfo("No legal travels and/or no algorithms were available (no simulations were ran).");
     }
 
+    // save errors
     if (generalErrors.hasErrors()) {
         rootFileManager.saveGeneralErrors(generalErrors);
     }
 
     rootFileManager.cleanOutputFolders();  // remove temp and errors (if empty)
-}
-
-std::vector<AlgorithmTravelTask> Simulator::createAlgorithmTravelTasks(StringVector &travels, StringStringVector &resultsTable) {
-    std::vector<AlgorithmTravelTask> tasks;
-
-    for (longUInt t = 0; t < travels.size(); t++) {
-        auto &travel = travels[t];
-        for (longUInt a = 0; a < algorithmFactories.size(); a++) {
-            SimulatorFileManager fileManager(outputDir, travelRootDir);
-            fileManager.setTravelName(extractFilenameFromPath(travel));
-
-            tracer.traceVerbose("Creating instance of algorithm " + algorithmNames[a]);
-
-            fileManager.setAlgorithmName(algorithmNames[a]);
-            fileManager.createTravelCraneFolder();
-
-            AlgorithmTravelTask task(fileManager, tracer, resultsTable, std::pair(a, t), algorithmFactories[a], travel);
-            tasks.push_back(task);
-
-            tracer.traceVerbose("created task: " + algorithmNames[a] + ", " + travel);
-        }
-    }
-
-    return tasks;
 }
 
 void Simulator::loadAlgorithmsDynamically(Errors &errors) {
@@ -178,11 +156,53 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
     }
 }
 
-// endregion
+std::vector<AlgorithmTravelTask> Simulator::createAlgorithmTravelTasks(StringVector &travels, StringStringVector &resultsTable) {
+    std::vector<AlgorithmTravelTask> tasks;
 
-// region Simulation finish
+    for (longUInt t = 0; t < travels.size(); t++) {
+        auto &travel = travels[t];
+        for (longUInt a = 0; a < algorithmFactories.size(); a++) {
+            SimulatorFileManager fileManager(outputDir, travelRootDir);
+            fileManager.setTravelName(extractFilenameFromPath(travel));
 
+            tracer.traceVerbose("Creating instance of algorithm " + algorithmNames[a]);
 
+            fileManager.setAlgorithmName(algorithmNames[a]);
+            fileManager.createTravelCraneFolder();
+
+            AlgorithmTravelTask task(fileManager, tracer, resultsTable, std::pair(a, t), algorithmFactories[a], travel);
+            tasks.push_back(task);
+
+            tracer.traceVerbose("Created task: <" + algorithmNames[a] + ", " + travel + ">");
+        }
+    }
+
+    return tasks;
+}
+
+void Simulator::executeSimulationsSingleThread(std::vector<AlgorithmTravelTask> &tasks) {
+    tracer.traceInfo("Starting execution on a single thread", true);
+
+    for (auto &task : tasks) {
+        task.run();
+    }
+}
+
+void Simulator::executeSimulationsMultiThread(std::vector<AlgorithmTravelTask> &tasks) {
+    tracer.traceInfo("Starting execution on a multi thread", true);
+
+    ThreadPoolExecutor executor{
+            // Create producer for all algorithm-travel pair tasks
+            AlgorithmTravelTaskProducer(tasks),
+            NumThreads{numThreads}
+    };
+
+    // Start running all the tasks
+    executor.start();
+
+    // Wait until all tasks are finished
+    executor.wait_till_finish();
+}
 
 // endregion
 
