@@ -7,6 +7,9 @@
 
 #include <string>
 #include "../common/utils/Errors.h"
+#include "../common/data_objects/ShipPlan.h"
+#include "../common/data_objects/ShipRoute.h"
+#include "Travel.h"
 
 
 /// Handles all path generation and work against files.
@@ -79,11 +82,17 @@ public:
     // region Functions
 
 private:
-    bool isTravelValid(Errors &errors);
+    /**
+     * Checks if a travel is valid.
+     * @param shipPlan plan of the travel, if valid.
+     * @param route route of the travel, if valid.
+     * @return true if the travel is valid.
+     */
+    bool isTravelValid(ShipPlan &shipPlan, ShipRoute &route, Errors &errors);
 
 public:
     /// Returns a list of legal travels inside travelPath.
-    StringVector collectLegalTravels(Errors &errors);
+    std::vector<Travel> collectLegalTravels(Errors &errors);
 
     /**
     * Receives a travel directory and sorts the .cargo_files for each port.

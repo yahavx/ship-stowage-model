@@ -12,7 +12,7 @@
 
 // region Constructor
 
-SimulationManager::SimulationManager(SimulatorFileManager &manager, Tracer &tracer) : fileManager(manager),  errors(tracer),  totalNumberOfOps(0), tracer(tracer) {}
+SimulationManager::SimulationManager(SimulatorFileManager &manager, Travel &travel, Tracer &tracer) : fileManager(manager), travel(travel), errors(tracer),  totalNumberOfOps(0), tracer(tracer) {}
 
 // endregion
 
@@ -20,8 +20,8 @@ SimulationManager::SimulationManager(SimulatorFileManager &manager, Tracer &trac
 
 void SimulationManager::initSimulationShip(WeightBalanceCalculator &calculator) {
     tracer.traceVerbose("Initializing simulator ship...");
-    ShipPlan shipPlan = readShipPlanFromFile(fileManager.shipPlanPath(), errors);
-    ShipRoute shipRoute = readShipRouteFromFile(fileManager.shipRoutePath(), errors);
+    ShipPlan shipPlan = travel.getPlanCopy();  // we don't read it again from file
+    ShipRoute shipRoute = travel.getRouteCopy();
 
     if (errors.hasFatalError()) {
         tracer.traceInfo("Simulation ship failed to initialize.");  // this shouldn't happen (travel should be skipped)

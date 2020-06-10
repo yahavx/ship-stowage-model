@@ -59,7 +59,8 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    numThreads = "2";
+    numThreads = "5";
+    travelPath = "../input-examples/Travel-Roots/single-travel-difference";
 
     Simulator simulator(travelPath, algorithmPath, outputPath, strToInt(numThreads));
 

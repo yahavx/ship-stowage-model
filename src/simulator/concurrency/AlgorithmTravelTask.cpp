@@ -13,7 +13,7 @@
 
 AlgorithmTravelTask::AlgorithmTravelTask(SimulatorFileManager fileManager, Tracer &tracer,
                                          StringStringVector &resultsTable, std::pair<longUInt, longUInt> resultsTableIndices,
-                                         std::function<std::unique_ptr<AbstractAlgorithm>()> &algorithmFactory, std::string &travel)
+                                         std::function<std::unique_ptr<AbstractAlgorithm>()> &algorithmFactory, Travel &travel)
         : fileManager(std::move(fileManager)), tracer(tracer),
           resultsTable(resultsTable), resultsTableIndices(std::move(resultsTableIndices)),
           algorithmFactory(algorithmFactory), travel(travel) {}
@@ -32,7 +32,7 @@ void AlgorithmTravelTask::run() {
 // region Internal
 
 int AlgorithmTravelTask::executeSimulation() {
-    SimulationManager simManager(fileManager, tracer);
+    SimulationManager simManager(fileManager, travel, tracer);
     fileManager.createTravelCraneFolder();
 
     // region Init

@@ -28,7 +28,7 @@ int extractNumberFromCargoFile(const std::string filePath);
 // region Table data manager
 
 /// Inits results table filled with placeholders
-void initResultsTableWithPlaceholders(StringStringVector &results, StringVector &travels, StringVector &algorithmsNames);
+void initResultsTableWithPlaceholders(StringStringVector &results, std::vector<Travel> &travels, StringVector &algorithmsNames);
 
 /// Updates travel results of a single simulation at a given position in a table.
 void updateSimulationResultAtPosition(StringStringVector &simulationResults, int totalCraneInstructions, int algorithmNum, int travelNum);

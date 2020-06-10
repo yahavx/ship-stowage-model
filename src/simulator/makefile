@@ -1,7 +1,7 @@
 COMP = g++-9.3.0
 
 OBJS = main.o $\ AlgorithmRegistrar.o AlgorithmValidation.o SimulationManager.o $\
-Simulator.o SimulatorFileManager.o SimulatorUtil.o $\
+Simulator.o SimulatorFileManager.o SimulatorUtil.o Travel.o $\
 $\
 ./concurrency/AlgorithmTravelTask.o AlgorithmTravelTaskProducer.o $\
 $\

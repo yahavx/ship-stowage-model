@@ -83,6 +83,7 @@ add_executable(ship_stowage_model
         src/simulator/Simulator.cpp src/simulator/Simulator.h
         src/simulator/SimulatorFileManager.cpp src/simulator/SimulatorFileManager.h
         src/simulator/SimulatorUtil.cpp src/simulator/SimulatorUtil.h
+        src/simulator/Travel.cpp src/simulator/Travel.h
 
     # tests
     tests/FileTests.h

@@ -7,6 +7,7 @@
 #include "../common/utils/UtilFunctions.h"
 #include "../common/io/FileReader.h"
 #include "../common/io/ObjectsReader.h"
+#include "Travel.h"
 
 // region Constructors
 
@@ -109,33 +110,35 @@ std::string SimulatorFileManager::travelFolder() {
 
 // region Functions
 
-bool SimulatorFileManager::isTravelValid(Errors &errors) {
+bool SimulatorFileManager::isTravelValid(ShipPlan &shipPlan, ShipRoute &route, Errors &errors) {
     if (!isDirectoryExists(travelFolder())) {
         errors.addError({ErrorFlag::Travel_InvalidDirectory, travelName});
         return false;
     }
 
-    Errors tempErrors;
+    Errors planErrors, routeErrors;
 
-    readShipPlanFromFile(shipPlanPath(), tempErrors);
-    if (tempErrors.hasFatalError()) {
-        errors.addErrors(tempErrors);
+    bool valid = true;
+
+    shipPlan = readShipPlanFromFile(shipPlanPath(), planErrors);
+    errors.addErrors(planErrors);
+    if (planErrors.hasFatalError()) {
         errors.addError({ErrorFlag::Travel_FatalInput, travelName, "Ship Plan"});
-        return false;
+        valid = false;
     }
 
-    readShipRouteFromFile(shipRoutePath(), tempErrors);
-    if (tempErrors.hasFatalError()) {
-        errors.addErrors(tempErrors);
+    route = readShipRouteFromFile(shipRoutePath(), routeErrors);
+    errors.addErrors(routeErrors);
+    if (routeErrors.hasFatalError()) {
         errors.addError({ErrorFlag::Travel_FatalInput, travelName, "Ship Route"});
-        return false;
+        valid = false;
     }
 
-    return true;
+    return valid;
 }
 
-StringVector SimulatorFileManager::collectLegalTravels(Errors &errors) {
-    StringVector legalTravels;
+std::vector<Travel> SimulatorFileManager::collectLegalTravels(Errors &errors) {
+    std::vector<Travel> legalTravels;
 
     if (travelRootDir == "") {  // no travel path supplied
         errors.addError({ErrorFlag::SimulationInit_InvalidTravelPath, travelRootDir});
@@ -148,10 +151,12 @@ StringVector SimulatorFileManager::collectLegalTravels(Errors &errors) {
     }
 
     for (auto &travel: travels) {
-        setTravelName(extractFilenameFromPath(travel));
+        ShipPlan plan;
+        ShipRoute route;
+        this->setTravelName(extractFilenameFromPath(travel));
 
-        if (isTravelValid(errors)) {
-            legalTravels.push_back(travel);
+        if (this->isTravelValid(plan, route, errors)) {
+            legalTravels.emplace_back(travel, plan, route);
         }
         errors.addTravelLog(travelName);  // Adds if needed
     }

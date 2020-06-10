@@ -29,7 +29,7 @@ class AlgorithmTravelTask {
 
     // Travel and algorithm
     std::function<std::unique_ptr<AbstractAlgorithm>()> &algorithmFactory;
-    std::string &travel;
+    Travel &travel;
 
     // endregion
 
@@ -39,7 +39,7 @@ public:
 
     AlgorithmTravelTask(SimulatorFileManager fileManager, Tracer &tracer,
                         StringStringVector &resultsTable, std::pair<longUInt, longUInt> resultsTableIndices,
-                        std::function<std::unique_ptr<AbstractAlgorithm>()> &algorithmFactory, std::string &travel);
+                        std::function<std::unique_ptr<AbstractAlgorithm>()> &algorithmFactory, Travel &travel);
 
     // endregion
 

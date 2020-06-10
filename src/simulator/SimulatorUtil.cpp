@@ -30,7 +30,7 @@ int extractNumberFromCargoFile(const std::string filePath) {
 
 // region Table data manager
 
-void initResultsTableWithPlaceholders(StringStringVector &results, StringVector &travels, StringVector &algorithmsNames) {
+void initResultsTableWithPlaceholders(StringStringVector &results, std::vector<Travel> &travels, StringVector &algorithmsNames) {
     // init results table
     StringVector &resultsFirstRow = results.emplace_back();
 

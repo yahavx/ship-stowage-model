@@ -16,6 +16,7 @@
 /// Manages a single simulation (algorithm-travel pair).
 class SimulationManager {
     SimulatorFileManager &fileManager;
+    Travel &travel;
     Errors errors;
     ContainerShip ship;
     int totalNumberOfOps;
@@ -32,7 +33,7 @@ public:
 
     // region Constructor
 
-    explicit SimulationManager(SimulatorFileManager &manager, Tracer &tracer);
+    SimulationManager(SimulatorFileManager &manager, Travel &travel, Tracer &tracer);
 
     // endregion
 

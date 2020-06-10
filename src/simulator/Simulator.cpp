@@ -70,7 +70,7 @@ void Simulator::runSimulations() {
     Errors generalErrors;
 
     // load algorithms, create output folder
-    StringVector travels = rootFileManager.collectLegalTravels(generalErrors);
+    std::vector<Travel> travels = rootFileManager.collectLegalTravels(generalErrors);
     rootFileManager.createOutputFolders(generalErrors);
     loadAlgorithmsDynamically(generalErrors);  // We may have no travels to run at this point - but we can collect errors
     generalErrors.addSimulatorInitLog();
@@ -156,7 +156,7 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
     }
 }
 
-std::vector<AlgorithmTravelTask> Simulator::createAlgorithmTravelTasks(StringVector &travels, StringStringVector &resultsTable) {
+std::vector<AlgorithmTravelTask> Simulator::createAlgorithmTravelTasks(std::vector<Travel> &travels, StringStringVector &resultsTable) {
     std::vector<AlgorithmTravelTask> tasks;
 
     for (longUInt t = 0; t < travels.size(); t++) {
