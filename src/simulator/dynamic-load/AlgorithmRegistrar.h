@@ -8,9 +8,9 @@
 #include <vector>
 #include <memory>
 #include <functional>
-#include "../interfaces/AbstractAlgorithm.h"
-#include "../common/utils/Definitions.h"
-#include "../common/utils/Errors.h"
+#include "../../interfaces/AbstractAlgorithm.h"
+#include "../../common/utils/Definitions.h"
+#include "../../common/utils/Errors.h"
 
 #ifdef RUNNING_ON_NOVA
 #include "iostream"

@@ -25,7 +25,7 @@ class AlgorithmTravelTask {
 
     // Results table and indices
     StringStringVector &resultsTable;
-    std::pair<longUInt, longUInt> resultsTableIndices;
+    std::pair<longUInt, longUInt> resultsTableIndices;  // first - algorithm, second - travel
 
     // Travel and algorithm
     std::function<std::unique_ptr<AbstractAlgorithm>()> &algorithmFactory;
@@ -50,6 +50,16 @@ public:
      * Writes te result to the given indices in the results table
      */
     void run();
+
+    // endregion
+
+    // region Internal
+
+    /// Runs the travel-algorithm pair associated to this task.
+    int executeSimulation();
+
+    /// Updates the table of results at the relevant position.
+    void updateTable(int numberOfSteps);
 
     // endregion
 };

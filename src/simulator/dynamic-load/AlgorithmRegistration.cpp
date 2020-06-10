@@ -3,8 +3,8 @@
 //
 
 #include <iostream>
-#include "AlgorithmRegistration.h"
-#include "../simulator/AlgorithmRegistrar.h"
+#include "../../interfaces/AlgorithmRegistration.h"
+#include "AlgorithmRegistrar.h"
 
 
 AlgorithmRegistration::AlgorithmRegistration(std::function<std::unique_ptr<AbstractAlgorithm>()> algorithmFactory) {

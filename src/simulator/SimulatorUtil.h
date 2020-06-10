@@ -27,18 +27,11 @@ int extractNumberFromCargoFile(const std::string filePath);
 
 // region Table data manager
 
-/// Inits results and errors table, results and errors should be empty.
-void initResultsTable(StringStringVector &results, StringVector &travels, StringVector &algorithmsNames);/// Inits results and errors table, results and errors should be empty.
-
 /// Inits results table filled with placeholders
 void initResultsTableWithPlaceholders(StringStringVector &results, StringVector &travels, StringVector &algorithmsNames);
 
-
-/// Add travel results of a single simulation to a table.
-void addSimulationResultToTable(StringStringVector &simulationResults, int totalCraneInstructions, int rowNum);
-
 /// Updates travel results of a single simulation at a given position in a table.
-void updateSimulationResultAtPosition(StringStringVector &simulationResults, int totalCraneInstructions, int rowNum, int colNum);
+void updateSimulationResultAtPosition(StringStringVector &simulationResults, int totalCraneInstructions, int algorithmNum, int travelNum);
 
 /// Finalize the results table: add all sums
 void finalizeResultsTable(StringStringVector &results);

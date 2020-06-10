@@ -13,7 +13,7 @@
 #include "../common/io/FileReader.h"
 #include "../common/utils/UtilFunctions.h"
 #include "../interfaces/AbstractAlgorithm.h"
-#include "AlgorithmRegistrar.h"
+#include "dynamic-load/AlgorithmRegistrar.h"
 #include "SimulationManager.h"
 
 #ifndef RUNNING_ON_NOVA
@@ -45,8 +45,8 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
     algorithmFactories.emplace_back([]() { return std::make_unique<NaiveStowageAlgorithm>(); });
     algorithmNames.push_back("Naive");
 
-//    algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
-//    algorithmNames.push_back("Bad");
+    algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
+    algorithmNames.push_back("Bad");
 //
     algorithmFactories.emplace_back([]() { return std::make_unique<RobustStowageAlgorithm>(); });
     algorithmNames.push_back("Robust");

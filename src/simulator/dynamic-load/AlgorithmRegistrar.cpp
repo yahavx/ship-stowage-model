@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include "AlgorithmRegistrar.h"
-#include "../common/utils/UtilFunctions.h"
+#include "../../common/utils/UtilFunctions.h"
 
 #ifdef RUNNING_ON_NOVA
 #include <dlfcn.h>

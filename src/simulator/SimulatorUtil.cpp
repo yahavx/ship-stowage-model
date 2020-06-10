@@ -30,25 +30,6 @@ int extractNumberFromCargoFile(const std::string filePath) {
 
 // region Table data manager
 
-void initResultsTable(StringStringVector &results, StringVector &travels, StringVector &algorithmsNames) {
-    // init results table
-    StringVector &resultsFirstRow = results.emplace_back();
-
-    resultsFirstRow.push_back(Simulator::s_resultsTableTitle);  // Set table title
-
-    for (auto &travel : travels) {  // First row init (column names)
-        auto travelName = extractFilenameFromPath(travel);
-        resultsFirstRow.push_back(travelName);
-    }
-    resultsFirstRow.push_back(Simulator::s_sumColumnTitle);
-    resultsFirstRow.push_back(Simulator::s_errorsColumnTitle);
-
-    for (auto &algorithmsName : algorithmsNames) {  // Init a row for each algorithm
-        results.emplace_back();
-        results.back().push_back(algorithmsName);
-    }
-}
-
 void initResultsTableWithPlaceholders(StringStringVector &results, StringVector &travels, StringVector &algorithmsNames) {
     // init results table
     StringVector &resultsFirstRow = results.emplace_back();
@@ -72,8 +53,8 @@ void addSimulationResultToTable(StringStringVector &simulationResults, int total
     simulationResults[rowNum].push_back(intToStr(totalCraneInstructions));
 }
 
-void updateSimulationResultAtPosition(StringStringVector &simulationResults, int totalCraneInstructions, int rowNum, int colNum) {
-    simulationResults[rowNum][colNum] = intToStr(totalCraneInstructions);
+void updateSimulationResultAtPosition(StringStringVector &simulationResults, int totalCraneInstructions, int algorithmNum, int travelNum) {
+    simulationResults[algorithmNum + 1][travelNum + 1] = intToStr(totalCraneInstructions);
 }
 
 void finalizeResultsTable(StringStringVector &results) {

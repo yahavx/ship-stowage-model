@@ -1,7 +1,11 @@
 COMP = g++-9.3.0
 
-OBJS = main.o AlgorithmRegistrar.o AlgorithmValidation.o SimulationManager.o $\
+OBJS = main.o $\ AlgorithmRegistrar.o AlgorithmValidation.o SimulationManager.o $\
 Simulator.o SimulatorFileManager.o SimulatorUtil.o $\
+$\
+./concurrency/AlgorithmTravelTask.o AlgorithmTravelTaskProducer.o $\
+$\
+./dynamic-load/AlgorithmRegistrar.o ./AlgorithmRegistration.o $\
 $\
 ../common/actors/AbstractWeightBalancer.o ../common/actors/ContainerShip.o ../common/actors/CranesManagement.o $\
 ../common/actors/NaiveWeightBalancer.o ../common/actors/Port.o $\

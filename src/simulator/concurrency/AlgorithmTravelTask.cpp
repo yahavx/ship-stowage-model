@@ -23,6 +23,15 @@ AlgorithmTravelTask::AlgorithmTravelTask(SimulatorFileManager fileManager, Trace
 // region Api
 
 void AlgorithmTravelTask::run() {
+    int numberOfSteps = executeSimulation();
+    this->updateTable(numberOfSteps);
+}
+
+// endregion
+
+// region Internal
+
+int AlgorithmTravelTask::executeSimulation() {
     SimulationManager simManager(fileManager, tracer);
     fileManager.createTravelCraneFolder();
 
@@ -44,7 +53,7 @@ void AlgorithmTravelTask::run() {
         tracer.traceInfo("Algorithm failed to initialize, terminating.");
         tracer.separator(TraceVerbosity::Info, 0, 3);
         simManager.saveErrors();
-        return /*-1*/;
+        return -1;
     }
 
     // endregion
@@ -59,7 +68,7 @@ void AlgorithmTravelTask::run() {
 
         if (!success) {
             simManager.saveErrors();
-            return /*-1*/;
+            return -1;
         }
 
         std::string message = simManager.isRouteFinished() ? "The ship is going into maintenance..." : "The ship is continuing to the next port...";
@@ -69,14 +78,15 @@ void AlgorithmTravelTask::run() {
     int totalNumberOfOps = simManager.finishSimulation();
 
     // Update the result in the result table
-    updateSimulationResultAtPosition(
-            resultsTable, totalNumberOfOps,
-            resultsTableIndices.first + 1, resultsTableIndices.second + 1);
 
     tracer.traceInfo("The ship has completed its journey. Total cost of operations: " + intToStr(totalNumberOfOps));
     tracer.separator(TraceVerbosity::Info, 0, 3);
 
-    /*return totalNumberOfOps*/;
+    return totalNumberOfOps;
+}
+
+void AlgorithmTravelTask::updateTable(int numberOfSteps) {
+    updateSimulationResultAtPosition(resultsTable, numberOfSteps, resultsTableIndices.first, resultsTableIndices.second);
 }
 
 // endregion

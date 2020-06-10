@@ -55,20 +55,28 @@ add_executable(ship_stowage_model
             src/common/strategies/LoadContainerToLowestPositionAvailable.h
 
             # utils
-        src/common/utils/Definitions.h
+            src/common/utils/Definitions.h
             src/common/utils/Error.cpp src/common/utils/Error.h
             src/common/utils/Errors.cpp src/common/utils/Errors.h
             src/common/utils/Printers.cpp src/common/utils/Printers.h
+            src/common/utils/StrongTypes.h
             src/common/utils/UtilFunctions.cpp src/common/utils/UtilFunctions.h
             src/common/utils/Vector3.cpp src/common/utils/Vector3.h
 
+
         # interfaces
-        src/interfaces/AbstractAlgorithm.h
-        src/interfaces/AlgorithmRegistration.h src/interfaces/AlgorithmRegistration.cpp
-        src/interfaces/WeightBalanceCalculator.h src/interfaces/WeightBalanceCalculator.cpp
+            src/interfaces/AbstractAlgorithm.h
+            src/interfaces/AlgorithmRegistration.h src/simulator/dynamic-load/AlgorithmRegistration.cpp
+            src/interfaces/WeightBalanceCalculator.h src/interfaces/WeightBalanceCalculator.cpp
 
         # simulator
-        src/simulator/AlgorithmRegistrar.cpp src/simulator/AlgorithmRegistrar.h
+            # concurrency
+            src/simulator/concurrency/AlgorithmTravelTask.cpp src/simulator/concurrency/AlgorithmTravelTask.h
+            src/simulator/concurrency/AlgorithmTravelTaskProducer.cpp src/simulator/concurrency/AlgorithmTravelTaskProducer.h
+            src/simulator/concurrency/ThreadPoolExecutor.h
+            # dynamic-load
+            src/simulator/dynamic-load/AlgorithmRegistrar.cpp src/simulator/dynamic-load/AlgorithmRegistrar.h
+        
         src/simulator/AlgorithmValidation.cpp src/simulator/AlgorithmValidation.h
         src/simulator/SimulationManager.cpp src/simulator/SimulationManager.h
         src/simulator/main.cpp
@@ -79,4 +87,4 @@ add_executable(ship_stowage_model
     # tests
     tests/FileTests.h
     tests/IOTests.h
-    tests/SimulationTests.h src/simulator/concurrency/ThreadPoolExecutor.h src/common/utils/StrongTypes.h src/simulator/concurrency/AlgorithmTravelTaskProducer.cpp src/simulator/concurrency/AlgorithmTravelTaskProducer.h src/simulator/concurrency/AlgorithmTravelTask.cpp src/simulator/concurrency/AlgorithmTravelTask.h)
+    tests/SimulationTests.h)
