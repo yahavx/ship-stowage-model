@@ -162,18 +162,12 @@ std::vector<AlgorithmTravelTask> Simulator::createAlgorithmTravelTasks(StringVec
     for (longUInt t = 0; t < travels.size(); t++) {
         auto &travel = travels[t];
         for (longUInt a = 0; a < algorithmFactories.size(); a++) {
-            SimulatorFileManager fileManager(outputDir, travelRootDir);
-            fileManager.setTravelName(extractFilenameFromPath(travel));
-
-            tracer.traceVerbose("Creating instance of algorithm " + algorithmNames[a]);
-
-            fileManager.setAlgorithmName(algorithmNames[a]);
-            fileManager.createTravelCraneFolder();
-
+            // create a task
+            SimulatorFileManager fileManager(outputDir, travelRootDir, extractFilenameFromPath(travel), algorithmNames[a]);
             AlgorithmTravelTask task(fileManager, tracer, resultsTable, std::pair(a, t), algorithmFactories[a], travel);
             tasks.push_back(task);
 
-            tracer.traceVerbose("Created task: <" + algorithmNames[a] + ", " + travel + ">");
+            tracer.traceVerbose("Created task: <" + algorithmNames[a] + ", " + extractFilenameFromPath(travel) + ">");
         }
     }
 
@@ -181,7 +175,7 @@ std::vector<AlgorithmTravelTask> Simulator::createAlgorithmTravelTasks(StringVec
 }
 
 void Simulator::executeSimulationsSingleThread(std::vector<AlgorithmTravelTask> &tasks) {
-    tracer.traceInfo("Starting execution on a single thread", true);
+    threadsTracer.traceInfo("Starting execution on a single thread", true);
 
     for (auto &task : tasks) {
         task.run();
@@ -189,12 +183,13 @@ void Simulator::executeSimulationsSingleThread(std::vector<AlgorithmTravelTask> 
 }
 
 void Simulator::executeSimulationsMultiThread(std::vector<AlgorithmTravelTask> &tasks) {
-    tracer.traceInfo("Starting execution on a multi thread", true);
+    threadsTracer.traceInfo("Starting execution on a multi thread", true);
 
     ThreadPoolExecutor executor{
             // Create producer for all algorithm-travel pair tasks
             AlgorithmTravelTaskProducer(tasks),
-            NumThreads{numThreads}
+            NumThreads{numThreads},
+            threadsTracer
     };
 
     // Start running all the tasks

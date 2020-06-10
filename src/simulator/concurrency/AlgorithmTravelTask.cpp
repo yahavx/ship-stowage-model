@@ -24,6 +24,7 @@ AlgorithmTravelTask::AlgorithmTravelTask(SimulatorFileManager fileManager, Trace
 
 void AlgorithmTravelTask::run() {
     SimulationManager simManager(fileManager, tracer);
+    fileManager.createTravelCraneFolder();
 
     // region Init
 
@@ -33,6 +34,7 @@ void AlgorithmTravelTask::run() {
 
     simManager.initSimulationShip(weightBalancer);
 
+    tracer.traceVerbose("Creating instance of algorithm " + fileManager.algorithmName);
     auto algorithm = algorithmFactory();
 
     bool success = simManager.initAlgorithmShip(algorithm.get(), algoWeightBalancer);

@@ -25,6 +25,8 @@ public:
 
     SimulatorFileManager(const std::string &outputDir, const std::string &travelRootDir);
 
+    SimulatorFileManager(const std::string &outputDir, const std::string &travelRootDir, const std::string &travelName, const std::string &algorithmName);
+
     // endregion
 
     // region Getters and setters

@@ -13,6 +13,12 @@
 SimulatorFileManager::SimulatorFileManager(const std::string &outputDir, const std::string &travelRootDir) : outputDir(outputDir),
                                                                                                              travelRootDir(travelRootDir) {}
 
+SimulatorFileManager::SimulatorFileManager(const std::string &outputDir, const std::string &travelRootDir, const std::string &travelName,
+                                           const std::string &algorithmName) : outputDir(outputDir), travelRootDir(travelRootDir) {
+    setTravelName(travelName);
+    setAlgorithmName(algorithmName);
+}
+
 // endregion
 
 // region Getters and setters
@@ -46,7 +52,7 @@ std::string SimulatorFileManager::shipPlanPath() {
 
     auto travelFiles = getFilesFromDirectory(travelFolder());
 
-    for (auto& travelFile : travelFiles) {
+    for (auto &travelFile : travelFiles) {
         if (endsWith(travelFile, ".ship_plan")) {
             shipPlanFilepath = travelFile;
             return travelFile;
@@ -63,7 +69,7 @@ std::string SimulatorFileManager::shipRoutePath() {
 
     auto travelFiles = getFilesFromDirectory(travelFolder());
 
-    for (auto& travelFile : travelFiles) {
+    for (auto &travelFile : travelFiles) {
         if (endsWith(travelFile, ".route")) {
             shipRouteFilepath = travelFile;
             return travelFile;
@@ -141,7 +147,7 @@ StringVector SimulatorFileManager::collectLegalTravels(Errors &errors) {
         return legalTravels;
     }
 
-    for (auto& travel: travels) {
+    for (auto &travel: travels) {
         setTravelName(extractFilenameFromPath(travel));
 
         if (isTravelValid(errors)) {

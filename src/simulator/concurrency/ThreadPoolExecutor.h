@@ -35,6 +35,7 @@ class ThreadPoolExecutor {
     std::atomic_bool stopped = false;
     static thread_local int num_tasks_finished;
     std::atomic_int total_num_tasks_finished { 0 };
+    Tracer &threadsTracer;
 
     // endregion
 
@@ -54,21 +55,22 @@ class ThreadPoolExecutor {
         }
 
         const std::lock_guard<std::mutex> lock(printLock);
-        if(stopped) {
-            std::cout << std::this_thread::get_id() << " - stopped gracefully after processing " << num_tasks_finished << " task(s)" << std::endl;
+        if (stopped) {
+            threadsTracer.traceInfo(genericToString(std::this_thread::get_id()) + " - stopped gracefully after processing " + genericToString(num_tasks_finished) + " task(s)");
         }
         else {
-            std::cout << std::this_thread::get_id() << " - finished after processing " << num_tasks_finished << " task(s)" << std::endl;
+            threadsTracer.traceInfo(genericToString(std::this_thread::get_id()) + " - finished after processing " + genericToString(num_tasks_finished) + " task(s)");
         }
     }
 
     // endregion
+
 public:
 
     // region Constructors
 
-    ThreadPoolExecutor(Producer producer, NumThreads numThreads)
-            : producer(std::move(producer)), numThreads(numThreads) {
+    ThreadPoolExecutor(Producer producer, NumThreads numThreads, Tracer &threadsTracer)
+            : producer(std::move(producer)), numThreads(numThreads), threadsTracer(threadsTracer) {
         workers.reserve(numThreads);
     }
 
@@ -110,7 +112,7 @@ public:
         }
 
         const std::lock_guard<std::mutex> lock(printLock);
-        std::cout << "thread pool finished/stopped after processing " << total_num_tasks_finished << " task(s)" << std::endl;
+        threadsTracer.traceInfo("Thread pool finished/stopped after processing " + genericToString(total_num_tasks_finished) + " task(s)");
     }
 
     // endregion

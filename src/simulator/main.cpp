@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-//    numThreads = "1";
+    numThreads = "10";
 
     Simulator simulator(travelPath, algorithmPath, outputPath, strToInt(numThreads));
 
