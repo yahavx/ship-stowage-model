@@ -25,6 +25,7 @@
 #include "../common/utils/StrongTypes.h"
 #include "concurrency/AlgorithmTravelTask.h"
 #include "concurrency/ThreadPoolExecutor.h"
+#include "../algorithms/EfficientStowageAlgorithm.h"
 
 #endif
 
@@ -47,9 +48,12 @@ Simulator::Simulator(const std::string &travelRootDir, const std::string &algori
 
     algorithmFactories.emplace_back([](){return std::make_unique<BadAlgorithm>();});
     algorithmNames.push_back("Bad");
-//
+////
     algorithmFactories.emplace_back([]() { return std::make_unique<RobustStowageAlgorithm>(); });
     algorithmNames.push_back("Robust");
+
+    algorithmFactories.emplace_back([]() { return std::make_unique<EfficientStowageAlgorithm>(); });
+    algorithmNames.push_back("Efficient");
 #endif
 }
 

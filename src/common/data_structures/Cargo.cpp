@@ -122,6 +122,31 @@ OptionalContainer Cargo::getTopContainer(int x, int y) const {
     return xyContainers.back();
 }
 
+std::optional<ContainerPosition> Cargo::getTopContainerPosition(int x, int y) const {
+    if (!validateXY(x, y))
+        return {};
+    Containers xyContainers = containers[x][y];
+    if (xyContainers.empty())
+        return {};
+
+    int height = currentTopHeight(x, y)-1;
+
+    ContainerPosition containerPosition(xyContainers.back(), {x, y, height});
+    return containerPosition;
+}
+
+
+bool Cargo::posHasContainer(int x, int y, const Container &container) {
+    if (!validateXY(x, y))
+        return false;
+    Containers xyContainers = containers[x][y];
+    for (auto &cont : xyContainers) {
+        if (cont == container)
+            return true;
+    }
+    return false;
+}
+
 std::vector<ContainerPosition> Cargo::getContainersForPort(const PortId &portId) {
     std::vector<ContainerPosition> result = std::vector<ContainerPosition>();
 

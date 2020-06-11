@@ -11,7 +11,7 @@
 #include "../loggers/Tracer.h"
 
 //#define RUNNING_ON_NOVA  // this will turn on all sections in code that work only on nova - disable note when on nova
-//#define SOFT_ISO_CHECK  // only check that ID is 11 characters long
+#define SOFT_ISO_CHECK  // only check that ID is 11 characters long
 #define DEBUG_PRINTS  // print logs during simulation
 #define _unused(x) ((void)(x))  // ignore compiler warning
 

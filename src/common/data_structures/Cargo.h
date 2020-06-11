@@ -112,6 +112,11 @@ public:
      */
     int numberOfEmptyPositions();
 
+    /**
+     * Returns true if there is a container in position x,y that is equal to given container
+     */
+    bool posHasContainer(int x, int y, const Container &container);
+
     // endregion
 
     // region Printer
@@ -119,6 +124,7 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Cargo &cargo);
 
     // endregion
+    std::optional<ContainerPosition> getTopContainerPosition(int x, int y) const;
 };
 
 

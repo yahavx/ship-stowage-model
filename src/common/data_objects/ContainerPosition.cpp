@@ -42,4 +42,12 @@ int ContainerPosition::z() const {
     return position.floor();
 }
 
+bool ContainerPosition::operator==(const ContainerPosition &rhs) const {
+    return container == rhs.container;
+}
+
+bool ContainerPosition::operator!=(const ContainerPosition &rhs) const {
+    return !(rhs == *this);
+}
+
 // endregion

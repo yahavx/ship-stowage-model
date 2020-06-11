@@ -88,4 +88,4 @@ add_executable(ship_stowage_model
     # tests
     tests/FileTests.h
     tests/IOTests.h
-    tests/SimulationTests.h)
+    tests/SimulationTests.h src/algorithms/EfficientStowageAlgorithm.cpp src/algorithms/EfficientStowageAlgorithm.h src/common/strategies/LoadContainerInGroups.cpp src/common/strategies/LoadContainerInGroups.h)

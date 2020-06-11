@@ -136,7 +136,7 @@ bool AlgorithmValidation::validateMoveOperation(const PackingOperation &op) {
         return false;
     }
 
-    auto loadTo = op.getFirstPosition();
+    auto loadTo = op.getSecondPosition();
 
     // Check if it is possible to add container to given position
     x = loadTo.X(), y = loadTo.Y();

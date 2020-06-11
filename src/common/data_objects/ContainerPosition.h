@@ -37,6 +37,10 @@ public:
     int y() const;
     int z() const;
 
+    bool operator==(const ContainerPosition &rhs) const;
+
+    bool operator!=(const ContainerPosition &rhs) const;
+
     // endregion
 };
 
