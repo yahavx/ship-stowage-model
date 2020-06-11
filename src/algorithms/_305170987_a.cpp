@@ -3,6 +3,7 @@
 //
 
 #include "_305170987_a.h"
+#include "../interfaces/AlgorithmRegistration.h"
 
 
 REGISTER_ALGORITHM(_305170987_a)
