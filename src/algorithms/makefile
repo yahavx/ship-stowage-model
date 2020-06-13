@@ -6,7 +6,7 @@ ROBUST_SO = _305170987_b.so
 NAIVE = _305170987_a.o
 ROBUST = _305170987_b.o
 
-OBJS = BadAlgorithm.o SemiAbstractAlgorithm.o NaiveStowageAlgorithm.o RobustStowageAlgorithm.o $\
+OBJS = BadAlgorithm.o SemiAbstractAlgorithm.o NaiveStowageAlgorithm.o EfficientStowageAlgorithm.o RobustStowageAlgorithm.o $\
 $\
 ../common/actors/AbstractWeightBalancer.o ../common/actors/ContainerShip.o ../common/actors/CranesManagement.o $\
 ../common/actors/NaiveWeightBalancer.o ../common/actors/Port.o $\
