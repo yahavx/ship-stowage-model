@@ -20,7 +20,7 @@ private:
             std::vector<ContainerPosition> containersToUnload, std::vector<ContainerPosition> unloadedContainers, Containers &ContainersToLoadBack);
 
     /// Moves container to a free position if possible
-    std::optional<Operations> tryMovingContainer(ContainerShip &ship, Port &port, ContainerPosition &pos, std::vector<ContainerPosition> containersToUnload);
+    std::optional<Operations> tryMovingContainer(ContainerShip &ship, Port &port, ContainerPosition &pos, std::vector<ContainerPosition> &containersToUnload);
 
     /**
      *  Searches for a free position that non of the container in this x,y is meant to be unloaded.

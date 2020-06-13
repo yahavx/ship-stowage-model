@@ -124,7 +124,7 @@ EfficientStowageAlgorithm::unloadContainer(ContainerShip &ship, Port &port, cons
 }
 
 std::optional<Operations>
-EfficientStowageAlgorithm::tryMovingContainer(ContainerShip &ship, Port &port, ContainerPosition &pos, std::vector<ContainerPosition> containersToUnload) {
+EfficientStowageAlgorithm::tryMovingContainer(ContainerShip &ship, Port &port, ContainerPosition &pos, std::vector<ContainerPosition> &containersToUnload) {
     auto posToMoveTo = findPosToMoveTo(ship, pos, containersToUnload);
     if (!posToMoveTo.has_value())
         return {};
@@ -152,16 +152,16 @@ EfficientStowageAlgorithm::findPosToMoveTo(ContainerShip &ship, ContainerPositio
             z = ship.getCargo().getAvailableFloorToLoadContainer(x, y);
 
             if (z >= 0) { // There is space to load on top in this x,y position
-                bool found = false;
+                bool foundContainerToUnload = false;
                 // Check if there is container to be unloaded in this x,y
                 for (auto &containerPos : containersToUnload) {
                     if (ship.getCargo().posHasContainer(x, y, containerPos.getContainer())) {
-                        found = true;
+                        foundContainerToUnload = true;
                         break;
                     }
                 }
 
-                if (!found) { // There is no container to unload in this x,y position so return it
+                if (!foundContainerToUnload) { // There is no container to unload in this x,y position so return it
                     foundX = x;
                     foundY = y;
                     foundZ = ship.getCargo().getAvailableFloorToLoadContainer(x, y);
