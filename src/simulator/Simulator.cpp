@@ -15,6 +15,7 @@
 #include "../interfaces/AbstractAlgorithm.h"
 #include "dynamic-load/AlgorithmRegistrar.h"
 #include "SimulationManager.h"
+#include "concurrency/ThreadPoolExecutor.h"
 
 #ifndef RUNNING_ON_NOVA
 

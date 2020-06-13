@@ -1,11 +1,11 @@
 COMP = g++-9.3.0
 
-OBJS = main.o $\ AlgorithmRegistrar.o AlgorithmValidation.o SimulationManager.o $\
+OBJS = main.o $\ AlgorithmValidation.o SimulationManager.o $\
 Simulator.o SimulatorFileManager.o SimulatorUtil.o Travel.o $\
 $\
-./concurrency/AlgorithmTravelTask.o AlgorithmTravelTaskProducer.o $\
+./concurrency/AlgorithmTravelTask.o ./concurrency/AlgorithmTravelTaskProducer.o $\
 $\
-./dynamic-load/AlgorithmRegistrar.o ./AlgorithmRegistration.o $\
+./dynamic-load/AlgorithmRegistrar.o ./dynamic-load/AlgorithmRegistration.o $\
 $\
 ../common/actors/AbstractWeightBalancer.o ../common/actors/ContainerShip.o ../common/actors/CranesManagement.o $\
 ../common/actors/NaiveWeightBalancer.o ../common/actors/Port.o $\
@@ -26,11 +26,11 @@ $\
 ../common/utils/Error.o ../common/utils/Errors.o $\
 ../common/utils/Printers.o ../common/utils/UtilFunctions.o ../common/utils/Vector3.o $\
 $\
-../interfaces/AlgorithmRegistration.o ../interfaces/WeightBalanceCalculator.o
+../interfaces/WeightBalanceCalculator.o
 
 EXEC = simulator
 CPP_COMP_FLAG = -std=c++2a -Wall -Wextra -Werror -pedantic-errors -DNDEBUG
-CPP_LINK_FLAG = -ldl -export-dynamic -lstdc++fs #(-rdynamic)
+CPP_LINK_FLAG = -ldl -export-dynamic -lstdc++fs -pthread #(-rdynamic)
 
 $(EXEC): $(OBJS)
 	$(COMP) $(OBJS) $(CPP_LINK_FLAG) -o $@
@@ -40,4 +40,4 @@ $(OBJS):
 clean:
 	rm -f $(OBJS) $(EXEC)
 
-# ./simulator -travel_path ../Tests -algorithm_path ../algorithms -output ../output
+# ./simulator -travel_path ../Tests -algorithm_path ../algorithms -output ../output -num_threads 6
