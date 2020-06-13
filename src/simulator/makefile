@@ -22,6 +22,7 @@ $\
 ../common/loggers/Tracer.o $\
 $\
 ../common/strategies/LoadContainerToArbitraryPosition.o ../common/strategies/LoadContainerToLowestPositionAvailable.o $\
+../common/strategies/LoadContainerInGroups.o $\
 $\
 ../common/utils/Error.o ../common/utils/Errors.o $\
 ../common/utils/Printers.o ../common/utils/UtilFunctions.o ../common/utils/Vector3.o $\
@@ -40,4 +41,4 @@ $(OBJS):
 clean:
 	rm -f $(OBJS) $(EXEC)
 
-# ./simulator -travel_path ../Tests -algorithm_path ../algorithms -output ../output -num_threads 6
+# ./simulator -travel_path ../Travel-Roots/multiple-travel -algorithm_path ../algorithms -output ../output

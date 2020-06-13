@@ -151,6 +151,8 @@ void Simulator::loadAlgorithmsDynamically(Errors &errors) {
                 errors.addError({ErrorFlag::SharedObject_LoadedMoreThanOneAlgorithm, extractFilenameFromPath(file)});
                 break;
         }
+
+        delta == 1 ? tracer.traceVerbose("Algorithm didn't register himself once (0 or 2+") : tracer.traceVerbose("Loaded successfully");
     }
 
     tracer.separator(TraceVerbosity::Verbose, 0, 0);

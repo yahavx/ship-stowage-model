@@ -1,6 +1,6 @@
 COMP = g++-9.3.0
 
-SHARED_OBJS = $(NAIVE_SO) $(ROBUST_SO) $(BAD_SO)
+SHARED_OBJS = $(NAIVE_SO) $(ROBUST_SO)
 NAIVE_SO = _305170987_a.so
 ROBUST_SO = _305170987_b.so
 NAIVE = _305170987_a.o
@@ -23,6 +23,7 @@ $\
 ../common/loggers/Tracer.o $\
 $\
 ../common/strategies/LoadContainerToArbitraryPosition.o ../common/strategies/LoadContainerToLowestPositionAvailable.o $\
+../common/strategies/LoadContainerInGroups.o $\
 $\
 ../common/utils/Error.o ../common/utils/Errors.o $\
 ../common/utils/Printers.o ../common/utils/UtilFunctions.o ../common/utils/Vector3.o # $\
