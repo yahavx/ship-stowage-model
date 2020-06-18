@@ -2,8 +2,8 @@
 Critical errors prevents the `simulator` program from running.
 - If the output path supplied (when supplied) is invalid (folder doesn't exist and cannot be created), it is a critical error.
 - Command line arguments.  
-    - We except to receive 2, 4, or 6 arguments (according to number of flags supplied). Anything besides that is a critical error.
-    - If an invalid flag is supplied (i.e. parameter 1/3/5 is not one of -travel_path, -algorithm_path, -output), it is a critical error.
+    - We except to receive 2, 4, 6 or 8 arguments (according to number of flags supplied). Anything besides that is a critical error.
+    - If an invalid flag is supplied (i.e. parameter 1/3/5/7 is not one of -travel_path, -algorithm_path, -output, -num_threads), it is a critical error.
 
 In all above cases, the program is terminated immediately, and a message is a printed to the screen.
 Any other error is handled by the simulator.
