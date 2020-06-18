@@ -1,8 +1,3 @@
-### Makefiles
-
-To use the two `makefile`s successfully, its better to `make` the algorithms first, and then the simulator.
-If you want to `make` the simulator first, make sure you do `make clean` after (from the algorithms), so it will generate all the `.o` files from scratch (and not use `.o` files created by the simulator, which its not capable of).
-
 ### Critical errors
 Critical errors prevents the `simulator` program from running.
 - If the output path supplied (when supplied) is invalid (folder doesn't exist and cannot be created), it is a critical error.
@@ -15,7 +10,7 @@ Any other error is handled by the simulator.
 
 ### Simulator error handling
 The simulator generates an "errors" folder (under the output folder) that contains all the error files, and the error documentation is as follows:
-- One file named `GeneralErrors`, that contains (general) errors such as bad algorithmFactory loading, invalid paths, invalid travels (that cannot be run), etc.
+- One file named `GeneralErrors`, that contains (general) errors such as bad algorithmFactory loading, invalid paths, travel errors (ship/route problems), etc.
 - A file for each algorithmFactory-travel pair, named `algorithmName_travelName_errors` with errors that occurred during the run.
 
 Any error file is created only if at least one error was found.
