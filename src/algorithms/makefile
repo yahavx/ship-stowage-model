@@ -1,14 +1,14 @@
 COMP = g++-9.3.0
 
-SHARED_OBJS = $(NAIVE_SO) $(ROBUST_SO)
-NAIVE_SO = _305170987_a.so
-ROBUST_SO = _305170987_b.so
-NAIVE = _305170987_a.o
-ROBUST = _305170987_b.o
+SHARED_OBJS = $(ALGO1_SO) $(ALGO2_SO)
+ALGO1_SO = _305170987_a.so
+ALGO2_SO = _305170987_b.so
+ALGO1 = _305170987_a.o
+ALGO2 = _305170987_b.o
 
-OBJS = BadAlgorithm.o SemiAbstractAlgorithm.o NaiveStowageAlgorithm.o EfficientStowageAlgorithm.o RobustStowageAlgorithm.o $\
-$\
-../common/actors/AbstractWeightBalancer.o ../common/actors/ContainerShip.o ../common/actors/CranesManagement.o $\
+ALGORITHM_OBJS = BadAlgorithm.o SemiAbstractAlgorithm.o NaiveStowageAlgorithm.o EfficientStowageAlgorithm.o RobustStowageAlgorithm.o
+
+COMMON_OBJS = ../common/actors/AbstractWeightBalancer.o ../common/actors/ContainerShip.o ../common/actors/CranesManagement.o $\
 ../common/actors/NaiveWeightBalancer.o ../common/actors/Port.o $\
 $\
 ../common/data_objects/Container.o ../common/data_objects/ContainerPosition.o ../common/data_objects/Dimensions.o $\
@@ -26,23 +26,30 @@ $\
 ../common/strategies/LoadContainerInGroups.o $\
 $\
 ../common/utils/Error.o ../common/utils/Errors.o $\
-../common/utils/Printers.o ../common/utils/UtilFunctions.o ../common/utils/Vector3.o # $\
-# $\
-# ../interfaces/WeightBalanceCalculator.o
+../common/utils/Printers.o ../common/utils/UtilFunctions.o ../common/utils/Vector3.o
+
+COMMON_OBJS_FILENAMES =  AbstractWeightBalancer.o ContainerShip.o CranesManagement.o NaiveWeightBalancer.o Port.o $\
+Container.o ContainerPosition.o Dimensions.o Operations.o PackingOperation.o PortId.o Position.o ShipPlan.o $\
+ShipRoute.o Cargo.o ContainerStorage.o FileReader.o ObjectsReader.o Tracer.o LoadContainerToArbitraryPosition.o LoadContainerToLowestPositionAvailable.o $\
+LoadContainerInGroups.o Error.o Errors.o Printers.o UtilFunctions.o Vector3.o
 
 CPP_COMP_FLAG = -std=c++2a -Wall -Wextra -Werror -pedantic-errors -DNDEBUG -fPIC -fvisibility=hidden -fvisibility-inlines-hidden
 CPP_LINK_FLAG = -shared
 
+OBJS = $(ALGORITHM_OBJS) $(COMMON_OBJS_FILENAMES)
+
 all: $(SHARED_OBJS)
 
-$(NAIVE_SO): $(OBJS) $(NAIVE)
+$(ALGO1_SO): $(OBJS) $(COMMON_OBJS_FILENAMES) $(ALGO1)
 	$(COMP) $(CPP_LINK_FLAG) -o $@ $^
 
-$(ROBUST_SO): $(OBJS) $(ROBUST)
+$(ALGO2_SO): $(OBJS) $(ALGO2)
 	$(COMP) $(CPP_LINK_FLAG) -o $@ $^
 
-$(OBJS) $(ROBUST) $(NAIVE):
-	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp -o $@
+$(COMMON_OBJS_FILENAMES): $(COMMON_OBJS)
+
+$(ALGORITHM_OBJS) $(COMMON_OBJS) $(ALGO2) $(ALGO1):
+	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
 	
 clean:
-	rm -f $(OBJS) $(SHARED_OBJS)
+	rm -f $(OBJS) $(SHARED_OBJS) $(ALGO1) $(ALGO2)
